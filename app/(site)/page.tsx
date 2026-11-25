@@ -52,7 +52,7 @@ export default function Home() {
         <span id="roadmap" aria-hidden />
         <div className="grid gap-1">
           <h2 id="road" className="text-3xl font-bold">Choose a module</h2>
-          <p className="max-w-3xl text-muted">The 16 weeks are split into {MODULES.length} modules: Pre-Midterm (weeks 1–8) and Post-Midterm (weeks 9–16). Open any sub-topic to learn it, or tap 💬 beside it to ask the tutor about just that lesson.</p>
+          <p className="max-w-3xl text-muted">The 16 weeks are split into {MODULES.length} modules: Pre-Midterm (weeks 1–8) and Post-Midterm (weeks 9–16). Open any sub-topic to learn it, press Lab to practise it in its workspace, or Chat to ask the tutor about just that lesson.</p>
         </div>
         <ModuleGrid modules={cards} />
       </section>

@@ -5,6 +5,7 @@ import type { CourseModule } from "@/lib/course";
 import { useProgress } from "../useProgress";
 import { ChapterStatus } from "../topic/ChapterStatus";
 import { useTutor } from "../tutor/TutorProvider";
+import { shortTitle } from "@/lib/short-titles";
 import { ModuleArt } from "./ModuleArt";
 
 export type ModuleCard = CourseModule & { label: string; lessons: { key: string; slug: string; title: string; week: number }[] };
@@ -44,7 +45,7 @@ export function ModuleGrid({ modules, midAfter = 8 }: { modules: ModuleCard[]; m
           </button>
         ))}
       </div>
-      <ul className="grid items-start gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <ul className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {shown.map((m) => {
           const done = m.lessons.filter((l) => progress.topics[l.key]?.done).length;
           const pct = m.lessons.length ? Math.round((done / m.lessons.length) * 100) : 0;
@@ -67,15 +68,15 @@ export function ModuleGrid({ modules, midAfter = 8 }: { modules: ModuleCard[]; m
                   {m.weeks.length === 1 && <ChapterStatus week={m.weeks[0]} />}
                 </div>
                 {isOpen && (
-                  <ol id={`mod-${m.id}`} className="mt-2 grid gap-0.5 border-t border-border pt-2">
+                  <ol id={`mod-${m.id}`} className="mt-2 grid gap-1 border-t border-border pt-2">
                     {m.lessons.map((l, i) => (
-                      <li key={l.key} className="flex items-center gap-1">
-                        <Link href={`/week-${l.week}/${l.slug}`} className="group flex min-h-11 min-w-0 flex-1 items-center gap-2.5 rounded-lg px-1 no-underline hover:bg-surface2">
-                          <span aria-hidden className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-bold" style={{ background: progress.topics[l.key]?.done ? "var(--wk)" : "var(--wk-soft)", color: progress.topics[l.key]?.done ? "var(--on-primary)" : "var(--wk)" }}>{progress.topics[l.key]?.done ? "✓" : i + 1}</span>
-                          <span className="min-w-0 flex-1 text-sm"><span className="line-clamp-2 block leading-snug" title={l.title}>{l.title}</span>{m.weeks.length > 1 && <span className="block text-xs text-muted">Week {l.week}</span>}</span>
-                          <span aria-hidden className="text-muted transition-transform group-hover:translate-x-1">→</span>
+                      <li key={l.key} className="flex items-center gap-1.5 py-0.5">
+                        <span aria-hidden className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-bold" style={{ background: progress.topics[l.key]?.done ? "var(--wk)" : "var(--wk-soft)", color: progress.topics[l.key]?.done ? "var(--on-primary)" : "var(--wk)" }}>{progress.topics[l.key]?.done ? "✓" : i + 1}</span>
+                        <Link href={`/week-${l.week}/${l.slug}`} className="min-h-11 min-w-0 flex-1 truncate whitespace-nowrap py-2.5 text-sm font-medium no-underline hover:text-primary" title={l.title}>
+                          {shortTitle(l.key, l.title)}{m.weeks.length > 1 && <span className="ms-1.5 text-xs font-normal text-muted">W{l.week}</span>}
                         </Link>
-                        <button className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-muted hover:bg-surface2 hover:text-primary" aria-label={`Ask the tutor about ${l.title}`} onClick={() => tutor.open({ topic: l.title, topicKey: l.key })}>💬</button>
+                        <Link href={`/week-${l.week}/${l.slug}/workspace`} className="inline-flex min-h-8 shrink-0 items-center rounded-full border px-2 text-[11px] font-bold no-underline hover:bg-surface2" style={{ borderColor: "var(--wk)", color: "var(--wk)" }} aria-label={`Open the lab for ${l.title}`}>Lab</Link>
+                        <button className="inline-flex min-h-8 shrink-0 items-center rounded-full px-2 text-[11px] font-bold" style={{ background: "var(--wk)", color: "var(--on-primary)" }} aria-label={`Ask the tutor about ${l.title}`} onClick={() => tutor.open({ topic: l.title, topicKey: l.key })}>Chat</button>
                       </li>
                     ))}
                   </ol>

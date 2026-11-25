@@ -34,3 +34,16 @@ describe("modules", () => {
     for (const m of MODULES) expect(m.phase).toBe(m.weeks.every((w) => w <= 8) ? "pre" : "post");
   });
 });
+
+import { SHORT_TITLE_KEYS, shortTitle } from "@/lib/short-titles";
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+
+describe("short sub-topic titles", () => {
+  it("every lesson has a one-line name of at most four words", () => {
+    const keys = readdirSync("content").flatMap((d) => readdirSync(join("content", d)).filter((f) => f.endsWith(".json")).map((f) => { const t = JSON.parse(readFileSync(join("content", d, f), "utf8")); return `w${t.week}/${t.slug}`; }));
+    expect(keys.filter((k) => !SHORT_TITLE_KEYS.includes(k))).toEqual([]);
+    for (const k of keys) { const s = shortTitle(k, "x"); expect(s.length, k).toBeLessThanOrEqual(28); expect(s.split(/\s+/).length, k).toBeLessThanOrEqual(5); expect(s, k).not.toContain(":"); }
+  });
+  it("falls back to the text before the colon for a new lesson", () => expect(shortTitle("w99/new", "Sets: unique values")).toBe("Sets"));
+});

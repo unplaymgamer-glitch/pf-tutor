@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { askTutor, prepareImage, tutorDeviceId, type TutorPayload } from "@/lib/tutor/client";
 import { Session, StoredMessage, deleteAllSessions, deleteSession, exportSessions, groupByAge, listSessions, newSession, saveSession, titleFrom } from "@/lib/tutor/history";
 import type { Handoff } from "@/lib/tutor/handoff";
+import { shortTitle } from "@/lib/short-titles";
 import { useSettings } from "../SettingsProvider";
 import { useSiteState } from "../SiteState";
 import { Message } from "./Message";
@@ -241,7 +242,7 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
                     {isOpen && (
                       <ul className="mb-2 ms-4 grid gap-0.5 border-s border-border ps-2">
                         {lessons.map((l) => (
-                          <li key={l.key}><button className={`min-h-10 w-full rounded-lg px-2 text-start text-sm hover:bg-surface2 ${cur.topicKey === l.key ? "bg-surface2 font-semibold" : ""}`} onClick={() => openTopic(l)}>{l.title}</button></li>
+                          <li key={l.key}><button title={l.title} className={`min-h-10 w-full truncate rounded-lg px-2 text-start text-sm hover:bg-surface2 ${cur.topicKey === l.key ? "bg-surface2 font-semibold" : ""}`} onClick={() => openTopic(l)}>{shortTitle(l.key, l.title)}</button></li>
                         ))}
                       </ul>
                     )}
