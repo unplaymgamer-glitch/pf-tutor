@@ -1,0 +1,603 @@
+{
+  "slug": "input-output",
+  "week": 1,
+  "title": "Input and output: cout and cin",
+  "defaultView": "visualize",
+  "order": 6,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "How data flows through a program",
+      "stages": [
+        {
+          "name": "Keyboard",
+          "detail": "The user types a value and presses Enter."
+        },
+        {
+          "name": "cin >>",
+          "detail": "The extraction operator takes the typed value out of the input."
+        },
+        {
+          "name": "Variable",
+          "detail": "The value is stored in the variable's box."
+        },
+        {
+          "name": "cout <<",
+          "detail": "The insertion operator sends data towards the screen."
+        },
+        {
+          "name": "Screen",
+          "detail": "The text appears for the user."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each symbol to its job",
+      "pairs": [
+        {
+          "term": "cout",
+          "meaning": "Console output: sends data to the screen"
+        },
+        {
+          "term": "<<",
+          "meaning": "Insertion operator, used with cout"
+        },
+        {
+          "term": "cin",
+          "meaning": "Console input: reads data from the keyboard"
+        },
+        {
+          "term": ">>",
+          "meaning": "Extraction operator, used with cin"
+        },
+        {
+          "term": "endl",
+          "meaning": "Moves to a new line (and flushes the output)"
+        },
+        {
+          "term": "\\n",
+          "meaning": "Escape sequence for a new line inside a string"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can print text and values with cout, read values from the keyboard with cin, and use endl, \\n and chaining.",
+  "warmup": "Imagine ordering at a canteen counter. The cashier asks, 'Which item?' (output), you say 'Samosa, 2 pieces' (input), and then the cashier tells you the bill (output). A program does the same: it shows a message with cout, waits for you to type with cin, and then shows a result with cout.",
+  "definition": "cout (console output) sends text and values to the screen using the insertion operator <<. cin (console input) reads values typed on the keyboard into variables using the extraction operator >>. Both need #include <iostream>. The arrows show the direction of the data: << points towards cout (data goes out), >> points away from cin into the variable (data comes in).",
+  "howItWorks": "Press Play on the Visualize tab. When the program reaches cin, it waits for the user. The typed value is placed in the variable box. cout then prints text and the current values of variables. You can chain many items in one statement: cout << a << b; or cin >> a >> b; The user separates the typed values with a space or Enter. cin >> on a string reads only one word, it stops at the first space.",
+  "syntax": "cout << \"text\";              // print text\ncout << x;                    // print the value of x\ncout << \"x = \" << x << endl;  // chain items, then new line\ncout << \"Line1\\nLine2\";       // \\n also makes a new line\ncout << \"A\\tB\";               // \\t is a tab\n\ncin >> x;                     // read one value into x\ncin >> a >> b;                // read two values (space or Enter between)\ncin >> name;                  // string: reads one word only",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Read two whole numbers from the user and print their sum.",
+      "pseudocode": [
+        "START",
+        "INPUT a",
+        "INPUT b",
+        "sum = a + b",
+        "PRINT sum",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Input a/]\n  B --> C[/Input b/]\n  C --> D[sum = a + b]\n  D --> E[/Print sum/]\n  E --> F([End])",
+      "sample": {
+        "id": "sum-two",
+        "title": "Sum of two numbers",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b, sum;\n    cout << \"Enter first number: \";\n    cin >> a;\n    cout << \"Enter second number: \";\n    cin >> b;\n    sum = a + b;\n    cout << \"Sum = \" << sum << endl;\n    return 0;\n}\n",
+        "stdin": "12\n8\n",
+        "expectedOutput": "Enter first number: Enter second number: Sum = 20\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Declares three int variables in one line."
+          },
+          {
+            "line": 6,
+            "text": "Shows a prompt so the user knows what to type."
+          },
+          {
+            "line": 7,
+            "text": "Waits for the user and stores the typed number in a."
+          },
+          {
+            "line": 8,
+            "text": "Prompt for the second number."
+          },
+          {
+            "line": 9,
+            "text": "Reads the second number into b."
+          },
+          {
+            "line": 10,
+            "text": "Adds a and b and stores the result in sum."
+          },
+          {
+            "line": 11,
+            "text": "Prints the label and the value of sum, then a new line."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "a": "?",
+                "b": "?",
+                "sum": "?"
+              },
+              "note": "Three empty int boxes are made.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "The prompt is printed (no new line, so the user types on the same line).",
+              "out": "Enter first number: "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "a": "12"
+              },
+              "note": "cin waits. The user types 12 and it goes into a.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "The second prompt is printed.",
+              "out": "Enter second number: "
+            },
+            {
+              "line": 9,
+              "vars": {
+                "b": "8"
+              },
+              "note": "The user types 8 and it goes into b.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "sum": "20"
+              },
+              "note": "12 + 8 = 20 is stored in sum.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Prints the result and a new line.",
+              "out": "Sum = 20\n"
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "a": "int",
+            "b": "int",
+            "sum": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read a student's first name, age and CGPA in one cin statement, then print them in a neat list using \\n and \\t.",
+      "pseudocode": [
+        "START",
+        "INPUT name, age, cgpa",
+        "PRINT Name, then name",
+        "PRINT Age, then age",
+        "PRINT CGPA, then cgpa",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Input name, age, cgpa/]\n  B --> C[/Print name/]\n  C --> D[/Print age/]\n  D --> E[/Print cgpa/]\n  E --> F([End])",
+      "sample": {
+        "id": "student-input",
+        "title": "Reading several values in one line",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string name;\n    int age;\n    double cgpa;\n    cout << \"Enter name, age and CGPA: \";\n    cin >> name >> age >> cgpa;\n    cout << \"Name:\\t\" << name << \"\\n\";\n    cout << \"Age:\\t\" << age << \"\\n\";\n    cout << \"CGPA:\\t\" << cgpa << \"\\n\";\n    return 0;\n}\n",
+        "stdin": "Sara 18 3.5\n",
+        "expectedOutput": "Enter name, age and CGPA: Name:\tSara\nAge:\t18\nCGPA:\t3.5\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "string for a single word name."
+          },
+          {
+            "line": 7,
+            "text": "int for the age."
+          },
+          {
+            "line": 8,
+            "text": "double for the CGPA."
+          },
+          {
+            "line": 9,
+            "text": "Prompt for the user."
+          },
+          {
+            "line": 10,
+            "text": "Chained cin: reads three values in order. The user separates them with spaces."
+          },
+          {
+            "line": 11,
+            "text": "\\t prints a tab, \\n moves to a new line."
+          },
+          {
+            "line": 12,
+            "text": "Prints the age."
+          },
+          {
+            "line": 13,
+            "text": "Prints the CGPA."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 6,
+              "vars": {
+                "name": "\"\""
+              },
+              "note": "name is an empty string box.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "age": "?"
+              },
+              "note": "age box, no value yet.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "cgpa": "?"
+              },
+              "note": "cgpa box, no value yet.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Prompt is printed.",
+              "out": "Enter name, age and CGPA: "
+            },
+            {
+              "line": 10,
+              "vars": {
+                "name": "\"Sara\"",
+                "age": "18",
+                "cgpa": "3.5"
+              },
+              "note": "cin reads three values in order: Sara, 18, 3.5.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Prints Name, a tab, the name and a new line.",
+              "out": "Name:\tSara\n"
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Prints the age.",
+              "out": "Age:\t18\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Prints the CGPA.",
+              "out": "CGPA:\t3.5\n"
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "name": "string",
+            "age": "int",
+            "cgpa": "double"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "A shop sells rice at a price per kg. Read the price per kg and the number of kg, then print the total bill.",
+      "pseudocode": [
+        "START",
+        "INPUT price",
+        "INPUT kg",
+        "total = price * kg",
+        "PRINT total",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Input price per kg/]\n  B --> C[/Input kg/]\n  C --> D[total = price * kg]\n  D --> E[/Print total/]\n  E --> F([End])",
+      "sample": {
+        "id": "rice-bill",
+        "title": "Shop bill",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    double price, kg, total;\n    cout << \"Price per kg: \";\n    cin >> price;\n    cout << \"Weight in kg: \";\n    cin >> kg;\n    total = price * kg;\n    cout << \"Total bill = Rs. \" << total << endl;\n    return 0;\n}\n",
+        "stdin": "120\n2.5\n",
+        "expectedOutput": "Price per kg: Weight in kg: Total bill = Rs. 300\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "double because weight and price can have decimals."
+          },
+          {
+            "line": 7,
+            "text": "Reads the price per kg."
+          },
+          {
+            "line": 9,
+            "text": "Reads the weight."
+          },
+          {
+            "line": 10,
+            "text": "Multiplies price by weight."
+          },
+          {
+            "line": 11,
+            "text": "Prints the bill with a label."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "cout << x;",
+      "when": "Print the value of a variable",
+      "example": "cout << marks;"
+    },
+    {
+      "way": "cout << \"a\" << b << \"c\";",
+      "when": "Chain text and values in one statement",
+      "example": "cout << \"Sum = \" << sum;"
+    },
+    {
+      "way": "endl",
+      "when": "End the line (new line)",
+      "example": "cout << \"Hi\" << endl;"
+    },
+    {
+      "way": "\\n",
+      "when": "New line inside a string",
+      "example": "cout << \"Hi\\n\";"
+    },
+    {
+      "way": "\\t",
+      "when": "A tab space, useful for columns",
+      "example": "cout << \"A\\tB\";"
+    },
+    {
+      "way": "cin >> x;",
+      "when": "Read one value",
+      "example": "cin >> age;"
+    },
+    {
+      "way": "cin >> a >> b;",
+      "when": "Read several values in one statement",
+      "example": "cin >> price >> qty;"
+    },
+    {
+      "way": "cin >> word;",
+      "when": "Read one word into a string (stops at a space)",
+      "example": "string name; cin >> name;"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int a;\ncin << a;",
+      "right": "int a;\ncin >> a;",
+      "error": "no match for 'operator<<' (operand types are 'std::istream' and 'int'). cin uses >>"
+    },
+    {
+      "wrong": "cout >> \"Hi\";",
+      "right": "cout << \"Hi\";",
+      "error": "no match for 'operator>>' (operand types are 'std::ostream' and 'const char [3]'). cout uses <<"
+    },
+    {
+      "wrong": "cout << \"Hi\" << endl",
+      "right": "cout << \"Hi\" << endl;",
+      "error": "expected ';' before 'return'"
+    },
+    {
+      "wrong": "cout << \"Hi\"; cout \"x\";",
+      "right": "cout << \"Hi\"; cout << \"x\";",
+      "error": "expected ';' before string constant (the << is missing)"
+    },
+    {
+      "wrong": "string name;\ncin >> name;   // user types: Ali Khan",
+      "right": "// cin >> name reads only Ali; use getline(cin, name) later for a full line",
+      "error": "no compiler error, but name holds only \"Ali\"; Khan is left unread"
+    }
+  ],
+  "examTips": [
+    "cout uses <<, cin uses >>. The arrows point in the direction the data moves.",
+    "Always print a prompt before cin so the user knows what to type.",
+    "endl and \\n both give a new line. \\t gives a tab. \\\\ prints a backslash and \\\" prints a double quote.",
+    "cin >> on a string stops at the first space, so it reads one word only.",
+    "Without #include <iostream>, neither cout nor cin works."
+  ],
+  "romanSummary": [
+    "cout screen par output dikhata hai aur << (insertion operator) use karta hai.",
+    "cin keyboard se input leta hai aur >> (extraction operator) use karta hai.",
+    "Ek saath kai values: cin >> a >> b; aur cout << a << b;",
+    "\\n ya endl nayi line ke liye hai, \\t tab ke liye.",
+    "string par cin >> sirf ek word parhta hai, space aate hi ruk jata hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which operator is used with cin?",
+      "options": [
+        "<<",
+        ">>",
+        "==",
+        "->"
+      ],
+      "answer": ">>",
+      "hint": "The arrows point into the variable.",
+      "explanation": "cin uses the extraction operator >>."
+    },
+    {
+      "id": "p2",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank so the program reads a number into age:\n\ncin ______ age;",
+      "answer": ">>",
+      "hint": "The data moves from the keyboard into the variable.",
+      "explanation": "cin takes data with >>."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this print?\n\ncout << \"Hi\\n\" << \"UMT\";",
+      "answer": "Hi\nUMT",
+      "hint": "\\n moves to a new line.",
+      "explanation": "Hi is printed, then a new line, then UMT. So UMT appears on the second line."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Fix the bug:\n\nint x;\ncout << \"Enter x: \";\ncin << x;",
+      "answer": "int x;\ncout << \"Enter x: \";\ncin >> x;",
+      "hint": "Check which arrow cin uses.",
+      "explanation": "cin must use >>, not <<."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\ncout << 5 << 3;",
+      "answer": "53",
+      "hint": "Each value is printed one after the other, with no space.",
+      "explanation": "cout prints 5 and then 3 directly next to each other, so the output is 53 (not 8)."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank to read two numbers a and b in one statement:\n\ncin >> a ______ b;",
+      "answer": ">>",
+      "hint": "Chain with the same operator.",
+      "explanation": "Chaining uses >> between each variable."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that reads the length and width of a rectangle (whole numbers) and prints its area.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int length, width;\n    cout << \"Enter length and width: \";\n    cin >> length >> width;\n    cout << \"Area = \" << length * width << endl;\n    return 0;\n}",
+      "hint": "Area is length times width.",
+      "explanation": "Read two values with one chained cin, multiply them, and print with cout."
+    },
+    {
+      "id": "p8",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this print?\n\nint a = 4;\ncout << \"a\" << a << \"a\";",
+      "answer": "a4a",
+      "hint": "Text in quotes is printed as it is.",
+      "explanation": "The first \"a\" is just text, then the value 4, then text a. So the output is a4a."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which statement prints Hello and moves to a new line?",
+      "options": [
+        "cin >> \"Hello\";",
+        "cout << \"Hello\" << endl;",
+        "cout >> \"Hello\";",
+        "print(\"Hello\");"
+      ],
+      "answer": "cout << \"Hello\" << endl;",
+      "hint": "cout goes with <<.",
+      "explanation": "cout with << prints, and endl ends the line."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does cin >> x; do?",
+      "options": [
+        "Prints x",
+        "Reads a value from the keyboard into x",
+        "Deletes x",
+        "Declares x"
+      ],
+      "answer": "Reads a value from the keyboard into x",
+      "hint": "cin means console input.",
+      "explanation": "cin >> x takes what the user types and stores it in x."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "If the user types Ali Khan and the code is string name; cin >> name; what does name hold?",
+      "options": [
+        "Ali Khan",
+        "Ali",
+        "Khan",
+        "Nothing"
+      ],
+      "answer": "Ali",
+      "hint": "cin stops at a space.",
+      "explanation": "cin >> reads one word only, so name holds Ali."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which escape sequence prints a tab?",
+      "options": [
+        "\\n",
+        "\\t",
+        "\\\\",
+        "\\b"
+      ],
+      "answer": "\\t",
+      "hint": "T for tab.",
+      "explanation": "\\t inserts a tab. \\n is a new line."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Which line reads two integers a and b correctly?",
+      "options": [
+        "cin >> a, b;",
+        "cin >> a >> b;",
+        "cin << a << b;",
+        "cin >> (a, b);"
+      ],
+      "answer": "cin >> a >> b;",
+      "hint": "Repeat >> before each variable.",
+      "explanation": "Chaining uses >> before every variable."
+    }
+  ],
+  "sources": [
+    "Input, Output Statements",
+    "cout and cin",
+    "Escape sequences"
+  ]
+}

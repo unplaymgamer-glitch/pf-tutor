@@ -1,0 +1,789 @@
+{
+  "slug": "operations-on-members",
+  "week": 12,
+  "title": "Operations on structure members",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match each task to the correct code",
+      "pairs": [
+        {
+          "term": "Read the roll number into s1",
+          "meaning": "cin >> s1.id;"
+        },
+        {
+          "term": "Print the name of s1",
+          "meaning": "cout << s1.name;"
+        },
+        {
+          "term": "Add 5 marks to s1",
+          "meaning": "s1.marks = s1.marks + 5;"
+        },
+        {
+          "term": "Copy all of s1 into s2",
+          "meaning": "s2 = s1;"
+        },
+        {
+          "term": "Check s1 and s2 are equal",
+          "meaning": "Compare each member: s1.id == s2.id && s1.name == s2.name ..."
+        },
+        {
+          "term": "Year of birth inside a nested Date",
+          "meaning": "s1.birth.year"
+        },
+        {
+          "term": "Second mark in an array member",
+          "meaning": "r.marks[1]"
+        }
+      ]
+    },
+    {
+      "kind": "memory",
+      "title": "r2 = r1 copies every member into separate boxes",
+      "cells": [
+        {
+          "name": "r1.length",
+          "type": "double",
+          "addr": "0x1000"
+        },
+        {
+          "name": "r1.width",
+          "type": "double",
+          "addr": "0x1008"
+        },
+        {
+          "name": "r2.length",
+          "type": "double",
+          "addr": "0x1010"
+        },
+        {
+          "name": "r2.width",
+          "type": "double",
+          "addr": "0x1018"
+        }
+      ],
+      "steps": [
+        {
+          "code": "cin >> r1.length >> r1.width;",
+          "note": "Input 4 and 3 goes into the members of r1.",
+          "values": {
+            "r1.length": "4",
+            "r1.width": "3",
+            "r2.length": "?",
+            "r2.width": "?"
+          },
+          "points": {}
+        },
+        {
+          "code": "r2 = r1;",
+          "note": "Both members are copied.",
+          "values": {
+            "r2.length": "4",
+            "r2.width": "3"
+          },
+          "points": {}
+        },
+        {
+          "code": "r2.length = r2.length * 2;",
+          "note": "Only r2.length changes. r1 is untouched.",
+          "values": {
+            "r2.length": "8"
+          },
+          "points": {}
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can read, print and calculate with struct members, compare two structs member by member, use a struct inside a struct, and put an array inside a struct.",
+  "warmup": "A shopkeeper has a bill with item name, price and quantity. To find the total he multiplies the price and quantity on the bill. To check whether two bills are the same, he compares item, price and quantity one by one, not by staring at the whole paper. Struct members work the same way: each member is used like a normal variable.",
+  "definition": "Every data member of a struct behaves like an ordinary variable of its own type. A double member can be used in arithmetic, an int member in a comparison, a string member with cin. The only things you cannot do directly with a whole struct variable are cin >> s, cout << s and s1 == s2. Work member by member. One thing you can do with a whole struct is assign it: s2 = s1. A struct can also contain another struct (nested structure) or an array.",
+  "howItWorks": "Reading and printing: cin >> s1.id; and cout << s1.name; Each member is treated alone. Arithmetic: s1.price * s1.qty, or s1.qty = s1.qty + 2; the member is just a variable with a dotted name. Comparing two structs: s1 == s2 gives a compile error, because C++ does not know what 'equal' should mean for your type. Compare the members you care about, joined with &&: s1.id == s2.id && s1.name == s2.name. Nested structures: if a Student has a member birth of type Date, you reach the year with TWO dots: s1.birth.year. Read the dots left to right: s1, then its birth, then its year. Arrays inside structs: a struct can hold an array, for example int marks[3];. You reach one mark as r.marks[i], and you can loop over it as usual. Putting it together: the exam program reads a name and three marks into one struct, computes the average and the grade, and stores them back into the same struct. Everything about one student stays inside one variable, and no function is needed. The first trace shows the copy r2 = r1. The second shows a nested struct comparison. The third shows an array member inside a loop.",
+  "syntax": "struct Date { int day, month, year; };\n\nstruct Student {\n    int id;\n    string name;\n    int marks[3];      // array member\n    Date birth;        // nested struct\n};\n\nStudent s1, s2;\ncin >> s1.id >> s1.name;      // read members\ns1.marks[0] = 80;               // element of an array member\ns1.birth.year = 2005;           // member of a nested struct\ns2 = s1;                        // copy the whole struct: OK\nif (s1.id == s2.id) { }         // compare members: OK\n// if (s1 == s2) { }              // ERROR: no == for structs",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Declare a struct Rectangle (length, width). Read the length and width of rectangle 1, make rectangle 2 a copy with the length doubled, then print both areas and say which rectangle is bigger.",
+      "pseudocode": [
+        "START",
+        "READ r1.length and r1.width",
+        "r2 = r1",
+        "r2.length = r2.length * 2",
+        "a1 = r1.length * r1.width",
+        "a2 = r2.length * r2.width",
+        "PRINT a1 and a2",
+        "IF a1 > a2 PRINT Rectangle 1 ELSE PRINT Rectangle 2",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read r1.length and r1.width/]\n  B --> C[r2 = r1]\n  C --> D[r2.length = r2.length * 2]\n  D --> E[Compute a1 and a2]\n  E --> F[/Print a1 and a2/]\n  F --> G{a1 > a2?}\n  G -- Yes --> H[/Print Rectangle 1 is bigger/]\n  G -- No --> I[/Print Rectangle 2 is bigger/]\n  H --> J([End])\n  I --> J",
+      "sample": {
+        "id": "rectangle-members",
+        "title": "Read, copy and calculate with members",
+        "code": "#include <iostream>\nusing namespace std;\n\nstruct Rectangle {\n    double length;\n    double width;\n};\n\nint main() {\n    Rectangle r1, r2;\n    cout << \"Enter length and width: \";\n    cin >> r1.length >> r1.width;\n    r2 = r1;\n    r2.length = r2.length * 2;\n    double a1 = r1.length * r1.width;\n    double a2 = r2.length * r2.width;\n    cout << \"Area 1 = \" << a1 << \", Area 2 = \" << a2 << endl;\n    if (a1 > a2) cout << \"Rectangle 1 is bigger\" << endl;\n    else cout << \"Rectangle 2 is bigger\" << endl;\n    return 0;\n}\n",
+        "stdin": "4 3\n",
+        "graphics": false,
+        "expectedOutput": "Enter length and width: Area 1 = 12, Area 2 = 24\nRectangle 2 is bigger\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "A struct with two double members."
+          },
+          {
+            "line": 10,
+            "text": "Two variables of the new type."
+          },
+          {
+            "line": 12,
+            "text": "Each member can be read like a normal variable."
+          },
+          {
+            "line": 13,
+            "text": "Copying the whole struct is allowed."
+          },
+          {
+            "line": 14,
+            "text": "A member works in arithmetic like any double."
+          },
+          {
+            "line": 15,
+            "text": "Area from two members."
+          },
+          {
+            "line": 16,
+            "text": "Area of the doubled rectangle."
+          },
+          {
+            "line": 18,
+            "text": "Comparing two numbers is fine. Comparing two whole structs is not."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 10,
+              "vars": {
+                "r1.length": "?",
+                "r1.width": "?",
+                "r2.length": "?",
+                "r2.width": "?"
+              },
+              "note": "Two rectangle variables, each with its own length and width.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Asks for the input.",
+              "out": "Enter length and width: "
+            },
+            {
+              "line": 12,
+              "vars": {
+                "r1.length": "4",
+                "r1.width": "3"
+              },
+              "note": "cin reads straight into the two members of r1.",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {
+                "r2.length": "4",
+                "r2.width": "3"
+              },
+              "note": "The whole struct is copied: both members of r1 go into r2.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {
+                "r2.length": "8"
+              },
+              "note": "Arithmetic on one member: r2 is now twice as long.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "a1": "12"
+              },
+              "note": "Area of r1 = 4 * 3.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "a2": "24"
+              },
+              "note": "Area of r2 = 8 * 3.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "Prints both areas.",
+              "out": "Area 1 = 12, Area 2 = 24\n"
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "12 > 24 is false, so the else part runs.",
+              "out": ""
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "Rectangle 2 is the bigger one.",
+              "out": "Rectangle 2 is bigger\n"
+            }
+          ],
+          "types": {
+            "r1.length": "double",
+            "r1.width": "double",
+            "r2.length": "double",
+            "r2.width": "double",
+            "a1": "double",
+            "a2": "double"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "A Student has an id, a name and a nested Date of birth. Make two students that differ only in the year of birth. Compare them member by member and print whether the records are the same.",
+      "pseudocode": [
+        "START",
+        "DECLARE Date and Student (with Date birth)",
+        "SET a and b with the same values",
+        "b.birth.year = 2006",
+        "IF every member of a equals the same member of b THEN PRINT Same record ELSE PRINT Different records",
+        "PRINT the two birth years",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Make a and b equal]\n  B --> C[b.birth.year = 2006]\n  C --> D{All members equal?}\n  D -- Yes --> E[/Print Same record/]\n  D -- No --> F[/Print Different records/]\n  E --> G[/Print birth years/]\n  F --> G\n  G --> H([End])",
+      "sample": {
+        "id": "nested-and-compare",
+        "title": "Nested struct and member-by-member comparison",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Date {\n    int day;\n    int month;\n    int year;\n};\n\nstruct Student {\n    int id;\n    string name;\n    Date birth;\n};\n\nint main() {\n    Student a = {1, \"Ali\", {5, 3, 2005}};\n    Student b = {1, \"Ali\", {5, 3, 2005}};\n    b.birth.year = 2006;\n    if (a.id == b.id && a.name == b.name &&\n        a.birth.day == b.birth.day && a.birth.month == b.birth.month &&\n        a.birth.year == b.birth.year) {\n        cout << \"Same record\" << endl;\n    } else {\n        cout << \"Different records\" << endl;\n    }\n    cout << \"a born in \" << a.birth.year << \", b born in \" << b.birth.year << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Different records\na born in 2005, b born in 2006\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A small struct for a date."
+          },
+          {
+            "line": 14,
+            "text": "A member whose type is another struct: a nested structure."
+          },
+          {
+            "line": 18,
+            "text": "The inner braces {5, 3, 2005} fill the nested Date."
+          },
+          {
+            "line": 20,
+            "text": "Two dots reach inside the nested struct."
+          },
+          {
+            "line": 21,
+            "text": "There is no == for whole structs, so every member is compared with &&."
+          },
+          {
+            "line": 24,
+            "text": "Runs only if ALL members are equal."
+          },
+          {
+            "line": 26,
+            "text": "Runs because the year differs."
+          },
+          {
+            "line": 28,
+            "text": "Prints the nested members."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 18,
+              "vars": {
+                "a.id": "1",
+                "a.name": "Ali",
+                "a.birth.day": "5",
+                "a.birth.month": "3",
+                "a.birth.year": "2005"
+              },
+              "note": "A Student contains a Date. The inner braces fill the nested Date.",
+              "out": ""
+            },
+            {
+              "line": 19,
+              "vars": {
+                "b.id": "1",
+                "b.name": "Ali",
+                "b.birth.day": "5",
+                "b.birth.month": "3",
+                "b.birth.year": "2005"
+              },
+              "note": "b is built with exactly the same values.",
+              "out": ""
+            },
+            {
+              "line": 20,
+              "vars": {
+                "b.birth.year": "2006"
+              },
+              "note": "Two dots: b, then its birth, then its year.",
+              "out": ""
+            },
+            {
+              "line": 21,
+              "vars": {},
+              "note": "Compare member by member. id, name, day and month match, but 2005 == 2006 is false, so the whole condition is false.",
+              "out": ""
+            },
+            {
+              "line": 26,
+              "vars": {},
+              "note": "The else part runs.",
+              "out": "Different records\n"
+            },
+            {
+              "line": 28,
+              "vars": {},
+              "note": "Prints the nested year members.",
+              "out": "a born in 2005, b born in 2006\n"
+            }
+          ],
+          "types": {
+            "a.id": "int",
+            "a.name": "string",
+            "a.birth.day": "int",
+            "a.birth.month": "int",
+            "a.birth.year": "int",
+            "b.id": "int",
+            "b.name": "string",
+            "b.birth.day": "int",
+            "b.birth.month": "int",
+            "b.birth.year": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a program with a struct Result holding a name, three marks, an average and a grade. Read a name and three marks, compute the average, assign the grade (A for 85 or more, B for 70 or more, C for 50 or more, otherwise F) and print the result.",
+      "pseudocode": [
+        "START",
+        "READ r.name",
+        "total = 0",
+        "FOR i = 0 to 2: READ r.marks[i], total = total + r.marks[i]",
+        "r.average = total / 3.0",
+        "IF average >= 85 grade A ELSE IF >= 70 grade B ELSE IF >= 50 grade C ELSE grade F",
+        "PRINT name, average, grade",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read r.name/]\n  B --> C[total = 0, i = 0]\n  C --> D{i < 3?}\n  D -- Yes --> E[/Read r.marks i/]\n  E --> F[total = total + r.marks i]\n  F --> G[i = i + 1]\n  G --> D\n  D -- No --> H[r.average = total / 3.0]\n  H --> I[Set r.grade by average]\n  I --> J[/Print name, average, grade/]\n  J --> K([End])",
+      "sample": {
+        "id": "result-card",
+        "title": "Exam: average and grade from members",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Result {\n    string name;\n    int marks[3];\n    double average;\n    char grade;\n};\n\nint main() {\n    Result r;\n    int total = 0;\n    cin >> r.name;\n    for (int i = 0; i < 3; i++) {\n        cin >> r.marks[i];\n        total += r.marks[i];\n    }\n    r.average = total / 3.0;\n    if (r.average >= 85) r.grade = 'A';\n    else if (r.average >= 70) r.grade = 'B';\n    else if (r.average >= 50) r.grade = 'C';\n    else r.grade = 'F';\n    cout << r.name << \" average \" << r.average << \" grade \" << r.grade << endl;\n    return 0;\n}\n",
+        "stdin": "Hina 80 90 76\n",
+        "graphics": false,
+        "expectedOutput": "Hina average 82 grade B\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Name of the student."
+          },
+          {
+            "line": 7,
+            "text": "An array as a member: three marks inside one record."
+          },
+          {
+            "line": 8,
+            "text": "Will hold the average."
+          },
+          {
+            "line": 9,
+            "text": "Will hold the grade letter."
+          },
+          {
+            "line": 13,
+            "text": "One result card."
+          },
+          {
+            "line": 15,
+            "text": "Reads the name member."
+          },
+          {
+            "line": 17,
+            "text": "Reads element i of the array member: struct dot, then index."
+          },
+          {
+            "line": 18,
+            "text": "Adds the mark to the running total."
+          },
+          {
+            "line": 20,
+            "text": "Average from the total. 3.0 forces decimal division."
+          },
+          {
+            "line": 21,
+            "text": "Grade decided from a member."
+          },
+          {
+            "line": 25,
+            "text": "Prints name, average and grade."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 14,
+              "vars": {
+                "total": "0"
+              },
+              "note": "total starts at 0. r is a Result with a name, three marks, an average and a grade.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "r.name": "Hina"
+              },
+              "note": "The name member is read.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "i": "0"
+              },
+              "note": "The loop reads the array member r.marks.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {
+                "r.marks": "{80, ?, ?}"
+              },
+              "note": "r.marks[0] = 80.",
+              "out": ""
+            },
+            {
+              "line": 18,
+              "vars": {
+                "total": "80"
+              },
+              "note": "total = 80.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {
+                "i": "1",
+                "r.marks": "{80, 90, ?}"
+              },
+              "note": "i = 1. r.marks[1] = 90.",
+              "out": ""
+            },
+            {
+              "line": 18,
+              "vars": {
+                "total": "170"
+              },
+              "note": "total = 170.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {
+                "i": "2",
+                "r.marks": "{80, 90, 76}"
+              },
+              "note": "i = 2. r.marks[2] = 76.",
+              "out": ""
+            },
+            {
+              "line": 18,
+              "vars": {
+                "total": "246"
+              },
+              "note": "total = 246.",
+              "out": ""
+            },
+            {
+              "line": 20,
+              "vars": {
+                "r.average": "82"
+              },
+              "note": "246 / 3.0 = 82. Dividing by 3.0 keeps decimals.",
+              "out": ""
+            },
+            {
+              "line": 22,
+              "vars": {
+                "r.grade": "B"
+              },
+              "note": "82 is not >= 85, but it is >= 70, so the grade is B.",
+              "out": ""
+            },
+            {
+              "line": 25,
+              "vars": {},
+              "note": "Prints members of the struct in one sentence.",
+              "out": "Hina average 82 grade B\n"
+            }
+          ],
+          "types": {
+            "r.name": "string",
+            "r.marks": "int[3]",
+            "total": "int",
+            "i": "int",
+            "r.average": "double",
+            "r.grade": "char"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Read a member",
+      "when": "Input goes straight into the member.",
+      "example": "cin >> s1.marks;"
+    },
+    {
+      "way": "Print a member",
+      "when": "Output uses one member at a time.",
+      "example": "cout << s1.name << \" \" << s1.marks;"
+    },
+    {
+      "way": "Arithmetic on members",
+      "when": "Members are ordinary numbers in an expression.",
+      "example": "double total = item.price * item.qty;\nitem.qty += 2;"
+    },
+    {
+      "way": "Compare members",
+      "when": "Checking two records. There is no == for whole structs.",
+      "example": "if (a.id == b.id && a.name == b.name) { ... }"
+    },
+    {
+      "way": "Copy a struct",
+      "when": "Whole assignment is allowed.",
+      "example": "b = a;"
+    },
+    {
+      "way": "Nested struct",
+      "when": "A member is itself a struct. Use a dot for each level.",
+      "example": "s1.birth.year = 2005;"
+    },
+    {
+      "way": "Array member",
+      "when": "A fixed set of values inside a record. Dot, then index.",
+      "example": "r.marks[i]"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "if (a == b) {\n    cout << \"same\";\n}",
+      "right": "if (a.id == b.id && a.name == b.name && a.cgpa == b.cgpa) {\n    cout << \"same\";\n}",
+      "error": "g++ reports: no match for 'operator==' (operand types are 'Student' and 'Student'). Compare the members."
+    },
+    {
+      "wrong": "Student a;\ncin >> a;   // read the whole struct",
+      "right": "cin >> a.id >> a.name >> a.cgpa;",
+      "error": "g++ reports: no match for 'operator>>' (operand types are 'std::istream' and 'Student'). Read member by member."
+    },
+    {
+      "wrong": "Student a;\na.day = 5;   // day is inside birth",
+      "right": "a.birth.day = 5;",
+      "error": "g++ reports: 'struct Student' has no member named 'day' (the same message pattern for any missing member). Use one dot per level of nesting."
+    }
+  ],
+  "examTips": [
+    "Whole struct: assignment (s2 = s1) is allowed. cin, cout and == on a whole struct are NOT allowed.",
+    "To compare two records, join member comparisons with &&.",
+    "Nested structures need one dot per level: student.birth.year.",
+    "An array member is read like record.marks[i]. Remember the loop variable.",
+    "Use 3.0 (not 3) when you divide a total by a count to keep the decimals."
+  ],
+  "romanSummary": [
+    "Struct ka har member apne type ke normal variable ki tarah kaam karta hai: cin, cout, calculation aur comparison sab member par hote hain.",
+    "s2 = s1; poora struct copy kar deta hai, lekin cin >> s1, cout << s1 aur s1 == s2 direct nahi chalte.",
+    "Do structs ko compare karna ho to har member ko alag compare karo aur && se jodo.",
+    "Nested struct mein har level ke liye ek dot lagta hai: s1.birth.year.",
+    "Struct ke andar array bhi ho sakta hai: r.marks[i]."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which is NOT allowed for two variables a and b of the same struct type?",
+      "options": [
+        "if (a == b)",
+        "a = b;",
+        "a.id = b.id;",
+        "if (a.id == b.id)"
+      ],
+      "answer": "if (a == b)",
+      "hint": "One of them has no meaning for a whole struct.",
+      "explanation": "C++ has no built-in == for structs. Compare member by member. Assignment a = b is fine."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How do you read the year member of the nested Date birth inside student s1?",
+      "options": [
+        "s1.birth.year",
+        "s1.year",
+        "birth.s1.year",
+        "s1(birth).year"
+      ],
+      "answer": "s1.birth.year",
+      "hint": "One dot per level.",
+      "explanation": "Go from the outer struct to the inner one with dots."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Item {\n    string name;\n    int price;\n    int qty;\n};\n\nint main() {\n    Item pen = {\"Pen\", 30, 4};\n    int total = pen.price * pen.qty;\n    cout << pen.name << \": \" << total << endl;\n    return 0;\n}",
+      "answer": "Pen: 120",
+      "hint": "Multiply price and quantity.",
+      "explanation": "30 * 4 = 120."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Item {\n    string name;\n    int price;\n    int qty;\n};\n\nint main() {\n    Item a = {\"Copy\", 120, 2};\n    Item b = a;\n    b.qty = b.qty + 3;\n    b.price -= 20;\n    cout << a.qty * a.price << \" \" << b.qty * b.price << endl;\n    return 0;\n}",
+      "answer": "240 500",
+      "hint": "a is not changed by edits to b.",
+      "explanation": "a: 2 * 120 = 240. b: qty 5, price 100, so 500."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Date {\n    int day, month, year;\n};\n\nstruct Person {\n    string name;\n    Date born;\n};\n\nint main() {\n    Person p = {\"Zara\", {14, 8, 2004}};\n    p.born.year = p.born.year + 1;\n    cout << p.born.day << \"/\" << p.born.month << \"/\" << p.born.year << endl;\n    return 0;\n}",
+      "answer": "14/8/2005",
+      "hint": "Only the year changes.",
+      "explanation": "The year goes from 2004 to 2005, the day and month stay 14 and 8."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Find and fix the error:\n\nstruct Student { int id; string name; };\nint main() {\n    Student a = {1, \"Ali\"}, b = {1, \"Ali\"};\n    if (a == b) cout << \"same\";\n    return 0;\n}",
+      "answer": "if (a.id == b.id && a.name == b.name) cout << \"same\";",
+      "hint": "Structs cannot be compared with == directly.",
+      "explanation": "Compare the members one by one and join them with &&."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "hard",
+      "prompt": "Complete the statement so that it adds the three marks of r into total (r.marks is an int array of size 3):\n\nfor (int i = 0; i < 3; i++) {\n    total += _____;\n}",
+      "answer": "r.marks[i]",
+      "hint": "Struct name, dot, array name, index.",
+      "explanation": "An array member is reached with the dot, then the index."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Struct Student has int marks[3] and double average. Write the statement that stores the average of the three marks in s.average.",
+      "answer": "s.average = (s.marks[0] + s.marks[1] + s.marks[2]) / 3.0;",
+      "hint": "Add three marks, divide by 3.0.",
+      "explanation": "Using 3.0 avoids integer division, so the decimals are kept."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which of these works for struct variables?",
+      "options": [
+        "s2 = s1;",
+        "cout << s1;",
+        "cin >> s1;",
+        "if (s1 == s2)"
+      ],
+      "answer": "s2 = s1;",
+      "hint": "Think about assignment.",
+      "explanation": "Whole-struct assignment copies all members."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is a nested structure?",
+      "options": [
+        "A struct that has another struct as a member",
+        "A struct with no members",
+        "Two structs with the same name",
+        "A struct declared inside main only"
+      ],
+      "answer": "A struct that has another struct as a member",
+      "hint": "A struct inside a struct.",
+      "explanation": "For example a Student with a Date member."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "To check that two Student records are equal you should",
+      "options": [
+        "compare every member and join the tests with &&",
+        "write if (a == b)",
+        "print both records",
+        "use cin on both records"
+      ],
+      "answer": "compare every member and join the tests with &&",
+      "hint": "There is no built-in comparison.",
+      "explanation": "You must define what equal means by testing each member."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which expression is the second mark of student r with array member marks?",
+      "options": [
+        "r.marks[1]",
+        "r.marks[2]",
+        "r[1].marks",
+        "r.marks(1)"
+      ],
+      "answer": "r.marks[1]",
+      "hint": "Array index starts at 0.",
+      "explanation": "The second element has index 1."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Which statement about s1 == s2 for two struct variables is correct?",
+      "options": [
+        "It gives a compile error",
+        "It compares all members automatically",
+        "It compares only the first member",
+        "It compares the addresses"
+      ],
+      "answer": "It gives a compile error",
+      "hint": "C++ does not know what equal means for your type.",
+      "explanation": "There is no built-in == for structs. Compare the members."
+    }
+  ],
+  "sources": [
+    "Operations on data members",
+    "Nested structures",
+    "Structure assignment",
+    "Array inside a structure"
+  ]
+}

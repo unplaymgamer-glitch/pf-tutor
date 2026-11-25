@@ -1,0 +1,912 @@
+{
+  "slug": "returning-structures",
+  "week": 13,
+  "title": "Returning a structure from a function",
+  "defaultView": "visualize",
+  "order": 4,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match each idea to its meaning",
+      "pairs": [
+        {
+          "term": "Point add(Point a, Point b)",
+          "meaning": "A function whose return type is a structure"
+        },
+        {
+          "term": "return r;",
+          "meaning": "Sends the whole structure back; a copy lands in the caller's variable"
+        },
+        {
+          "term": "Point s = add(p, q);",
+          "meaning": "The returned structure is stored in the variable s"
+        },
+        {
+          "term": "Result evaluate(...)",
+          "meaning": "One function giving back several related values (total, average, grade)"
+        },
+        {
+          "term": "void fill(Point &r)",
+          "meaning": "The other way to hand back values: write into a reference parameter"
+        },
+        {
+          "term": "return &local;",
+          "meaning": "Dangerous: the local variable is destroyed when the function ends"
+        }
+      ]
+    },
+    {
+      "kind": "pipeline",
+      "title": "Journey of a returned structure",
+      "stages": [
+        {
+          "name": "1. Build",
+          "detail": "Inside the function we make a local structure r and fill its members."
+        },
+        {
+          "name": "2. return r;",
+          "detail": "The function ends and a COPY of r is sent back."
+        },
+        {
+          "name": "3. Cleanup",
+          "detail": "The function's own variables (including r) are destroyed."
+        },
+        {
+          "name": "4. Store",
+          "detail": "The caller stores the copy: Point s = add(p, q); now s holds the values."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can write a function that returns a structure (Student read(), Point add(Point a, Point b)), use it to return several values together, and explain why you must never return a pointer to a local variable.",
+  "warmup": "At the university fee counter you give your roll number and the clerk gives you ONE slip with your name, total fee and due date printed together. You did not need three separate pieces of paper. A function that returns a structure is that slip: one object carrying several related answers.",
+  "definition": "A function can have a structure as its return type, for example Point add(Point a, Point b). The function builds a structure (often a local variable r), and return r; sends the whole structure back. The caller receives a copy and usually stores it in its own variable: Point s = add(p, q);. This is a clean way to return several values at once, because a normal return can give back only one value but a structure can hold many members.",
+  "howItWorks": "Look at the first trace and the call stack. add has its own boxes a, b and r. When return r; runs, the three boxes are about to be destroyed, so C++ copies the values of r into the place where the result is needed: the variable s in main. That is why returning a structure BY VALUE is safe: s has its own copy. The second trace shows the pattern for several answers: evaluate calculates total, average and grade, puts them in a Result and returns it. In main, res.total, res.average and res.grade give the three answers. There is another way to give back values: pass a reference parameter and fill it, like void evaluate(int m1, int m2, int m3, Result &r). Returning is usually easier to read, because the call evaluate(80, 75, 90) can be used like a value. Filling a reference avoids the copy, which matters only for very large structures. Danger zone: never return a pointer or reference to a local variable (for example return &s; where s is a local structure). The local variable is destroyed when the function ends, so the pointer points to a dead box. g++ warns 'address of local variable returned', and using it gives garbage or a crash. Return the structure by value instead.",
+  "syntax": "struct Point { int x, y; };\n\nPoint add(Point a, Point b) {   // return type is the structure\n    Point r;                    // build the answer in a local variable\n    r.x = a.x + b.x;\n    r.y = a.y + b.y;\n    return r;                   // the whole structure goes back\n}\n\nPoint p = {2, 3}, q = {4, 1};\nPoint s = add(p, q);            // the returned structure is stored in s\ncout << s.x << \" \" << s.y;      // use the dot as usual",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write a function add that takes two Point structures and returns a new Point whose x and y are the sums.",
+      "pseudocode": [
+        "START",
+        "SET p = (2, 3), q = (4, 1)",
+        "CALL add(p, q): build r with r.x = 2+4 and r.y = 3+1",
+        "RETURN r",
+        "STORE the returned Point in s",
+        "PRINT s",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[p = 2, 3 and q = 4, 1]\n  B --> C[Call add with p and q]\n  C --> D[Build r: x and y sums]\n  D --> E[Return r]\n  E --> F[Copy into s]\n  F --> G[/Print s/]\n  G --> H([End])",
+      "sample": {
+        "id": "ret-point",
+        "title": "Point add(Point a, Point b)",
+        "code": "#include <iostream>\nusing namespace std;\n\nstruct Point {\n    int x, y;\n};\n\nPoint add(Point a, Point b) {\n    Point r;\n    r.x = a.x + b.x;\n    r.y = a.y + b.y;\n    return r;\n}\n\nint main() {\n    Point p = {2, 3};\n    Point q = {4, 1};\n    Point s = add(p, q);\n    cout << \"(\" << s.x << \", \" << s.y << \")\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "(6, 4)\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "A structure with two ints."
+          },
+          {
+            "line": 8,
+            "text": "The return type is Point, a structure. The parameters are structures passed by value."
+          },
+          {
+            "line": 9,
+            "text": "Build the answer in a local structure."
+          },
+          {
+            "line": 10,
+            "text": "Fill each member."
+          },
+          {
+            "line": 12,
+            "text": "Returns the whole structure at once: both x and y travel back together."
+          },
+          {
+            "line": 18,
+            "text": "The returned structure is copied into s. add(p, q) can be used wherever a Point is needed."
+          },
+          {
+            "line": 19,
+            "text": "Print with the dot: s.x and s.y."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 15,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 16,
+              "vars": {
+                "p": "(2, 3)",
+                "q": "(4, 1)"
+              },
+              "note": "main creates two Point variables p and q.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "(2, 3)",
+                    "q": "(4, 1)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 18,
+              "vars": {
+                "a": "(2, 3)",
+                "b": "(4, 1)"
+              },
+              "note": "The call add(p, q) passes COPIES of p and q into the parameters a and b. The result of the call will be a Point that is stored into s.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "(2, 3)",
+                    "q": "(4, 1)"
+                  }
+                },
+                {
+                  "fn": "add(a, b)",
+                  "vars": {
+                    "a": "(2, 3)",
+                    "b": "(4, 1)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {
+                "r": "(?, ?)"
+              },
+              "note": "Inside add we build a new local structure r. It is empty for now.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "(2, 3)",
+                    "q": "(4, 1)"
+                  }
+                },
+                {
+                  "fn": "add(a, b)",
+                  "vars": {
+                    "a": "(2, 3)",
+                    "b": "(4, 1)",
+                    "r": "(?, ?)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {
+                "r": "(6, ?)"
+              },
+              "note": "r.x = 2 + 4 = 6.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "(2, 3)",
+                    "q": "(4, 1)"
+                  }
+                },
+                {
+                  "fn": "add(a, b)",
+                  "vars": {
+                    "a": "(2, 3)",
+                    "b": "(4, 1)",
+                    "r": "(6, ?)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {
+                "r": "(6, 4)"
+              },
+              "note": "r.y = 3 + 1 = 4. The new Point is complete.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "(2, 3)",
+                    "q": "(4, 1)"
+                  }
+                },
+                {
+                  "fn": "add(a, b)",
+                  "vars": {
+                    "a": "(2, 3)",
+                    "b": "(4, 1)",
+                    "r": "(6, 4)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "The whole structure r is returned: a COPY of r travels back to main. Then add ends and a, b and r are destroyed.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "(2, 3)",
+                    "q": "(4, 1)"
+                  }
+                },
+                {
+                  "fn": "add(a, b)",
+                  "vars": {
+                    "a": "(2, 3)",
+                    "b": "(4, 1)",
+                    "r": "(6, 4)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 18,
+              "vars": {
+                "s": "(6, 4)"
+              },
+              "note": "The returned copy is stored in s. s is now (6, 4). The local r is gone, but s has its own copy of the values.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "(2, 3)",
+                    "q": "(4, 1)",
+                    "s": "(6, 4)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "main prints the members of s.",
+              "out": "(6, 4)\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "(2, 3)",
+                    "q": "(4, 1)",
+                    "s": "(6, 4)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "The program ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "(2, 3)",
+                    "q": "(4, 1)",
+                    "s": "(6, 4)"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "p": "Point",
+            "q": "Point",
+            "s": "Point",
+            "a": "Point",
+            "b": "Point",
+            "r": "Point"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Write a function readStudent that reads a name and marks and RETURNS a Student. Use it for two students and say who is ahead.",
+      "pseudocode": [
+        "START",
+        "CALL readStudent for a",
+        "CALL readStudent for b",
+        "PRINT a and b",
+        "IF a.marks > b.marks PRINT a.name ELSE PRINT b.name",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[a = readStudent]\n  B --> C[b = readStudent]\n  C --> D[/Print a and b/]\n  D --> E{a.marks > b.marks?}\n  E -- Yes --> F[/Print a.name is ahead/]\n  E -- No --> G[/Print b.name is ahead/]\n  F --> H([End])\n  G --> H",
+      "sample": {
+        "id": "ret-read",
+        "title": "Student readStudent(): a function that reads and returns a record",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    string name;\n    int marks;\n};\n\nStudent readStudent() {\n    Student s;\n    cout << \"Enter name and marks: \";\n    cin >> s.name >> s.marks;\n    return s;\n}\n\nvoid print(const Student &s) {\n    cout << s.name << \" scored \" << s.marks << endl;\n}\n\nint main() {\n    Student a = readStudent();\n    Student b = readStudent();\n    print(a);\n    print(b);\n    if (a.marks > b.marks)\n        cout << a.name << \" is ahead\" << endl;\n    else\n        cout << b.name << \" is ahead\" << endl;\n    return 0;\n}\n",
+        "stdin": "Ali 60\nSara 75\n",
+        "graphics": false,
+        "expectedOutput": "Enter name and marks: Enter name and marks: Ali scored 60\nSara scored 75\nSara is ahead\n",
+        "explanation": [
+          {
+            "line": 10,
+            "text": "No parameters. It returns a complete Student."
+          },
+          {
+            "line": 11,
+            "text": "A local structure to fill."
+          },
+          {
+            "line": 13,
+            "text": "Read the members one by one."
+          },
+          {
+            "line": 14,
+            "text": "Hand the finished structure back to the caller."
+          },
+          {
+            "line": 22,
+            "text": "The returned structure is copied into a."
+          },
+          {
+            "line": 23,
+            "text": "Same function, second student: each call builds a new structure."
+          },
+          {
+            "line": 26,
+            "text": "Compare members of the two returned structures."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "A function must give back the total, the average and the grade of three subjects. Show how a structure lets one function return all three, and trace the exact output.",
+      "pseudocode": [
+        "START",
+        "CALL evaluate(80, 75, 90)",
+        "total = 245",
+        "average = 245 / 3.0 = 81.6667",
+        "grade: 81.6667 is not >= 85 but is >= 70, so B",
+        "RETURN the whole structure",
+        "STORE in res and PRINT its members",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Call evaluate]\n  B --> C[total = sum of marks]\n  C --> D[average = total / 3.0]\n  D --> E{Grade ladder}\n  E --> F[Return r]\n  F --> G[/Print total, average, grade/]\n  G --> H([End])",
+      "sample": {
+        "id": "ret-result",
+        "title": "Returning several values in one structure",
+        "code": "#include <iostream>\nusing namespace std;\n\nstruct Result {\n    int total;\n    double average;\n    char grade;\n};\n\nResult evaluate(int m1, int m2, int m3) {\n    Result r;\n    r.total = m1 + m2 + m3;\n    r.average = r.total / 3.0;\n    if (r.average >= 85) r.grade = 'A';\n    else if (r.average >= 70) r.grade = 'B';\n    else if (r.average >= 50) r.grade = 'C';\n    else r.grade = 'F';\n    return r;\n}\n\nint main() {\n    Result res = evaluate(80, 75, 90);\n    cout << \"Total: \" << res.total << \", Average: \" << res.average\n         << \", Grade: \" << res.grade << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Total: 245, Average: 81.6667, Grade: B\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "One structure holds three related answers."
+          },
+          {
+            "line": 10,
+            "text": "The function gives back a Result: three answers from one function."
+          },
+          {
+            "line": 12,
+            "text": "The total of the three marks."
+          },
+          {
+            "line": 13,
+            "text": "3.0 forces a decimal result."
+          },
+          {
+            "line": 14,
+            "text": "The grade ladder: A, B, C, else F."
+          },
+          {
+            "line": 18,
+            "text": "Return the whole structure."
+          },
+          {
+            "line": 22,
+            "text": "Store the returned structure in a variable."
+          },
+          {
+            "line": 23,
+            "text": "Use res.total, res.average and res.grade."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 21,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 22,
+              "vars": {
+                "m1": "80",
+                "m2": "75",
+                "m3": "90"
+              },
+              "note": "main calls evaluate(80, 75, 90). The three marks are copied into m1, m2, m3.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "evaluate(m1, m2, m3)",
+                  "vars": {
+                    "m1": "80",
+                    "m2": "75",
+                    "m3": "90"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "evaluate builds a local Result r with three members: total, average, grade.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "evaluate(m1, m2, m3)",
+                  "vars": {
+                    "m1": "80",
+                    "m2": "75",
+                    "m3": "90",
+                    "r.total": "?",
+                    "r.average": "?",
+                    "r.grade": "?"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {
+                "r.total": "245"
+              },
+              "note": "r.total = 80 + 75 + 90 = 245.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "evaluate(m1, m2, m3)",
+                  "vars": {
+                    "m1": "80",
+                    "m2": "75",
+                    "m3": "90",
+                    "r.total": "245"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {
+                "r.average": "81.6667"
+              },
+              "note": "245 / 3.0 = 81.6667 (3.0 makes the division a decimal division).",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "evaluate(m1, m2, m3)",
+                  "vars": {
+                    "m1": "80",
+                    "m2": "75",
+                    "m3": "90",
+                    "r.total": "245",
+                    "r.average": "81.6667"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "81.6667 >= 85 is false, so we go to the next test.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "evaluate(m1, m2, m3)",
+                  "vars": {
+                    "m1": "80",
+                    "m2": "75",
+                    "m3": "90",
+                    "r.total": "245",
+                    "r.average": "81.6667"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {
+                "r.grade": "'B'"
+              },
+              "note": "81.6667 >= 70 is true, so grade is B.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "evaluate(m1, m2, m3)",
+                  "vars": {
+                    "m1": "80",
+                    "m2": "75",
+                    "m3": "90",
+                    "r.total": "245",
+                    "r.average": "81.6667",
+                    "r.grade": "'B'"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "The whole structure (three values) is returned in one go. A copy goes back to main and evaluate's variables are destroyed.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "evaluate(m1, m2, m3)",
+                  "vars": {
+                    "m1": "80",
+                    "m2": "75",
+                    "m3": "90",
+                    "r.total": "245",
+                    "r.average": "81.6667",
+                    "r.grade": "'B'"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 22,
+              "vars": {
+                "res.total": "245",
+                "res.average": "81.6667",
+                "res.grade": "'B'"
+              },
+              "note": "The returned copy is stored in res. Now main has all three results together.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "res.total": "245",
+                    "res.average": "81.6667",
+                    "res.grade": "'B'"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 23,
+              "vars": {},
+              "note": "main prints the three members of res.",
+              "out": "Total: 245, Average: 81.6667, Grade: B\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "res.total": "245",
+                    "res.average": "81.6667",
+                    "res.grade": "'B'"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 25,
+              "vars": {},
+              "note": "The program ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "res.total": "245",
+                    "res.average": "81.6667",
+                    "res.grade": "'B'"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "m1": "int",
+            "m2": "int",
+            "m3": "int",
+            "r.total": "int",
+            "r.average": "double",
+            "r.grade": "char",
+            "res.total": "int",
+            "res.average": "double",
+            "res.grade": "char"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Return a structure by value: Point add(Point a, Point b)",
+      "when": "The normal choice. The function builds a result and gives it back.",
+      "example": "Point s = add(p, q);"
+    },
+    {
+      "way": "Function that reads and returns: Student readStudent()",
+      "when": "You want a function that creates a filled record from keyboard input.",
+      "example": "Student a = readStudent();"
+    },
+    {
+      "way": "Return a structure with several results",
+      "when": "You need total, average and grade together.",
+      "example": "Result res = evaluate(80, 75, 90);\ncout << res.total << res.grade;"
+    },
+    {
+      "way": "Fill a reference parameter: void evaluate(int m1, int m2, int m3, Result &r)",
+      "when": "You want to avoid copying a big structure, or the function already returns something else.",
+      "example": "Result res;\nevaluate(80, 75, 90, res);"
+    },
+    {
+      "way": "Return a pointer to a local (do NOT do this)",
+      "when": "Never: the local variable dies when the function ends.",
+      "example": "Student* make() { Student s = {\"A\", 1}; return &s; }  // wrong"
+    },
+    {
+      "way": "Use the returned value directly",
+      "when": "You need only one member right now.",
+      "example": "cout << add(p, q).x;"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "Point add(Point a, Point b) {\n    return a.x + b.x;\n}",
+      "right": "Point add(Point a, Point b) {\n    Point r;\n    r.x = a.x + b.x;\n    r.y = a.y + b.y;\n    return r;\n}",
+      "error": "error: could not convert '(a.Point::x + b.Point::x)' from 'int' to 'Point'"
+    },
+    {
+      "wrong": "int s = add(p, q);",
+      "right": "Point s = add(p, q);",
+      "error": "error: cannot convert 'Point' to 'int' in initialization"
+    },
+    {
+      "wrong": "cout << add(p, q);",
+      "right": "Point s = add(p, q);\ncout << s.x << \" \" << s.y;",
+      "error": "error: no match for 'operator<<' (operand types are 'std::ostream' {aka 'std::basic_ostream<char>'} and 'Point')"
+    },
+    {
+      "wrong": "Student* make() {\n    Student s = {\"A\", 1};\n    return &s;\n}",
+      "right": "Student make() {\n    Student s = {\"A\", 1};\n    return s;\n}",
+      "error": "warning: address of local variable 's' returned (only a warning, but the pointer points to a destroyed variable: using it gives garbage or a crash)"
+    },
+    {
+      "wrong": "Point add(Point a, Point b) {\n    Point r;\n    r.x = a.x + b.x;\n    r.y = a.y + b.y;\n}    // return r; forgotten",
+      "right": "... return r;",
+      "error": "The compiler may only warn about a missing return. The function then returns garbage, so the answer is wrong. Always end with return r;."
+    }
+  ],
+  "examTips": [
+    "When a function must give back several related values, return a structure (or fill reference parameters). Mention both ways and say which one you used.",
+    "The return type is the structure name: Result evaluate(...), not void and not int.",
+    "Store the returned structure in a variable of the same type: Result res = evaluate(...). You cannot cout a whole structure; print its members.",
+    "In a trace, show the local r being copied into the caller's variable before the function's boxes disappear.",
+    "Never return a pointer or reference to a local variable. Say why: the variable is destroyed when the function ends."
+  ],
+  "romanSummary": [
+    "Function poora structure return kar sakta hai: Point add(Point a, Point b). Return type mein structure ka naam likhte hain.",
+    "Function ke andar local structure r bana kar members fill karte hain aur return r; likhte hain.",
+    "Caller ko copy milti hai: Point s = add(p, q); is liye ek saath kai related values (total, average, grade) wapas aa jati hain.",
+    "Dusra tareeqa reference parameter hai: void evaluate(..., Result &r), jis mein function jawab bhar deta hai.",
+    "Local variable ka pointer kabhi return na karein, kyun ke function khatam hote hi wo variable destroy ho jata hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is the return type of a function that returns a Point structure?",
+      "options": [
+        "Point",
+        "int",
+        "void",
+        "struct"
+      ],
+      "answer": "Point",
+      "hint": "Use the structure name.",
+      "explanation": "The return type is the structure type itself, for example Point add(Point a, Point b)."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nstruct P { int x, y; };\nP make(int a, int b) {\n    P r;\n    r.x = a;\n    r.y = b;\n    return r;\n}\nint main() {\n    P p = make(3, 7);\n    cout << p.x << \" \" << p.y;\n    return 0;\n}",
+      "answer": "3 7",
+      "hint": "make fills x and y and returns them.",
+      "explanation": "make(3, 7) builds a P with x = 3 and y = 7 and the caller stores it in p."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nstruct P { int x, y; };\nP add(P a, P b) {\n    P r;\n    r.x = a.x + b.x;\n    r.y = a.y + b.y;\n    return r;\n}\nint main() {\n    P p = {1, 2};\n    P q = {10, 20};\n    p = add(p, q);\n    cout << p.x << \" \" << p.y;\n    return 0;\n}",
+      "answer": "11 22",
+      "hint": "The result is stored back into p.",
+      "explanation": "add gives (11, 22) and p = add(p, q) overwrites p with it."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "The function should return the sum as a Point but does not compile. Fix it.\n\nPoint add(Point a, Point b) {\n    return a.x + b.x;\n}",
+      "answer": "Point add(Point a, Point b) {\n    Point r;\n    r.x = a.x + b.x;\n    r.y = a.y + b.y;\n    return r;\n}",
+      "hint": "The return type is Point, so you must return a Point.",
+      "explanation": "An int cannot become a Point. Build a Point r, fill both members and return r."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank to store the returned structure.\n\n____ res = evaluate(80, 75, 90);",
+      "answer": "Result",
+      "hint": "The variable must have the function's return type.",
+      "explanation": "evaluate returns a Result, so res must be a Result."
+    },
+    {
+      "id": "p6",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a struct Rect with double width and double height, and a function makeRect(double w, double h) that returns a Rect with those values.",
+      "answer": "struct Rect {\n    double width;\n    double height;\n};\n\nRect makeRect(double w, double h) {\n    Rect r;\n    r.width = w;\n    r.height = h;\n    return r;\n}",
+      "hint": "Build a local Rect, fill it, return it.",
+      "explanation": "The return type is Rect. The function fills the members of a local Rect and returns it."
+    },
+    {
+      "id": "p7",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nstruct R { int total; char grade; };\nR check(int a, int b) {\n    R r;\n    r.total = a + b;\n    if (r.total >= 100) r.grade = 'P';\n    else r.grade = 'F';\n    return r;\n}\nint main() {\n    R x = check(60, 50);\n    R y = check(30, 40);\n    cout << x.total << x.grade << \" \" << y.total << y.grade;\n    return 0;\n}",
+      "answer": "110P 70F",
+      "hint": "Each call builds its own structure.",
+      "explanation": "check(60, 50): total 110, grade P. check(30, 40): total 70, grade F."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Why return a structure from a function?",
+      "options": [
+        "To give back several related values together",
+        "Because return cannot give a number",
+        "To avoid writing main",
+        "To make the program faster always"
+      ],
+      "answer": "To give back several related values together",
+      "hint": "One slip, many items.",
+      "explanation": "A structure holds many members, so one return can carry several results."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How do you store the result of Result evaluate(int, int, int)?",
+      "options": [
+        "Result res = evaluate(80, 75, 90);",
+        "int res = evaluate(80, 75, 90);",
+        "evaluate(80, 75, 90) = res;",
+        "Result = evaluate(80, 75, 90);"
+      ],
+      "answer": "Result res = evaluate(80, 75, 90);",
+      "hint": "Same type on the left.",
+      "explanation": "The variable must be of the structure type that the function returns."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What does the caller receive when the function runs return r; with a local structure r?",
+      "options": [
+        "A copy of r",
+        "r itself, which stays alive",
+        "Only the first member",
+        "Nothing"
+      ],
+      "answer": "A copy of r",
+      "hint": "r is destroyed afterwards.",
+      "explanation": "The values are copied to the caller, then the local r is destroyed."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which is another way to get several values out of a function?",
+      "options": [
+        "Reference parameters such as Result &r",
+        "Several return statements",
+        "The goto statement",
+        "A bigger main"
+      ],
+      "answer": "Reference parameters such as Result &r",
+      "hint": "Weeks 7 idea.",
+      "explanation": "The function can write its answers into reference parameters."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Why is Student* make() { Student s = {\"A\", 1}; return &s; } wrong?",
+      "options": [
+        "s is destroyed when the function ends, so the pointer is invalid",
+        "Pointers cannot be returned ever",
+        "Student has no members",
+        "return needs two values"
+      ],
+      "answer": "s is destroyed when the function ends, so the pointer is invalid",
+      "hint": "Where does s live?",
+      "explanation": "A local variable dies at the end of the function, leaving a dangling pointer."
+    }
+  ],
+  "sources": [
+    "Returning a structure from a function",
+    "Returning several values with a structure",
+    "Returning vs filling a reference parameter"
+  ]
+}

@@ -1,0 +1,464 @@
+{
+  "slug": "programming-languages",
+  "week": 1,
+  "title": "Programming and programming languages",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match each language level to its description",
+      "pairs": [
+        {
+          "term": "Machine language",
+          "meaning": "Only 0s and 1s, the CPU understands it directly"
+        },
+        {
+          "term": "Assembly language",
+          "meaning": "Short codes like MOV and ADD instead of binary"
+        },
+        {
+          "term": "Middle level (C, C++)",
+          "meaning": "Readable code plus control over memory and hardware"
+        },
+        {
+          "term": "High level (Python, Java)",
+          "meaning": "Close to human language and machine-independent"
+        }
+      ]
+    },
+    {
+      "kind": "pipeline",
+      "title": "From the machine up to the human",
+      "stages": [
+        {
+          "name": "Machine language",
+          "detail": "0s and 1s. Fastest, hardest to write, different for each machine."
+        },
+        {
+          "name": "Assembly language",
+          "detail": "Short codes (mnemonics) like MOV and ADD. Fast but still hard and machine-dependent."
+        },
+        {
+          "name": "Middle level: C, C++",
+          "detail": "High-level features such as functions, plus low-level access to memory. Powerful and fast, but needs care."
+        },
+        {
+          "name": "High level: Python, Java, C#",
+          "detail": "Easy to read and write, machine-independent, but usually slower."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can explain what programming is, name the levels of programming languages with examples, and give reasons why C++ is called a middle-level language.",
+  "warmup": "A recipe tells a cook what to do: ingredients (input), steps (processing) and the final dish (output). If a step is missing or in the wrong order, the dish fails. A program is a recipe for a computer. But a computer is like a cook who cannot think: it does exactly what the recipe says, even if the recipe is wrong.",
+  "definition": "A computer follows instructions very fast but cannot think on its own. A program is a complete set of step-by-step instructions. Programming is the activity of writing those instructions, and the person who does it is a programmer. A programming language is a formal language with fixed rules (syntax) used to write the instructions. Languages are grouped by how close they are to the hardware (low level) or to humans (high level).",
+  "howItWorks": "Almost every program follows the IPO model: Input (data given), Processing (calculation or decisions), Output (result shown). Languages come in levels. Low-level languages are close to the machine: machine language (only 0s and 1s) and assembly (short codes like MOV, ADD). They are fast but hard to write and work only on one kind of machine. High-level languages like Python, Java and C# look like English and run on many machines, but are usually slower. C and C++ are called middle level because they have high-level features (functions, classes, readable syntax) and also low-level features such as pointers and direct memory control. Levels exist because humans find words easy and machines find 0s and 1s easy, so we choose between ease and control. A translator (next lesson) converts our code into machine language. Many books simply call C++ high level; both answers appear in exams, so remember the reason behind each.",
+  "syntax": "// Same idea at different levels (the first two lines are examples, not C++)\n// Machine language : 10110000 01100001      (binary, hard for humans)\n// Assembly         : MOV AL, 61h            (short code, still hard)\n// C++ (middle)     : int sum = a + 3;       (readable)\n//                    cout << sum;\n// Python (high)    : print(a + 3)           (even shorter)",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Add two numbers, 5 and 3, and show the sum. Notice how readable a middle/high-level language is.",
+      "pseudocode": [
+        "START",
+        "SET a = 5, b = 3",
+        "sum = a + b",
+        "DISPLAY sum",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Set a = 5, b = 3/]\n  B --> C[sum = a + b]\n  C --> D[/Display sum/]\n  D --> E([End])",
+      "sample": {
+        "id": "lang-add-two",
+        "title": "Add two numbers",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a = 5;\n    int b = 3;\n    int sum = a + b;\n    cout << \"Sum = \" << sum << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Sum = 8\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A named box a holds 5. In machine language you would have to use memory addresses and binary instead of a name like a."
+          },
+          {
+            "line": 6,
+            "text": "A named box b holds 3."
+          },
+          {
+            "line": 7,
+            "text": "One readable line. In assembly this would need several instructions (load, add, store)."
+          },
+          {
+            "line": 8,
+            "text": "Print the result with a label."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "Start of main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "a": "5"
+              },
+              "note": "a gets 5.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "b": "3"
+              },
+              "note": "b gets 3.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "sum": "8"
+              },
+              "note": "5 + 3 = 8.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Print the label and the sum.",
+              "out": "Sum = 8\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "End of the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "a": "int",
+            "b": "int",
+            "sum": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read the length and width of a rectangular room and print its area. (Test with 5 and 4.)",
+      "pseudocode": [
+        "START",
+        "INPUT length, width",
+        "area = length * width",
+        "DISPLAY area",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Input length, width/]\n  B --> C[area = length * width]\n  C --> D[/Display area/]\n  D --> E([End])",
+      "sample": {
+        "id": "lang-rectangle-area",
+        "title": "Area of a rectangle",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    double length, width;\n    cout << \"Enter length and width: \";\n    cin >> length >> width;\n    double area = length * width;\n    cout << \"Area = \" << area << endl;\n    return 0;\n}\n",
+        "stdin": "5 4\n",
+        "expectedOutput": "Enter length and width: Area = 20\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Two boxes that can hold decimal numbers."
+          },
+          {
+            "line": 6,
+            "text": "Prompt for the user."
+          },
+          {
+            "line": 7,
+            "text": "Read both numbers: 5 goes to length, 4 goes to width."
+          },
+          {
+            "line": 8,
+            "text": "Processing: multiply."
+          },
+          {
+            "line": 9,
+            "text": "Output the area."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Total bill for items: read the price of one item and the quantity, then print the total bill. (Test with 50 and 3.)",
+      "pseudocode": [
+        "START",
+        "INPUT price, qty",
+        "total = price * qty",
+        "DISPLAY total",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Input price, qty/]\n  B --> C[total = price * qty]\n  C --> D[/Display total/]\n  D --> E([End])",
+      "sample": {
+        "id": "lang-total-bill",
+        "title": "Total bill",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int price, qty;\n    cout << \"Enter price and quantity: \";\n    cin >> price >> qty;\n    int total = price * qty;\n    cout << \"Total bill = Rs \" << total << endl;\n    return 0;\n}\n",
+        "stdin": "50 3\n",
+        "expectedOutput": "Enter price and quantity: Total bill = Rs 150\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Input values: price and quantity."
+          },
+          {
+            "line": 7,
+            "text": "cin >> reads two numbers, 50 for price and 3 for qty."
+          },
+          {
+            "line": 8,
+            "text": "Processing: 50 * 3 = 150."
+          },
+          {
+            "line": 9,
+            "text": "Output: the total bill with Rs."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Machine language",
+      "when": "Low level, only 0s and 1s",
+      "example": "10110000 01100001"
+    },
+    {
+      "way": "Assembly language",
+      "when": "Low level, short codes called mnemonics",
+      "example": "MOV AL, 61h   or   ADD A, B"
+    },
+    {
+      "way": "C and C++",
+      "when": "Middle level: readable but with memory control (pointers)",
+      "example": "int sum = a + b;"
+    },
+    {
+      "way": "Python, Java, C#, BASIC",
+      "when": "High level: easy, machine-independent, usually slower",
+      "example": "print(a + b)"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "print(\"Hi\");",
+      "right": "cout << \"Hi\";",
+      "error": "'print' was not declared in this scope (print is Python, C++ uses cout)"
+    },
+    {
+      "wrong": "x = 5;",
+      "right": "int x = 5;",
+      "error": "'x' was not declared in this scope"
+    },
+    {
+      "wrong": "cout << \"Hi\"\nreturn 0;",
+      "right": "cout << \"Hi\";\nreturn 0;",
+      "error": "expected ';' before 'return'"
+    },
+    {
+      "wrong": "Saying: Assembly is easy to read, or C++ is only low level",
+      "right": "Assembly is low level and hard to read. C++ is middle level (many books say high level).",
+      "error": "Not a compiler error. This is a common wrong exam answer."
+    }
+  ],
+  "examTips": [
+    "Define: program, programming, programmer, programming language.",
+    "Every program follows IPO: Input, Processing, Output.",
+    "Low level: machine language and assembly. Middle level: C and C++. High level: Python, Java, C#, BASIC.",
+    "Why C++ is middle level: it has high-level features (functions, classes) and low-level features (pointers, memory control).",
+    "Low level = fast, hard, machine-dependent. High level = easy, machine-independent, slower."
+  ],
+  "romanSummary": [
+    "Program instructions ka set hai jo computer ko step-by-step batata hai. Computer khud nahi sochta.",
+    "Har program Input, Processing, Output (IPO) follow karta hai.",
+    "Low level language (machine, assembly) machine ke qareeb hoti hai: fast lekin mushkil aur machine-dependent.",
+    "High level language (Python, Java) insaan ke qareeb hai: asaan lekin thori slow. C/C++ middle level hain."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does IPO stand for?",
+      "options": [
+        "Input, Processing, Output",
+        "Instruction, Program, Output",
+        "Input, Program, Operation",
+        "Internal, Process, Output"
+      ],
+      "answer": "Input, Processing, Output",
+      "hint": "Data in, work done, result out.",
+      "explanation": "IPO is the model almost every program follows."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which language uses only 0s and 1s?",
+      "options": [
+        "Assembly",
+        "Machine language",
+        "Python",
+        "C++"
+      ],
+      "answer": "Machine language",
+      "hint": "The CPU understands it directly.",
+      "explanation": "Machine language is binary. Assembly uses short codes like MOV and ADD."
+    },
+    {
+      "id": "p3",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank: Python and Java are ______ level languages.",
+      "answer": "high",
+      "hint": "They look close to human language.",
+      "explanation": "High-level languages are easy to read and machine-independent."
+    },
+    {
+      "id": "p4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Why is C++ called a middle-level language?",
+      "options": [
+        "It has high-level features and also low-level memory control",
+        "It only has 0s and 1s",
+        "It cannot be translated",
+        "It is slower than Python"
+      ],
+      "answer": "It has high-level features and also low-level memory control",
+      "hint": "Think functions and pointers.",
+      "explanation": "C++ combines readable features (functions, classes) with low-level control (pointers)."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    int price = 50, qty = 3;\n    cout << \"Total = \" << price * qty;\n    return 0;\n}",
+      "answer": "Total = 150",
+      "hint": "Multiply 50 and 3.",
+      "explanation": "cout prints the label, then the value 150. No endl, so no new line."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Fix the bug (this is a Python habit):\n\nprint(\"Hello\");",
+      "answer": "cout << \"Hello\";",
+      "hint": "C++ uses a different output tool.",
+      "explanation": "In C++ you print with cout and <<. print is not the C++ way."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that stores the number 5 in a, the number 3 in b, and prints a * b.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int a = 5;\n    int b = 3;\n    cout << a * b << endl;\n    return 0;\n}",
+      "hint": "Declare two int boxes, then multiply.",
+      "explanation": "5 * 3 = 15 is printed."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which is a disadvantage of low-level languages?",
+      "options": [
+        "Slow to run",
+        "Hard to write and machine-dependent",
+        "Cannot be used on computers",
+        "Too close to English"
+      ],
+      "answer": "Hard to write and machine-dependent",
+      "hint": "They are close to the machine, not to humans.",
+      "explanation": "Low level gives speed but is hard to write and works only on one kind of machine."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "A person who writes programs is called a:",
+      "options": [
+        "Programmer",
+        "Compiler",
+        "Assembler",
+        "Debugger"
+      ],
+      "answer": "Programmer",
+      "hint": "Programming is the activity, this is the person.",
+      "explanation": "A programmer writes instructions for the computer."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which of these is an example of a high-level language?",
+      "options": [
+        "Machine language",
+        "Assembly",
+        "Python",
+        "Binary"
+      ],
+      "answer": "Python",
+      "hint": "It reads almost like English.",
+      "explanation": "Python, Java, C# and BASIC are high level."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "MOV AL, 61h is an example of:",
+      "options": [
+        "Assembly language",
+        "C++",
+        "Python",
+        "Java"
+      ],
+      "answer": "Assembly language",
+      "hint": "Short codes called mnemonics.",
+      "explanation": "MOV and ADD are mnemonics used in assembly."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is one advantage of high-level languages?",
+      "options": [
+        "Easy to learn and read",
+        "Always the fastest",
+        "Only run on one machine",
+        "Written in 0s and 1s"
+      ],
+      "answer": "Easy to learn and read",
+      "hint": "They are close to human language.",
+      "explanation": "High level is easy to read and machine-independent, though usually slower."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Which feature makes C++ close to the machine?",
+      "options": [
+        "Pointers and memory control",
+        "cout",
+        "Comments",
+        "Semicolons"
+      ],
+      "answer": "Pointers and memory control",
+      "hint": "Direct memory handling is a low-level feature.",
+      "explanation": "Pointers and direct memory management give C++ its low-level side."
+    }
+  ],
+  "sources": [
+    "What is Programming?",
+    "Programming Languages and Their Levels",
+    "Input, Processing, Output (IPO)",
+    "Low, middle and high-level languages"
+  ]
+}

@@ -1,0 +1,648 @@
+{
+  "slug": "while-loop",
+  "week": 3,
+  "title": "The while loop: repeating while a condition is true",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "How while (condition) { ... } runs",
+      "stages": [
+        {
+          "name": "1. Check the condition FIRST",
+          "detail": "The computer asks: is the condition true right now? This happens before the body, every single time."
+        },
+        {
+          "name": "2. If false: leave",
+          "detail": "If it is false at the very first check, the body never runs (zero iterations). The program jumps past the loop."
+        },
+        {
+          "name": "3. If true: run the body",
+          "detail": "All statements inside { } run once."
+        },
+        {
+          "name": "4. Update inside the body",
+          "detail": "Something in the body MUST move the loop toward false: i++, num /= 10, or reading a new input. If not, the loop never ends."
+        },
+        {
+          "name": "5. Back to step 1",
+          "detail": "After the body, go back and check the condition again with the new values."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each digit-loop step with what it does",
+      "pairs": [
+        {
+          "term": "num % 10",
+          "meaning": "Takes the last digit of num (4825 % 10 = 5)."
+        },
+        {
+          "term": "num /= 10",
+          "meaning": "Removes the last digit (4825 becomes 482)."
+        },
+        {
+          "term": "while (num > 0)",
+          "meaning": "Keeps going while digits are left. Stops when num becomes 0."
+        },
+        {
+          "term": "sum += digit",
+          "meaning": "Adds the digit to the running total."
+        },
+        {
+          "term": "sentinel (-1)",
+          "meaning": "A special typed value that tells the loop to stop reading."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can write a while loop when you do not know in advance how many times to repeat, read input until a stop value, work with digits of a number, and spot an infinite loop.",
+  "warmup": "A cashier at the canteen keeps taking items from your tray until the tray is empty. She does not know in advance whether you bought two items or ten. She just asks the same question again and again: 'Is there anything left on the tray?' While the answer is yes, she scans one more item. Another example: you keep adding mobile load until your balance reaches Rs 100. The number of rounds depends on the data, not on a fixed count.",
+  "definition": "A while loop repeats its body as long as its condition is true. The condition is checked BEFORE every round, so the loop is called a pre-test (entry-controlled) loop, and the body can run zero times. Use while when the number of repetitions is not known in advance and depends on data, such as input from the user or the digits left in a number.",
+  "howItWorks": "Follow the pipeline. The check comes first. If the condition is true the body runs, then the program checks again. Unlike a for loop, a while loop has no built-in update. You must put the initialisation BEFORE the loop (int i = 1;) and the update INSIDE the body (i++). If you forget the update the condition never becomes false and the loop runs forever. This is an infinite loop. In a console, press Ctrl + C to stop it. Two classic uses: (1) a sentinel loop: read a number, and keep processing until the user types a special value like -1 (the sentinel). Read once before the loop and read again at the end of the body. (2) digits: num % 10 gives the last digit and num /= 10 removes it, so while (num > 0) visits every digit.",
+  "syntax": "initialisation;            // before the loop\nwhile (condition) {\n    // body\n    update;               // must move toward a false condition\n}\n// no semicolon after while (condition) here\n\n// sentinel loop:\n//   cin >> x;\n//   while (x != -1) { ...use x...; cin >> x; }",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Print the numbers 1 to 5, each on its own line, using a while loop. Then print Done.",
+      "pseudocode": [
+        "START",
+        "i = 1",
+        "WHILE i <= 5:",
+        "    PRINT i",
+        "    i = i + 1",
+        "PRINT Done",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[i = 1]\n  B --> C{i <= 5?}\n  C -->|Yes| D[/Print i/]\n  D --> E[i = i + 1]\n  E --> C\n  C -->|No| F[/Print Done/]\n  F --> G([End])",
+      "sample": {
+        "id": "while-1-to-5",
+        "title": "Count 1 to 5 with while",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int i = 1;\n    while (i <= 5) {\n        cout << i << endl;\n        i++;\n    }\n    cout << \"Done\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "1\n2\n3\n4\n5\nDone\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Initialisation: i starts at 1. It is written before the loop, not inside it."
+          },
+          {
+            "line": 6,
+            "text": "The condition is checked before every round. While i <= 5 is true, the body runs."
+          },
+          {
+            "line": 7,
+            "text": "Prints the current value of i."
+          },
+          {
+            "line": 8,
+            "text": "The update. Without this line the loop would print 1 forever."
+          },
+          {
+            "line": 10,
+            "text": "Runs once, after the loop has ended."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "i": "1"
+              },
+              "note": "i is created and set to 1.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Condition 1 <= 5 is true. Print 1.",
+              "out": "1\n"
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "2"
+              },
+              "note": "i++ makes i = 2.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Condition 2 <= 5 is true. Print 2.",
+              "out": "2\n"
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "3"
+              },
+              "note": "i++ makes i = 3.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Condition 3 <= 5 is true. Print 3.",
+              "out": "3\n"
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "4"
+              },
+              "note": "i++ makes i = 4.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Condition 4 <= 5 is true. Print 4.",
+              "out": "4\n"
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "5"
+              },
+              "note": "i++ makes i = 5.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Condition 5 <= 5 is true. Print 5.",
+              "out": "5\n"
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "6"
+              },
+              "note": "i++ makes i = 6.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "Check 6 <= 5: false. The loop ends.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Prints Done.",
+              "out": "Done\n"
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "i": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read marks until the user types -1. Then print the average of the marks entered (if at least one mark was entered).",
+      "pseudocode": [
+        "START",
+        "total = 0, count = 0",
+        "READ marks",
+        "WHILE marks != -1:",
+        "    total = total + marks",
+        "    count = count + 1",
+        "    READ marks",
+        "IF count > 0 THEN PRINT total / count",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"total = 0, count = 0\"]\n  B --> C[/Read marks/]\n  C --> D{marks != -1?}\n  D -->|Yes| E[\"total += marks, count++\"]\n  E --> F[/Read marks/]\n  F --> D\n  D -->|No| G{count > 0?}\n  G -->|Yes| H[/Print average/]\n  G -->|No| I([End])\n  H --> I",
+      "sample": {
+        "id": "sentinel-average",
+        "title": "Average until -1 (sentinel)",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int marks, total = 0, count = 0;\n    cin >> marks;\n    while (marks != -1) {\n        total += marks;\n        count++;\n        cin >> marks;\n    }\n    if (count > 0) {\n        cout << \"Average = \" << (double) total / count << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "70 85 90 -1",
+        "expectedOutput": "Average = 81.6667\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "total adds up the marks, count counts how many marks were entered."
+          },
+          {
+            "line": 6,
+            "text": "The FIRST value is read before the loop, so the condition has something to test."
+          },
+          {
+            "line": 7,
+            "text": "Keep going while the user has not typed the sentinel -1."
+          },
+          {
+            "line": 8,
+            "text": "Add the mark to the total."
+          },
+          {
+            "line": 9,
+            "text": "Count one more mark."
+          },
+          {
+            "line": 10,
+            "text": "Read the NEXT value at the end of the body. This is the update of the loop."
+          },
+          {
+            "line": 12,
+            "text": "Guard: if the user typed -1 straight away, count is 0 and dividing by it would be wrong."
+          },
+          {
+            "line": 13,
+            "text": "(double) makes the division keep decimals: 245 / 3 = 81.6667."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Read a positive number and print the sum of its digits. For 4825 the answer is 4 + 8 + 2 + 5 = 19.",
+      "pseudocode": [
+        "START",
+        "READ num",
+        "sum = 0",
+        "WHILE num > 0:",
+        "    digit = num MOD 10",
+        "    sum = sum + digit",
+        "    num = num DIV 10",
+        "PRINT sum",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read num/]\n  B --> C[sum = 0]\n  C --> D{num > 0?}\n  D -->|Yes| E[\"sum = sum + num % 10\"]\n  E --> F[\"num = num / 10\"]\n  F --> D\n  D -->|No| G[/Print sum/]\n  G --> H([End])",
+      "sample": {
+        "id": "sum-of-digits",
+        "title": "Sum of digits",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int num, sum = 0;\n    cin >> num;\n    while (num > 0) {\n        sum += num % 10;\n        num /= 10;\n    }\n    cout << \"Sum of digits = \" << sum << endl;\n    return 0;\n}\n",
+        "stdin": "4825",
+        "expectedOutput": "Sum of digits = 19\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "num is the input, sum collects the digits."
+          },
+          {
+            "line": 7,
+            "text": "While digits are left (num is above 0), repeat."
+          },
+          {
+            "line": 8,
+            "text": "num % 10 is the last digit. Add it to sum."
+          },
+          {
+            "line": 9,
+            "text": "Integer division by 10 drops the last digit. This is the update."
+          },
+          {
+            "line": 11,
+            "text": "After the loop num is 0 and sum holds the answer."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "num": "?",
+                "sum": "0"
+              },
+              "note": "num is empty, sum starts at 0.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "num": "4825"
+              },
+              "note": "cin reads 4825.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "sum": "5"
+              },
+              "note": "Condition 4825 > 0 is true. Last digit 4825 % 10 = 5, so sum = 5.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "num": "482"
+              },
+              "note": "4825 / 10 drops the last digit: num = 482.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "sum": "7"
+              },
+              "note": "Condition 482 > 0 is true. Last digit 482 % 10 = 2, so sum = 7.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "num": "48"
+              },
+              "note": "482 / 10 drops the last digit: num = 48.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "sum": "15"
+              },
+              "note": "Condition 48 > 0 is true. Last digit 48 % 10 = 8, so sum = 15.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "num": "4"
+              },
+              "note": "48 / 10 drops the last digit: num = 4.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "sum": "19"
+              },
+              "note": "Condition 4 > 0 is true. Last digit 4 % 10 = 4, so sum = 19.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "num": "0"
+              },
+              "note": "4 / 10 drops the last digit: num = 0.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Check 0 > 0: false. The loop ends.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Prints the answer.",
+              "out": "Sum of digits = 19\n"
+            }
+          ],
+          "types": {
+            "num": "int",
+            "sum": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Counter loop",
+      "when": "Like a for loop but the update is in the body",
+      "example": "int i = 1; while (i <= 5) { cout << i; i++; }"
+    },
+    {
+      "way": "Sentinel loop",
+      "when": "Read until a special value such as -1 or 0",
+      "example": "cin >> x; while (x != -1) { ...; cin >> x; }"
+    },
+    {
+      "way": "Digit loop",
+      "when": "Process every digit of a number",
+      "example": "while (num > 0) { sum += num % 10; num /= 10; }"
+    },
+    {
+      "way": "Condition false at the start",
+      "when": "Body runs zero times",
+      "example": "int i = 10; while (i < 5) { ... } // skipped"
+    },
+    {
+      "way": "Intentional endless loop",
+      "when": "Menu or game that stops by another rule (advanced)",
+      "example": "while (true) { ... }"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int i = 1;\nwhile (i <= 5) {\n    cout << i << endl;\n}",
+      "right": "int i = 1;\nwhile (i <= 5) {\n    cout << i << endl;\n    i++;\n}",
+      "error": "No compiler error. The program prints 1 forever (infinite loop) because i never changes. Press Ctrl + C to stop it."
+    },
+    {
+      "wrong": "int i = 1;\nwhile (i <= 5);\n{\n    cout << i;\n    i++;\n}",
+      "right": "int i = 1;\nwhile (i <= 5) {\n    cout << i;\n    i++;\n}",
+      "error": "No compiler error. The semicolon is an empty body, so the loop spins forever because i never changes."
+    },
+    {
+      "wrong": "while (marks != -1) {\n    total += marks;\n}",
+      "right": "cin >> marks;\nwhile (marks != -1) {\n    total += marks;\n    cin >> marks;\n}",
+      "error": "No compiler error. marks is never read inside the loop, so the sentinel is never seen and the loop never ends."
+    },
+    {
+      "wrong": "int i = 1;\nwhile (i <= 5)\n    cout << i;\n    i++;",
+      "right": "int i = 1;\nwhile (i <= 5) {\n    cout << i;\n    i++;\n}",
+      "error": "No compiler error. Without braces only the first statement belongs to the loop, so i++ is outside and the loop is infinite."
+    },
+    {
+      "wrong": "int sum = 0;\nwhile (num > 0)\n    sum += num % 10;\n    num /= 10;",
+      "right": "int sum = 0;\nwhile (num > 0) {\n    sum += num % 10;\n    num /= 10;\n}",
+      "error": "No compiler error. Missing braces: num /= 10 runs only once after the loop, so the loop is infinite."
+    }
+  ],
+  "examTips": [
+    "A while loop needs three things: initialise before, a condition, and an update inside. Check that all three are present.",
+    "Whenever you see a while loop with no change to the condition variable, write 'infinite loop'.",
+    "The body may run zero times because the condition is tested first.",
+    "For digits remember: % 10 gets the last digit, / 10 removes it, loop while num > 0.",
+    "In a sentinel loop read once before the loop and again at the end of the body."
+  ],
+  "romanSummary": [
+    "while loop tab use karte hain jab pata na ho ke kitni baar repeat karna hai.",
+    "Pehle condition check hoti hai, phir body chalti hai, is liye body zero baar bhi chal sakti hai.",
+    "Initialization loop se pehle likhein aur update body ke andar, warna infinite loop ban jata hai.",
+    "Sentinel value (jaise -1) tak input lena aur digits ka sum nikalna (% 10 aur / 10) while loop ki mashhoor misalein hain.",
+    "Stuck program ko rokne ke liye Ctrl + C dabayein."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which situation is best for a while loop?",
+      "options": [
+        "Read marks until the user types -1",
+        "Print 1 to 10",
+        "Print a table of 5",
+        "Repeat exactly 100 times"
+      ],
+      "answer": "Read marks until the user types -1",
+      "hint": "Can you say how many times in advance?",
+      "explanation": "When the number of repetitions depends on input, while is the natural choice. The others are fixed counts, which fit for."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this print?\n\nint i = 1;\nwhile (i <= 5) {\n    cout << i << \" \";\n    i += 2;\n}",
+      "answer": "1 3 5",
+      "hint": "i grows by 2 each round.",
+      "explanation": "i is 1, 3, 5. Next is 7, which fails i <= 5."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\nint n = 345, s = 0;\nwhile (n > 0) {\n    s += n % 10;\n    n /= 10;\n}\ncout << s;",
+      "answer": "12",
+      "hint": "Digits: 5, 4, 3.",
+      "explanation": "s becomes 5, 9, 12 and n becomes 34, 3, 0."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\nint i = 10;\nwhile (i < 5) {\n    cout << \"A\";\n    i++;\n}\ncout << \"B\";",
+      "answer": "B",
+      "hint": "Is the condition true at the first check?",
+      "explanation": "10 < 5 is false immediately, so the body is skipped and only B is printed."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this print?\n\nint x = 100, c = 0;\nwhile (x > 1) {\n    x /= 2;\n    c++;\n}\ncout << c;",
+      "answer": "6",
+      "hint": "Write x after each round: 50, 25, ...",
+      "explanation": "x goes 100, 50, 25, 12, 6, 3, 1. That is 6 halvings, so c = 6."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This program should print 1 2 3 but it never stops. Fix it.\n\nint i = 1;\nwhile (i <= 3) {\n    cout << i << \" \";\n}",
+      "answer": "int i = 1;\nwhile (i <= 3) {\n    cout << i << \" \";\n    i++;\n}",
+      "hint": "What changes i?",
+      "explanation": "i never changes so i <= 3 stays true forever. Add i++ inside the loop."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill the blank so the loop stops when the user types -1.\n\nwhile (marks != ___) {\n    total += marks;\n    cin >> marks;\n}",
+      "answer": "-1",
+      "hint": "The sentinel value.",
+      "explanation": "The loop continues while marks is not the sentinel, so the blank is -1."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that reads a positive number and prints how many digits it has.",
+      "answer": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int num, count = 0;\n    cin >> num;\n    while (num > 0) {\n        count++;\n        num /= 10;\n    }\n    cout << count << endl;\n    return 0;\n}",
+      "hint": "Remove one digit at a time and count them.",
+      "explanation": "Each round removes the last digit with num /= 10 and adds 1 to count. When num reaches 0 all digits were counted."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "When does a while loop check its condition?",
+      "options": [
+        "Before each iteration",
+        "After each iteration",
+        "Only once at the end",
+        "Never"
+      ],
+      "answer": "Before each iteration",
+      "hint": "It is called a pre-test loop.",
+      "explanation": "The test comes first, so the body can run zero times."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What causes an infinite while loop?",
+      "options": [
+        "The condition never becomes false",
+        "Using braces",
+        "Using int",
+        "Using cout"
+      ],
+      "answer": "The condition never becomes false",
+      "hint": "Think about a missing update.",
+      "explanation": "If nothing in the body moves the condition toward false, the loop never ends."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What does num / 10 do to the integer 4825?",
+      "options": [
+        "Gives 482",
+        "Gives 5",
+        "Gives 482.5",
+        "Gives 48"
+      ],
+      "answer": "Gives 482",
+      "hint": "Integer division drops the decimal part.",
+      "explanation": "4825 / 10 = 482 in integer division. 4825 % 10 would give 5."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is a sentinel value?",
+      "options": [
+        "A special input that tells the loop to stop",
+        "The first value of a loop",
+        "A loop counter",
+        "A type of loop"
+      ],
+      "answer": "A special input that tells the loop to stop",
+      "hint": "Like typing -1 to finish.",
+      "explanation": "A sentinel marks the end of the data, for example -1 when marks cannot be negative."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "How many times does while (i < 5) run its body if i starts at 5?",
+      "options": [
+        "0",
+        "1",
+        "5",
+        "Infinite"
+      ],
+      "answer": "0",
+      "hint": "Check the condition with the starting value.",
+      "explanation": "5 < 5 is false at the first check, so the body never runs."
+    }
+  ],
+  "sources": [
+    "The while loop",
+    "Pre-test (entry-controlled) loops",
+    "Sentinel-controlled loops",
+    "Infinite loops"
+  ]
+}

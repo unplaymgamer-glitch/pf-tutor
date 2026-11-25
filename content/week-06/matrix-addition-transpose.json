@@ -1,0 +1,573 @@
+{
+  "slug": "matrix-addition-transpose",
+  "week": 6,
+  "title": "Matrix addition, subtraction and transpose",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "matrix",
+      "title": "Adding two 2 x 3 matrices: same position, same position, add",
+      "op": "add",
+      "a": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          6
+        ]
+      ],
+      "b": [
+        [
+          7,
+          8,
+          9
+        ],
+        [
+          1,
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "kind": "matrix",
+      "title": "Transpose of a 2 x 3 matrix: rows become columns (result is 3 x 2)",
+      "op": "transpose",
+      "a": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          6
+        ]
+      ]
+    }
+  ],
+  "goal": "After this you can add and subtract two matrices of the same size, find the transpose of a matrix, and say what size the result has.",
+  "warmup": "Two shopkeepers keep a table of how many pens and copies they sold on each day: rows are the shops and columns are the days. To get the total sales of both shops you add the number of the first shop to the number of the second shop for the SAME day. You can only do this if both tables have the same shape. Now imagine rotating the table so that the shops become the columns and the days become the rows. That is a transpose.",
+  "definition": "Matrix addition adds two matrices of the same order (same number of rows and same number of columns). Each element is added to the element at the same position: C[i][j] = A[i][j] + B[i][j]. The result has the same order. Subtraction works in the same way with a minus sign. The transpose of a matrix turns its rows into columns: T[j][i] = M[i][j]. A 2 x 3 matrix becomes a 3 x 2 matrix. For a square matrix (rows = columns) the transpose has the same size.",
+  "howItWorks": "For addition, use two nested loops. The outer loop i visits the rows and the inner loop j visits the columns. In every step, take the element at (i, j) from A, the element at (i, j) from B, add them and store the result at (i, j) of C. Subtraction only changes the + to a -. For the transpose, the loops walk over the ORIGINAL matrix M (i over its rows, j over its columns) and copy M[i][j] into T[j][i]. The indexes swap places, so the result needs swapped sizes: if M is 2 x 3 then T must be declared as T[3][2]. When you print T, the loops must use the sizes of T (3 rows, 2 columns). In C++ you cannot write C = A + B for arrays. You must add element by element.",
+  "syntax": "// addition: A, B and C all have the same size\nfor (int i = 0; i < R; i++) {\n    for (int j = 0; j < C; j++) {\n        sum[i][j] = A[i][j] + B[i][j];\n    }\n}\n// transpose: M is R x C, T is C x R\nfor (int i = 0; i < R; i++) {\n    for (int j = 0; j < C; j++) {\n        T[j][i] = M[i][j];     // row and column swap places\n    }\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Add the matrices A = {{1, 2}, {3, 4}} and B = {{5, 6}, {7, 8}} and print the result C = A + B.",
+      "pseudocode": [
+        "START",
+        "DECLARE A, B, C (all 2 x 2)",
+        "FOR i = 0 TO 1",
+        "    FOR j = 0 TO 1",
+        "        C[i][j] = A[i][j] + B[i][j]",
+        "PRINT C row by row",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"A and B are 2 x 2\"]\n  B --> C[i = 0]\n  C --> D{\"i < 2?\"}\n  D -->|Yes| E[j = 0]\n  E --> F{\"j < 2?\"}\n  F -->|Yes| G[\"C[i][j] = A[i][j] + B[i][j]\"]\n  G --> H[j = j + 1]\n  H --> F\n  F -->|No| I[i = i + 1]\n  I --> D\n  D -->|No| J[/Print C/]\n  J --> K([End])",
+      "sample": {
+        "id": "add-2x2",
+        "title": "Adding two 2 x 2 matrices",
+        "code": "#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nint main() {\n    int A[2][2] = {{1, 2}, {3, 4}};\n    int B[2][2] = {{5, 6}, {7, 8}};\n    int C[2][2];\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 2; j++) {\n            C[i][j] = A[i][j] + B[i][j];\n        }\n    }\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 2; j++) {\n            cout << setw(4) << C[i][j];\n        }\n        cout << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "   6   8\n  10  12\n",
+        "explanation": [
+          {
+            "line": 2,
+            "text": "Needed for setw()."
+          },
+          {
+            "line": 6,
+            "text": "Matrix A: 2 rows, 2 columns."
+          },
+          {
+            "line": 7,
+            "text": "Matrix B has the SAME size as A. This is a must for addition."
+          },
+          {
+            "line": 8,
+            "text": "The result matrix has the same size too."
+          },
+          {
+            "line": 9,
+            "text": "Outer loop over the rows."
+          },
+          {
+            "line": 10,
+            "text": "Inner loop over the columns."
+          },
+          {
+            "line": 11,
+            "text": "The rule of matrix addition: add the elements that sit in the same position."
+          },
+          {
+            "line": 16,
+            "text": "Print the result with aligned columns."
+          },
+          {
+            "line": 18,
+            "text": "A new line after every row."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 6,
+              "vars": {
+                "A": "{{1, 2}, {3, 4}}",
+                "B": "{{5, 6}, {7, 8}}"
+              },
+              "note": "A and B are both 2 x 2, so they have the same size and can be added.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "C": "{{?, ?}, {?, ?}}"
+              },
+              "note": "C is the empty result table, also 2 x 2.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "0",
+                "j": "0",
+                "C": "{{6, ?}, {?, ?}}"
+              },
+              "note": "i = 0, j = 0: C[0][0] = A[0][0] + B[0][0] = 1 + 5 = 6.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "0",
+                "j": "1",
+                "C": "{{6, 8}, {?, ?}}"
+              },
+              "note": "i = 0, j = 1: C[0][1] = 2 + 6 = 8.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "1",
+                "j": "0",
+                "C": "{{6, 8}, {10, ?}}"
+              },
+              "note": "i = 1, j = 0: C[1][0] = 3 + 7 = 10.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "1",
+                "j": "1",
+                "C": "{{6, 8}, {10, 12}}"
+              },
+              "note": "i = 1, j = 1: C[1][1] = 4 + 8 = 12. Same position in A and B, same position in C.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "i": "0"
+              },
+              "note": "Printing row 0 of C: 6 and 8, each in a field 4 wide.",
+              "out": "   6   8"
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "End of row 0.",
+              "out": "\n"
+            },
+            {
+              "line": 16,
+              "vars": {
+                "i": "1"
+              },
+              "note": "Printing row 1 of C: 10 and 12.",
+              "out": "  10  12"
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "End of row 1.",
+              "out": "\n"
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "Done.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "A": "int[2][2]",
+            "B": "int[2][2]",
+            "C": "int[2][2]",
+            "i": "int",
+            "j": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Find the transpose of M = {{1, 2, 3}, {4, 5, 6}} and print it. What is the size of the result?",
+      "pseudocode": [
+        "START",
+        "DECLARE M[2][3] and T[3][2]",
+        "FOR i = 0 TO 1",
+        "    FOR j = 0 TO 2",
+        "        T[j][i] = M[i][j]",
+        "PRINT T row by row (3 rows, 2 columns)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"M is 2 x 3, T is 3 x 2\"]\n  B --> C[i = 0]\n  C --> D{\"i < 2?\"}\n  D -->|Yes| E[j = 0]\n  E --> F{\"j < 3?\"}\n  F -->|Yes| G[\"T[j][i] = M[i][j]\"]\n  G --> H[j = j + 1]\n  H --> F\n  F -->|No| I[i = i + 1]\n  I --> D\n  D -->|No| J[/Print T/]\n  J --> K([End])",
+      "sample": {
+        "id": "transpose-2x3",
+        "title": "Transpose of a 2 x 3 matrix",
+        "code": "#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nint main() {\n    int M[2][3] = {{1, 2, 3}, {4, 5, 6}};\n    int T[3][2];\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 3; j++) {\n            T[j][i] = M[i][j];\n        }\n    }\n    cout << \"Transpose (3 x 2):\" << endl;\n    for (int i = 0; i < 3; i++) {\n        for (int j = 0; j < 2; j++) {\n            cout << setw(3) << T[i][j];\n        }\n        cout << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Transpose (3 x 2):\n  1  4\n  2  5\n  3  6\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "The original matrix: 2 rows and 3 columns."
+          },
+          {
+            "line": 7,
+            "text": "The transpose has the sizes swapped: 3 rows and 2 columns. A rectangular matrix needs a result of a different shape."
+          },
+          {
+            "line": 8,
+            "text": "The loops walk over M, so they use M's sizes: 2 rows, 3 columns."
+          },
+          {
+            "line": 10,
+            "text": "The whole idea of transpose: the row index and column index swap places."
+          },
+          {
+            "line": 13,
+            "text": "A heading, so we remember the new size."
+          },
+          {
+            "line": 14,
+            "text": "Now the loops walk over T, so the sizes are T's: 3 rows..."
+          },
+          {
+            "line": 15,
+            "text": "...and 2 columns."
+          },
+          {
+            "line": 16,
+            "text": "Aligns the numbers in columns of width 3."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Read two 2 x 2 matrices A and B. Print A + B and A - B.",
+      "pseudocode": [
+        "START",
+        "READ A (4 numbers), READ B (4 numbers)",
+        "FOR each position (i, j)",
+        "    sum[i][j] = A[i][j] + B[i][j]",
+        "    diff[i][j] = A[i][j] - B[i][j]",
+        "PRINT sum, then PRINT diff",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read A and B/]\n  B --> C[\"For every i, j\"]\n  C --> D[\"sum[i][j] = A[i][j] + B[i][j]\"]\n  D --> E[\"diff[i][j] = A[i][j] - B[i][j]\"]\n  E --> F[/Print sum and diff/]\n  F --> G([End])",
+      "sample": {
+        "id": "add-subtract",
+        "title": "Add and subtract two matrices",
+        "code": "#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nint main() {\n    int A[2][2], B[2][2], sum[2][2], diff[2][2];\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 2; j++) {\n            cin >> A[i][j];\n        }\n    }\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 2; j++) {\n            cin >> B[i][j];\n        }\n    }\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 2; j++) {\n            sum[i][j] = A[i][j] + B[i][j];\n            diff[i][j] = A[i][j] - B[i][j];\n        }\n    }\n    cout << \"A + B:\" << endl;\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 2; j++) {\n            cout << setw(4) << sum[i][j];\n        }\n        cout << endl;\n    }\n    cout << \"A - B:\" << endl;\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 2; j++) {\n            cout << setw(4) << diff[i][j];\n        }\n        cout << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "9 5 7 6 1 2 3 4",
+        "expectedOutput": "A + B:\n  10   7\n  10  10\nA - B:\n   8   3\n   4   2\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Four matrices of the same size: two inputs and two results."
+          },
+          {
+            "line": 9,
+            "text": "Reads matrix A row by row: 4 numbers."
+          },
+          {
+            "line": 14,
+            "text": "Reads matrix B next: the next 4 numbers."
+          },
+          {
+            "line": 19,
+            "text": "Addition: the same position in both matrices."
+          },
+          {
+            "line": 20,
+            "text": "Subtraction works the same way, only the sign changes. The order matters: A - B is not B - A."
+          },
+          {
+            "line": 23,
+            "text": "Heading for the sum."
+          },
+          {
+            "line": 26,
+            "text": "Prints one element of the sum."
+          },
+          {
+            "line": 30,
+            "text": "Heading for the difference."
+          },
+          {
+            "line": 33,
+            "text": "Prints one element of the difference."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Addition",
+      "when": "Both matrices must have the SAME order. The result has that same order.",
+      "example": "C[i][j] = A[i][j] + B[i][j];"
+    },
+    {
+      "way": "Subtraction",
+      "when": "Same rule as addition. The order matters: A - B is not the same as B - A.",
+      "example": "D[i][j] = A[i][j] - B[i][j];"
+    },
+    {
+      "way": "Transpose",
+      "when": "Rows become columns: T[j][i] = M[i][j].",
+      "example": "T[j][i] = M[i][j];"
+    },
+    {
+      "way": "Transpose of a rectangular matrix",
+      "when": "An m x n matrix gives an n x m result, so declare the result with swapped sizes.",
+      "example": "int M[2][3]; int T[3][2];"
+    },
+    {
+      "way": "Transpose of a square matrix",
+      "when": "The shape stays the same (3 x 3 gives 3 x 3). The diagonal elements stay where they are.",
+      "example": "int M[3][3]; int T[3][3];"
+    },
+    {
+      "way": "Printing the result",
+      "when": "Nested loops with the sizes of the RESULT matrix. Use setw to align columns.",
+      "example": "cout << setw(4) << C[i][j];"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "C = A + B;",
+      "right": "for (int i = 0; i < 2; i++)\n    for (int j = 0; j < 2; j++)\n        C[i][j] = A[i][j] + B[i][j];",
+      "error": "error: invalid operands of types 'int [2][2]' and 'int [2][2]' to binary 'operator+'"
+    },
+    {
+      "wrong": "C[i][j] = A[i][j] + B[j][i];",
+      "right": "C[i][j] = A[i][j] + B[i][j];",
+      "error": "No compiler error. B[j][i] picks the wrong element (it is a transpose of B), so the sum is wrong whenever B is not symmetric."
+    },
+    {
+      "wrong": "int M[2][3];\nint T[2][3];\nT[j][i] = M[i][j];",
+      "right": "int M[2][3];\nint T[3][2];\nT[j][i] = M[i][j];",
+      "error": "No compiler error. T needs 3 rows and 2 columns. With T[2][3], j can reach 2 and the program writes outside the array (undefined behaviour)."
+    },
+    {
+      "wrong": "for (int j = 0; j < 3; j++)\n    cout << T[i][j] << \" \";\n/* no endl after the loop */",
+      "right": "for (int j = 0; j < 2; j++)\n    cout << T[i][j] << \" \";\ncout << endl;",
+      "error": "No compiler error. Without cout << endl after each row the whole matrix prints on one line. Also check the bounds: T has 2 columns, not 3."
+    }
+  ],
+  "examTips": [
+    "First check the orders. Addition and subtraction need the same order. If they differ, write: 'Not possible because the orders are different'.",
+    "For the transpose, write the size of the result before you start: m x n becomes n x m.",
+    "Use the formulas C[i][j] = A[i][j] + B[i][j] and T[j][i] = M[i][j]. Writing the formula gets you marks even if the arithmetic slips.",
+    "When you print a transpose use the result's sizes in the loops, not the original ones.",
+    "Subtraction is not commutative: A - B is different from B - A."
+  ],
+  "romanSummary": [
+    "Matrix addition sirf same order (same rows aur same columns) wali matrices ki hoti hai. Har element apne same position wale element se jama hota hai: C[i][j] = A[i][j] + B[i][j].",
+    "Subtraction bhi isi tarah hoti hai, bas + ki jagah - lagta hai. A - B aur B - A alag hote hain.",
+    "Transpose mein rows columns ban jati hain: T[j][i] = M[i][j]. 2 x 3 matrix ka transpose 3 x 2 hota hai.",
+    "Square matrix ka transpose usi size ka rehta hai, rectangular matrix ka size ulta ho jata hai.",
+    "C++ mein C = A + B nahi likh sakte, nested loops se element by element add karna parta hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which pair of matrices can be added?",
+      "options": [
+        "Two 2 x 3 matrices",
+        "A 2 x 3 and a 3 x 2 matrix",
+        "A 2 x 2 and a 3 x 3 matrix",
+        "A 1 x 4 and a 4 x 1 matrix"
+      ],
+      "answer": "Two 2 x 3 matrices",
+      "hint": "Same rows AND same columns.",
+      "explanation": "Addition needs both matrices to have exactly the same order (same number of rows and the same number of columns)."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "The transpose of a 2 x 3 matrix has the size",
+      "options": [
+        "3 x 2",
+        "2 x 3",
+        "2 x 2",
+        "3 x 3"
+      ],
+      "answer": "3 x 2",
+      "hint": "Rows become columns.",
+      "explanation": "The 2 rows become 2 columns and the 3 columns become 3 rows, so the result is 3 x 2."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this code print?\n\nint A[2][2] = {{1, 2}, {3, 4}};\nint B[2][2] = {{4, 3}, {2, 1}};\ncout << A[0][1] + B[1][0] << \" \" << A[1][1] + B[1][1];",
+      "answer": "4 5",
+      "hint": "Read each element as [row][column].",
+      "explanation": "A[0][1] = 2 and B[1][0] = 2, so the first number is 4. A[1][1] = 4 and B[1][1] = 1, so the second number is 5."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this code print?\n\nint M[2][3] = {{7, 8, 9}, {1, 2, 3}};\nint T[3][2];\nfor (int i = 0; i < 2; i++) {\n    for (int j = 0; j < 3; j++) {\n        T[j][i] = M[i][j];\n    }\n}\ncout << T[2][0] << \" \" << T[0][1];",
+      "answer": "9 1",
+      "hint": "T[j][i] = M[i][j]. Which M element goes to T[2][0]?",
+      "explanation": "T[2][0] = M[0][2] = 9 and T[0][1] = M[1][0] = 1."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this code print?\n\nint A[2][2] = {{9, 8}, {7, 6}};\nint B[2][2] = {{1, 2}, {3, 4}};\nint D[2][2];\nfor (int i = 0; i < 2; i++) {\n    for (int j = 0; j < 2; j++) {\n        D[i][j] = A[i][j] - B[i][j];\n    }\n}\ncout << D[0][0] << \" \" << D[0][1] << \" \" << D[1][0] << \" \" << D[1][1];",
+      "answer": "8 6 4 2",
+      "hint": "Subtract matching positions: A minus B.",
+      "explanation": "9 - 1 = 8, 8 - 2 = 6, 7 - 3 = 4, 6 - 4 = 2."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "M is a 2 x 3 matrix and this code should store its transpose, but T is declared with the wrong size. Fix the declaration.\n\nint M[2][3] = {{1, 2, 3}, {4, 5, 6}};\nint T[2][3];\nfor (int i = 0; i < 2; i++)\n    for (int j = 0; j < 3; j++)\n        T[j][i] = M[i][j];",
+      "answer": "int T[3][2];",
+      "hint": "The transpose of a 2 x 3 matrix is 3 x 2.",
+      "explanation": "T[j][i] uses j (up to 2) as the row index, so T needs 3 rows and 2 columns."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank to calculate the transpose.\n\nfor (int i = 0; i < 2; i++)\n    for (int j = 0; j < 3; j++)\n        T[____][____] = M[i][j];",
+      "answer": "T[j][i] = M[i][j];",
+      "hint": "Row and column swap places.",
+      "explanation": "In the transpose, the element at row i and column j of M moves to row j and column i of T."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Two 2 x 3 matrices A and B are already filled. Write the loops that store A + B in a matrix C.",
+      "answer": "int C[2][3];\nfor (int i = 0; i < 2; i++) {\n    for (int j = 0; j < 3; j++) {\n        C[i][j] = A[i][j] + B[i][j];\n    }\n}",
+      "hint": "C has the same size as A and B. The outer loop runs over 2 rows.",
+      "explanation": "The result of an addition has the same order as the two inputs (2 x 3). The outer loop runs to 2 (rows), the inner loop to 3 (columns)."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "To add two matrices, they must have",
+      "options": [
+        "the same number of rows and columns",
+        "the same number of rows only",
+        "the same number of columns only",
+        "a square shape"
+      ],
+      "answer": "the same number of rows and columns",
+      "hint": "Think of adding matching positions.",
+      "explanation": "Every element needs a partner at the same position in the other matrix."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which formula adds two matrices?",
+      "options": [
+        "C[i][j] = A[i][j] + B[i][j]",
+        "C[i][j] = A[i][j] + B[j][i]",
+        "C = A + B",
+        "C[i] = A[i] + B[j]"
+      ],
+      "answer": "C[i][j] = A[i][j] + B[i][j]",
+      "hint": "Same position in both matrices.",
+      "explanation": "C = A + B does not compile for arrays. The elements must be added one by one with two loops."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "The transpose T of M is defined by",
+      "options": [
+        "T[j][i] = M[i][j]",
+        "T[i][j] = M[i][j]",
+        "T[i][j] = M[i][j] + 1",
+        "T[j][j] = M[i][i]"
+      ],
+      "answer": "T[j][i] = M[i][j]",
+      "hint": "Rows become columns.",
+      "explanation": "The row and column indexes swap places."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is the transpose of a 4 x 4 (square) matrix?",
+      "options": [
+        "Also 4 x 4",
+        "4 x 1",
+        "1 x 4",
+        "16 x 16"
+      ],
+      "answer": "Also 4 x 4",
+      "hint": "Swap the numbers 4 and 4.",
+      "explanation": "For a square matrix rows = columns, so swapping them keeps the shape. For a rectangular m x n matrix the result is n x m."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "A is 3 x 2 and B is 3 x 2. What is the size of A - B?",
+      "options": [
+        "3 x 2",
+        "2 x 3",
+        "3 x 3",
+        "It cannot be calculated"
+      ],
+      "answer": "3 x 2",
+      "hint": "Subtraction follows the same rule as addition.",
+      "explanation": "The matrices have the same order, so subtraction is possible and the result also has order 3 x 2."
+    }
+  ],
+  "sources": [
+    "Matrix addition",
+    "Matrix subtraction",
+    "Transpose of a matrix"
+  ]
+}

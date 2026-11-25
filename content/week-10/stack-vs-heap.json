@@ -1,0 +1,915 @@
+{
+  "slug": "stack-vs-heap",
+  "week": 10,
+  "title": "Stack vs heap: where your variables live",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match each memory area to its job",
+      "pairs": [
+        {
+          "term": "Stack",
+          "meaning": "Local variables and parameters. Automatic, very fast, small. Freed when the function returns"
+        },
+        {
+          "term": "Heap",
+          "meaning": "Big area for memory you request while the program runs. You must give it back yourself"
+        },
+        {
+          "term": "Global / static area",
+          "meaning": "Global and static variables. Created once, live until the program ends"
+        },
+        {
+          "term": "Code area",
+          "meaning": "The machine instructions of your program"
+        },
+        {
+          "term": "Stack overflow",
+          "meaning": "The stack runs out of room, for example with endless recursion or a huge local array"
+        },
+        {
+          "term": "Memory leak",
+          "meaning": "Heap memory you took but never gave back"
+        }
+      ]
+    },
+    {
+      "kind": "pipeline",
+      "title": "The life of a function call on the stack",
+      "stages": [
+        {
+          "name": "1. Call",
+          "detail": "A function is called. A new frame is pushed on top of the stack."
+        },
+        {
+          "name": "2. Make locals",
+          "detail": "The frame holds the parameters and the local variables. They are created automatically."
+        },
+        {
+          "name": "3. Run",
+          "detail": "The function body runs. Any function it calls gets a new frame on top."
+        },
+        {
+          "name": "4. Return",
+          "detail": "The frame is popped off the stack. All its variables are destroyed automatically."
+        },
+        {
+          "name": "5. Back to caller",
+          "detail": "The caller continues. The last frame in is always the first one out."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can name the memory areas of a running program, say where globals, locals and dynamic data live, explain stack frames, compare the stack and the heap, and describe stack overflow and memory leak in simple words.",
+  "warmup": "In the canteen the plates are in a pile. You can only take the top plate and put a used plate back on top: nobody organises it, it just works, and it is very fast. That is the stack. The heap is like a big warehouse at the back: you go to the manager, ask for space, and you must return it when you finish. If you forget, the space stays blocked for nobody.",
+  "definition": "When your program runs, the computer gives it memory divided into areas. The STACK holds local variables and function parameters. It is automatic: a function gets its own block (a stack frame) when it is called, and the block is freed when the function returns. It is very fast but small (a few MB). The HEAP is a big area for memory that you request while the program is running, with the new operator. It is manual: you must give it back yourself with delete. Global and static variables live in a third area that exists for the whole run of the program, and the code itself is in a fourth.",
+  "howItWorks": "Step through the first trace. addOne() is called three times. Its local variable is created on the stack each time and destroyed at the end of each call, so it prints 1 every time. The static variable kept and the global total are NOT on the stack: they live for the whole program, so they keep counting 1, 2, 3. Now the second trace shows several function calls stacked up: main calls first, first calls second, second calls third. The call stack panel shows the frames piling up and then leaving in reverse order: the last frame in is the first out. Because each function has its own frame, each has its own variables (a, b, c) that cannot be seen by the others. In the third example (and the memory visual) a value is needed AFTER the function that made it has finished. A plain local is copied out by return, which is fine for small values. For big data or data that must live longer, the program can ask the heap for a box with new int. The pointer p is a local variable on the stack and disappears, but the box on the heap stays until you delete it. Do not worry about new and delete yet: the next lesson teaches them properly. Two classic problems: a STACK OVERFLOW happens when the stack becomes full, for example a function that calls itself forever (infinite recursion) or a huge local array; the program crashes. A MEMORY LEAK happens when you take heap memory and never give it back; the program slowly eats more and more memory. We never run those two in the lesson, because they are bugs.",
+  "syntax": "int total = 0;              // global: whole program run\n\nvoid f() {\n    int x = 5;              // local: stack, destroyed when f returns\n    static int count = 0;   // static: created once, remembers its value\n    int *p = new int;       // heap box (next lesson); p itself is on the stack\n    *p = 7;\n    delete p;               // give the heap box back yourself\n}\n\n// Stack:  automatic    | small  | very fast | freed on return\n// Heap:   manual (new) | large  | slower    | freed with delete",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Show where three kinds of variables live. addOne() has a local variable, a static variable and uses a global one. Call it three times and print all three each time. Explain why they behave differently.",
+      "pseudocode": [
+        "START",
+        "global total = 0 (exists all the time)",
+        "CALL addOne() three times; each call: local = 0 (new box), kept (made once), then local++, kept++, total++",
+        "PRINT local, kept and total",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Global total = 0\"]\n  B --> C[\"Call addOne()\"]\n  C --> D[\"local = 0 (new on stack)\"]\n  D --> E[\"local++, kept++, total++\"]\n  E --> F[/Print local, kept, total/]\n  F --> G{More calls?}\n  G -- Yes --> C\n  G -- No --> H([End])",
+      "sample": {
+        "id": "local-static-global",
+        "title": "Local, static and global variables across calls",
+        "code": "#include <iostream>\nusing namespace std;\n\nint total = 0;\n\nvoid addOne() {\n    int local = 0;\n    static int kept = 0;\n    local++;\n    kept++;\n    total++;\n    cout << \"local = \" << local << \", kept = \" << kept << \", total = \" << total << endl;\n}\n\nint main() {\n    addOne();\n    addOne();\n    addOne();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "local = 1, kept = 1, total = 1\nlocal = 1, kept = 2, total = 2\nlocal = 1, kept = 3, total = 3\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "A global variable: created before main, lives until the program ends."
+          },
+          {
+            "line": 7,
+            "text": "A normal local variable: a fresh box on the stack at every call, destroyed at every return."
+          },
+          {
+            "line": 8,
+            "text": "A static local: created once in the static area and keeps its value between calls (Week 7)."
+          },
+          {
+            "line": 9,
+            "text": "Only the current copy of local changes."
+          },
+          {
+            "line": 12,
+            "text": "local is always 1; kept and total grow."
+          },
+          {
+            "line": 16,
+            "text": "Three separate calls. After each one the stack frame of addOne disappears."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 15,
+              "vars": {
+                "total": "0"
+              },
+              "note": "The global total was created before main started and lives until the program ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "local": "0",
+                "kept": "0"
+              },
+              "note": "Call 1: a new stack frame appears. local is a NEW box (0). kept is made ONCE in the static area, with the starting value 0.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "addOne()",
+                  "vars": {
+                    "local": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {
+                "local": "1",
+                "kept": "1",
+                "total": "1"
+              },
+              "note": "local, kept and total all became 1.",
+              "out": "local = 1, kept = 1, total = 1\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "addOne()",
+                  "vars": {
+                    "local": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "local": "0"
+              },
+              "note": "Call 2: the old frame was removed when call 1 returned, so local was destroyed. A fresh local starts again at 0. kept still remembers 1.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "addOne()",
+                  "vars": {
+                    "local": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {
+                "local": "1",
+                "kept": "2",
+                "total": "2"
+              },
+              "note": "local is 1 again (fresh box), but kept grew to 2 and total to 2.",
+              "out": "local = 1, kept = 2, total = 2\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "addOne()",
+                  "vars": {
+                    "local": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "local": "0"
+              },
+              "note": "Call 3: yet another new local, 0 again.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "addOne()",
+                  "vars": {
+                    "local": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {
+                "local": "1",
+                "kept": "3",
+                "total": "3"
+              },
+              "note": "local = 1 once more, while kept = 3 and total = 3 keep counting across calls.",
+              "out": "local = 1, kept = 3, total = 3\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "addOne()",
+                  "vars": {
+                    "local": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "All calls are finished. Only main's frame is left on the stack.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            }
+          ],
+          "types": {
+            "total": "int",
+            "local": "int",
+            "kept": "static int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Show the stack of function calls: main calls first(), first calls second(), second calls third(). Each prints a line before and after the inner call. Predict the order of the lines and watch the frames in the trace.",
+      "pseudocode": [
+        "START main",
+        "CALL first(): push frame, a = 1, print",
+        "CALL second(): push frame, b = 2, print",
+        "CALL third(): push frame, c = 3, print, RETURN (pop)",
+        "second prints its end line, RETURN (pop)",
+        "first prints its end line, RETURN (pop)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start main]) --> B[Call first]\n  B --> C[Call second]\n  C --> D[Call third]\n  D --> E[/Print third line/]\n  E --> F[Return to second]\n  F --> G[/Print second end line/]\n  G --> H[Return to first]\n  H --> I[/Print first end line/]\n  I --> J([End])",
+      "sample": {
+        "id": "nested-calls-stack",
+        "title": "Frames pile up and leave in reverse order",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid third() {\n    int c = 3;\n    cout << \"third: c = \" << c << endl;\n}\n\nvoid second() {\n    int b = 2;\n    cout << \"second: before\" << endl;\n    third();\n    cout << \"second: after, b = \" << b << endl;\n}\n\nvoid first() {\n    int a = 1;\n    cout << \"first: before\" << endl;\n    second();\n    cout << \"first: after, a = \" << a << endl;\n}\n\nint main() {\n    first();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "first: before\nsecond: before\nthird: c = 3\nsecond: after, b = 2\nfirst: after, a = 1\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "third() is the innermost function; its frame is the top of the stack while it runs."
+          },
+          {
+            "line": 5,
+            "text": "c lives in third's frame only. No other function can see it."
+          },
+          {
+            "line": 10,
+            "text": "second() has its own b."
+          },
+          {
+            "line": 12,
+            "text": "The call to third(): a new frame is pushed. second waits."
+          },
+          {
+            "line": 13,
+            "text": "second continues here after third returned. Its b is still 2."
+          },
+          {
+            "line": 17,
+            "text": "first() has its own a."
+          },
+          {
+            "line": 19,
+            "text": "The call to second(): another frame."
+          },
+          {
+            "line": 24,
+            "text": "main starts the chain by calling first()."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 24,
+              "vars": {},
+              "note": "main starts. The stack has one frame: main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 17,
+              "vars": {
+                "a": "1"
+              },
+              "note": "first() is called: a new frame is pushed on top. It holds its own a.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "first()",
+                  "vars": {
+                    "a": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "first prints its first line.",
+              "out": "first: before\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "first()",
+                  "vars": {
+                    "a": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {
+                "b": "2"
+              },
+              "note": "first calls second(): another frame is pushed on top.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "first()",
+                  "vars": {
+                    "a": "1"
+                  }
+                },
+                {
+                  "fn": "second()",
+                  "vars": {
+                    "b": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "second prints its first line.",
+              "out": "second: before\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "first()",
+                  "vars": {
+                    "a": "1"
+                  }
+                },
+                {
+                  "fn": "second()",
+                  "vars": {
+                    "b": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {
+                "c": "3"
+              },
+              "note": "second calls third(): the third frame is pushed. Now 4 frames are on the stack.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "first()",
+                  "vars": {
+                    "a": "1"
+                  }
+                },
+                {
+                  "fn": "second()",
+                  "vars": {
+                    "b": "2"
+                  }
+                },
+                {
+                  "fn": "third()",
+                  "vars": {
+                    "c": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "third prints. It is the top frame, so it runs.",
+              "out": "third: c = 3\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "first()",
+                  "vars": {
+                    "a": "1"
+                  }
+                },
+                {
+                  "fn": "second()",
+                  "vars": {
+                    "b": "2"
+                  }
+                },
+                {
+                  "fn": "third()",
+                  "vars": {
+                    "c": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "third finishes: its frame is popped and c is destroyed automatically. Control goes back to second, just after the call.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "first()",
+                  "vars": {
+                    "a": "1"
+                  }
+                },
+                {
+                  "fn": "second()",
+                  "vars": {
+                    "b": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "second still remembers its own b = 2.",
+              "out": "second: after, b = 2\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "first()",
+                  "vars": {
+                    "a": "1"
+                  }
+                },
+                {
+                  "fn": "second()",
+                  "vars": {
+                    "b": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "second finishes: its frame is popped.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "first()",
+                  "vars": {
+                    "a": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "first prints, still remembering a = 1.",
+              "out": "first: after, a = 1\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "first()",
+                  "vars": {
+                    "a": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 21,
+              "vars": {},
+              "note": "first finishes: popped. The last frame in was the first to leave (last in, first out).",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 25,
+              "vars": {},
+              "note": "main returns and the program ends.",
+              "out": "",
+              "stack": []
+            }
+          ],
+          "types": {
+            "a": "int",
+            "b": "int",
+            "c": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Exam style: a value must be used in main after the function that created it has ended. Show (a) a plain local returned by value and (b) a box taken from the heap with new and returned as a pointer, then change the heap value through another function. Note: new and delete are explained fully in the next lesson.",
+      "pseudocode": [
+        "START",
+        "makeCopy: local x = 42 on the stack, RETURN its value (a copy); x is destroyed",
+        "makeOnHeap: ask the heap for an int box, store 42 in it, RETURN its address",
+        "main: a gets the copy, b gets the address",
+        "PRINT a and the heap value",
+        "addTen(b): add 10 to the heap box",
+        "PRINT the heap value, then delete the box",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"a = makeCopy() (stack copy)\"]\n  B --> C[\"b = makeOnHeap() (heap box)\"]\n  C --> D[/Print a and *b/]\n  D --> E[\"addTen(b)\"]\n  E --> F[/Print *b/]\n  F --> G[\"delete b\"]\n  G --> H([End])",
+      "sample": {
+        "id": "stack-copy-vs-heap-box",
+        "title": "A stack copy and a heap box that outlive their functions",
+        "code": "#include <iostream>\nusing namespace std;\n\nint makeCopy() {\n    int x = 42;\n    return x;\n}\n\nint *makeOnHeap() {\n    int *p = new int;\n    *p = 42;\n    return p;\n}\n\nvoid addTen(int *p) {\n    *p = *p + 10;\n}\n\nint main() {\n    int a = makeCopy();\n    int *b = makeOnHeap();\n    cout << \"Copy from the stack: \" << a << endl;\n    cout << \"Value on the heap: \" << *b << endl;\n    addTen(b);\n    cout << \"After addTen: \" << *b << endl;\n    delete b;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Copy from the stack: 42\nValue on the heap: 42\nAfter addTen: 52\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "x is a stack variable. Its value is copied out by return; the box x itself dies at the closing brace."
+          },
+          {
+            "line": 9,
+            "text": "new int asks the heap for one int box and gives back its address. (Next lesson.)"
+          },
+          {
+            "line": 10,
+            "text": "*p = 42 stores a number in the heap box."
+          },
+          {
+            "line": 11,
+            "text": "We return the ADDRESS. The pointer p dies with the frame, but the heap box lives on."
+          },
+          {
+            "line": 15,
+            "text": "addTen works on the caller's heap box through the address it receives."
+          },
+          {
+            "line": 20,
+            "text": "a holds a copy of the number."
+          },
+          {
+            "line": 21,
+            "text": "b holds the address of the heap box."
+          },
+          {
+            "line": 24,
+            "text": "The heap value is still there, after makeOnHeap has finished."
+          },
+          {
+            "line": 27,
+            "text": "delete gives the heap box back. Forgetting it would be a memory leak."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Stack (local variables, parameters)",
+      "when": "Allocated automatically on a call, freed automatically on return. Very fast. Small and fixed size (a few MB). Size known at compile time.",
+      "example": "int x = 5;   int arr[100];"
+    },
+    {
+      "way": "Heap (memory from new)",
+      "when": "You allocate and free it yourself. Large, limited by RAM. Slower. Size can be decided while the program runs. Needs delete.",
+      "example": "int *p = new int;   delete p;   // next lesson"
+    },
+    {
+      "way": "Global variables",
+      "when": "Created before main, live until the program ends, visible to all functions. Use sparingly.",
+      "example": "int total = 0;   // outside every function"
+    },
+    {
+      "way": "Static local variables",
+      "when": "Created once, keep their value between calls, visible only inside the function.",
+      "example": "static int kept = 0;"
+    },
+    {
+      "way": "Common problem: stack",
+      "when": "Stack overflow: endless recursion or a huge local array uses up the stack and the program crashes.",
+      "example": "void f() { f(); }   // never ends"
+    },
+    {
+      "way": "Common problem: heap",
+      "when": "Memory leak (forgot delete) or a dangling pointer (using memory after it was freed).",
+      "example": "new int;   // never deleted"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int *bad() {\n    int x = 5;\n    return &x;\n}",
+      "right": "int good() {\n    int x = 5;\n    return x;   // return the VALUE\n}",
+      "error": "g++ warns: address of local variable 'x' returned [-Wreturn-local-addr]. x lives on the stack and is destroyed when the function returns, so the returned address points to a dead box (a dangling pointer). Return the value, or use the heap."
+    },
+    {
+      "wrong": "void f() {\n    int *p = new int;\n    *p = 5;\n}   // never deleted",
+      "right": "void f() {\n    int *p = new int;\n    *p = 5;\n    delete p;\n}",
+      "error": "No compiler error. The box on the heap is never given back: a memory leak. The pointer p dies at the end of f, so the address is lost forever."
+    },
+    {
+      "wrong": "void f() {\n    f();   // calls itself with no stop\n}",
+      "right": "void f(int n) {\n    if (n == 0) return;   // a stopping case\n    f(n - 1);\n}",
+      "error": "This compiles, but when run every call adds a new frame to the stack and none is removed, until the stack is full: a stack overflow and the program crashes. (We do not run it here.)"
+    }
+  ],
+  "examTips": [
+    "Learn the table: stack = automatic, small, fast, freed on return; heap = manual (new/delete), large, slower, you must free it.",
+    "Name three kinds of variables and where they live: local on the stack, new boxes on the heap, global and static for the whole run.",
+    "In a stack trace question the last function called is on top, and it is the first one to finish (last in, first out).",
+    "Define stack overflow (stack full, e.g. infinite recursion) and memory leak (heap memory never given back) in one simple sentence each.",
+    "Never return the address of a local variable: the local is destroyed when the function ends."
+  ],
+  "romanSummary": [
+    "Stack mein local variables aur function parameters hote hain. Yeh automatic hai, tez hai, chhota hai, aur function khatam hone par khud free ho jata hai.",
+    "Heap bara area hai jahan new se memory mangte hain. Yeh manual hai, delete se khud wapas karna parta hai.",
+    "Global aur static variables poore program tak zinda rehte hain, local variable har call par naya banta aur khatam hota hai.",
+    "Stack overflow tab hota hai jab stack bhar jaye, jaise function khud ko bar bar bulaye (infinite recursion).",
+    "Memory leak tab hota hai jab heap se memory li lekin delete nahi kiya, to woh memory wapas nahi aati."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Where do ordinary local variables of a function live?",
+      "options": [
+        "On the heap",
+        "On the stack",
+        "In the code area",
+        "On the hard disk"
+      ],
+      "answer": "On the stack",
+      "hint": "Think of the pile of plates.",
+      "explanation": "Local variables and parameters are created in the function's stack frame and destroyed when the function returns."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Who is responsible for freeing memory taken from the heap?",
+      "options": [
+        "The compiler automatically",
+        "The programmer, with delete",
+        "The operating system after every line",
+        "Nobody"
+      ],
+      "answer": "The programmer, with delete",
+      "hint": "The heap is like the warehouse where you return things yourself.",
+      "explanation": "Stack memory is freed automatically. Heap memory stays until you give it back with delete (or delete[])."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nvoid f() {\n    int a = 0;\n    static int b = 0;\n    a++;\n    b++;\n    cout << a << \" \" << b << endl;\n}\n\nint main() {\n    f();\n    f();\n    return 0;\n}\n",
+      "answer": "1 1\n1 2",
+      "hint": "Which of a and b is created again at every call?",
+      "explanation": "a is a new stack box each call, so it is 1 both times. b is static: it keeps its value, so it is 1 then 2."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint count = 10;\n\nvoid up() {\n    int count = 0;\n    count++;\n}\n\nint main() {\n    up();\n    up();\n    cout << count;\n    return 0;\n}\n",
+      "answer": "10",
+      "hint": "There are two different variables called count.",
+      "explanation": "up() has its own local count that hides the global one. The global count is never changed, so main prints 10."
+    },
+    {
+      "id": "p5",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which of these can cause a stack overflow?",
+      "options": [
+        "Forgetting to delete a heap box",
+        "A function that keeps calling itself with no stopping case",
+        "Using a global variable",
+        "Printing too many lines"
+      ],
+      "answer": "A function that keeps calling itself with no stopping case",
+      "hint": "Each call adds a frame.",
+      "explanation": "Every call pushes a new frame on the stack. Endless recursion never pops them, so the stack fills up and the program crashes."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This function returns the address of a local variable, which is destroyed when the function ends. Rewrite it so it safely gives the number 5 to the caller.\n\nint *bad() {\n    int x = 5;\n    return &x;\n}",
+      "answer": "int good() {\n    int x = 5;\n    return x;\n}",
+      "hint": "Return the value, not the address.",
+      "explanation": "Returning the value copies 5 to the caller. The box x is destroyed, but the copy lives on, so this is safe."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank with 'stack' or 'heap'.\n\nMemory taken with new is on the ____ and must be freed with delete.",
+      "answer": "heap",
+      "hint": "Which area is the big warehouse?",
+      "explanation": "new takes memory from the heap. The stack is freed automatically."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "What is a memory leak?",
+      "options": [
+        "A variable that is too large",
+        "Heap memory that was taken but never given back",
+        "Using a variable before setting it",
+        "A function that returns too early"
+      ],
+      "answer": "Heap memory that was taken but never given back",
+      "hint": "Think about the manager's warehouse.",
+      "explanation": "If you take memory with new and never use delete, it stays reserved until the program ends, and the program uses more and more memory."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "z1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which area is automatic, very fast and small?",
+      "options": [
+        "The heap",
+        "The stack",
+        "The hard disk",
+        "The screen"
+      ],
+      "answer": "The stack",
+      "hint": "Think of the plates.",
+      "explanation": "The stack is managed automatically by function calls and is small and fast."
+    },
+    {
+      "id": "z2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What happens to a function's local variables when it returns?",
+      "options": [
+        "They stay for the whole program",
+        "They are destroyed automatically",
+        "They move to the heap",
+        "They become global"
+      ],
+      "answer": "They are destroyed automatically",
+      "hint": "Its stack frame is removed.",
+      "explanation": "The frame is popped from the stack, so all locals disappear."
+    },
+    {
+      "id": "z3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "main calls f, and f calls g. Which function's frame is on top of the stack while g runs?",
+      "options": [
+        "main",
+        "f",
+        "g",
+        "None of them"
+      ],
+      "answer": "g",
+      "hint": "The most recent call is on top.",
+      "explanation": "Last in, first out: g was called last, so its frame is on top and it finishes first."
+    },
+    {
+      "id": "z4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which statement about the heap is true?",
+      "options": [
+        "It is freed automatically when a function returns",
+        "It is smaller than the stack",
+        "It is large but you must free the memory yourself",
+        "It stores only global variables"
+      ],
+      "answer": "It is large but you must free the memory yourself",
+      "hint": "Warehouse, not plates.",
+      "explanation": "The heap is big, slower than the stack, and manual: you use delete."
+    },
+    {
+      "id": "z5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "A static local variable lives...",
+      "options": [
+        "only during one call",
+        "for the whole program but is visible only inside its function",
+        "on the heap until delete",
+        "in every function"
+      ],
+      "answer": "for the whole program but is visible only inside its function",
+      "hint": "Not on the stack.",
+      "explanation": "A static local is created once and keeps its value between calls, but its name can be used only in its own function."
+    }
+  ],
+  "sources": [
+    "Memory: stack segment vs heap segment",
+    "Stack frames and function calls",
+    "Where global, local and dynamic data live",
+    "Stack overflow and memory leak"
+  ]
+}

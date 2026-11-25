@@ -1,0 +1,658 @@
+{
+  "slug": "string-operations",
+  "week": 11,
+  "title": "String operations: find, substr, compare, insert, erase and more",
+  "defaultView": "visualize",
+  "order": 4,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match each string operation to what it does",
+      "pairs": [
+        {
+          "term": "s.append(\" World\")",
+          "meaning": "Adds text at the end"
+        },
+        {
+          "term": "s.push_back('!')",
+          "meaning": "Adds one character at the end"
+        },
+        {
+          "term": "s.substr(6, 5)",
+          "meaning": "Copies 5 characters starting at index 6"
+        },
+        {
+          "term": "s.find(\"abc\")",
+          "meaning": "Index of the first match, or string::npos if not found"
+        },
+        {
+          "term": "s.insert(5, \",\")",
+          "meaning": "Puts text before index 5"
+        },
+        {
+          "term": "s.erase(5, 1)",
+          "meaning": "Removes 1 character at index 5"
+        },
+        {
+          "term": "s.replace(0, 5, \"Salam\")",
+          "meaning": "Swaps the first 5 characters for new text"
+        },
+        {
+          "term": "s.empty()",
+          "meaning": "True when the string has no characters"
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each helper function to its job",
+      "pairs": [
+        {
+          "term": "isalpha(c)",
+          "meaning": "True if c is a letter"
+        },
+        {
+          "term": "isdigit(c)",
+          "meaning": "True if c is a digit 0 to 9"
+        },
+        {
+          "term": "toupper(c)",
+          "meaning": "Makes a small letter a capital"
+        },
+        {
+          "term": "tolower(c)",
+          "meaning": "Makes a capital letter small"
+        },
+        {
+          "term": "stoi(s)",
+          "meaning": "Turns the text \"42\" into the number 42"
+        },
+        {
+          "term": "to_string(n)",
+          "meaning": "Turns the number 42 into the text \"42\""
+        },
+        {
+          "term": "a == b, a < b",
+          "meaning": "Compares strings letter by letter using ASCII codes"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can edit and search strings (append, substr, find, insert, erase, replace), compare strings, convert between text and numbers, use <cctype> functions and write small programs such as counting vowels, reversing a string and checking a palindrome.",
+  "warmup": "Think of your WhatsApp name or a message you type: you add a word at the end, delete a mistake, search for a word in a long chat, change \"Hello\" to \"Salam\", or check whether two names are the same. A string in C++ can do every one of these with a ready-made function.",
+  "definition": "The std::string class comes with member functions. A member function is called with a dot after the string: s.length(). Positions are called indexes and start at 0. find returns the index of a match, or the special value string::npos (\"no position\") when nothing matches. The header <cctype> adds simple functions that work on ONE character: isalpha, isdigit, toupper, tolower. The functions stoi and to_string convert between text and numbers.",
+  "howItWorks": "Follow the trace of the first example and watch s change. append(text) adds at the end and push_back(ch) adds one character. substr(start, count) gives a COPY of a piece; the original is unchanged. find(text) gives the index of the first match. ALWAYS compare with string::npos before using the answer: if (s.find(\"x\") != string::npos) means found. insert(index, text) puts text before that index. erase(index, count) removes characters. replace(index, count, text) swaps a part for new text. empty() is true for a string with no characters. COMPARING: you can use ==, !=, <, >, <=, >= directly on strings. They compare letter by letter by ASCII code, so \"apple\" < \"banana\", and \"Zebra\" < \"apple\" because capital letters have smaller codes than small letters. a.compare(b) gives a negative number, 0 or a positive number (rely only on its sign). CHARACTER FUNCTIONS (<cctype>): isalpha(c), isdigit(c), toupper(c), tolower(c). They work on one char, so use them inside a loop over the string. CONVERTING: stoi(\"42\") gives the int 42 and to_string(43) gives the text \"43\". stoi expects digits; text such as \"abc\" cannot be converted. PATTERNS: count vowels (loop, tolower, compare with a, e, i, o, u); reverse a string (build a new one with rev = ch + rev, or swap the characters from both ends); palindrome (a word equal to its own reverse, such as level or Madam if you ignore case).",
+  "syntax": "string s = \"Hello\";\ns.append(\" World\");        // Hello World\ns.push_back('!');            // Hello World!\ns.substr(6, 5);             // \"World\" (start, count)\ns.find(\"World\");            // 6, or string::npos if missing\ns.insert(5, \",\");            // Hello, World!\ns.erase(5, 1);              // remove 1 char at index 5\ns.replace(0, 5, \"Salam\");   // change first 5 chars\ns.empty();                  // true if length is 0\na == b;  a < b;  a.compare(b);   // comparison\n\n#include <cctype>\nisalpha(c); isdigit(c); toupper(c); tolower(c);\n\nint n = stoi(\"42\");          // text -> number\nstring t = to_string(n + 1); // number -> text",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Start with the string Hello. Add World and an exclamation mark, take a piece, search for a word, then insert, erase and replace. Print the string after each stage.",
+      "pseudocode": [
+        "START",
+        "s = Hello; append World; push_back !",
+        "PRINT s, then substr(6, 5)",
+        "pos = find(World); also try find(xyz) and compare with npos",
+        "insert a comma at 5, then erase it again",
+        "replace the first 5 characters with Salam",
+        "PRINT s and e.empty()",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"s = Hello\"]\n  B --> C[\"append and push_back\"]\n  C --> D[\"substr and find\"]\n  D --> E[\"insert, erase, replace\"]\n  E --> F[/Print results/]\n  F --> G([End])",
+      "sample": {
+        "id": "string-edit-find",
+        "title": "append, push_back, substr, find, insert, erase, replace, empty",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s = \"Hello\";\n    s.append(\" World\");\n    s.push_back('!');\n    cout << s << endl;\n    cout << s.substr(6, 5) << endl;\n    size_t pos = s.find(\"World\");\n    cout << \"World at \" << pos << endl;\n    if (s.find(\"xyz\") == string::npos) {\n        cout << \"xyz not found\" << endl;\n    }\n    s.insert(5, \",\");\n    cout << s << endl;\n    s.erase(5, 1);\n    s.replace(0, 5, \"Salam\");\n    cout << s << endl;\n    string e;\n    cout << \"empty: \" << e.empty() << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Hello World!\nWorld\nWorld at 6\nxyz not found\nHello, World!\nSalam World!\nempty: 1\n",
+        "explanation": [
+          {
+            "line": 7,
+            "text": "append(text) adds text at the end (s += text does the same)."
+          },
+          {
+            "line": 8,
+            "text": "push_back(ch) adds one character."
+          },
+          {
+            "line": 10,
+            "text": "substr(start, count) returns a piece of the string."
+          },
+          {
+            "line": 11,
+            "text": "find returns a size_t index."
+          },
+          {
+            "line": 13,
+            "text": "npos means not found. Always compare find's result with it."
+          },
+          {
+            "line": 16,
+            "text": "insert(index, text) adds text before that index."
+          },
+          {
+            "line": 18,
+            "text": "erase(index, count) removes characters."
+          },
+          {
+            "line": 19,
+            "text": "replace(index, count, text) swaps a part of the string for other text."
+          },
+          {
+            "line": 22,
+            "text": "empty() tells whether the string has no characters."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 6,
+              "vars": {
+                "s": "\"Hello\""
+              },
+              "note": "s starts as Hello. Index: H0 e1 l2 l3 o4.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "s": "\"Hello World\""
+              },
+              "note": "append adds text at the end.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "s": "\"Hello World!\""
+              },
+              "note": "push_back adds ONE character at the end.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Print s.",
+              "out": "Hello World!\n"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "substr(start, count): from index 6 take 5 characters. Index 6 is the W of World. s itself is not changed.",
+              "out": "World\n"
+            },
+            {
+              "line": 11,
+              "vars": {
+                "pos": "6"
+              },
+              "note": "find returns the index where World starts: 6.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Print the position.",
+              "out": "World at 6\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "xyz is not in s, so find returns the special value string::npos. The if is true.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Print the message.",
+              "out": "xyz not found\n"
+            },
+            {
+              "line": 16,
+              "vars": {
+                "s": "\"Hello, World!\""
+              },
+              "note": "insert(index, text) puts the text BEFORE index 5, so a comma goes after Hello.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "Print s.",
+              "out": "Hello, World!\n"
+            },
+            {
+              "line": 18,
+              "vars": {
+                "s": "\"Hello World!\""
+              },
+              "note": "erase(index, count) removes 1 character at index 5: the comma is gone.",
+              "out": ""
+            },
+            {
+              "line": 19,
+              "vars": {
+                "s": "\"Salam World!\""
+              },
+              "note": "replace(index, count, text) swaps the first 5 characters (Hello) for Salam.",
+              "out": ""
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "Print s.",
+              "out": "Salam World!\n"
+            },
+            {
+              "line": 21,
+              "vars": {
+                "e": "\"\""
+              },
+              "note": "e is an empty string.",
+              "out": ""
+            },
+            {
+              "line": 22,
+              "vars": {},
+              "note": "empty() is true (printed as 1) when the length is 0.",
+              "out": "empty: 1\n"
+            },
+            {
+              "line": 23,
+              "vars": {},
+              "note": "Done.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "s": "string",
+            "pos": "size_t",
+            "e": "string"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Compare two strings, read a line such as Room 42 B and count its letters and digits, make it capital, then turn its digits into a number, add 1 and turn it back into text.",
+      "pseudocode": [
+        "START",
+        "COMPARE apple and banana, and Zebra and apple",
+        "READ line with getline",
+        "FOR each character: count letters (isalpha), count digits (isdigit) and collect them, make upper",
+        "value = stoi(digits)",
+        "PRINT counts, upper text, value and to_string(value + 1)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Compare apple and banana\"]\n  B --> C[/Read a line/]\n  C --> D{\"More characters?\"}\n  D -- Yes --> E{\"Letter or digit?\"}\n  E --> F[\"Count it, collect digits, make upper\"]\n  F --> D\n  D -- No --> G[\"stoi on the digits, add 1, to_string\"]\n  G --> H[/Print results/]\n  H --> I([End])",
+      "sample": {
+        "id": "compare-and-cctype",
+        "title": "Compare strings, use <cctype>, stoi and to_string",
+        "code": "#include <iostream>\n#include <string>\n#include <cctype>\nusing namespace std;\n\nint main() {\n    string a = \"apple\";\n    string b = \"banana\";\n    if (a < b) {\n        cout << a << \" comes before \" << b << endl;\n    }\n    cout << \"compare is negative: \" << (a.compare(b) < 0) << endl;\n    string x = \"Zebra\";\n    string y = \"apple\";\n    if (x < y) {\n        cout << \"Zebra < apple is true\" << endl;\n    }\n\n    string line;\n    getline(cin, line);\n    int letters = 0;\n    int digits = 0;\n    string num = \"\";\n    string up = line;\n    for (size_t i = 0; i < line.length(); i++) {\n        if (isalpha(line[i])) {\n            letters++;\n        }\n        if (isdigit(line[i])) {\n            digits++;\n            num += line[i];\n        }\n        up[i] = toupper(line[i]);\n    }\n    cout << \"Letters: \" << letters << endl;\n    cout << \"Digits: \" << digits << endl;\n    cout << \"Upper: \" << up << endl;\n    int value = stoi(num);\n    cout << \"Number found: \" << value << \", plus one: \" << to_string(value + 1) << endl;\n    return 0;\n}\n",
+        "stdin": "Room 42 B\n",
+        "graphics": false,
+        "expectedOutput": "apple comes before banana\ncompare is negative: 1\nZebra < apple is true\nLetters: 5\nDigits: 2\nUpper: ROOM 42 B\nNumber found: 42, plus one: 43\n",
+        "explanation": [
+          {
+            "line": 3,
+            "text": "<cctype> has the character functions isalpha, isdigit, toupper and more."
+          },
+          {
+            "line": 9,
+            "text": "Strings are compared letter by letter in dictionary order: a comes before b, so apple < banana."
+          },
+          {
+            "line": 12,
+            "text": "compare returns a negative number when a is smaller, 0 when equal, a positive number when bigger. We only test the sign."
+          },
+          {
+            "line": 15,
+            "text": "Comparison uses ASCII codes: every capital letter (Z is 90) is smaller than every small letter (a is 97)."
+          },
+          {
+            "line": 20,
+            "text": "Reads the whole line Room 42 B."
+          },
+          {
+            "line": 26,
+            "text": "True for letters only."
+          },
+          {
+            "line": 29,
+            "text": "True for the characters 0 to 9."
+          },
+          {
+            "line": 31,
+            "text": "Collect the digit characters into a string: 42."
+          },
+          {
+            "line": 33,
+            "text": "toupper turns a small letter into a capital; other characters stay as they are."
+          },
+          {
+            "line": 38,
+            "text": "stoi (string to int) turns the text 42 into the number 42."
+          },
+          {
+            "line": 39,
+            "text": "to_string turns a number into text."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Read a word. Count its vowels, print it reversed and say whether it is a palindrome (ignore capital or small letters).",
+      "pseudocode": [
+        "START",
+        "READ w",
+        "FOR each character: c = tolower(character)",
+        "IF c is a vowel then vowels = vowels + 1",
+        "Add the character to the front of rev; add c to lower and to the front of lowerRev",
+        "PRINT vowels and rev",
+        "IF lower equals lowerRev: palindrome ELSE not",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read word w/]\n  B --> C{\"More characters?\"}\n  C -- Yes --> D[\"Make the letter lowercase\"]\n  D --> E{\"Vowel?\"}\n  E -- Yes --> F[\"vowels = vowels + 1\"]\n  E -- No --> G[\"Add to rev and to the lowercase copies\"]\n  F --> G\n  G --> C\n  C -- No --> H{\"lower equals lowerRev?\"}\n  H -- Yes --> I[/Palindrome/]\n  H -- No --> J[/Not a palindrome/]\n  I --> K([End])\n  J --> K",
+      "sample": {
+        "id": "vowels-reverse-palindrome",
+        "title": "Count vowels, reverse a string and test a palindrome",
+        "code": "#include <iostream>\n#include <string>\n#include <cctype>\nusing namespace std;\n\nint main() {\n    string w;\n    cin >> w;\n    int vowels = 0;\n    string rev = \"\";\n    string lower = \"\";\n    string lowerRev = \"\";\n    for (size_t i = 0; i < w.length(); i++) {\n        char c = tolower(w[i]);\n        if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {\n            vowels++;\n        }\n        rev = w[i] + rev;\n        lower = lower + c;\n        lowerRev = c + lowerRev;\n    }\n    cout << \"Vowels: \" << vowels << endl;\n    cout << \"Reversed: \" << rev << endl;\n    if (lower == lowerRev) {\n        cout << w << \" is a palindrome (ignoring case)\" << endl;\n    } else {\n        cout << w << \" is not a palindrome\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "Madam\n",
+        "graphics": false,
+        "expectedOutput": "Vowels: 2\nReversed: madaM\nMadam is a palindrome (ignoring case)\n",
+        "explanation": [
+          {
+            "line": 8,
+            "text": "Reads one word. The input is Madam."
+          },
+          {
+            "line": 14,
+            "text": "Make the letter small so that A and a are treated alike."
+          },
+          {
+            "line": 15,
+            "text": "A letter is a vowel when it is a, e, i, o or u."
+          },
+          {
+            "line": 18,
+            "text": "Put each new character IN FRONT of what we have: this builds the reversed string."
+          },
+          {
+            "line": 19,
+            "text": "Builds the lowercase copy."
+          },
+          {
+            "line": 20,
+            "text": "Builds the reversed lowercase copy."
+          },
+          {
+            "line": 24,
+            "text": "A palindrome reads the same both ways. == compares the two strings."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "append(text) or +=",
+      "when": "Add text at the end.",
+      "example": "s.append(\"abc\");   // same as s += \"abc\";"
+    },
+    {
+      "way": "push_back(ch)",
+      "when": "Add one character at the end.",
+      "example": "s.push_back('!');"
+    },
+    {
+      "way": "substr(start, count)",
+      "when": "Take a piece. Leaving out count takes everything from start.",
+      "example": "s.substr(6, 5);   // World"
+    },
+    {
+      "way": "find(text)",
+      "when": "Search. Compare with string::npos.",
+      "example": "if (s.find(\"cat\") != string::npos) { /* found */ }"
+    },
+    {
+      "way": "insert(index, text)",
+      "when": "Put text inside, before index.",
+      "example": "s.insert(5, \",\");"
+    },
+    {
+      "way": "erase(index, count)",
+      "when": "Remove characters.",
+      "example": "s.erase(5, 1);"
+    },
+    {
+      "way": "replace(index, count, text)",
+      "when": "Change a part of the string.",
+      "example": "s.replace(0, 5, \"Salam\");"
+    },
+    {
+      "way": "empty()",
+      "when": "Check for an empty string (better than length() == 0).",
+      "example": "if (s.empty()) cout << \"nothing\";"
+    },
+    {
+      "way": "== != < > <= >=, compare()",
+      "when": "Compare two strings by ASCII (dictionary) order.",
+      "example": "if (a == b) ...\nif (a.compare(b) < 0) ..."
+    },
+    {
+      "way": "isalpha / isdigit / toupper / tolower",
+      "when": "Check or change ONE character (header <cctype>).",
+      "example": "if (isdigit(s[i])) count++;\ns[i] = toupper(s[i]);"
+    },
+    {
+      "way": "stoi / to_string",
+      "when": "Convert text to int, or a number to text.",
+      "example": "int n = stoi(\"42\");\nstring t = to_string(n);"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "string s = \"Hello\";\nint pos = s.find(\"xyz\");\ncout << s.substr(pos);   // pos is not a real index",
+      "right": "size_t pos = s.find(\"xyz\");\nif (pos != string::npos) {\n    cout << s.substr(pos);\n}",
+      "error": "No compiler error. When the text is not found, find returns string::npos (a huge number), and using it as an index is wrong. Always check against string::npos first."
+    },
+    {
+      "wrong": "string a = \"cat\", b = \"Dog\";\nif (a < b) cout << \"cat first\";   // expects true",
+      "right": "// make both the same case before comparing\nif (a[0] == 'c' && tolower(b[0]) == 'd') ...",
+      "error": "No compiler error, but the result may surprise you: comparison uses ASCII codes, so capital letters (D is 68) come before small letters (c is 99). The test a < b is false here. Convert both words to the same case before comparing."
+    },
+    {
+      "wrong": "string t = \"abc\" + 5;\nstring u = \"Total: \" + 5;",
+      "right": "string u = \"Total: \" + to_string(5);",
+      "error": "Not a joined string: adding a number to a quoted text with + does not append the digits (it only moves along the characters of the text, which is a bug). Convert the number with to_string first."
+    },
+    {
+      "wrong": "char c = 'a';\nstring s = \"x\";\nif (s == c) ...   // comparing a string with a char",
+      "right": "if (s[0] == c) ...",
+      "error": "A string and a single char are different types. Compare a character of the string (s[0]) with the char."
+    },
+    {
+      "wrong": "s.erase(5);   // thinking this removes ONE character",
+      "right": "s.erase(5, 1);   // remove exactly one character at index 5",
+      "error": "No compiler error, but erase(5) with one argument removes everything from index 5 to the end of the string."
+    }
+  ],
+  "examTips": [
+    "Remember the pattern: function(index, count, text): insert(index, text), erase(index, count), replace(index, count, text), substr(start, count).",
+    "find returns string::npos when nothing matches. Write: if (s.find(x) != string::npos).",
+    "Comparing strings uses ASCII codes: capitals before small letters; shorter prefix before longer word (\"app\" < \"apple\").",
+    "For count vowels / reverse / palindrome write a for loop from i = 0 to i < s.length(). To build a reversed string use rev = s[i] + rev.",
+    "stoi: string to int. to_string: number to string. The character functions need #include <cctype>."
+  ],
+  "romanSummary": [
+    "append() aur push_back() string ke aakhir mein cheez jorte hain; substr(start, count) ek hissa nikalta hai; find() index deta hai ya string::npos agar na mile.",
+    "insert(index, text) beech mein jorta hai, erase(index, count) mitata hai, replace(index, count, text) badalta hai, empty() batata hai string khali hai ya nahi.",
+    "Strings ko ==, <, > se compare kar sakte hain; ye ASCII code ke hisaab se hota hai, is liye capital letters small se pehle aate hain.",
+    "<cctype> ke functions: isalpha, isdigit, toupper, tolower (ek character par). stoi text ko number banata hai, to_string number ko text.",
+    "Vowels ginna, string ulta karna aur palindrome check karna sab loop se hota hai jo s.length() tak chalta hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    string s = \"Programming\";\n    cout << s.substr(0, 7) << endl;\n    return 0;\n}",
+      "answer": "Program",
+      "hint": "substr(start, count): 7 characters from index 0.",
+      "explanation": "P-r-o-g-r-a-m are the first 7 characters."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    string s = \"Programming Fundamentals\";\n    cout << s.find(\"Fund\") << endl;\n    return 0;\n}",
+      "answer": "12",
+      "hint": "Count the characters before Fund, including the space.",
+      "explanation": "Programming has 11 letters (index 0-10), the space is index 11, so Fund starts at index 12."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    string s = \"Hello World\";\n    s.erase(5, 1);\n    s.insert(5, \"-\");\n    s.replace(0, 5, \"Bye\");\n    cout << s << endl;\n    return 0;\n}",
+      "answer": "Bye-World",
+      "hint": "Do the three changes in order.",
+      "explanation": "erase removes the space: HelloWorld. insert puts - at index 5: Hello-World. replace changes the first 5 characters (Hello) for Bye: Bye-World."
+    },
+    {
+      "id": "p4",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does s.find(\"z\") return when s has no z?",
+      "options": [
+        "0",
+        "-1 as an int you can print safely",
+        "string::npos",
+        "an empty string"
+      ],
+      "answer": "string::npos",
+      "hint": "A special 'no position' value.",
+      "explanation": "find returns string::npos when the text is not found. Check for it before using the index."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    string a = \"Zebra\";\n    string b = \"apple\";\n    if (a < b) cout << \"Zebra first\" << endl;\n    else cout << \"apple first\" << endl;\n    return 0;\n}",
+      "answer": "Zebra first",
+      "hint": "Compare ASCII codes: Z is 90, a is 97.",
+      "explanation": "Capital letters have smaller ASCII codes than small letters, so Zebra < apple is true."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank to turn the text \"250\" into a number:\n\nstring t = \"250\";\nint n = ______(t);",
+      "answer": "stoi",
+      "hint": "string to int.",
+      "explanation": "stoi converts text that holds digits into an int."
+    },
+    {
+      "id": "p7",
+      "type": "bug",
+      "difficulty": "hard",
+      "prompt": "This program should count the digits in s, but it fails to compile or gives wrong counts. Fix it.\n\nstring s = \"a1b22\";\nint count = 0;\nfor (size_t i = 0; i < s.length(); i++) {\n    if (isdigit(s)) count++;\n}",
+      "answer": "Use isdigit(s[i]) instead of isdigit(s)",
+      "hint": "isdigit works on ONE character.",
+      "explanation": "isdigit needs a single character, so pass s[i], not the whole string. Also include <cctype>. The count for a1b22 is 3."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write code that reverses the string s into a new string rev using a loop.",
+      "answer": "string rev = \"\";\nfor (size_t i = 0; i < s.length(); i++) {\n    rev = s[i] + rev;\n}",
+      "hint": "Put each new character in FRONT of rev.",
+      "explanation": "Each character is added before everything collected so far, so the last character of s ends up first."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which function adds one character at the end of a string?",
+      "options": [
+        "erase",
+        "push_back",
+        "substr",
+        "find"
+      ],
+      "answer": "push_back",
+      "hint": "Think of pushing to the back.",
+      "explanation": "push_back(ch) adds a single character. append adds text."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which header is needed for isalpha and toupper?",
+      "options": [
+        "<cctype>",
+        "<cstring>",
+        "<cmath>",
+        "<iomanip>"
+      ],
+      "answer": "<cctype>",
+      "hint": "c + ctype.",
+      "explanation": "The character-classification functions are declared in <cctype>."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What does s.substr(2, 3) give for s = \"abcdefg\"?",
+      "options": [
+        "bcd",
+        "cde",
+        "cdefg",
+        "abc"
+      ],
+      "answer": "cde",
+      "hint": "Start at index 2, take 3 characters.",
+      "explanation": "Index 2 is c, so the 3 characters are c, d, e."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which is true about stoi and to_string?",
+      "options": [
+        "Both turn text into numbers",
+        "stoi turns text into an int and to_string turns a number into text",
+        "Both turn numbers into text",
+        "They compare two strings"
+      ],
+      "answer": "stoi turns text into an int and to_string turns a number into text",
+      "hint": "Two opposite conversions.",
+      "explanation": "stoi(\"42\") is 42 and to_string(42) is \"42\"."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "A word is a palindrome when...",
+      "options": [
+        "it has only vowels",
+        "it reads the same forwards and backwards",
+        "it has an even length",
+        "it is in capital letters"
+      ],
+      "answer": "it reads the same forwards and backwards",
+      "hint": "level, madam.",
+      "explanation": "Compare the word with its reverse. If they are equal, it is a palindrome."
+    }
+  ],
+  "sources": [
+    "String operations with the string class",
+    "Searching, comparison, concatenation",
+    "String functions: substr, find, replace, insert, erase",
+    "Palindrome check"
+  ]
+}

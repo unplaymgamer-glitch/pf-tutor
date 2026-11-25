@@ -1,0 +1,531 @@
+{
+  "slug": "graphics-functions",
+  "week": 15,
+  "title": "Common graphics.h functions",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "canvas",
+      "title": "Line, rectangle, circle, ellipse and arc, each with its own colour",
+      "sampleId": "shapes-tour"
+    },
+    {
+      "kind": "canvas",
+      "title": "Background colour and filling closed shapes",
+      "sampleId": "colours-fill"
+    },
+    {
+      "kind": "canvas",
+      "title": "Exam drawing: a traffic light with text",
+      "sampleId": "traffic-light"
+    }
+  ],
+  "goal": "After this you can pick the right graphics.h function for each shape, set colours in the correct order, fill a closed shape and write text on the graphics screen.",
+  "warmup": "Think of a painter making a signboard for a shop in the bazaar. He first picks the brush colour, then draws the outline, then fills it with paint. If he paints first and picks the colour afterwards, the sign comes out wrong. Graphics programs work the same way: choose the colour, then draw.",
+  "definition": "graphics.h gives you ready-made functions to draw on the screen: one function per kind of shape (line, rectangle, circle, ellipse, arc), functions to choose colours, and functions to fill and write text. You call initgraph first to switch the screen into graphics mode and closegraph last. graphics.h is not standard C++. It runs only on a lab PC with Turbo C++ (DOSBox) or Code::Blocks/Dev-C++ plus the WinBGIm library, so the in-page compiler cannot run these programs. The canvas on this page is a simulation that draws what the same calls would draw.",
+  "howItWorks": "Every program has the same frame: initgraph at the start, drawing in the middle, getch to wait for a key, closegraph at the end. In the middle follow one rule: SET the colour BEFORE the shape that should use it, because setcolor only affects shapes drawn after it. Colours are named constants such as RED, GREEN, YELLOW and WHITE (really small numbers, but use the names). To colour the inside of a shape, call setfillstyle(SOLID_FILL, colour) and then floodfill(x, y, border) with a point INSIDE the shape; the third argument must be the colour of the outline, and the outline must be CLOSED, otherwise the colour leaks out and floods the whole screen. Angles for ellipse and arc are in degrees (0 to 360).",
+  "syntax": "int gd = DETECT, gm;                      // DETECT = choose the driver automatically\ninitgraph(&gd, &gm, (char*)\"\");          // graphics mode ON (path is \"\" with WinBGIm)\n\nsetbkcolor(BLUE);  cleardevice();         // background colour, then clear to show it\nsetcolor(YELLOW);                         // colour for the NEXT shapes\nline(x1, y1, x2, y2);                     // straight line\nrectangle(left, top, right, bottom);      // outline\ncircle(x, y, radius);                     // centre (x, y)\nellipse(x, y, 0, 360, xr, yr);            // full ellipse (0 to 360 degrees)\narc(x, y, 0, 180, r);                     // half circle\nsetfillstyle(SOLID_FILL, RED);            // pattern and colour of the fill\nfloodfill(x, y, YELLOW);                  // (x, y) INSIDE; YELLOW = outline colour\nouttextxy(x, y, (char*)\"Hello\");         // text starting at (x, y)\ndelay(500);                               // pause 500 ms\ngetch();                                  // wait for a key\nclosegraph();                             // graphics mode OFF",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Draw one of each basic shape in a different colour: a white line, a yellow rectangle, a light green circle, a light cyan ellipse and a light red half circle (arc).",
+      "pseudocode": [
+        "START",
+        "Switch to graphics mode",
+        "Set colour WHITE, draw a line",
+        "Set colour YELLOW, draw a rectangle",
+        "Set colour LIGHTGREEN, draw a circle",
+        "Set colour LIGHTCYAN, draw an ellipse",
+        "Set colour LIGHTRED, draw an arc (0 to 180 degrees)",
+        "Wait for a key, then close graphics",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  N0([\"Start\"])\n  N1[\"Switch to graphics mode\"]\n  N2[\"setcolor then line\"]\n  N3[\"setcolor then rectangle\"]\n  N4[\"setcolor then circle\"]\n  N5[\"setcolor then ellipse\"]\n  N6[\"setcolor then arc\"]\n  N7[\"Wait for key, close graphics\"]\n  N8([\"End\"])\n  N0 --> N1\n  N1 --> N2\n  N2 --> N3\n  N3 --> N4\n  N4 --> N5\n  N5 --> N6\n  N6 --> N7\n  N7 --> N8",
+      "sample": {
+        "id": "shapes-tour",
+        "title": "A tour of the basic shapes",
+        "code": "#include <graphics.h>\n#include <conio.h>\n\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    setcolor(WHITE);\n    line(50, 50, 250, 50);\n    setcolor(YELLOW);\n    rectangle(50, 100, 250, 200);\n    setcolor(LIGHTGREEN);\n    circle(400, 150, 50);\n    setcolor(LIGHTCYAN);\n    ellipse(150, 320, 0, 360, 100, 50);\n    setcolor(LIGHTRED);\n    arc(400, 350, 0, 180, 60);\n    getch();\n    closegraph();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": true,
+        "expectedOutput": "",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "Brings in the graphics library. graphics.h is NOT standard C++: it exists only in Turbo C++ / WinBGIm setups."
+          },
+          {
+            "line": 6,
+            "text": "gd (graphics driver) is set to DETECT so the library finds the screen mode itself. gm (graphics mode) is filled in by initgraph."
+          },
+          {
+            "line": 7,
+            "text": "Switches the screen to graphics mode. With WinBGIm the path can be empty."
+          },
+          {
+            "line": 8,
+            "text": "Colour first, shape second: this white applies to the line below it."
+          },
+          {
+            "line": 9,
+            "text": "From (50, 50) to (250, 50). Same y at both ends, so it is horizontal."
+          },
+          {
+            "line": 11,
+            "text": "Outline with top-left (50, 100) and bottom-right (250, 200)."
+          },
+          {
+            "line": 13,
+            "text": "Centre (400, 150), radius 50, so it is 100 pixels across."
+          },
+          {
+            "line": 15,
+            "text": "Centre (150, 320); 0 and 360 mean the full ellipse; xr = 100 wide, yr = 50 tall."
+          },
+          {
+            "line": 17,
+            "text": "Part of a circle of radius 60 from 0 to 180 degrees. Angles go counter-clockwise from 3 o'clock, so this is the upper half."
+          },
+          {
+            "line": 18,
+            "text": "Waits for a key press so the picture stays on the screen."
+          },
+          {
+            "line": 19,
+            "text": "Leaves graphics mode and frees its memory."
+          }
+        ]
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Make the background blue, then draw a white rectangle filled with green and a yellow circle filled with red.",
+      "pseudocode": [
+        "START",
+        "Switch to graphics mode",
+        "Set the background BLUE and clear the screen",
+        "Set colour WHITE, draw the rectangle",
+        "Set fill GREEN, floodfill inside the rectangle (border WHITE)",
+        "Set colour YELLOW, draw the circle",
+        "Set fill RED, floodfill inside the circle (border YELLOW)",
+        "Wait for a key, then close graphics",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  N0([\"Start\"])\n  N1[\"Switch to graphics mode\"]\n  N2[\"Background BLUE, clear screen\"]\n  N3[\"Colour WHITE, rectangle\"]\n  N4[\"Fill GREEN inside, border WHITE\"]\n  N5[\"Colour YELLOW, circle\"]\n  N6[\"Fill RED inside, border YELLOW\"]\n  N7[\"Wait for key, close graphics\"]\n  N8([\"End\"])\n  N0 --> N1\n  N1 --> N2\n  N2 --> N3\n  N3 --> N4\n  N4 --> N5\n  N5 --> N6\n  N6 --> N7\n  N7 --> N8",
+      "sample": {
+        "id": "colours-fill",
+        "title": "Background colour and filling closed shapes",
+        "code": "#include <graphics.h>\n#include <conio.h>\n\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    setbkcolor(BLUE);\n    cleardevice();\n    setcolor(WHITE);\n    rectangle(100, 100, 300, 250);\n    setfillstyle(SOLID_FILL, GREEN);\n    floodfill(150, 150, WHITE);\n    setcolor(YELLOW);\n    circle(450, 170, 60);\n    setfillstyle(SOLID_FILL, RED);\n    floodfill(450, 170, YELLOW);\n    getch();\n    closegraph();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": true,
+        "expectedOutput": "",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "Brings in the graphics library. graphics.h is NOT standard C++: it exists only in Turbo C++ / WinBGIm setups."
+          },
+          {
+            "line": 6,
+            "text": "gd (graphics driver) is set to DETECT so the library finds the screen mode itself. gm (graphics mode) is filled in by initgraph."
+          },
+          {
+            "line": 7,
+            "text": "Switches the screen to graphics mode. With WinBGIm the path can be empty."
+          },
+          {
+            "line": 8,
+            "text": "Chooses the background colour."
+          },
+          {
+            "line": 9,
+            "text": "Clears the screen so the new background is shown. (On some WinBGIm setups the background changes only after cleardevice.)"
+          },
+          {
+            "line": 11,
+            "text": "A closed white outline from (100, 100) to (300, 250)."
+          },
+          {
+            "line": 12,
+            "text": "Next fill will be solid green. Nothing is painted yet."
+          },
+          {
+            "line": 13,
+            "text": "Paints from the point (150, 150), which is inside the rectangle, and stops at WHITE pixels. WHITE is the outline colour."
+          },
+          {
+            "line": 15,
+            "text": "Yellow circle drawn with the colour set just before."
+          },
+          {
+            "line": 17,
+            "text": "The centre of the circle is inside it; the border colour is YELLOW, the colour of the circle outline."
+          },
+          {
+            "line": 18,
+            "text": "Waits for a key press so the picture stays on the screen."
+          },
+          {
+            "line": 19,
+            "text": "Leaves graphics mode and frees its memory."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Draw a traffic light: a white rectangular box with three circles inside it (red at the top, yellow in the middle, green at the bottom), each filled with its own colour, and the text TRAFFIC LIGHT below the box.",
+      "pseudocode": [
+        "START",
+        "Switch to graphics mode",
+        "Colour WHITE, draw the box rectangle",
+        "FOR each lamp (red, yellow, green) from top to bottom:",
+        "    set the colour, draw the circle, set the fill, floodfill with the same colour as border",
+        "Colour WHITE, write the text below the box",
+        "Wait for a key, then close graphics",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  N0([\"Start\"])\n  N1[\"Switch to graphics mode\"]\n  N2[\"Colour WHITE, draw box\"]\n  N3[\"Red lamp: circle then fill\"]\n  N4[\"Yellow lamp: circle then fill\"]\n  N5[\"Green lamp: circle then fill\"]\n  N6[\"Colour WHITE, write text\"]\n  N7[\"Wait for key, close graphics\"]\n  N8([\"End\"])\n  N0 --> N1\n  N1 --> N2\n  N2 --> N3\n  N3 --> N4\n  N4 --> N5\n  N5 --> N6\n  N6 --> N7\n  N7 --> N8",
+      "sample": {
+        "id": "traffic-light",
+        "title": "Traffic light with text",
+        "code": "#include <graphics.h>\n#include <conio.h>\n\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    setcolor(WHITE);\n    rectangle(270, 60, 370, 300);\n    setcolor(RED);\n    circle(320, 110, 30);\n    setfillstyle(SOLID_FILL, RED);\n    floodfill(320, 110, RED);\n    setcolor(YELLOW);\n    circle(320, 180, 30);\n    setfillstyle(SOLID_FILL, YELLOW);\n    floodfill(320, 180, YELLOW);\n    setcolor(GREEN);\n    circle(320, 250, 30);\n    setfillstyle(SOLID_FILL, GREEN);\n    floodfill(320, 250, GREEN);\n    setcolor(WHITE);\n    outtextxy(280, 320, (char*)\"TRAFFIC LIGHT\");\n    getch();\n    closegraph();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": true,
+        "expectedOutput": "",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "Brings in the graphics library. graphics.h is NOT standard C++: it exists only in Turbo C++ / WinBGIm setups."
+          },
+          {
+            "line": 6,
+            "text": "gd (graphics driver) is set to DETECT so the library finds the screen mode itself. gm (graphics mode) is filled in by initgraph."
+          },
+          {
+            "line": 7,
+            "text": "Switches the screen to graphics mode. With WinBGIm the path can be empty."
+          },
+          {
+            "line": 9,
+            "text": "The box: 100 wide (270 to 370) and 240 tall (60 to 300)."
+          },
+          {
+            "line": 11,
+            "text": "Red lamp: centre x = 320 is the middle of the box, y = 110 is near the top."
+          },
+          {
+            "line": 13,
+            "text": "Fills inside the red outline; border colour = RED because the circle was drawn in RED."
+          },
+          {
+            "line": 15,
+            "text": "Yellow lamp 70 pixels lower (y grows downwards)."
+          },
+          {
+            "line": 17,
+            "text": "Same idea: border colour equals the colour used for that circle."
+          },
+          {
+            "line": 19,
+            "text": "Green lamp at the bottom, y = 250."
+          },
+          {
+            "line": 21,
+            "text": "Fill the green lamp."
+          },
+          {
+            "line": 23,
+            "text": "Writes the text with its top-left at (280, 320), below the box. The (char*) cast keeps older Turbo C++ compilers happy."
+          },
+          {
+            "line": 24,
+            "text": "Waits for a key press so the picture stays on the screen."
+          },
+          {
+            "line": 25,
+            "text": "Leaves graphics mode and frees its memory."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "initgraph(&gd, &gm, path) / closegraph()",
+      "when": "First and last graphics calls of every program",
+      "example": "int gd = DETECT, gm; initgraph(&gd, &gm, (char*)\"\");"
+    },
+    {
+      "way": "putpixel(x, y, color)",
+      "when": "One dot",
+      "example": "putpixel(10, 10, WHITE);"
+    },
+    {
+      "way": "line(x1, y1, x2, y2)",
+      "when": "Straight line between two points",
+      "example": "line(50, 50, 250, 50);"
+    },
+    {
+      "way": "rectangle(left, top, right, bottom)",
+      "when": "Box outline",
+      "example": "rectangle(50, 100, 250, 200);"
+    },
+    {
+      "way": "circle(x, y, radius)",
+      "when": "Circle outline, centre (x, y)",
+      "example": "circle(400, 150, 50);"
+    },
+    {
+      "way": "ellipse(x, y, start, end, xr, yr)",
+      "when": "Ellipse or part of one",
+      "example": "ellipse(150, 320, 0, 360, 100, 50);"
+    },
+    {
+      "way": "arc(x, y, start, end, r)",
+      "when": "Part of a circle, angles in degrees",
+      "example": "arc(400, 350, 0, 180, 60);"
+    },
+    {
+      "way": "setcolor(color)",
+      "when": "Before drawing; sets the outline/text colour (BLACK, BLUE, GREEN, CYAN, RED, YELLOW, WHITE ...)",
+      "example": "setcolor(RED);"
+    },
+    {
+      "way": "setbkcolor(color)",
+      "when": "Background colour (then cleardevice if it does not show)",
+      "example": "setbkcolor(BLUE); cleardevice();"
+    },
+    {
+      "way": "setfillstyle(pattern, color) + floodfill(x, y, border)",
+      "when": "Colouring the inside of a CLOSED shape",
+      "example": "setfillstyle(SOLID_FILL, GREEN); floodfill(150, 150, WHITE);"
+    },
+    {
+      "way": "outtextxy(x, y, \"text\")",
+      "when": "Writing text at a position",
+      "example": "outtextxy(240, 380, (char*)\"My House\");"
+    },
+    {
+      "way": "cleardevice()",
+      "when": "Wipe the graphics screen",
+      "example": "cleardevice();"
+    },
+    {
+      "way": "delay(ms)",
+      "when": "Pause (used for animation)",
+      "example": "delay(30);"
+    },
+    {
+      "way": "getch()",
+      "when": "Wait for a key (from conio.h) before closing",
+      "example": "getch();"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "// meant to be 100 pixels ABOVE the centre of the screen\ncircle(320, 340, 30);",
+      "right": "circle(320, 140, 30);   // up = smaller y",
+      "error": "No compiler error. The circle appears BELOW the centre because y grows downwards."
+    },
+    {
+      "wrong": "initgraph(&gd, &gm, (char*)\"\");\ncircle(200, 200, 50);\n// no getch() and no closegraph()",
+      "right": "initgraph(&gd, &gm, (char*)\"\");\ncircle(200, 200, 50);\ngetch();\nclosegraph();",
+      "error": "No compiler error. The window may close at once, and graphics memory is not released; always finish with getch() and closegraph()."
+    },
+    {
+      "wrong": "circle(200, 200, 50);\ninitgraph(&gd, &gm, (char*)\"\");",
+      "right": "initgraph(&gd, &gm, (char*)\"\");\ncircle(200, 200, 50);",
+      "error": "No compiler error, but graphics mode is not on yet, so the circle is not shown or the program stops with a graphics error. initgraph must come first."
+    },
+    {
+      "wrong": "circle(200, 200, 50);\nsetcolor(RED);",
+      "right": "setcolor(RED);\ncircle(200, 200, 50);",
+      "error": "No compiler error. The circle is drawn in the OLD colour; setcolor only affects shapes drawn after it."
+    },
+    {
+      "wrong": "line(100, 100, 200, 100);\nline(200, 100, 200, 200);\nsetfillstyle(SOLID_FILL, RED);\nfloodfill(150, 150, WHITE);   // open shape",
+      "right": "rectangle(100, 100, 200, 200);\nsetfillstyle(SOLID_FILL, RED);\nfloodfill(150, 150, WHITE);   // closed shape",
+      "error": "No compiler error. The outline has gaps, so the paint leaks out and can colour the whole screen. Fill only closed shapes."
+    }
+  ],
+  "examTips": [
+    "Learn the frame by heart: include graphics.h, DETECT, initgraph, drawing, getch, closegraph.",
+    "Write setcolor BEFORE each shape. A typical exam trap is a colour set after the shape.",
+    "floodfill needs a point INSIDE a CLOSED shape and the border colour equal to the outline colour.",
+    "Know the argument orders: line(x1,y1,x2,y2), rectangle(left,top,right,bottom), circle(x,y,r), ellipse(x,y,start,end,xr,yr), arc(x,y,start,end,r).",
+    "Say that graphics.h is not standard C++ and needs Turbo C++ or WinBGIm."
+  ],
+  "romanSummary": [
+    "Har graphics program mein pehle initgraph, phir drawing, phir getch aur aakhir mein closegraph likhte hain.",
+    "Shape se PEHLE setcolor likhein, kyun ke setcolor sirf baad mein bani shapes par asar karta hai.",
+    "line, rectangle, circle, ellipse aur arc se shapes bante hain. Angle degrees mein hota hai.",
+    "Shape ko bharne ke liye setfillstyle aur floodfill, magar shape BAND honi chahiye aur border ka colour wohi ho jo outline ka hai.",
+    "outtextxy se text likhte hain, cleardevice screen saaf karta hai, delay thori der rukta hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which function switches the screen into graphics mode?",
+      "options": [
+        "initgraph",
+        "closegraph",
+        "cleardevice",
+        "getch"
+      ],
+      "answer": "initgraph",
+      "hint": "It is the first graphics call.",
+      "explanation": "initgraph(&gd, &gm, path) turns graphics mode on; closegraph turns it off."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does DETECT mean in int gd = DETECT?",
+      "options": [
+        "Choose the graphics driver automatically",
+        "Draw a detective icon",
+        "Detect key presses",
+        "Turn the screen off"
+      ],
+      "answer": "Choose the graphics driver automatically",
+      "hint": "It is a value for the driver variable.",
+      "explanation": "With DETECT, initgraph finds the best graphics driver and mode for the computer."
+    },
+    {
+      "id": "p3",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill the blank so the circle is drawn in RED.\n\n___(RED);\ncircle(200, 150, 40);",
+      "answer": "setcolor",
+      "hint": "Which function chooses the drawing colour?",
+      "explanation": "setcolor(RED) comes BEFORE the shape it should colour."
+    },
+    {
+      "id": "p4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which call draws a rectangle whose top-left corner is (50, 100) and bottom-right corner is (250, 200)?",
+      "options": [
+        "rectangle(50, 100, 250, 200);",
+        "rectangle(50, 250, 100, 200);",
+        "rectangle(250, 200, 50, 100);",
+        "rectangle(100, 50, 200, 250);"
+      ],
+      "answer": "rectangle(50, 100, 250, 200);",
+      "hint": "Order: left, top, right, bottom.",
+      "explanation": "left = 50, top = 100, right = 250, bottom = 200."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This code should draw a RED circle but it appears in the default white. Fix it.\n\ncircle(200, 150, 40);\nsetcolor(RED);",
+      "answer": "setcolor(RED);\ncircle(200, 150, 40);",
+      "hint": "Order of the two lines.",
+      "explanation": "setcolor only affects shapes drawn after it, so it must come first."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "hard",
+      "prompt": "The student wants a green filled rectangle, but the green paint spreads over the whole screen. Find the problem and give the corrected code.\n\nline(100, 100, 200, 100);\nline(200, 100, 200, 200);\nline(200, 200, 100, 200);\nsetfillstyle(SOLID_FILL, GREEN);\nfloodfill(150, 150, WHITE);",
+      "answer": "rectangle(100, 100, 200, 200);\nsetfillstyle(SOLID_FILL, GREEN);\nfloodfill(150, 150, WHITE);",
+      "hint": "Count the sides.",
+      "explanation": "Only three sides are drawn, so the shape is open and the paint leaks. A closed rectangle (all four sides) keeps the fill inside."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a graphics program that draws a yellow circle with centre (320, 240) and radius 80, fills it with red, and then writes the text SUN at (300, 350).",
+      "answer": "#include <graphics.h>\n#include <conio.h>\n\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    setcolor(YELLOW);\n    circle(320, 240, 80);\n    setfillstyle(SOLID_FILL, RED);\n    floodfill(320, 240, YELLOW);\n    outtextxy(300, 350, (char*)\"SUN\");\n    getch();\n    closegraph();\n    return 0;\n}",
+      "hint": "Colour, circle, fill style, floodfill, text.",
+      "explanation": "The border colour in floodfill (YELLOW) equals the circle outline colour. The program runs on a lab PC with graphics.h; the page only simulates it."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which call must be the LAST graphics call in a program?",
+      "options": [
+        "closegraph()",
+        "initgraph()",
+        "setcolor()",
+        "cleardevice()"
+      ],
+      "answer": "closegraph()",
+      "hint": "It leaves graphics mode.",
+      "explanation": "closegraph returns to text mode and frees memory."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "When should setcolor(RED) be written to colour a circle red?",
+      "options": [
+        "Before the circle call",
+        "After the circle call",
+        "Anywhere in the program",
+        "Inside closegraph"
+      ],
+      "answer": "Before the circle call",
+      "hint": "Painter picks the brush first.",
+      "explanation": "setcolor affects shapes drawn after it."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "floodfill(x, y, border) fills correctly only when the shape is...",
+      "options": [
+        "closed and (x, y) is inside it",
+        "open",
+        "a single pixel",
+        "outside the screen"
+      ],
+      "answer": "closed and (x, y) is inside it",
+      "hint": "What happens if paint can leak?",
+      "explanation": "An open outline lets the colour escape."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What are the angles in arc(x, y, 0, 180, r) measured in?",
+      "options": [
+        "Degrees",
+        "Radians",
+        "Pixels",
+        "Percent"
+      ],
+      "answer": "Degrees",
+      "hint": "0 to 360 for a full turn.",
+      "explanation": "BGI angles are in degrees."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Which call writes the text Hi with its top-left corner at (10, 20)?",
+      "options": [
+        "outtextxy(10, 20, (char*)\"Hi\");",
+        "outtextxy(\"Hi\", 10, 20);",
+        "cout << \"Hi\";",
+        "putpixel(10, 20, \"Hi\");"
+      ],
+      "answer": "outtextxy(10, 20, (char*)\"Hi\");",
+      "hint": "x, y first, then the text.",
+      "explanation": "outtextxy(x, y, text) draws text at a graphics position; cout prints in the console, not on the graphics screen."
+    }
+  ],
+  "sources": [
+    "Common graphics.h functions",
+    "initgraph and closegraph",
+    "Shapes: line, rectangle, circle, ellipse, arc",
+    "Colours, fill and text"
+  ]
+}

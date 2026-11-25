@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+/* Design tokens. Dark is the default; light is polished too. Pairs verified in tests/contrast.test.ts */
+:root {
+  --bg: #0b1020;
+  --surface: #121a33;
+  --surface-2: #1a2447;
+  --border: #2a3560;
+  --text: #e6eaf5;
+  --muted: #9aa6c4;
+  --primary: #22d3ee;
+  --on-primary: #06202a;
+  --accent: #9d7bf8;
+  --xp: #fbbf24;
+  --success: #34d399;
+  --warning: #facc15;
+  --error: #f87171;
+  --code-bg: #0e1530;
+  --font-ui: "Inter", system-ui, sans-serif;
+  --font-code: "JetBrains Mono", ui-monospace, monospace;
+  --font-urdu: "Noto Nastaliq Urdu", serif;
+  --fs-scale: 1;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --bg: #f6f8fd;
+  --surface: #ffffff;
+  --surface-2: #eaf0fb;
+  --border: #c9d3ea;
+  --text: #111a33;
+  --muted: #4a5878;
+  --primary: #0b6279;
+  --on-primary: #ffffff;
+  --accent: #6d28d9;
+  --xp: #92400e;
+  --success: #036a49;
+  --warning: #854d0e;
+  --error: #b91c1c;
+  --code-bg: #eef2fb;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]):not([data-theme="light"]) {
+    --bg: #f6f8fd;
+    --surface: #ffffff;
+    --surface-2: #eaf0fb;
+    --border: #c9d3ea;
+    --text: #111a33;
+    --muted: #4a5878;
+    --primary: #0b6279;
+    --on-primary: #ffffff;
+    --accent: #6d28d9;
+    --xp: #92400e;
+    --success: #036a49;
+    --warning: #854d0e;
+    --error: #b91c1c;
+    --code-bg: #eef2fb;
+    color-scheme: light;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-onprimary: var(--on-primary);
+  --color-accent: var(--accent);
+  --color-xp: var(--xp);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --font-sans: var(--font-ui);
+  --font-mono: var(--font-code);
+}
+
+html {
+  font-size: calc(16px * var(--fs-scale));
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+html[data-dyslexia="on"] body { font-family: "Comic Sans MS", "Trebuchet MS", sans-serif; letter-spacing: 0.04em; word-spacing: 0.12em; }
+html[lang="ur"] body { font-family: var(--font-urdu); line-height: 2.2; }
+html[lang="ur"] pre, html[lang="ur"] code, html[lang="ur"] .code { direction: ltr; text-align: left; font-family: var(--font-code); }
+
+:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+.skip-link { position: absolute; inset-inline-start: 8px; top: 8px; transform: translateY(-200%); z-index: 100; background: var(--primary); color: var(--on-primary); padding: 8px 14px; border-radius: 8px; }
+.skip-link:focus { transform: none; }
+
+/* Concept boxes: colour is never the only cue; each carries a text label */
+.box { border: 1px solid var(--border); border-left-width: 6px; border-radius: 12px; padding: 12px 16px; background: var(--surface); }
+.box-definition { border-left-color: var(--primary); }
+.box-roman { border-left-color: var(--success); }
+.box-mistake { border-left-color: var(--warning); }
+.box-error { border-left-color: var(--error); }
+.box-exam { border-left-color: var(--accent); }
+
+pre.code { background: var(--code-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px; overflow-x: auto; white-space: pre; font-family: var(--font-code); font-size: 0.9rem; line-height: 1.6; }
+
+.btn { min-height: 44px; min-width: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; }
+.btn-primary { background: var(--primary); color: var(--on-primary); border-color: transparent; font-weight: 600; }
+
+html[data-motion="reduce"] *, html[data-motion="reduce"] *::before, html[data-motion="reduce"] *::after {
+  animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
+
+/* Grid/flex children may shrink below their content width, so long code never widens the page */
+.grid > *, .flex > * { min-width: 0; }
+main { min-width: 0; }
+pre.code { max-width: 100%; }
+code { overflow-wrap: anywhere; }
+
+/* Rewards: a short fade (under 0.3 s). Reduced-motion and low-data settings already zero all animation durations above. */
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.toast { animation: toast-in 0.25s ease-out; }
+
+@media print {
+  header, nav, footer, .print\:hidden { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  .box { break-inside: avoid; background: #fff !important; }
+  pre.code { white-space: pre-wrap; background: #f5f5f5 !important; color: #000 !important; }
+}
+
+/* Sideways-scrolling menu strips: keep them scrollable but hide the bulky scrollbar (focusable links inside keep them keyboard-reachable). */
+.scroll-quiet { scrollbar-width: none; }
+.scroll-quiet::-webkit-scrollbar { display: none; }

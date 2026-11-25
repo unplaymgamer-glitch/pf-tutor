@@ -1,0 +1,653 @@
+{
+  "slug": "arrays-and-pointers",
+  "week": 10,
+  "title": "Arrays and pointers: the array name is an address",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "array",
+      "title": "Element i is *(a + i): move the index and watch",
+      "mode": "access",
+      "values": [
+        10,
+        20,
+        30,
+        40,
+        50
+      ]
+    },
+    {
+      "kind": "memory",
+      "title": "An array in memory and a pointer walking along it",
+      "cells": [
+        {
+          "name": "a[0]",
+          "type": "int",
+          "addr": "0x1000"
+        },
+        {
+          "name": "a[1]",
+          "type": "int",
+          "addr": "0x1004"
+        },
+        {
+          "name": "a[2]",
+          "type": "int",
+          "addr": "0x1008"
+        },
+        {
+          "name": "a[3]",
+          "type": "int",
+          "addr": "0x100C"
+        },
+        {
+          "name": "p",
+          "type": "int*",
+          "addr": "0x2000"
+        }
+      ],
+      "steps": [
+        {
+          "code": "int a[4] = {10, 20, 30, 40};",
+          "note": "Four int boxes are created next to each other. Each int takes 4 bytes, so the addresses go up by 4.",
+          "values": {
+            "a[0]": "10",
+            "a[1]": "20",
+            "a[2]": "30",
+            "a[3]": "40"
+          },
+          "points": {}
+        },
+        {
+          "code": "int *p = a;",
+          "note": "The name a is the address of a[0] (0x1000). p stores that address, so it points at a[0].",
+          "values": {
+            "p": "0x1000"
+          },
+          "points": {
+            "p": "a[0]"
+          }
+        },
+        {
+          "code": "*p = 11;",
+          "note": "*p means 'the box p points to'. This changes a[0].",
+          "values": {
+            "a[0]": "11"
+          },
+          "points": {
+            "p": "a[0]"
+          }
+        },
+        {
+          "code": "p++;",
+          "note": "p moves forward ONE int (4 bytes): from 0x1000 to 0x1004. Now it points at a[1].",
+          "values": {
+            "p": "0x1004"
+          },
+          "points": {
+            "p": "a[1]"
+          }
+        },
+        {
+          "code": "*(p + 2) = 33;",
+          "note": "p + 2 is two boxes after a[1], that is a[3]. This changes a[3] (the pointer p itself does not move).",
+          "values": {
+            "a[3]": "33"
+          },
+          "points": {
+            "p": "a[1]"
+          }
+        },
+        {
+          "code": "p = &a[3];",
+          "note": "You can point p anywhere inside the array. Now it points at the last box.",
+          "values": {
+            "p": "0x100C"
+          },
+          "points": {
+            "p": "a[3]"
+          }
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can explain that an array name is the address of its first element, use a[i] and *(a + i) as the same thing, walk through an array with a pointer, and say why an array name cannot be moved.",
+  "warmup": "Think of a row of lockers in the university corridor, numbered one after another. If you know where locker 0 is, you can find locker 5 by walking 5 lockers forward. You do not need a separate map for every locker. An array works the same way: the computer only remembers WHERE the first box is, and any other box is found by counting boxes forward from it.",
+  "definition": "In Week 4 you used a[i] to reach a box of an array. The big idea of this lesson: the name of an array (like a) is the address of its first element, so a means the same as &a[0]. A pointer is a variable that stores an address (Week 9). So you can write int *p = a; and p will point at the first box. Because the boxes sit next to each other, p + 1 is the next box, p + 2 is the one after that, and so on. That is why a[i] and *(a + i) are exactly the same thing: 'start at a, go i boxes forward, look inside'.",
+  "howItWorks": "Open the memory visual and press Next. First the 4 boxes are created with addresses 0x1000, 0x1004, 0x1008, 0x100C (4 bytes apart, because an int takes 4 bytes). When you write int *p = a; the pointer p stores 0x1000. The computer is clever about adding: p + 1 does NOT add 1 byte, it adds one whole int, so p + 1 is 0x1004. You can also move the pointer with p++ and read with *p. Two forms mean the same thing: a[i] is *(a + i), and &a[i] is a + i (see the syntax block). Now the important DIFFERENCES between an array name and a pointer variable. (1) A pointer is a normal variable: you can change where it points (p++, p = &a[3]). An array name is a fixed address, like the position of locker 0: it cannot be moved, so a++ and a = something are errors. (2) sizeof(a) gives the size of the WHOLE array (5 ints = 20 bytes), but sizeof(p) gives only the size of one address, so you cannot use a pointer to find how many elements the array has. In the examples we never print the real addresses (they change from run to run); we print values, differences like p - a, and comparisons like p == &a[0].",
+  "syntax": "int a[5] = {1, 2, 3, 4, 5};\n\nint *p = a;        // same as: int *p = &a[0];\n\n// two ways to say the same thing\na[2]               // element at index 2\n*(a + 2)           // same element (a is an address, +2 moves 2 boxes)\n&a[2]              // address of element 2\na + 2              // same address\n\n*a                 // first element, same as a[0]\np[3]               // a pointer can also use [ ]: same as *(p + 3)\n\np++;               // OK: p moves to the next box\n// a++;            // ERROR: an array name cannot be changed\n\nsizeof(a)          // bytes of the WHOLE array (5 * 4 = 20)\nsizeof(a) / sizeof(a[0])   // number of elements (5)\nsizeof(p)          // only the size of one address",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Make an array a of 4 numbers {10, 20, 30, 40} and a pointer p = a. Show that a and &a[0] are the same address, that a[2] and *(a + 2) are the same element, and print the first and last elements using the pointer.",
+      "pseudocode": [
+        "START",
+        "CREATE array a = {10, 20, 30, 40}",
+        "SET p = a (address of the first box)",
+        "CHECK p == &a[0] and print the answer (1 means true)",
+        "PRINT a[2] and *(a + 2)",
+        "PRINT *a and *(p + 3)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Create array a]\n  B --> C[\"p = a (address of a[0])\"]\n  C --> D[/\"Print p == &a[0]\"/]\n  D --> E[/\"Print a[2] and *(a + 2)\"/]\n  E --> F[/\"Print *a and *(p + 3)\"/]\n  F --> G([End])",
+      "sample": {
+        "id": "array-name-is-address",
+        "title": "The array name is the address of the first element",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[4] = {10, 20, 30, 40};\n    int *p = a;\n    cout << (p == &a[0]) << endl;\n    cout << a[2] << \" \" << *(a + 2) << endl;\n    cout << *a << \" \" << *(p + 3) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "1\n30 30\n10 40\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "An array of 4 ints. The boxes are next to each other in memory."
+          },
+          {
+            "line": 6,
+            "text": "a is the address of a[0], so p now points at the first box. No & is needed in front of a."
+          },
+          {
+            "line": 7,
+            "text": "p == &a[0] compares two addresses. They are equal, so the result is true, printed as 1."
+          },
+          {
+            "line": 8,
+            "text": "a[2] and *(a + 2) are two spellings of the same element, so 30 is printed twice."
+          },
+          {
+            "line": 9,
+            "text": "*a is the first element. *(p + 3) starts at the first box and moves 3 boxes forward: a[3]."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "a": "{10,20,30,40}"
+              },
+              "note": "The array a gets 4 boxes side by side: a[0]=10, a[1]=20, a[2]=30, a[3]=40.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "p": "&a[0]"
+              },
+              "note": "The name a means 'address of a[0]', so p now points at the first box.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "p == &a[0] is true, and true prints as 1. The array name and &a[0] are the same address.",
+              "out": "1\n"
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "a[2] and *(a + 2) both reach the third box. Both give 30.",
+              "out": "30 30\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "*a is the first element (10). *(p + 3) moves 3 boxes from the start: a[3] = 40.",
+              "out": "10 40\n"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "main ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "a": "int[4]",
+            "p": "int*"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Add all the elements of {2, 4, 6, 8, 10} by walking along the array with a pointer (use *p and p++, not a[i]). At the end also print how many boxes p has moved from the start.",
+      "pseudocode": [
+        "START",
+        "CREATE array a with 5 numbers",
+        "SET p = a, sum = 0",
+        "REPEAT 5 times: sum = sum + *p, then p moves to the next box",
+        "PRINT sum",
+        "PRINT p - a (boxes moved)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"a = {2,4,6,8,10}, p = a, sum = 0\"]\n  B --> C{\"i < 5 ?\"}\n  C -- Yes --> D[\"sum = sum + *p\"]\n  D --> E[\"p++ and i++\"]\n  E --> C\n  C -- No --> F[/Print sum and p - a/]\n  F --> G([End])",
+      "sample": {
+        "id": "walk-with-pointer",
+        "title": "Walking along an array with a pointer",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[5] = {2, 4, 6, 8, 10};\n    int *p = a;\n    int sum = 0;\n    for (int i = 0; i < 5; i++) {\n        sum += *p;\n        p++;\n    }\n    cout << \"Sum = \" << sum << endl;\n    cout << \"p moved \" << (p - a) << \" places\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Sum = 30\np moved 5 places\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "The array to add up."
+          },
+          {
+            "line": 6,
+            "text": "p starts at the first element."
+          },
+          {
+            "line": 7,
+            "text": "sum is the running total, starting at 0."
+          },
+          {
+            "line": 8,
+            "text": "The loop runs 5 times, once for each element."
+          },
+          {
+            "line": 9,
+            "text": "*p is the value in the box p points to. Add it to sum."
+          },
+          {
+            "line": 10,
+            "text": "p++ moves the pointer one int forward, to the next box."
+          },
+          {
+            "line": 13,
+            "text": "After the loop p is one box past the last element. We only look at the address; we never read *p here."
+          },
+          {
+            "line": 14,
+            "text": "p - a is a count of elements between the two addresses: 5."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "a": "{2,4,6,8,10}"
+              },
+              "note": "Array of 5 boxes.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "p": "&a[0]"
+              },
+              "note": "p starts at the first element.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "sum": "0"
+              },
+              "note": "sum starts at 0.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "0",
+                "sum": "2",
+                "p": "&a[1]"
+              },
+              "note": "Round 1: add *p to sum (now 2), then p++ moves the pointer one box forward.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "1",
+                "sum": "6",
+                "p": "&a[2]"
+              },
+              "note": "Round 2: add *p to sum (now 6), then p++ moves the pointer one box forward.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "2",
+                "sum": "12",
+                "p": "&a[3]"
+              },
+              "note": "Round 3: add *p to sum (now 12), then p++ moves the pointer one box forward.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "3",
+                "sum": "20",
+                "p": "&a[4]"
+              },
+              "note": "Round 4: add *p to sum (now 20), then p++ moves the pointer one box forward.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "4",
+                "sum": "30",
+                "p": "&a[5] (one past the end)"
+              },
+              "note": "Round 5: add *p to sum (now 30), then p++ moves the pointer one box forward.",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "The loop is over. 2 + 4 + 6 + 8 + 10 = 30.",
+              "out": "Sum = 30\n"
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "p - a counts the boxes between the two pointers: 5. Pointer minus pointer is a number of elements, not bytes.",
+              "out": "p moved 5 places\n"
+            }
+          ],
+          "types": {
+            "a": "int[5]",
+            "p": "int*",
+            "sum": "int",
+            "i": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Exam style: given int a[5] = {1, 2, 3, 4, 5}; and int *p = a + 1; write the output of the program. Notice that p[2] and p[-1] are legal because p points inside the array.",
+      "pseudocode": [
+        "START",
+        "CREATE a = {1,2,3,4,5}",
+        "SET p to point at a[1] (a + 1)",
+        "PRINT sizeof(a): bytes of the whole array",
+        "PRINT sizeof(a) / sizeof(a[0]): number of elements",
+        "PRINT whether sizeof(p) equals sizeof(a)",
+        "PRINT *p, p[2], *(p + 3), p[-1]",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"a = {1,2,3,4,5}, p = a + 1\"]\n  B --> C[/Print sizeof a/]\n  C --> D[/Print element count/]\n  D --> E[/Print sizeof p == sizeof a/]\n  E --> F[/\"Print *p, p[2], *(p + 3), p[-1]\"/]\n  F --> G([End])",
+      "sample": {
+        "id": "sizeof-and-offsets",
+        "title": "sizeof and pointer offsets (exam question)",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[5] = {1, 2, 3, 4, 5};\n    int *p = a + 1;\n    cout << \"Bytes in a: \" << sizeof(a) << endl;\n    cout << \"Elements in a: \" << sizeof(a) / sizeof(a[0]) << endl;\n    cout << \"Same size as p? \" << (sizeof(p) == sizeof(a)) << endl;\n    cout << *p << \" \" << p[2] << \" \" << *(p + 3) << \" \" << p[-1] << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Bytes in a: 20\nElements in a: 5\nSame size as p? 0\n2 4 5 1\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Five ints, so the array takes 5 x 4 = 20 bytes."
+          },
+          {
+            "line": 6,
+            "text": "a + 1 is the address of a[1], so p points at the number 2."
+          },
+          {
+            "line": 7,
+            "text": "sizeof(a) is the size of the WHOLE array: 20 bytes."
+          },
+          {
+            "line": 8,
+            "text": "Dividing the whole size by the size of one element gives the number of elements: 5. This trick works only on the real array, not on a pointer."
+          },
+          {
+            "line": 9,
+            "text": "sizeof(p) is just the size of an address, which is not the same as 20, so the comparison is false and prints 0."
+          },
+          {
+            "line": 10,
+            "text": "p points at a[1]. So *p = a[1] = 2, p[2] = a[3] = 4, *(p + 3) = a[4] = 5, and p[-1] = a[0] = 1. A pointer inside an array may be indexed backwards too."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Array notation: a[i]",
+      "when": "Most readable. Use it when you think in terms of 'the i-th element'.",
+      "example": "cout << a[2];   // 30"
+    },
+    {
+      "way": "Pointer notation: *(a + i)",
+      "when": "Exactly the same element as a[i]. Shows that a is an address. Do not forget the brackets around a + i.",
+      "example": "cout << *(a + 2);   // 30"
+    },
+    {
+      "way": "Pointer variable: int *p = a;",
+      "when": "When you want to walk (p++) through the array or pass the array on. Same as int *p = &a[0];",
+      "example": "for (int *p = a; p < a + 5; p++) cout << *p;"
+    },
+    {
+      "way": "Pointer with [ ]: p[i]",
+      "when": "A pointer can be indexed like an array. p[i] means *(p + i), counted from where p points now.",
+      "example": "int *p = a + 1;  cout << p[2];   // a[3]"
+    },
+    {
+      "way": "Address of an element: &a[i] or a + i",
+      "when": "When a function or pointer needs the address of one particular box.",
+      "example": "int *q = &a[3];   // same as a + 3"
+    },
+    {
+      "way": "Size: sizeof(a) and sizeof(a) / sizeof(a[0])",
+      "when": "Only for a real array in the same function where it is declared. A pointer does not know how long the array is.",
+      "example": "int n = sizeof(a) / sizeof(a[0]);   // 5"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int a[3] = {1, 2, 3};\na++;",
+      "right": "int a[3] = {1, 2, 3};\nint *p = a;\np++;",
+      "error": "error: lvalue required as increment operand. An array name is a fixed address, so it cannot be moved. Copy it into a pointer variable and move the pointer."
+    },
+    {
+      "wrong": "int a[3] = {1, 2, 3};\nint *p = &a;",
+      "right": "int a[3] = {1, 2, 3};\nint *p = a;   // or &a[0]",
+      "error": "error: cannot convert 'int (*)[3]' to 'int*' in initialization. &a is the address of the WHOLE array, which is a different type. Use a or &a[0]."
+    },
+    {
+      "wrong": "int a[3] = {10, 20, 30};\ncout << *a + 2;   // wanted a[2]",
+      "right": "cout << *(a + 2);   // 30",
+      "error": "No compiler error. *a + 2 means (*a) + 2 = 10 + 2 = 12, because * is done before +. Always write the brackets: *(a + 2)."
+    }
+  ],
+  "examTips": [
+    "Write the key sentence in the exam: 'The name of an array is the address of its first element, so a is the same as &a[0].'",
+    "a[i] is the same as *(a + i), and &a[i] is the same as a + i. Learn the three-row table by heart.",
+    "p + 1 moves one ELEMENT (4 bytes for an int), not one byte. A pointer p moves with p++, but an array name never does.",
+    "sizeof(array) is the bytes of the whole array; sizeof(array) / sizeof(array[0]) is the element count. sizeof(pointer) is just the size of an address.",
+    "Never print real addresses in an answer; the exam usually asks for values or differences like p - a."
+  ],
+  "romanSummary": [
+    "Array ka naam us ke pehle element ka address hota hai, yani a aur &a[0] ek hi cheez hain.",
+    "a[i] aur *(a + i) bilkul same hain: a se i boxes aage jao aur andar dekho.",
+    "Pointer p = a likh kar hum array ke upar p++ se chal sakte hain, p + 1 ka matlab agla element hota hai (4 bytes aage).",
+    "Pointer ko aage peeche kar sakte hain, lekin array ka naam badal nahi sakte: a++ error hai.",
+    "sizeof(a) poore array ka size deta hai, lekin sizeof(p) sirf ek address ka size hota hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "int a[5]; Which expression is the same as a[3]?",
+      "options": [
+        "*a + 3",
+        "*(a + 3)",
+        "a + 3",
+        "&a[3]"
+      ],
+      "answer": "*(a + 3)",
+      "hint": "a[i] always equals *(a + i).",
+      "explanation": "a is the address of the first box. a + 3 is the address 3 boxes later, and * looks inside it. So *(a + 3) is a[3]. The option *a + 3 would add 3 to the FIRST element."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "After int a[5]; int *p = a; what does p store?",
+      "options": [
+        "The whole array",
+        "The value 5",
+        "The address of a[0]",
+        "The address of a[4]"
+      ],
+      "answer": "The address of a[0]",
+      "hint": "The name a means the address of the first element.",
+      "explanation": "p holds an address. Since a is the address of a[0], p points at the first element. It does not copy the whole array."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[4] = {5, 6, 7, 8};\n    int *p = a;\n    p++;\n    cout << *p << \" \" << *(p + 2);\n    return 0;\n}\n",
+      "answer": "6 8",
+      "hint": "After p++ the pointer is at a[1].",
+      "explanation": "p++ moves p to a[1] = 6. Then p + 2 is a[3] = 8."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[6] = {1, 2, 3, 4, 5, 6};\n    int *p = a;\n    int s = 0;\n    while (p != a + 6) {\n        s += *p;\n        p += 2;\n    }\n    cout << s;\n    return 0;\n}\n",
+      "answer": "9",
+      "hint": "Write down which elements p visits: it jumps 2 boxes each time.",
+      "explanation": "p visits a[0], a[2] and a[4]: 1 + 3 + 5 = 9. After a[4], p += 2 lands exactly on a + 6, so the loop stops."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This code should print 10 20 30 but does not compile. Fix it without changing the output.\n\nint a[3] = {10, 20, 30};\nfor (int i = 0; i < 3; i++) {\n    cout << *a << \" \";\n    a++;\n}",
+      "answer": "int a[3] = {10, 20, 30};\nint *p = a;\nfor (int i = 0; i < 3; i++) {\n    cout << *p << \" \";\n    p++;\n}",
+      "hint": "An array name cannot be moved. What can you move?",
+      "explanation": "a++ is an error because the array name is a fixed address. Copy it into a pointer p and move p instead."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank so the line prints the element at index 2.\n\nint a[5] = {4, 8, 15, 16, 23};\ncout << *(____ + 2);",
+      "answer": "a",
+      "hint": "Which name is the address of the first element?",
+      "explanation": "*(a + 2) means 'go 2 boxes from the start and look inside', which is a[2] = 15."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write the lines that print all 5 elements of int a[5] = {3, 1, 4, 1, 5} separated by spaces, using a pointer p and *p only (no [ ] at all).",
+      "answer": "int a[5] = {3, 1, 4, 1, 5};\nint *p = a;\nfor (int i = 0; i < 5; i++) {\n    cout << *p << \" \";\n    p++;\n}",
+      "hint": "Start p at a and move it one box per round.",
+      "explanation": "p starts at a[0]. Each round prints the box p points to and then p++ moves to the next. The loop runs 5 times."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "int a[10]; int *p = a; Which statement is true?",
+      "options": [
+        "sizeof(a) and sizeof(p) are always equal",
+        "sizeof(a) is the size of the whole array, but sizeof(p) is only the size of one address",
+        "p can be used but a cannot be used in expressions",
+        "a can be changed with a++ but p cannot"
+      ],
+      "answer": "sizeof(a) is the size of the whole array, but sizeof(p) is only the size of one address",
+      "hint": "One of them knows about 10 elements, the other does not.",
+      "explanation": "The compiler knows a is an array of 10 ints, so sizeof(a) is 40 bytes (with 4-byte ints). A pointer is just an address; it does not remember how many elements follow."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "z1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "The name of an array is...",
+      "options": [
+        "a copy of all its elements",
+        "the address of its first element",
+        "always the number 0",
+        "its size in bytes"
+      ],
+      "answer": "the address of its first element",
+      "hint": "Think of locker 0.",
+      "explanation": "The array name stands for the address of the first box, a[0]."
+    },
+    {
+      "id": "z2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which two are the same?",
+      "options": [
+        "a[i] and *a + i",
+        "a[i] and a + i",
+        "a[i] and *(a + i)",
+        "a[i] and &a[i]"
+      ],
+      "answer": "a[i] and *(a + i)",
+      "hint": "One uses brackets, the other uses the star.",
+      "explanation": "Both mean 'go i boxes forward from the start and look inside'."
+    },
+    {
+      "id": "z3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "int a[3]; int *p = a; Which line gives an error?",
+      "options": [
+        "p++;",
+        "a++;",
+        "*p = 5;",
+        "p = a + 1;"
+      ],
+      "answer": "a++;",
+      "hint": "Which of the two names can move?",
+      "explanation": "A pointer variable can move with p++. The array name is a fixed address and cannot be changed."
+    },
+    {
+      "id": "z4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "int *p = a; and a is an array of ints. What does p + 1 point to?",
+      "options": [
+        "one byte after a[0]",
+        "the next element a[1]",
+        "the value of a[0] plus 1",
+        "the end of the array"
+      ],
+      "answer": "the next element a[1]",
+      "hint": "Adding to a pointer counts elements, not bytes.",
+      "explanation": "p + 1 moves one whole int (4 bytes), so it points at the next element."
+    },
+    {
+      "id": "z5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "int a[5]; Which expression gives the number of elements?",
+      "options": [
+        "sizeof(a)",
+        "sizeof(a[0])",
+        "sizeof(a) / sizeof(a[0])",
+        "sizeof(&a)"
+      ],
+      "answer": "sizeof(a) / sizeof(a[0])",
+      "hint": "Whole size divided by the size of one box.",
+      "explanation": "sizeof(a) is all the bytes, sizeof(a[0]) is the bytes of one element. The division gives how many elements there are."
+    }
+  ],
+  "sources": [
+    "Relationship between arrays and pointers",
+    "Array name as the address of the first element",
+    "Pointer notation a[i] and *(a + i)",
+    "Array name is a constant address"
+  ]
+}

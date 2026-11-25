@@ -1,0 +1,788 @@
+{
+  "slug": "default-arguments",
+  "week": 8,
+  "title": "Default arguments: a value used when the caller leaves one out",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "How the compiler fills the parameters of area(2)",
+      "stages": [
+        {
+          "name": "1. Read the call",
+          "detail": "The call area(2) has ONE argument."
+        },
+        {
+          "name": "2. Fill from the left",
+          "detail": "The caller's 2 goes into the first parameter, r."
+        },
+        {
+          "name": "3. Check the prototype",
+          "detail": "pi has no argument. The prototype says pi = 3.14159."
+        },
+        {
+          "name": "4. Use the default",
+          "detail": "The compiler fills pi with 3.14159, so the call becomes area(2, 3.14159)."
+        },
+        {
+          "name": "5. Run the function",
+          "detail": "The body runs with r = 2 and pi = 3.14159."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each rule with its meaning",
+      "pairs": [
+        {
+          "term": "Defaults go on the right",
+          "meaning": "Once a parameter has a default, every parameter after it needs one too."
+        },
+        {
+          "term": "Write the default once",
+          "meaning": "Put it in the prototype only. Do not repeat it in the definition."
+        },
+        {
+          "term": "Arguments fill from the left",
+          "meaning": "The first argument goes to the first parameter, and so on."
+        },
+        {
+          "term": "Cannot skip the middle",
+          "meaning": "f(1, , 5) is not allowed. To set the third value you must give the second one."
+        },
+        {
+          "term": "Caller value wins",
+          "meaning": "If the caller gives the argument, the default is ignored."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can give a parameter a default value, say which parameters can have one, and predict which values a function receives when the caller gives fewer arguments.",
+  "warmup": "You book a rickshaw. The driver says: 'Rs 30 per km, Rs 50 booking.' You do not discuss this every time. It is the usual deal. If you do not say anything, the usual deal applies. If you say 'Rs 40 per km today', only that part changes. A default argument works the same way. The function has a usual value for a parameter. The caller can leave it out and the usual value is used, or give a new value to change it.",
+  "definition": "A default argument is a value written in the function prototype. If the caller does not give a value for that parameter, the compiler uses the default. If the caller does give a value, the caller's value is used. Defaults let one function be called in a short way (few arguments) or a full way (all arguments).",
+  "howItWorks": "Look at the trace and the stack. The caller's arguments are placed into the parameters from the LEFT. Any parameters that are left over take their default values. That is why defaults must sit on the RIGHT-most parameters. If a middle parameter had a default but the last one did not, the compiler would not know how to fill the last one. The default is written once, in the prototype, because the compiler reads the prototype before it sees the call. Writing it again in the definition is an error. You also cannot skip a middle argument: to give the third value you must give the second one as well. Be careful when you also overload the function: a default can make two overloads match the same call (see the next lesson).",
+  "syntax": "// default values are written in the PROTOTYPE, on the right-most parameters\ndouble area(double r, double pi = 3.14159);        // pi is optional\nint fare(int km, int rate = 30, int booking = 50);  // rate and booking optional\n\n// the definition does NOT repeat the defaults\ndouble area(double r, double pi) {\n    return pi * r * r;\n}\n\n// calls\narea(2);          // pi = 3.14159 (default)\narea(2, 3.14);    // pi = 3.14 (caller)\nfare(10, 40);     // rate = 40, booking = 50 (default)",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write a function area(r, pi) that returns the area of a circle. Give pi the default value 3.14159, so the caller can leave it out. Print area(2) and area(2, 3.14).",
+      "pseudocode": [
+        "START",
+        "DECLARE area(r, pi = 3.14159)",
+        "CALL area(2): pi uses the default",
+        "PRINT result",
+        "CALL area(2, 3.14): pi uses 3.14",
+        "PRINT result",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Call area(2)\"]\n  B --> C{\"Was pi given?\"}\n  C -->|No| D[\"pi = 3.14159 (default)\"]\n  C -->|Yes| E[\"pi = caller value\"]\n  D --> F[\"return pi * r * r\"]\n  E --> F\n  F --> G[/Print result/]\n  G --> H([End])",
+      "sample": {
+        "id": "circle-area-default",
+        "title": "Circle area with a default pi",
+        "code": "#include <iostream>\nusing namespace std;\n\ndouble area(double r, double pi = 3.14159);\n\nint main() {\n    cout << area(2) << endl;\n    cout << area(2, 3.14) << endl;\n    return 0;\n}\n\ndouble area(double r, double pi) {\n    return pi * r * r;\n}\n",
+        "stdin": "",
+        "expectedOutput": "12.5664\n12.56\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "The prototype. The default value is written HERE, once: pi = 3.14159."
+          },
+          {
+            "line": 7,
+            "text": "Only one argument. The compiler fills pi with 3.14159, so the call becomes area(2, 3.14159)."
+          },
+          {
+            "line": 8,
+            "text": "Two arguments, so the default is ignored and pi is 3.14."
+          },
+          {
+            "line": 12,
+            "text": "The definition does NOT repeat the default. It only lists the parameters."
+          },
+          {
+            "line": 13,
+            "text": "The same formula works for both calls. It does not know which value came from a default."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 6,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "r": "2",
+                "pi": "3.14159"
+              },
+              "note": "The call area(2) gives only ONE argument. 2 goes into r. The prototype says pi = 3.14159, so the compiler fills pi with the default.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "area(r, pi)",
+                  "vars": {
+                    "r": "2 (from caller)",
+                    "pi": "3.14159 (from default)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Computes 3.14159 * 2 * 2 = 12.56636 and returns it.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "area(r, pi)",
+                  "vars": {
+                    "r": "2 (from caller)",
+                    "pi": "3.14159 (from default)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Back in main(). cout prints the returned value (6 digits shown).",
+              "out": "12.5664\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {
+                "r": "2",
+                "pi": "3.14"
+              },
+              "note": "Now the caller gives TWO arguments. 2 goes into r and 3.14 goes into pi. The default is ignored.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "area(r, pi)",
+                  "vars": {
+                    "r": "2 (from caller)",
+                    "pi": "3.14 (from caller)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Computes 3.14 * 2 * 2 = 12.56 and returns it.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "area(r, pi)",
+                  "vars": {
+                    "r": "2 (from caller)",
+                    "pi": "3.14 (from caller)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Prints the second result.",
+              "out": "12.56\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "The program ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            }
+          ],
+          "types": {
+            "r": "double",
+            "pi": "double"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "A rickshaw fare is km * rate + booking. The usual rate is Rs 30 per km and the usual booking charge is Rs 50. Write fare(km, rate, booking) with defaults for rate and booking, then print the fare for 10 km in three ways: all defaults, a new rate, a new rate and no booking charge.",
+      "pseudocode": [
+        "START",
+        "DECLARE fare(km, rate = 30, booking = 50)",
+        "fare(10): rate 30, booking 50",
+        "fare(10, 40): rate 40, booking 50",
+        "fare(10, 40, 0): rate 40, booking 0",
+        "PRINT each result",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"fare(10)\"]\n  B --> C[\"rate = 30, booking = 50\"]\n  C --> D[/Print 350/]\n  D --> E[\"fare(10, 40)\"]\n  E --> F[\"rate = 40, booking = 50\"]\n  F --> G[/Print 450/]\n  G --> H[\"fare(10, 40, 0)\"]\n  H --> I[\"rate = 40, booking = 0\"]\n  I --> J[/Print 400/]\n  J --> K([End])",
+      "sample": {
+        "id": "rickshaw-fare-default",
+        "title": "Fare with two default parameters",
+        "code": "#include <iostream>\nusing namespace std;\n\nint fare(int km, int rate = 30, int booking = 50);\n\nint main() {\n    cout << fare(10) << endl;\n    cout << fare(10, 40) << endl;\n    cout << fare(10, 40, 0) << endl;\n    return 0;\n}\n\nint fare(int km, int rate, int booking) {\n    return km * rate + booking;\n}\n",
+        "stdin": "",
+        "expectedOutput": "350\n450\n400\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "Only the two RIGHT-most parameters have defaults. km has none, so the caller must always give it."
+          },
+          {
+            "line": 7,
+            "text": "One argument fills km. Both defaults are used: 10 * 30 + 50."
+          },
+          {
+            "line": 8,
+            "text": "Arguments fill from the LEFT. 40 goes into rate, not into booking."
+          },
+          {
+            "line": 9,
+            "text": "All three are given. To change booking you must also give rate. You cannot skip a middle argument."
+          },
+          {
+            "line": 13,
+            "text": "The definition has no defaults. Defaults live in the prototype only."
+          },
+          {
+            "line": 14,
+            "text": "The same one-line formula serves all three calls."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 6,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "km": "10",
+                "rate": "30",
+                "booking": "50"
+              },
+              "note": "fare(10): only km is given. rate and booking both come from the defaults (30 and 50).",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "fare(km, rate, booking)",
+                  "vars": {
+                    "km": "10 (from caller)",
+                    "rate": "30 (from default)",
+                    "booking": "50 (from default)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "10 * 30 + 50 = 350.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "fare(km, rate, booking)",
+                  "vars": {
+                    "km": "10 (from caller)",
+                    "rate": "30 (from default)",
+                    "booking": "50 (from default)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Prints the fare.",
+              "out": "350\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {
+                "km": "10",
+                "rate": "40",
+                "booking": "50"
+              },
+              "note": "fare(10, 40): km and rate come from the caller, so rate is 40. booking still uses its default 50.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "fare(km, rate, booking)",
+                  "vars": {
+                    "km": "10 (from caller)",
+                    "rate": "40 (from caller)",
+                    "booking": "50 (from default)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "10 * 40 + 50 = 450.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "fare(km, rate, booking)",
+                  "vars": {
+                    "km": "10 (from caller)",
+                    "rate": "40 (from caller)",
+                    "booking": "50 (from default)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Prints the fare.",
+              "out": "450\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {
+                "km": "10",
+                "rate": "40",
+                "booking": "0"
+              },
+              "note": "fare(10, 40, 0): all three come from the caller. No default is used.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "fare(km, rate, booking)",
+                  "vars": {
+                    "km": "10 (from caller)",
+                    "rate": "40 (from caller)",
+                    "booking": "0 (from caller)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "10 * 40 + 0 = 400.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "fare(km, rate, booking)",
+                  "vars": {
+                    "km": "10 (from caller)",
+                    "rate": "40 (from caller)",
+                    "booking": "0 (from caller)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Prints the fare.",
+              "out": "400\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "The program ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            }
+          ],
+          "types": {
+            "km": "int",
+            "rate": "int",
+            "booking": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Complete and trace: printLine(ch, n) prints the character ch exactly n times and then a new line. The default for ch is '*' and the default for n is 10. In main, read n, then call printLine() with no arguments, printLine('-') with one, and printLine('#', n) with two. Show the output when n is 4.",
+      "pseudocode": [
+        "START",
+        "READ n",
+        "printLine(): ch = '*', n = 10",
+        "printLine('-'): ch = '-', n = 10",
+        "printLine('#', n): ch = '#', n = 4",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read n/]\n  B --> C[\"printLine() : 10 stars\"]\n  C --> D[\"printLine('-') : 10 dashes\"]\n  D --> E[\"printLine('#', n) : n hashes\"]\n  E --> F([End])",
+      "sample": {
+        "id": "print-line-default",
+        "title": "Default char and count",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid printLine(char ch = '*', int n = 10);\n\nint main() {\n    int n;\n    cin >> n;\n    printLine();\n    printLine('-');\n    printLine('#', n);\n    return 0;\n}\n\nvoid printLine(char ch, int n) {\n    for (int i = 0; i < n; i++) {\n        cout << ch;\n    }\n    cout << endl;\n}\n",
+        "stdin": "4",
+        "expectedOutput": "**********\n----------\n####\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "Both parameters have defaults, so the function can be called with 0, 1 or 2 arguments."
+          },
+          {
+            "line": 8,
+            "text": "Reads n. In the test case n is 4."
+          },
+          {
+            "line": 9,
+            "text": "No arguments: ch is '*' and n is 10, so ten stars are printed."
+          },
+          {
+            "line": 10,
+            "text": "One argument: '-' goes into ch. n still uses the default 10."
+          },
+          {
+            "line": 11,
+            "text": "Two arguments: both come from the caller. The variable n here is main's n, which has the value 4."
+          },
+          {
+            "line": 15,
+            "text": "The definition lists names only. This n is a different box from main's n."
+          },
+          {
+            "line": 16,
+            "text": "Repeats n times."
+          },
+          {
+            "line": 17,
+            "text": "Prints one character each time."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "One default parameter",
+      "when": "One value is usually the same",
+      "example": "double area(double r, double pi = 3.14159);"
+    },
+    {
+      "way": "Several defaults (all on the right)",
+      "when": "Several optional settings",
+      "example": "int fare(int km, int rate = 30, int booking = 50);"
+    },
+    {
+      "way": "All parameters have defaults",
+      "when": "The function can be called with no arguments",
+      "example": "void printLine(char ch = '*', int n = 10);  // printLine();"
+    },
+    {
+      "way": "Default given in the prototype only",
+      "when": "Always. Never repeat it in the definition",
+      "example": "int f(int a, int b = 1);   ...   int f(int a, int b) { return a + b; }"
+    },
+    {
+      "way": "Function defined above main (no prototype)",
+      "when": "Then the default goes in the definition itself",
+      "example": "int f(int a, int b = 1) { return a + b; }  // defined before main"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "void f(int a = 1, int b);",
+      "right": "void f(int a, int b = 1);",
+      "error": "default argument missing for parameter 2 of 'void f(int, int)'"
+    },
+    {
+      "wrong": "double area(double r, double pi = 3.14159);\n...\ndouble area(double r, double pi = 3.14159) { return pi * r * r; }",
+      "right": "double area(double r, double pi = 3.14159);\n...\ndouble area(double r, double pi) { return pi * r * r; }",
+      "error": "default argument given for parameter 2 of 'double area(double, double)' [-fpermissive]"
+    },
+    {
+      "wrong": "double area(double r, double pi = 3.14159);\ncout << area(2, 3, 4);",
+      "right": "cout << area(2, 3.14);",
+      "error": "too many arguments to function 'double area(double, double)'"
+    },
+    {
+      "wrong": "int fare(int km, int rate = 30, int booking = 50);\nfare(10, , 0);",
+      "right": "fare(10, 30, 0);   // give the middle value too",
+      "error": "expected primary-expression before ',' token"
+    }
+  ],
+  "examTips": [
+    "Defaults go on the right-most parameters. void f(int a = 1, int b); is an error.",
+    "Write the default once, in the prototype. Never repeat it in the definition.",
+    "Arguments are matched from the LEFT. You cannot skip a middle argument.",
+    "In a trace question, list which parameter values come from the caller and which from the defaults.",
+    "If a function is also overloaded, check that a call cannot match two versions. That is an ambiguity error."
+  ],
+  "romanSummary": [
+    "Default argument woh value hai jo function khud use kar leta hai jab call mein woh argument na diya jaye.",
+    "Defaults hamesha right wale parameters ko milte hain, jaise double area(double r, double pi = 3.14159);",
+    "Default sirf prototype mein likhte hain, definition mein dobara nahi likhte.",
+    "Arguments left se right bharte hain, is liye beech ka argument skip nahi kar sakte.",
+    "Agar caller value de de to default ignore ho jata hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which parameters of a function can have default values?",
+      "options": [
+        "The right-most ones",
+        "The left-most ones",
+        "Only the middle one",
+        "Any parameter, in any position"
+      ],
+      "answer": "The right-most ones",
+      "hint": "Think about which arguments the caller can leave out.",
+      "explanation": "Defaults are given from the right. The caller fills arguments from the left, so the ones left over at the right end are the ones that can be missing."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which prototype is correct?",
+      "options": [
+        "void f(int a = 1, int b);",
+        "void f(int a, int b = 1);",
+        "void f(int a = 1, int b, int c = 3);",
+        "void f(= 1, int b);"
+      ],
+      "answer": "void f(int a, int b = 1);",
+      "hint": "Defaults must stay at the right end.",
+      "explanation": "In void f(int a, int b = 1); the default is on the right-most parameter. The other options put a default on a parameter that has a non-default parameter after it, which is an error."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint total(int a, int b = 10, int c = 20) {\n    return a + b + c;\n}\nint main() {\n    cout << total(1) << \" \" << total(1, 2) << \" \" << total(1, 2, 3) << endl;\n    return 0;\n}",
+      "answer": "31 23 6",
+      "hint": "Work out which values come from the defaults in each call.",
+      "explanation": "total(1) = 1 + 10 + 20 = 31. total(1, 2) = 1 + 2 + 20 = 23. total(1, 2, 3) = 6 (no default used)."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nvoid show(int x, char sym = '#') {\n    cout << x << sym;\n}\nint main() {\n    show(5);\n    show(7, '!');\n    cout << endl;\n    return 0;\n}",
+      "answer": "5#7!",
+      "hint": "The first call uses the default symbol.",
+      "explanation": "show(5) prints 5 and the default '#'. show(7, '!') prints 7 and '!'. The two outputs join on one line: 5#7!."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This prototype gives a compile error. Fix it so that it compiles.\n\ndouble power(double base = 2, double exp);",
+      "answer": "double power(double base, double exp = 2);",
+      "hint": "Which parameter sits to the right of the default?",
+      "explanation": "A parameter with a default cannot be followed by one without. Move the default to the right-most parameter (exp = 2), or remove it from base, or give both parameters a default."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank so that h is 1 when the caller leaves it out.\n\nint box(int l, int w, int h ____);",
+      "answer": "= 1",
+      "hint": "A default is written like an assignment in the prototype.",
+      "explanation": "The prototype is int box(int l, int w, int h = 1); The default goes after the parameter name with an equals sign."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write the prototype, the definition and one call for discount(price, percent). The default percent is 10. The function returns the price after the discount. Call it once with only the price.",
+      "answer": "double discount(double price, double percent = 10);\n\ndouble discount(double price, double percent) {\n    return price - price * percent / 100;\n}\n\n// in main: cout << discount(2000);",
+      "hint": "Remember: the default is in the prototype only, not in the definition.",
+      "explanation": "The prototype carries '= 10'. The definition repeats only the parameter list. discount(2000) means discount(2000, 10), which returns 1800."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "A function has the prototype void f(int a, int b = 2, int c = 3);. Which call is NOT allowed?",
+      "options": [
+        "f(1)",
+        "f(1, 9)",
+        "f(1, , 5)",
+        "f(1, 9, 5)"
+      ],
+      "answer": "f(1, , 5)",
+      "hint": "Can you leave an empty space between commas?",
+      "explanation": "C++ fills arguments from the left. You cannot skip the middle one. f(1), f(1, 9) and f(1, 9, 5) are fine, f(1, , 5) is a syntax error."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is a default argument?",
+      "options": [
+        "A value used automatically when the caller leaves that argument out",
+        "A value that can never be changed",
+        "The first argument of every function",
+        "A variable declared inside main"
+      ],
+      "answer": "A value used automatically when the caller leaves that argument out",
+      "hint": "Think of the booking charge that is added unless you say otherwise.",
+      "explanation": "A default argument is a fallback value for a parameter. It is used only when the caller gives no value for it."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Where is the default value normally written?",
+      "options": [
+        "In the function prototype, once",
+        "In both the prototype and the definition",
+        "Only in main",
+        "Inside the function body"
+      ],
+      "answer": "In the function prototype, once",
+      "hint": "The compiler needs to know it before main calls the function.",
+      "explanation": "Defaults are written once, normally in the prototype above main. Writing it again in the definition is an error."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "For double area(double r, double pi = 3.14159); what does area(3, 3.14) do?",
+      "options": [
+        "It uses pi = 3.14",
+        "It uses pi = 3.14159",
+        "It gives a compile error",
+        "It sets r to 3.14"
+      ],
+      "answer": "It uses pi = 3.14",
+      "hint": "If the caller gives the argument, what happens to the default?",
+      "explanation": "A default is used only when the argument is missing. Here the caller gives 3.14, so pi is 3.14."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "With void f(int a, int b = 5, int c = 7);, in the call f(1, 2), what are a, b and c?",
+      "options": [
+        "a = 1, b = 2, c = 7",
+        "a = 1, b = 5, c = 2",
+        "a = 1, b = 2, c = 2",
+        "a = 2, b = 1, c = 7"
+      ],
+      "answer": "a = 1, b = 2, c = 7",
+      "hint": "Arguments fill from the left.",
+      "explanation": "1 goes to a, 2 goes to b, and c has no argument, so it gets the default 7."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Which is a valid prototype?",
+      "options": [
+        "int f(int a, int b = 1, int c = 2);",
+        "int f(int a = 1, int b, int c = 2);",
+        "int f(int a = 1, int b = 2, int c);",
+        "int f(int a, int b = 1, int c);"
+      ],
+      "answer": "int f(int a, int b = 1, int c = 2);",
+      "hint": "Once a parameter has a default, all parameters after it need one too.",
+      "explanation": "Defaults must be continuous to the right end. In the correct option a has none, b and c have defaults."
+    }
+  ],
+  "sources": [
+    "Default arguments",
+    "Function prototype and default values",
+    "Functions"
+  ]
+}

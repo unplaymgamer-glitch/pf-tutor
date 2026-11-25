@@ -1,0 +1,605 @@
+{
+  "slug": "reading-files",
+  "week": 14,
+  "title": "Reading from a file with ifstream",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "The correct reading loop: the read IS the condition",
+      "stages": [
+        {
+          "name": "1. Open and check",
+          "detail": "ifstream in(\"data.txt\"); if (!in) { ... }  The file must exist, in the working folder."
+        },
+        {
+          "name": "2. Try to read",
+          "detail": "while (in >> x): the program tries to read one value. If it works the condition is true."
+        },
+        {
+          "name": "3. Use the value",
+          "detail": "Inside the loop x holds a real value: add it, print it, count it."
+        },
+        {
+          "name": "4. End of file",
+          "detail": "When there is nothing left to read, in >> x fails, the condition becomes false and the loop stops. No extra round."
+        },
+        {
+          "name": "5. Close",
+          "detail": "in.close();"
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each reading tool to its job",
+      "pairs": [
+        {
+          "term": "in >> x",
+          "meaning": "Reads one value, skipping spaces and new lines"
+        },
+        {
+          "term": "getline(in, line)",
+          "meaning": "Reads a whole line, spaces included"
+        },
+        {
+          "term": "while (in >> x)",
+          "meaning": "Loop that stops by itself at the end of the file"
+        },
+        {
+          "term": "while (!in.eof())",
+          "meaning": "Risky loop: often handles the last item twice"
+        },
+        {
+          "term": "in >> roll >> name >> marks",
+          "meaning": "Reads one record with three fields"
+        },
+        {
+          "term": "if (!in)",
+          "meaning": "The file could not be opened (missing or wrong folder)"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can read numbers, words, lines and whole records from a text file with the correct loop, and avoid the classic end-of-file bug.",
+  "warmup": "A teacher reads out the marks sheet one name after another until the sheet ends. She does not ask \"is the sheet finished?\" before every name. She just keeps reading, and when there is nothing to read she stops. The right file loop works the same way: try to read, and if the reading worked, use the value.",
+  "definition": "To read a file you create an ifstream: ifstream in(\"data.txt\");. The file must already exist. The operator >> works like cin >>: it skips spaces and new lines and reads one value (an int, a double, a word). getline(in, line) reads a whole line, including spaces, into a string. Both can be used as the condition of a while loop, because a read that fails (end of file, or wrong kind of data) makes the stream false. So while (in >> x) means \"keep going while a value was successfully read\" and while (getline(in, line)) means \"keep going while a line was successfully read\".",
+  "howItWorks": "Follow the first trace. The loop condition itself performs the read. When the file is finished, the read fails, the condition is false and the loop stops. Nothing is processed twice. Compare with the bug: while (!in.eof()). The flag eof only turns true AFTER a read has already failed, so the body runs one extra time with an old or useless value. That is why the notes say: put the read in the condition. For records, read all fields in one condition: while (in >> roll >> name >> marks). This works when every record has the same fields in the same order, separated by spaces. Use >> when values are separated by spaces. Use getline when you need the whole line, for example to count lines or to read text that contains spaces. To count words, read with >> into a string: each >> takes one word. In all samples the program first creates its own input file, so it runs the same everywhere.",
+  "syntax": "ifstream in(\"data.txt\");\nif (!in) { cout << \"File not found!\" << endl; return 1; }\n\nint x;\nwhile (in >> x) {              // read a number; stops at end of file\n    // use x\n}\n\nstring line;\nwhile (getline(in, line)) {    // read a whole line\n    // use line\n}\n\nint roll; string name; double marks;\nwhile (in >> roll >> name >> marks) {   // one record per round\n    // use roll, name, marks\n}\nin.close();",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "The file nums.txt holds the numbers 10 20 30 40. Read them all, print each one and print their sum.",
+      "pseudocode": [
+        "START",
+        "WRITE the numbers into nums.txt (setup)",
+        "OPEN nums.txt for reading, check",
+        "SET sum = 0",
+        "WHILE a number x can be read: sum = sum + x, PRINT x",
+        "CLOSE",
+        "PRINT sum",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Open nums.txt for reading]\n  B --> C[sum = 0]\n  C --> D{Can a number x be read?}\n  D -- Yes --> E[sum = sum + x]\n  E --> F[/Print x/]\n  F --> D\n  D -- No --> G[Close the file]\n  G --> H[/Print sum/]\n  H --> I([End])",
+      "sample": {
+        "id": "read-numbers",
+        "title": "Read numbers and add them",
+        "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\n\nint main() {\n    ofstream out(\"nums.txt\");\n    out << 10 << \" \" << 20 << \" \" << 30 << \" \" << 40 << endl;\n    out.close();\n\n    ifstream in(\"nums.txt\");\n    if (!in) {\n        cout << \"File not found!\" << endl;\n        return 1;\n    }\n    int x;\n    int sum = 0;\n    while (in >> x) {\n        sum += x;\n        cout << \"read \" << x << endl;\n    }\n    in.close();\n    cout << \"Sum = \" << sum << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "read 10\nread 20\nread 30\nread 40\nSum = 100\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Setup: we create the input file ourselves so the program is complete."
+          },
+          {
+            "line": 7,
+            "text": "Four numbers on one line, separated by spaces."
+          },
+          {
+            "line": 10,
+            "text": "Opens the file for reading."
+          },
+          {
+            "line": 11,
+            "text": "Always check that the file opened."
+          },
+          {
+            "line": 15,
+            "text": "x receives each number from the file."
+          },
+          {
+            "line": 16,
+            "text": "sum collects the total. It must start at 0."
+          },
+          {
+            "line": 17,
+            "text": "Reads one number. If the read works, the loop runs. At the end of the file the read fails and the loop stops."
+          },
+          {
+            "line": 18,
+            "text": "Adds the number just read."
+          },
+          {
+            "line": 22,
+            "text": "Prints the total after the loop."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 6,
+              "vars": {
+                "file": "(empty)"
+              },
+              "note": "nums.txt is created for writing.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "file": "10 20 30 40"
+              },
+              "note": "The four numbers are written on one line, separated by spaces.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Now the file is opened for reading. The reading position is at the very start.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "sum": "0"
+              },
+              "note": "sum starts at 0, like a empty bucket.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {
+                "x": "10"
+              },
+              "note": "in >> x tries to read a number. It works, so the condition is true. x = 10.",
+              "out": ""
+            },
+            {
+              "line": 18,
+              "vars": {
+                "sum": "10"
+              },
+              "note": "sum = 0 + 10.",
+              "out": ""
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "Shows the number just read.",
+              "out": "read 10\n"
+            },
+            {
+              "line": 17,
+              "vars": {
+                "x": "20"
+              },
+              "note": "Next number: x = 20. (sum += x makes sum 30.)",
+              "out": ""
+            },
+            {
+              "line": 19,
+              "vars": {
+                "sum": "30"
+              },
+              "note": "Shows 20.",
+              "out": "read 20\n"
+            },
+            {
+              "line": 17,
+              "vars": {
+                "x": "30"
+              },
+              "note": "Next number: x = 30. (sum becomes 60.)",
+              "out": ""
+            },
+            {
+              "line": 19,
+              "vars": {
+                "sum": "60"
+              },
+              "note": "Shows 30.",
+              "out": "read 30\n"
+            },
+            {
+              "line": 17,
+              "vars": {
+                "x": "40"
+              },
+              "note": "Next number: x = 40. (sum becomes 100.)",
+              "out": ""
+            },
+            {
+              "line": 19,
+              "vars": {
+                "sum": "100"
+              },
+              "note": "Shows 40.",
+              "out": "read 40\n"
+            },
+            {
+              "line": 21,
+              "vars": {},
+              "note": "The next in >> x finds no more numbers, so it FAILS and the condition is false. The loop stops, with no extra pass.",
+              "out": ""
+            },
+            {
+              "line": 22,
+              "vars": {},
+              "note": "The total of all numbers in the file.",
+              "out": "Sum = 100\n"
+            }
+          ],
+          "types": {
+            "file": "file",
+            "x": "int",
+            "sum": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "The file story.txt has three lines. Print every line with its number, then count the lines and the words in the file.",
+      "pseudocode": [
+        "START",
+        "WRITE three lines into story.txt (setup)",
+        "OPEN story.txt, lines = 0",
+        "WHILE a line can be read: lines = lines + 1, PRINT it",
+        "CLOSE and OPEN again, words = 0",
+        "WHILE a word can be read: words = words + 1",
+        "PRINT lines and words",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Open story.txt]\n  B --> C[lines = 0]\n  C --> D{Can a line be read?}\n  D -- Yes --> E[lines = lines + 1]\n  E --> F[/Print the line/]\n  F --> D\n  D -- No --> G[Open the file again, words = 0]\n  G --> H{Can a word be read?}\n  H -- Yes --> I[words = words + 1]\n  I --> H\n  H -- No --> J[/Print lines and words/]\n  J --> K([End])",
+      "sample": {
+        "id": "count-lines-words",
+        "title": "Counting lines and words",
+        "code": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nint main() {\n    ofstream out(\"story.txt\");\n    out << \"Ali scored well\" << endl;\n    out << \"Sana did better\" << endl;\n    out << \"Usman tried\" << endl;\n    out.close();\n\n    ifstream in(\"story.txt\");\n    if (!in) {\n        cout << \"File not found!\" << endl;\n        return 1;\n    }\n    string line;\n    int lines = 0;\n    while (getline(in, line)) {\n        lines++;\n        cout << \"Line \" << lines << \": \" << line << endl;\n    }\n    in.close();\n\n    ifstream again(\"story.txt\");\n    string word;\n    int words = 0;\n    while (again >> word) {\n        words++;\n    }\n    again.close();\n    cout << \"Lines: \" << lines << \", words: \" << words << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Line 1: Ali scored well\nLine 2: Sana did better\nLine 3: Usman tried\nLines: 3, words: 8\n",
+        "explanation": [
+          {
+            "line": 8,
+            "text": "Setup: three lines of text with 3, 3 and 2 words."
+          },
+          {
+            "line": 20,
+            "text": "getline reads a full line, spaces included, until there are no more lines."
+          },
+          {
+            "line": 21,
+            "text": "Each successful getline is one line."
+          },
+          {
+            "line": 26,
+            "text": "To read the same file a second time we open it again, so reading starts from the beginning."
+          },
+          {
+            "line": 29,
+            "text": ">> into a string reads one word (it stops at a space or a new line)."
+          },
+          {
+            "line": 30,
+            "text": "Each successful read is one word."
+          },
+          {
+            "line": 33,
+            "text": "3 lines and 3 + 3 + 2 = 8 words."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Exam question: students.txt holds records in the form roll name marks. Read all records, print them, then print how many students there are, the average marks and the name of the topper.",
+      "pseudocode": [
+        "START",
+        "WRITE four records into students.txt (setup)",
+        "OPEN students.txt, check",
+        "SET total = 0, count = 0, best = 0",
+        "WHILE a record (roll, name, marks) can be read: PRINT it, add marks to total, count = count + 1, IF marks > best THEN remember best and name",
+        "CLOSE",
+        "IF count > 0: PRINT count, total / count and the topper",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Open students.txt]\n  B --> C[total = 0, count = 0, best = 0]\n  C --> D{Can a record be read?}\n  D -- Yes --> E[/Print the record/]\n  E --> F[total = total + marks, count = count + 1]\n  F --> G{marks greater than best?}\n  G -- Yes --> H[best = marks, remember name]\n  G -- No --> D\n  H --> D\n  D -- No --> I[Close the file]\n  I --> J[/Print count, average and topper/]\n  J --> K([End])",
+      "sample": {
+        "id": "read-records",
+        "title": "Reading records with several fields",
+        "code": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nint main() {\n    ofstream out(\"students.txt\");\n    out << \"101 Ali 78\" << endl;\n    out << \"102 Sana 91\" << endl;\n    out << \"103 Usman 66\" << endl;\n    out << \"104 Hira 88\" << endl;\n    out.close();\n\n    ifstream in(\"students.txt\");\n    if (!in) {\n        cout << \"File not found!\" << endl;\n        return 1;\n    }\n    int roll;\n    string name;\n    double marks;\n    double total = 0;\n    int count = 0;\n    double best = 0;\n    string bestName = \"\";\n    while (in >> roll >> name >> marks) {\n        cout << roll << \" - \" << name << \" - \" << marks << endl;\n        total += marks;\n        count++;\n        if (marks > best) {\n            best = marks;\n            bestName = name;\n        }\n    }\n    in.close();\n    if (count > 0) {\n        cout << \"Students: \" << count << endl;\n        cout << \"Average: \" << total / count << endl;\n        cout << \"Top: \" << bestName << \" with \" << best << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "101 - Ali - 78\n102 - Sana - 91\n103 - Usman - 66\n104 - Hira - 88\nStudents: 4\nAverage: 80.75\nTop: Sana with 91\n",
+        "explanation": [
+          {
+            "line": 8,
+            "text": "Setup: one record per line, fields separated by spaces."
+          },
+          {
+            "line": 19,
+            "text": "One variable for each field of the record."
+          },
+          {
+            "line": 22,
+            "text": "total adds up all the marks."
+          },
+          {
+            "line": 24,
+            "text": "best remembers the highest mark seen so far."
+          },
+          {
+            "line": 26,
+            "text": "Reads one whole record. If any of the three reads fails (end of file) the loop stops."
+          },
+          {
+            "line": 27,
+            "text": "Shows the record that was just read."
+          },
+          {
+            "line": 30,
+            "text": "A new highest mark: remember it and the name."
+          },
+          {
+            "line": 36,
+            "text": "Avoids dividing by zero when the file is empty."
+          },
+          {
+            "line": 38,
+            "text": "total / count: total is a double, so the division keeps decimals."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "while (in >> x)",
+      "when": "Numbers or single words separated by spaces.",
+      "example": "while (in >> mark) sum += mark;"
+    },
+    {
+      "way": "while (getline(in, line))",
+      "when": "Whole lines (they may contain spaces), counting lines.",
+      "example": "while (getline(in, line)) cout << line << endl;"
+    },
+    {
+      "way": "while (in >> a >> b >> c)",
+      "when": "Records with several fields.",
+      "example": "while (in >> roll >> name >> marks) { ... }"
+    },
+    {
+      "way": "if (in >> x)",
+      "when": "Read just one value (the first).",
+      "example": "if (in >> first) cout << first;"
+    },
+    {
+      "way": "ifstream again(\"f.txt\");",
+      "when": "Read the file a second time from the start.",
+      "example": "ifstream again(\"story.txt\");"
+    },
+    {
+      "way": "while (!in.eof())",
+      "when": "AVOID. Often processes the last item twice.",
+      "example": "while (!in.eof()) { in >> x; }  // buggy"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main() {\n    ofstream out(\"d.txt\");\n    out << 5 << \" \" << 10 << \" \" << 15 << endl;\n    out.close();\n    ifstream in(\"d.txt\");\n    int x;\n    while (!in.eof()) {\n        in >> x;\n        cout << x << \" \";\n    }\n    return 0;\n}",
+      "right": "while (in >> x) {\n    cout << x << \" \";\n}",
+      "error": "No compiler error. The file holds 5 10 15 but the program prints: 5 10 15 15 . The last number appears twice, because eof() becomes true only after a read has failed. Put the read inside the loop condition."
+    },
+    {
+      "wrong": "ifstream in(\"data.txt\");\nint x;\nwhile (in >> x)  { ... }   // file never checked",
+      "right": "ifstream in(\"data.txt\");\nif (!in) { cout << \"File not found!\" << endl; return 1; }",
+      "error": "No compiler error. If the file is missing the loop silently runs zero times and the program prints nothing useful. Check the file first."
+    },
+    {
+      "wrong": "// file lines look like: Sana 91\nwhile (in >> roll >> marks) n++;",
+      "right": "while (in >> name >> marks) n++;   // same order as in the file",
+      "error": "No compiler error. Reading in the wrong order fails at once (the word Sana is not a number), so the loop never runs. In our check it counted 0 records. The variables must match the order and type of the fields in the file."
+    },
+    {
+      "wrong": "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main() {\n    ifstream in(\"data.txt\");\n    int x = 5;\n    in << x;\n    return 0;\n}",
+      "right": "ifstream in(\"data.txt\");\nint x;\nin >> x;",
+      "error": "The compiler reports error: no match for 'operator<<' (operand types are 'std::ifstream' {aka 'std::basic_ifstream<char>'} and 'int'). An ifstream reads, so use >> with it. << is for output streams."
+    },
+    {
+      "wrong": "ifstream in(\"data.txt\");\nint total = 0;\nwhile (in >> x) total += x;   // total starts at 0 but x was never declared",
+      "right": "int x;\nwhile (in >> x) total += x;",
+      "error": "The compiler says x was not declared in this scope. Declare the variable that receives the data before the loop."
+    }
+  ],
+  "examTips": [
+    "Write while (in >> x) or while (getline(in, line)). Never while (!in.eof()). The notes mark the eof loop as a bug.",
+    "For records read all fields in one condition: while (in >> roll >> name >> marks).",
+    "Start total at 0 and count at 0 before the loop. Check count > 0 before dividing.",
+    "Use getline to count lines, >> to count words, and remember that getline keeps the spaces.",
+    "To read the same file again, close it and open it again (or open a second stream)."
+  ],
+  "romanSummary": [
+    "ifstream in(\"data.txt\"); file parhne ke liye kholta hai. File pehle se maujood honi chahiye, isliye if (!in) se check karein.",
+    "in >> x space ya nayi line tak ek value parhta hai, getline(in, line) poori line parhta hai.",
+    "Sahi loop: while (in >> x) ya while (getline(in, line)). Parhna hi condition mein likhein, file khatam hote hi loop khud ruk jata hai.",
+    "while (!in.eof()) se bachein, aksar aakhri value do baar process ho jati hai.",
+    "Record ke liye while (in >> roll >> name >> marks) likhein, fields ki tarteeb file jaisi ho."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which loop is the CORRECT way to read numbers until the end of the file?",
+      "options": [
+        "while (in >> x)",
+        "while (!in.eof())",
+        "for (;;) in >> x;",
+        "while (in == 0)"
+      ],
+      "answer": "while (in >> x)",
+      "hint": "The read is the condition.",
+      "explanation": "The read in the condition fails at the end of the file, so the loop stops with no extra round."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <fstream>\nusing namespace std;\nint main() {\n    ofstream out(\"n.txt\");\n    out << 4 << \" \" << 5 << \" \" << 6 << endl;\n    out.close();\n    ifstream in(\"n.txt\");\n    int x, sum = 0;\n    while (in >> x) sum += x;\n    cout << sum;\n    return 0;\n}",
+      "answer": "15",
+      "hint": "Add 4 + 5 + 6.",
+      "explanation": "The loop reads 4, 5 and 6 and adds them."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    ofstream out(\"t.txt\");\n    out << \"red green\" << endl;\n    out << \"blue\" << endl;\n    out.close();\n    ifstream in(\"t.txt\");\n    string line;\n    int n = 0;\n    while (getline(in, line)) n++;\n    ifstream in2(\"t.txt\");\n    string w;\n    int k = 0;\n    while (in2 >> w) k++;\n    cout << n << \" \" << k;\n    return 0;\n}",
+      "answer": "2 3",
+      "hint": "Lines first, then words.",
+      "explanation": "There are 2 lines and 3 words (red, green, blue)."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    ofstream out(\"r.txt\");\n    out << \"1 Ali 50\" << endl;\n    out << \"2 Sana 70\" << endl;\n    out.close();\n    ifstream in(\"r.txt\");\n    int id, total = 0;\n    string name;\n    int m;\n    while (in >> id >> name >> m) {\n        total += m;\n        cout << name << \":\" << m << \" \";\n    }\n    cout << total;\n    return 0;\n}",
+      "answer": "Ali:50 Sana:70 120",
+      "hint": "Two records.",
+      "explanation": "Both records are read: it prints each name and mark, then the total 120."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <fstream>\nusing namespace std;\nint main() {\n    ofstream out(\"e.txt\");\n    out << 1 << \" \" << 2 << \" \" << 3 << endl;\n    out.close();\n    ifstream in(\"e.txt\");\n    int x;\n    int count = 0;\n    while (!in.eof()) {\n        in >> x;\n        count++;\n    }\n    cout << count;\n    return 0;\n}",
+      "answer": "4",
+      "hint": "The eof flag turns true only after a failed read.",
+      "explanation": "After reading 3 the flag is still false, so the loop runs once more: the count is 4, not 3."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This loop processes the last number twice. Fix it.\n\nwhile (!in.eof()) {\n    in >> x;\n    sum += x;\n}",
+      "answer": "while (in >> x) {\n    sum += x;\n}",
+      "hint": "Move the read into the condition.",
+      "explanation": "eof() is true only after a failed read. Reading in the condition avoids the extra round."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Complete the loop that prints every line of the file.\n\nstring line;\nwhile (____(in, line))\n    cout << line << endl;",
+      "answer": "getline",
+      "hint": "The function that reads a whole line.",
+      "explanation": "getline(in, line) reads one line and is false at the end of the file."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a complete program: create scores.txt containing 70 85 90 55, then read the numbers back and print the largest one.",
+      "answer": "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main() {\n    ofstream out(\"scores.txt\");\n    out << 70 << \" \" << 85 << \" \" << 90 << \" \" << 55 << endl;\n    out.close();\n    ifstream in(\"scores.txt\");\n    if (!in) { cout << \"File not found!\" << endl; return 1; }\n    int x, largest = 0;\n    while (in >> x) {\n        if (x > largest) largest = x;\n    }\n    in.close();\n    cout << \"Largest: \" << largest << endl;\n    return 0;\n}",
+      "hint": "Keep a variable largest and update it inside while (in >> x).",
+      "explanation": "Write the file, read with while (in >> x) and update largest when x is bigger."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which one reads a complete line from a file?",
+      "options": [
+        "getline(in, line)",
+        "in >> line",
+        "in.line()",
+        "cin >> line"
+      ],
+      "answer": "getline(in, line)",
+      "hint": "The name says it.",
+      "explanation": "getline reads up to the end of the line, spaces included."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What happens to while (in >> x) at the end of the file?",
+      "options": [
+        "The read fails and the loop stops",
+        "The loop runs forever",
+        "x becomes -1",
+        "The program crashes"
+      ],
+      "answer": "The read fails and the loop stops",
+      "hint": "The read is the condition.",
+      "explanation": "A failed read makes the stream false."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Why is while (!in.eof()) risky?",
+      "options": [
+        "eof becomes true only after a read has failed, so the last item may be processed twice",
+        "It does not compile",
+        "It reads backwards",
+        "It closes the file"
+      ],
+      "answer": "eof becomes true only after a read has failed, so the last item may be processed twice",
+      "hint": "Think about when eof turns true.",
+      "explanation": "The body runs once more with an old value."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "A file has the lines: 3 / 4 / 5 (one number per line). What does int x, s = 0; while (in >> x) s += x; give?",
+      "options": [
+        "12",
+        "3",
+        "5",
+        "0"
+      ],
+      "answer": "12",
+      "hint": "Add all three.",
+      "explanation": "The loop reads 3, 4 and 5."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Which loop reads records of the form roll name marks?",
+      "options": [
+        "while (in >> roll >> name >> marks)",
+        "while (in >> roll)",
+        "while (getline(in, roll, name, marks))",
+        "for (in; roll; marks)"
+      ],
+      "answer": "while (in >> roll >> name >> marks)",
+      "hint": "All fields in one condition.",
+      "explanation": "Each round reads one complete record."
+    }
+  ],
+  "sources": [
+    "Reading from a file",
+    "ifstream and the >> operator",
+    "getline with files",
+    "Reading until the end of the file (avoid eof loops)",
+    "Reading records"
+  ]
+}

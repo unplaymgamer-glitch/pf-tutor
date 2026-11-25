@@ -1,0 +1,672 @@
+{
+  "slug": "declaring-structures",
+  "week": 12,
+  "title": "Declaring structures and making variables",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "memory",
+      "title": "Copying a struct: s2 = s1 gives s2 its own boxes",
+      "cells": [
+        {
+          "name": "s1.id",
+          "type": "int",
+          "addr": "0x1000"
+        },
+        {
+          "name": "s1.name",
+          "type": "string",
+          "addr": "0x1008"
+        },
+        {
+          "name": "s1.cgpa",
+          "type": "double",
+          "addr": "0x1028"
+        },
+        {
+          "name": "s2.id",
+          "type": "int",
+          "addr": "0x1030"
+        },
+        {
+          "name": "s2.name",
+          "type": "string",
+          "addr": "0x1038"
+        },
+        {
+          "name": "s2.cgpa",
+          "type": "double",
+          "addr": "0x1058"
+        }
+      ],
+      "steps": [
+        {
+          "code": "Student s1 = {1, \"Ali\", 3.5};",
+          "note": "Values go into the members in declaration order. Addresses are made up for the picture.",
+          "values": {
+            "s1.id": "1",
+            "s1.name": "Ali",
+            "s1.cgpa": "3.5",
+            "s2.id": "-",
+            "s2.name": "-",
+            "s2.cgpa": "-"
+          },
+          "points": {}
+        },
+        {
+          "code": "Student s2 = s1;",
+          "note": "Every member of s1 is copied into the matching member of s2. These are different boxes at different addresses.",
+          "values": {
+            "s2.id": "1",
+            "s2.name": "Ali",
+            "s2.cgpa": "3.5"
+          },
+          "points": {}
+        },
+        {
+          "code": "s2.id = 2;",
+          "note": "Only s2.id changes. s1.id keeps 1.",
+          "values": {
+            "s2.id": "2"
+          },
+          "points": {}
+        },
+        {
+          "code": "s2.name = \"Sana\";",
+          "note": "Only s2.name changes. The copy is now a different record.",
+          "values": {
+            "s2.name": "Sana"
+          },
+          "points": {}
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match the syntax to what it does",
+      "pairs": [
+        {
+          "term": "struct Student { ... };",
+          "meaning": "Declares a new type (blueprint). Note the semicolon."
+        },
+        {
+          "term": "Student s1;",
+          "meaning": "Makes a variable of that type and reserves memory"
+        },
+        {
+          "term": "s1.cgpa",
+          "meaning": "The dot operator: the cgpa member of s1"
+        },
+        {
+          "term": "Student s2 = {2, \"Sana\", 3.9};",
+          "meaning": "Initialiser list: values in member order"
+        },
+        {
+          "term": "s2 = s1;",
+          "meaning": "Copies all members of s1 into s2"
+        },
+        {
+          "term": "cout << s1;",
+          "meaning": "Not allowed: print members one by one"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can declare a struct, create variables of it, set and read members with the dot operator, initialise with braces or cin, and copy a whole struct.",
+  "warmup": "A university prints one blank admission form design. The design (the form layout) is not a student. Only when a student fills one in do you have a real record with a real name. A struct declaration is the blank form design. A struct variable is one filled-in form.",
+  "definition": "A struct declaration tells C++ the name of a new type and the list of its data members. It does not create any variable and uses no memory. A structure variable is a variable of that type. It has its own copy of every member. You reach a member with the dot operator: variable.member. The declaration ends with a semicolon.",
+  "howItWorks": "Step 1: declare the struct, usually ABOVE main(), so that every function can see the new type. Step 2: in main, make variables with the type name, like Student s1;. Step 3: use the dot operator to read or write members: s1.cgpa = 3.7; or cout << s1.name;. A member behaves exactly like an ordinary variable of its own type. You can give a variable its starting values in three ways. First, with braces in member order: Student s1 = {1, \"Ali\", 3.5};. Second, member by member after declaring the variable: s1.id = 1; and so on. Third, by reading from the keyboard straight into members: cin >> s1.id >> s1.name >> s1.cgpa;. A whole struct can be copied with =: s2 = s1; copies every member. After the copy the two variables are independent, as the memory visual shows. What you cannot do is print or read a whole struct in one go (cout << s1 does not work) or compare two structs with ==. Those need member by member work (next lesson). About sizeof: sizeof(s1.id) is the size of the int member. sizeof(s1) is the size of the whole variable. It is at least the sum of the members and may be bigger, because the compiler can add gaps between members. So never count on a particular number.",
+  "syntax": "// declare the type (above main), note the semicolon\nstruct Student {\n    int id;\n    string name;\n    double cgpa;\n};\n\nint main() {\n    Student s1;                          // variable (members empty)\n    s1.id = 101;                         // dot operator\n    Student s2 = {102, \"Bilal\", 3.2};   // braces, in member order\n    cin >> s1.name >> s1.cgpa;           // input into members\n    s2 = s1;                             // copy ALL members\n    cout << s2.name << endl;             // print one member\n    return 0;\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Declare a struct Student with an id, a name and a CGPA. In main make a variable s1, set the three members one by one and print them.",
+      "pseudocode": [
+        "START",
+        "DECLARE struct Student (id, name, cgpa)",
+        "MAKE variable s1",
+        "SET s1.id = 101, s1.name = Ayesha, s1.cgpa = 3.7",
+        "PRINT the three members",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Declare struct Student]\n  B --> C[Make variable s1]\n  C --> D[Set s1.id, s1.name, s1.cgpa]\n  D --> E[/Print the members/]\n  E --> F([End])",
+      "sample": {
+        "id": "declare-and-assign",
+        "title": "Declare a struct, make a variable, set members",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int id;\n    string name;\n    double cgpa;\n};\n\nint main() {\n    Student s1;\n    s1.id = 101;\n    s1.name = \"Ayesha\";\n    s1.cgpa = 3.7;\n    cout << s1.id << \" \" << s1.name << \" \" << s1.cgpa << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "101 Ayesha 3.7\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "struct keyword, then the name of the new type."
+          },
+          {
+            "line": 6,
+            "text": "Data member: a roll number."
+          },
+          {
+            "line": 7,
+            "text": "Data member: a name."
+          },
+          {
+            "line": 8,
+            "text": "Data member: a CGPA."
+          },
+          {
+            "line": 9,
+            "text": "The closing brace is followed by a semicolon. Forgetting it is the classic error."
+          },
+          {
+            "line": 12,
+            "text": "Makes a variable s1 of type Student. Memory for all three members is reserved now."
+          },
+          {
+            "line": 13,
+            "text": "Dot operator: variable.member."
+          },
+          {
+            "line": 16,
+            "text": "Each member is printed separately."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {},
+              "note": "The struct is declared before main. This only draws the blueprint: no memory is used yet.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {
+                "s1.id": "?",
+                "s1.name": "?",
+                "s1.cgpa": "?"
+              },
+              "note": "Now a variable s1 of type Student exists. It has three boxes, all holding garbage or empty values for now.",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {
+                "s1.id": "101"
+              },
+              "note": "s1.id means: the id member of s1. The dot picks the member.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {
+                "s1.name": "Ayesha"
+              },
+              "note": "The name member gets a string.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "s1.cgpa": "3.7"
+              },
+              "note": "The cgpa member gets a double.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "Prints the three members one by one. There is no way to print the whole struct in one shot.",
+              "out": "101 Ayesha 3.7\n"
+            }
+          ],
+          "types": {
+            "s1.id": "int",
+            "s1.name": "string",
+            "s1.cgpa": "double"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Create s1 with an initialiser list. Copy it into s2, then change the id and name of s2. Print both students and show that s1 did not change.",
+      "pseudocode": [
+        "START",
+        "s1 = {1, Ali, 3.5}",
+        "s2 = s1 (copy all members)",
+        "s2.id = 2, s2.name = Sana",
+        "PRINT s1",
+        "PRINT s2",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[s1 = 1, Ali, 3.5]\n  B --> C[s2 = s1]\n  C --> D[Change s2.id and s2.name]\n  D --> E[/Print s1/]\n  E --> F[/Print s2/]\n  F --> G([End])",
+      "sample": {
+        "id": "init-and-copy",
+        "title": "Initialise with braces and copy a whole struct",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int id;\n    string name;\n    double cgpa;\n};\n\nint main() {\n    Student s1 = {1, \"Ali\", 3.5};\n    Student s2 = s1;\n    s2.id = 2;\n    s2.name = \"Sana\";\n    cout << s1.id << \" \" << s1.name << \" \" << s1.cgpa << endl;\n    cout << s2.id << \" \" << s2.name << \" \" << s2.cgpa << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "1 Ali 3.5\n2 Sana 3.5\n",
+        "explanation": [
+          {
+            "line": 12,
+            "text": "Initialiser list: values in the order of the members."
+          },
+          {
+            "line": 13,
+            "text": "Copies the whole struct. After this the two variables are independent."
+          },
+          {
+            "line": 14,
+            "text": "Changes only s2."
+          },
+          {
+            "line": 15,
+            "text": "Changes only s2."
+          },
+          {
+            "line": 16,
+            "text": "Prints s1: the original values."
+          },
+          {
+            "line": 17,
+            "text": "Prints s2: new id and name, copied cgpa."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 12,
+              "vars": {
+                "s1.id": "1",
+                "s1.name": "Ali",
+                "s1.cgpa": "3.5"
+              },
+              "note": "The braces give the values in the SAME ORDER as the members: id, name, cgpa.",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {
+                "s2.id": "1",
+                "s2.name": "Ali",
+                "s2.cgpa": "3.5"
+              },
+              "note": "s2 starts as a full copy of s1: every member is copied into its own box.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {
+                "s2.id": "2"
+              },
+              "note": "We change only s2. s1.id is still 1.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "s2.name": "Sana"
+              },
+              "note": "s2.name changes too. s2.cgpa is still the copied 3.5.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "s1 is untouched.",
+              "out": "1 Ali 3.5\n"
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "s2 has its own id and name, but still the copied CGPA.",
+              "out": "2 Sana 3.5\n"
+            }
+          ],
+          "types": {
+            "s1.id": "int",
+            "s1.name": "string",
+            "s1.cgpa": "double",
+            "s2.id": "int",
+            "s2.name": "string",
+            "s2.cgpa": "double"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Declare a struct Employee (empId, name, salary). Read one employee from the keyboard, give a 10 percent raise and print the employee.",
+      "pseudocode": [
+        "START",
+        "DECLARE struct Employee",
+        "READ e.empId, e.name, e.salary",
+        "e.salary = e.salary + e.salary * 0.10",
+        "PRINT id, name and new salary",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Declare struct Employee]\n  B --> C[/Read id, name, salary into e/]\n  C --> D[Add 10 percent to e.salary]\n  D --> E[/Print e/]\n  E --> F([End])",
+      "sample": {
+        "id": "read-employee",
+        "title": "Exam: read an Employee from the keyboard",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Employee {\n    int empId;\n    string name;\n    double salary;\n};\n\nint main() {\n    Employee e;\n    cout << \"Enter id, name and salary: \";\n    cin >> e.empId >> e.name >> e.salary;\n    e.salary = e.salary + e.salary * 0.10;\n    cout << \"Employee \" << e.empId << \" (\" << e.name << \") now earns \" << e.salary << endl;\n    return 0;\n}\n",
+        "stdin": "7 Bilal 50000\n",
+        "graphics": false,
+        "expectedOutput": "Enter id, name and salary: Employee 7 (Bilal) now earns 55000\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "The new type Employee."
+          },
+          {
+            "line": 6,
+            "text": "Member 1."
+          },
+          {
+            "line": 7,
+            "text": "Member 2 (one word, because cin >> stops at a space)."
+          },
+          {
+            "line": 8,
+            "text": "Member 3."
+          },
+          {
+            "line": 12,
+            "text": "A variable e of the new type."
+          },
+          {
+            "line": 13,
+            "text": "Prompt."
+          },
+          {
+            "line": 14,
+            "text": "cin reads straight into the members, one after the other."
+          },
+          {
+            "line": 15,
+            "text": "Arithmetic on a member: a 10 percent raise."
+          },
+          {
+            "line": 16,
+            "text": "Prints members and text together."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 12,
+              "vars": {
+                "e.empId": "?",
+                "e.name": "?",
+                "e.salary": "?"
+              },
+              "note": "The variable e is created. Its members have no values yet.",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "The prompt is shown.",
+              "out": "Enter id, name and salary: "
+            },
+            {
+              "line": 14,
+              "vars": {
+                "e.empId": "7",
+                "e.name": "Bilal",
+                "e.salary": "50000"
+              },
+              "note": "One cin statement fills the three members from the input 7 Bilal 50000.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "e.salary": "55000"
+              },
+              "note": "salary becomes 50000 + 5000 = 55000.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "Prints the members inside a sentence.",
+              "out": "Employee 7 (Bilal) now earns 55000\n"
+            }
+          ],
+          "types": {
+            "e.empId": "int",
+            "e.name": "string",
+            "e.salary": "double"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Member by member",
+      "when": "You set values one at a time, any order.",
+      "example": "Student s1;\ns1.id = 1;\ns1.name = \"Ali\";\ns1.cgpa = 3.5;"
+    },
+    {
+      "way": "Initialiser list",
+      "when": "You know all values at declaration. Order must match the members.",
+      "example": "Student s1 = {1, \"Ali\", 3.5};"
+    },
+    {
+      "way": "Read with cin",
+      "when": "Values come from the user. Each member is read like a normal variable.",
+      "example": "cin >> s1.id >> s1.name >> s1.cgpa;"
+    },
+    {
+      "way": "Copy a whole struct",
+      "when": "You need a second record with the same values (or a swap).",
+      "example": "Student s2 = s1;   // or: s2 = s1;"
+    },
+    {
+      "way": "Several variables at once",
+      "when": "You need many records of one type.",
+      "example": "Student a, b, c;"
+    },
+    {
+      "way": "Declared before main",
+      "when": "Always. A struct must be visible before it is used.",
+      "example": "struct Student { ... };\nint main() { Student s; ... }"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "struct Student {\n    int id;\n    string name;\n}          // no semicolon\nint main() { }",
+      "right": "struct Student {\n    int id;\n    string name;\n};\nint main() { }",
+      "error": "g++ reports: expected ';' after struct definition."
+    },
+    {
+      "wrong": "Student.id = 5;   // using the type name",
+      "right": "Student s1;\ns1.id = 5;   // use a variable",
+      "error": "g++ reports: expected unqualified-id before '.' token. The dot works on a variable, not on the type."
+    },
+    {
+      "wrong": "Student s = {\"Ali\", 1, 3.5};   // wrong order",
+      "right": "Student s = {1, \"Ali\", 3.5};   // id, name, cgpa",
+      "error": "g++ reports: invalid conversion from 'const char*' to 'int' (and a second error for the int to string). The values must follow the member order."
+    },
+    {
+      "wrong": "Student s1 = {1, \"Ali\", 3.5};\ncout << s1;   // whole struct",
+      "right": "cout << s1.id << \" \" << s1.name << \" \" << s1.cgpa;",
+      "error": "g++ reports: no match for 'operator<<' (operand types are 'std::ostream' and 'Student'). Print member by member."
+    }
+  ],
+  "examTips": [
+    "Always put the semicolon after the closing brace of a struct.",
+    "The declaration makes a type and uses no memory; Student s1; reserves the memory.",
+    "Initialiser values must follow the order of the members in the declaration.",
+    "You may copy a struct with s2 = s1, but cin >> s1, cout << s1 and s1 == s2 are not allowed.",
+    "Never write a fixed size for sizeof(struct) in an exam answer: it can be more than the sum of the members."
+  ],
+  "romanSummary": [
+    "struct Student { ... }; sirf naya type (blueprint) banata hai, memory tab milti hai jab variable banate hain, jaise Student s1;.",
+    "Member tak pahunchne ke liye dot operator use hota hai: s1.cgpa.",
+    "Values braces se member ke order mein di ja sakti hain: {1, \"Ali\", 3.5}, ya cin >> s1.id; se parh sakte hain.",
+    "s2 = s1; saare members copy kar deta hai, lekin cout << s1 ya s1 == s2 seedha nahi chalta.",
+    "struct ke } ke baad semicolon zaroori hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is missing?\n\nstruct Car {\n    string brand;\n    int year;\n}",
+      "options": [
+        "A semicolon after the closing brace",
+        "The word class",
+        "A return statement",
+        "Parentheses after Car"
+      ],
+      "answer": "A semicolon after the closing brace",
+      "hint": "Look at the last line of the struct.",
+      "explanation": "A struct declaration must end with a semicolon."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which line reads the cgpa member of the variable s1?",
+      "options": [
+        "cin >> s1.cgpa;",
+        "cin >> Student.cgpa;",
+        "cin >> s1->cgpa;",
+        "cin >> cgpa.s1;"
+      ],
+      "answer": "cin >> s1.cgpa;",
+      "hint": "Variable, dot, member.",
+      "explanation": "The dot operator joins the variable and the member name."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int id;\n    string name;\n    double cgpa;\n};\n\nint main() {\n    Student s = {5, \"Hina\", 3.1};\n    cout << s.name << \" \" << s.id << endl;\n    return 0;\n}",
+      "answer": "Hina 5",
+      "hint": "Name first, then id.",
+      "explanation": "s.name is Hina and s.id is 5, printed in that order."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int id;\n    string name;\n    double cgpa;\n};\n\nint main() {\n    Student a = {1, \"Ali\", 3.0};\n    Student b = a;\n    b.cgpa = b.cgpa + 0.5;\n    cout << a.cgpa << \" \" << b.cgpa << endl;\n    return 0;\n}",
+      "answer": "3 3.5",
+      "hint": "b is a copy, so a is unaffected.",
+      "explanation": "b.cgpa becomes 3.5 but a.cgpa stays 3. A double 3.0 prints as 3."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int id;\n    string name;\n    double cgpa;\n};\n\nint main() {\n    Student s;\n    cin >> s.id >> s.name >> s.cgpa;\n    cout << s.cgpa + 1 << \" \" << s.name << endl;\n    return 0;\n}",
+      "answer": "3.5 Zain",
+      "hint": "cin reads the three members in order.",
+      "explanation": "The input is 9 Zain 2.5, so s.cgpa + 1 is 3.5, then the name Zain."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Find and fix the error:\n\nstruct Point { int x; int y; };\nint main() {\n    Point p;\n    Point.x = 4;\n    p.y = 5;\n    return 0;\n}",
+      "answer": "Replace Point.x = 4; by p.x = 4;",
+      "hint": "The dot works on a variable, not on the type.",
+      "explanation": "The type name Point cannot be used with the dot. Use the variable p."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Complete the initialisation so the id is 7, the name is Noor and the cgpa is 3.6:\n\nStudent s = { _____ };",
+      "answer": "7, \"Noor\", 3.6",
+      "hint": "Follow the order id, name, cgpa.",
+      "explanation": "The values must be in the same order as the members of Student."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Using struct Student (id, name, cgpa), write the statements that make a variable s1 with values 1, \"Ali\", 3.5 and a second variable s2 that is a copy of s1 with the id changed to 2.",
+      "answer": "Student s1 = {1, \"Ali\", 3.5};\nStudent s2 = s1;\ns2.id = 2;",
+      "hint": "Copy first, then change the member.",
+      "explanation": "s2 = s1 copies all members; then only the id of s2 is overwritten."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which operator accesses a member of a struct variable?",
+      "options": [
+        "The dot operator (.)",
+        "The colon (:)",
+        "The comma (,)",
+        "The hash (#)"
+      ],
+      "answer": "The dot operator (.)",
+      "hint": "It is a single character.",
+      "explanation": "variable.member is the way."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "When is memory reserved?",
+      "options": [
+        "When a variable of the struct type is declared",
+        "When the struct is declared",
+        "When the program is saved",
+        "Only when the struct is copied"
+      ],
+      "answer": "When a variable of the struct type is declared",
+      "hint": "Blueprint or house?",
+      "explanation": "The declaration only makes the type. Student s1; reserves the memory."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "After Student s2 = s1; and s2.id = 9; what is s1.id?",
+      "options": [
+        "It stays what it was",
+        "9",
+        "0",
+        "It becomes empty"
+      ],
+      "answer": "It stays what it was",
+      "hint": "Is s2 a copy or the same box?",
+      "explanation": "The copy has its own boxes, so s1 is unchanged."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which statement is NOT allowed for a struct variable s1?",
+      "options": [
+        "cout << s1;",
+        "cout << s1.id;",
+        "s2 = s1;",
+        "s1.cgpa = 3.5;"
+      ],
+      "answer": "cout << s1;",
+      "hint": "Think about printing a whole struct.",
+      "explanation": "There is no built-in way to print a whole struct. Print its members."
+    }
+  ],
+  "sources": [
+    "Declaring a structure",
+    "Structure variables",
+    "Dot operator",
+    "Initialising structures",
+    "Copying structures"
+  ]
+}

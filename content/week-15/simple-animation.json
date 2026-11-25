@@ -1,0 +1,499 @@
+{
+  "slug": "simple-animation",
+  "week": 15,
+  "title": "Example: simple animation (moving circle)",
+  "defaultView": "visualize",
+  "order": 4,
+  "visuals": [
+    {
+      "kind": "canvas",
+      "title": "The notes' moving circle: watch the frames play",
+      "sampleId": "moving-circle"
+    },
+    {
+      "kind": "canvas",
+      "title": "A car whose parts move together (x + offset)",
+      "sampleId": "moving-car"
+    },
+    {
+      "kind": "canvas",
+      "title": "A ball falling: the loop variable is y this time",
+      "sampleId": "falling-ball"
+    }
+  ],
+  "goal": "After this you can make a shape move with a for loop: draw, wait, clear, move, repeat, and change the speed, direction and step size.",
+  "warmup": "A flip-book cartoon in a school notebook: on each page the drawing is a tiny bit different, and when you flick the pages fast your eye sees movement. An animation on the computer is exactly that: draw the picture, wait a moment, erase it, draw it again slightly moved, and repeat.",
+  "definition": "Animation means showing many pictures (frames) one after another, each with the shape in a slightly new position. In graphics.h the recipe is: draw, delay, cleardevice, move, repeat. A for loop is perfect for it, because the loop variable (for example x) IS the position and it changes by a small step on every pass. graphics.h is not standard C++. It runs only on a lab PC with Turbo C++ (DOSBox) or Code::Blocks/Dev-C++ plus the WinBGIm library, so the in-page compiler cannot run these programs. The canvas on this page is a simulation that draws what the same calls would draw. On the page, the canvas plays the frames of the loop so you can see the movement.",
+  "howItWorks": "Look at the loop for (int x = 50; x <= 550; x += 5). x starts at 50, grows by 5 each time, and stops after 550, so there are (550 - 50) / 5 + 1 = 101 frames. In each pass: cleardevice() wipes the old picture, setcolor and circle(x, 240, 30) draw the new one at the new x, and delay(30) waits 30 milliseconds, so the whole run takes about 101 x 30 ms = 3 seconds. Speed has two knobs: the step size (a bigger step jumps farther each frame, so it moves faster but less smoothly) and the delay (a smaller delay means more frames per second, so it moves faster). Direction comes from the loop: x going up moves right, y going up moves DOWN the screen (remember y grows downwards). To move several parts together, draw each one at x plus a fixed offset, like the car below. Bouncing, in words: move right until a wall is reached, then count back down so the shape moves left, and repeat. On real BGI the picture can flicker because cleardevice blanks the whole screen before every redraw; programs avoid this with double buffering (draw on a hidden page and show it when ready), which is beyond this course.",
+  "syntax": "for (int x = 50; x <= 550; x += 5)   // start, stop, STEP size\n{\n    cleardevice();                    // 1. erase the old picture\n    setcolor(GREEN);                  // 2. colour before drawing\n    circle(x, 240, 30);               // 3. draw at the NEW position\n    delay(30);                        // 4. wait 30 ms (speed)\n}                                     // 5. repeat with the next x",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Make a green circle of radius 30 move from the left (x = 50) to the right (x = 550) along y = 240 (the notes' example).",
+      "pseudocode": [
+        "START",
+        "Switch to graphics mode",
+        "FOR x from 50 to 550 step 5:",
+        "    clear the screen",
+        "    set colour GREEN",
+        "    draw circle at (x, 240) radius 30",
+        "    wait 30 ms",
+        "Wait for a key, then close graphics",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([\"Start\"]) --> B[\"Switch to graphics mode\"]\n  B --> C[\"x = 50\"]\n  C --> D{\"x <= 550?\"}\n  D -- Yes --> E[\"Clear screen, colour GREEN\"]\n  E --> F[\"Draw circle at (x, 240)\"]\n  F --> G[\"Wait 30 ms\"]\n  G --> H[\"x = x + 5\"]\n  H --> D\n  D -- No --> I[\"Wait for key, close graphics\"]\n  I --> J([\"End\"])",
+      "sample": {
+        "id": "moving-circle",
+        "title": "Moving circle (the notes' program)",
+        "code": "#include <graphics.h>\n#include <conio.h>\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    for (int x = 50; x <= 550; x += 5)\n    {\n        cleardevice();\n        setcolor(GREEN);\n        circle(x, 240, 30);\n        delay(30);                          // controls speed\n    }\n    getch();\n    closegraph();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": true,
+        "expectedOutput": "",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "Brings in the graphics library. graphics.h is NOT standard C++: it exists only in Turbo C++ / WinBGIm setups."
+          },
+          {
+            "line": 5,
+            "text": "gd (graphics driver) is set to DETECT so the library finds the screen mode itself. gm (graphics mode) is filled in by initgraph."
+          },
+          {
+            "line": 6,
+            "text": "Switches the screen to graphics mode. With WinBGIm the path can be empty."
+          },
+          {
+            "line": 7,
+            "text": "x is the circle's horizontal position: it starts at 50, stops at 550 and grows by 5 each pass (101 frames)."
+          },
+          {
+            "line": 9,
+            "text": "Wipes the previous frame; without it the circle would leave a long smeared trail."
+          },
+          {
+            "line": 10,
+            "text": "Colour before the shape."
+          },
+          {
+            "line": 11,
+            "text": "Centre x changes each pass, centre y stays 240, so the circle moves along a horizontal line."
+          },
+          {
+            "line": 12,
+            "text": "Waits 30 ms. Smaller delay = faster; bigger delay = slower."
+          },
+          {
+            "line": 14,
+            "text": "Waits for a key press so the picture stays on the screen."
+          },
+          {
+            "line": 15,
+            "text": "Leaves graphics mode and frees its memory."
+          }
+        ]
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Animate a car: a yellow body with two light cyan wheels moving right along a white road line. All parts must move together.",
+      "pseudocode": [
+        "START",
+        "Switch to graphics mode",
+        "FOR x from 20 to 480 step 10:",
+        "    clear the screen",
+        "    draw the road line",
+        "    draw the body from x to x + 100",
+        "    draw the wheels at x + 25 and x + 75",
+        "    wait 20 ms",
+        "Wait for a key, then close graphics",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([\"Start\"]) --> B[\"Switch to graphics mode\"]\n  B --> C[\"x = 20\"]\n  C --> D{\"x <= 480?\"}\n  D -- Yes --> E[\"Clear screen, draw road\"]\n  E --> F[\"Draw body and wheels using x\"]\n  F --> G[\"Wait 20 ms\"]\n  G --> H[\"x = x + 10\"]\n  H --> D\n  D -- No --> I[\"Wait for key, close graphics\"]\n  I --> J([\"End\"])",
+      "sample": {
+        "id": "moving-car",
+        "title": "A moving car",
+        "code": "#include <graphics.h>\n#include <conio.h>\n\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    for (int x = 20; x <= 480; x += 10)\n    {\n        cleardevice();\n        setcolor(WHITE);\n        line(0, 355, 639, 355);\n        setcolor(YELLOW);\n        rectangle(x, 300, x + 100, 340);\n        setcolor(LIGHTCYAN);\n        circle(x + 25, 345, 10);\n        circle(x + 75, 345, 10);\n        delay(20);\n    }\n    getch();\n    closegraph();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": true,
+        "expectedOutput": "",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "Brings in the graphics library. graphics.h is NOT standard C++: it exists only in Turbo C++ / WinBGIm setups."
+          },
+          {
+            "line": 6,
+            "text": "gd (graphics driver) is set to DETECT so the library finds the screen mode itself. gm (graphics mode) is filled in by initgraph."
+          },
+          {
+            "line": 7,
+            "text": "Switches the screen to graphics mode. With WinBGIm the path can be empty."
+          },
+          {
+            "line": 8,
+            "text": "x is the left edge of the car. Step 10 and delay 20 make it faster than the circle."
+          },
+          {
+            "line": 10,
+            "text": "Clear the previous frame."
+          },
+          {
+            "line": 12,
+            "text": "The road is redrawn every frame, because cleardevice erased it."
+          },
+          {
+            "line": 14,
+            "text": "Body: left edge x, right edge x + 100, so it is always 100 wide while it moves."
+          },
+          {
+            "line": 16,
+            "text": "Back wheel stays 25 pixels from the car's left edge."
+          },
+          {
+            "line": 17,
+            "text": "Front wheel 75 pixels from the left edge."
+          },
+          {
+            "line": 18,
+            "text": "20 ms per frame; 47 frames, under one second."
+          },
+          {
+            "line": 20,
+            "text": "Waits for a key press so the picture stays on the screen."
+          },
+          {
+            "line": 21,
+            "text": "Leaves graphics mode and frees its memory."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a program in which a light red ball of radius 25 falls straight down from y = 40 to y = 420 in steps of 10, with a white ground line at y = 450 and the text Falling ball at the top.",
+      "pseudocode": [
+        "START",
+        "Switch to graphics mode",
+        "FOR y from 40 to 420 step 10:",
+        "    clear the screen",
+        "    draw the ground line at y = 450 and the text",
+        "    set colour LIGHTRED and draw the circle at (320, y)",
+        "    wait 25 ms",
+        "Wait for a key, then close graphics",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([\"Start\"]) --> B[\"Switch to graphics mode\"]\n  B --> C[\"y = 40\"]\n  C --> D{\"y <= 420?\"}\n  D -- Yes --> E[\"Clear screen, ground line, text\"]\n  E --> F[\"Draw circle at (320, y)\"]\n  F --> G[\"Wait 25 ms\"]\n  G --> H[\"y = y + 10\"]\n  H --> D\n  D -- No --> I[\"Wait for key, close graphics\"]\n  I --> J([\"End\"])",
+      "sample": {
+        "id": "falling-ball",
+        "title": "A falling ball",
+        "code": "#include <graphics.h>\n#include <conio.h>\n\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    for (int y = 40; y <= 420; y += 10)\n    {\n        cleardevice();\n        setcolor(WHITE);\n        line(0, 450, 639, 450);\n        outtextxy(260, 20, (char*)\"Falling ball\");\n        setcolor(LIGHTRED);\n        circle(320, y, 25);\n        delay(25);\n    }\n    getch();\n    closegraph();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": true,
+        "expectedOutput": "",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "Brings in the graphics library. graphics.h is NOT standard C++: it exists only in Turbo C++ / WinBGIm setups."
+          },
+          {
+            "line": 6,
+            "text": "gd (graphics driver) is set to DETECT so the library finds the screen mode itself. gm (graphics mode) is filled in by initgraph."
+          },
+          {
+            "line": 7,
+            "text": "Switches the screen to graphics mode. With WinBGIm the path can be empty."
+          },
+          {
+            "line": 8,
+            "text": "This time the loop variable is y. Increasing y moves the ball DOWN the screen."
+          },
+          {
+            "line": 10,
+            "text": "Clear the old frame."
+          },
+          {
+            "line": 12,
+            "text": "Ground, redrawn every frame."
+          },
+          {
+            "line": 13,
+            "text": "The caption is also erased by cleardevice, so it is redrawn every frame too."
+          },
+          {
+            "line": 14,
+            "text": "Colour set before the circle."
+          },
+          {
+            "line": 15,
+            "text": "x fixed at 320, y changes: the ball falls. At y = 420 its bottom is at 445, just above the ground (450)."
+          },
+          {
+            "line": 16,
+            "text": "25 ms per frame, 39 frames."
+          },
+          {
+            "line": 18,
+            "text": "Waits for a key press so the picture stays on the screen."
+          },
+          {
+            "line": 19,
+            "text": "Leaves graphics mode and frees its memory."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Bigger step (x += 10)",
+      "when": "Faster but less smooth movement",
+      "example": "for (int x = 50; x <= 550; x += 10)"
+    },
+    {
+      "way": "Smaller delay",
+      "when": "More frames per second, faster",
+      "example": "delay(10);"
+    },
+    {
+      "way": "Bigger delay",
+      "when": "Slow, easy to watch",
+      "example": "delay(100);"
+    },
+    {
+      "way": "Move right: x increases",
+      "when": "Left-to-right motion",
+      "example": "for (int x = 50; x <= 550; x += 5)"
+    },
+    {
+      "way": "Move down: y increases",
+      "when": "Falling objects (y grows downwards)",
+      "example": "for (int y = 40; y <= 420; y += 10)"
+    },
+    {
+      "way": "Move left: x decreases",
+      "when": "Right-to-left; use x -= step and x >= stop",
+      "example": "for (int x = 550; x >= 50; x -= 5)"
+    },
+    {
+      "way": "Diagonal",
+      "when": "Change both x and y together",
+      "example": "circle(x, x / 2 + 50, 20);"
+    },
+    {
+      "way": "Parts with offsets",
+      "when": "Many shapes that move together",
+      "example": "circle(x + 25, 345, 10);"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "for (int x = 50; x <= 550; x += 5)\n{\n    circle(x, 240, 30);\n    delay(30);\n}",
+      "right": "for (int x = 50; x <= 550; x += 5)\n{\n    cleardevice();\n    circle(x, 240, 30);\n    delay(30);\n}",
+      "error": "No compiler error, but without cleardevice the old circles stay on the screen and make a long smeared band."
+    },
+    {
+      "wrong": "cleardevice();\ncircle(x, 240, 30);\n// no delay",
+      "right": "cleardevice();\ncircle(x, 240, 30);\ndelay(30);",
+      "error": "No compiler error. Without delay the loop runs so fast that the circle seems to jump to the end at once."
+    },
+    {
+      "wrong": "for (int x = 50; x <= 550; x += 5)\n{\n    cleardevice();\n    circle(50, 240, 30);\n    delay(30);\n}",
+      "right": "circle(x, 240, 30);   // use the loop variable",
+      "error": "No compiler error, but nothing moves, because the circle's x never uses the loop variable."
+    },
+    {
+      "wrong": "// ball should fall DOWN\nfor (int y = 420; y >= 40; y -= 10)\n    circle(320, y, 25);",
+      "right": "for (int y = 40; y <= 420; y += 10)\n    circle(320, y, 25);   // y grows downwards",
+      "error": "No compiler error. The ball moves UP the screen, because decreasing y means going toward the top."
+    },
+    {
+      "wrong": "cleardevice();\ncircle(x, 240, 30);   // road line is not redrawn",
+      "right": "cleardevice();\nline(0, 355, 639, 355);   // redraw everything that must stay\ncircle(x, 240, 30);",
+      "error": "No compiler error. cleardevice erases the WHOLE screen, so anything that must stay visible (road, text) has to be redrawn inside the loop."
+    }
+  ],
+  "examTips": [
+    "Write the recipe in the answer: draw, delay, cleardevice, move, repeat.",
+    "The loop variable must appear in the shape's coordinates, otherwise nothing moves.",
+    "delay controls speed. Frames = (stop - start) / step + 1; time = frames x delay.",
+    "Everything that should stay visible must be redrawn inside the loop after cleardevice.",
+    "Know that y increases downwards, so falling means y += step."
+  ],
+  "romanSummary": [
+    "Animation ka formula: draw, delay, cleardevice, position badlo, phir repeat.",
+    "for loop ka variable (jaise x) shape ki position hota hai; har dafa step (jaise 5) se barhta hai.",
+    "delay(ms) speed control karta hai: chhota delay matlab tez, bara delay matlab slow.",
+    "cleardevice na likhein to purani shapes screen par reh jati hain aur lakeer ban jati hai.",
+    "Neeche girne ke liye y barhao kyun ke y neeche ki taraf barhta hai. Real BGI mein flicker aa sakta hai, double buffering se door hota hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does cleardevice() do inside an animation loop?",
+      "options": [
+        "Erases the old picture before the new one is drawn",
+        "Closes the graphics window",
+        "Makes the circle bigger",
+        "Changes the colour"
+      ],
+      "answer": "Erases the old picture before the new one is drawn",
+      "hint": "Without it the circle leaves a trail.",
+      "explanation": "cleardevice wipes the whole graphics screen so only the new frame is visible."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which function slows the animation down?",
+      "options": [
+        "delay",
+        "initgraph",
+        "getch",
+        "floodfill"
+      ],
+      "answer": "delay",
+      "hint": "It pauses for some milliseconds.",
+      "explanation": "delay(ms) pauses the program, and so controls the speed."
+    },
+    {
+      "id": "p3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "How many frames does for (int x = 50; x <= 550; x += 5) draw?",
+      "options": [
+        "101",
+        "100",
+        "500",
+        "110"
+      ],
+      "answer": "101",
+      "hint": "(550 - 50) / 5 + 1.",
+      "explanation": "x takes the values 50, 55, ... 550, which is 100 steps plus the first value = 101 frames."
+    },
+    {
+      "id": "p4",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Complete the loop so the circle moves from x = 100 to x = 500 in steps of 10.\n\nfor (int x = 100; x <= 500; x ___ 10)",
+      "answer": "+=",
+      "hint": "x must grow.",
+      "explanation": "x += 10 adds 10 to x after every pass."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This animation should move a circle to the right but the circle stays in one place. Fix it.\n\nfor (int x = 50; x <= 550; x += 5)\n{\n    cleardevice();\n    circle(100, 240, 30);\n    delay(30);\n}",
+      "answer": "for (int x = 50; x <= 550; x += 5)\n{\n    cleardevice();\n    circle(x, 240, 30);\n    delay(30);\n}",
+      "hint": "Which number must change each pass?",
+      "explanation": "The circle's x must use the loop variable x; with 100 it is drawn at the same place every frame."
+    },
+    {
+      "id": "p6",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "To make the animation run twice as fast WITHOUT changing the step, which change works?",
+      "options": [
+        "Halve the delay (delay(15) instead of delay(30))",
+        "Double the delay",
+        "Remove closegraph",
+        "Use setcolor twice"
+      ],
+      "answer": "Halve the delay (delay(15) instead of delay(30))",
+      "hint": "Less waiting per frame.",
+      "explanation": "Half the waiting time per frame means twice as many frames per second."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a graphics program that moves a yellow circle of radius 20 DOWN the screen at x = 320 from y = 50 to y = 400 in steps of 5, with a delay of 20 ms.",
+      "answer": "#include <graphics.h>\n#include <conio.h>\n\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    for (int y = 50; y <= 400; y += 5)\n    {\n        cleardevice();\n        setcolor(YELLOW);\n        circle(320, y, 20);\n        delay(20);\n    }\n    getch();\n    closegraph();\n    return 0;\n}",
+      "hint": "The loop variable is y, because the circle moves down.",
+      "explanation": "Draw, delay, clear, move, repeat, inside a for loop whose variable is the circle's y. Runs on a lab PC; the page only simulates it."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which is the correct animation recipe?",
+      "options": [
+        "draw, delay, cleardevice, move, repeat",
+        "closegraph, draw, repeat",
+        "delay, initgraph, closegraph",
+        "move, move, move"
+      ],
+      "answer": "draw, delay, cleardevice, move, repeat",
+      "hint": "Like a flip-book.",
+      "explanation": "Each frame is drawn, shown for a moment, erased and drawn again in a new place."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In the notes' program, what does delay(30) control?",
+      "options": [
+        "The speed of the animation",
+        "The radius",
+        "The colour",
+        "The y position"
+      ],
+      "answer": "The speed of the animation",
+      "hint": "It is a pause in milliseconds.",
+      "explanation": "A shorter pause per frame makes the circle move faster."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What makes the circle move to the right?",
+      "options": [
+        "x increases in the loop",
+        "y increases in the loop",
+        "delay is large",
+        "closegraph is called"
+      ],
+      "answer": "x increases in the loop",
+      "hint": "The loop variable is the position.",
+      "explanation": "circle(x, 240, 30) is drawn farther right each pass because x grows."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "A ball must fall DOWN the screen. How must its y change?",
+      "options": [
+        "y gets bigger",
+        "y gets smaller",
+        "x gets bigger",
+        "y stays the same"
+      ],
+      "answer": "y gets bigger",
+      "hint": "y grows downwards.",
+      "explanation": "Bigger y means lower on the screen."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Why can real BGI animation flicker?",
+      "options": [
+        "The whole screen is cleared and redrawn every frame",
+        "The delay is zero",
+        "The circle is green",
+        "getch is missing"
+      ],
+      "answer": "The whole screen is cleared and redrawn every frame",
+      "hint": "For a split second the screen is empty.",
+      "explanation": "Double buffering (drawing on a hidden page first) is the usual cure."
+    }
+  ],
+  "sources": [
+    "Example: simple animation (moving circle)",
+    "Draw, delay, clear, move, repeat"
+  ]
+}

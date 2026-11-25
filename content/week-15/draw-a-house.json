@@ -1,0 +1,607 @@
+{
+  "slug": "draw-a-house",
+  "week": 15,
+  "title": "Example: drawing a simple house",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "Build the house in this order",
+      "stages": [
+        {
+          "name": "1. Plan on a grid",
+          "detail": "Write down the corner coordinates of the walls, the roof peak and the door before typing any code."
+        },
+        {
+          "name": "2. Walls",
+          "detail": "rectangle(left, top, right, bottom) gives the box of the house."
+        },
+        {
+          "name": "3. Roof",
+          "detail": "Two line() calls meet at the peak: from the wall's top-left to the peak, and from the peak to the top-right."
+        },
+        {
+          "name": "4. Door",
+          "detail": "A small rectangle standing on the bottom edge of the walls, centred."
+        },
+        {
+          "name": "5. Colour and extras",
+          "detail": "setfillstyle + floodfill for the walls, a circle for the sun, outtextxy for the label."
+        }
+      ]
+    },
+    {
+      "kind": "canvas",
+      "title": "Simpler house with a window",
+      "sampleId": "house-window"
+    },
+    {
+      "kind": "canvas",
+      "title": "The notes' house with red walls, a sun and a label",
+      "sampleId": "house-notes"
+    }
+  ],
+  "goal": "After this you can plan a drawing on a coordinate grid and turn the plan into graphics.h code: walls, roof, door, window, sun and text.",
+  "warmup": "Before a mason builds a house in Lahore he does not just start laying bricks: the architect draws a plan with measurements. The same works for a drawing program. If you first write the numbers on paper (where the walls start, how high the roof peak is), the code is easy, and mistakes are easy to find.",
+  "definition": "A drawing is built from simple shapes placed with coordinates. A house is a rectangle (walls), two lines (roof), a smaller rectangle (door), maybe a circle (sun) and some text. Each shape is one function call, and the order of the calls is the order of drawing. graphics.h is not standard C++. It runs only on a lab PC with Turbo C++ (DOSBox) or Code::Blocks/Dev-C++ plus the WinBGIm library, so the in-page compiler cannot run these programs. The canvas on this page is a simulation that draws what the same calls would draw.",
+  "howItWorks": "Step 1, plan: the walls are the rectangle from (200, 200) to (400, 350). Step 2, roof: its peak is in the middle above the walls, at x = (200 + 400) / 2 = 300 and y = 120; two lines join the wall's top corners to the peak. Step 3, door: a small rectangle 50 pixels wide centred on x = 300, so it runs from x = 275 to x = 325 and from y = 280 down to the bottom of the walls at y = 350. Step 4, colour: setfillstyle then floodfill with a point just inside the walls. floodfill fills only the closed region that the point is in, so the roof triangle (closed by the walls' top edge) stays unfilled; to colour it too you would call floodfill again with a point inside the roof, for example (300, 160). Step 5: sun and text. Remember y grows downwards: the roof peak has a SMALLER y than the walls. The first sample does only the planning arithmetic as a normal console program (it really runs). The two drawing samples are for Turbo C++ / WinBGIm and are simulated by the canvas.",
+  "syntax": "rectangle(200, 200, 400, 350);   // walls: left, top, right, bottom\nline(200, 200, 300, 120);        // roof left:  wall top-left  -> peak\nline(300, 120, 400, 200);        // roof right: peak -> wall top-right\nrectangle(275, 280, 325, 350);   // door: centred, standing on the bottom edge\nsetfillstyle(SOLID_FILL, RED);   // fill colour for the walls\nfloodfill(210, 210, WHITE);      // a point inside the walls; border = outline colour\ncircle(520, 90, 40);             // sun\nouttextxy(240, 380, (char*)\"My House\");   // label below the house",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Plan the house: the walls are the rectangle (200, 200) to (400, 350), the roof peak is 80 pixels above the middle of the top edge, and the door is 50 pixels wide, centred, standing on the bottom edge and starting at y = 280. Print all the coordinates you will need.",
+      "pseudocode": [
+        "START",
+        "left = 200, top = 200, right = 400, bottom = 350",
+        "midX = (left + right) / 2",
+        "peakY = top - 80",
+        "doorLeft = midX - 25 and doorRight = midX + 25, doorTop = 280",
+        "PRINT walls, roof peak and door coordinates",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  N0([\"Start\"])\n  N1[\"Walls: left, top, right, bottom\"]\n  N2[\"midX = (left + right) / 2\"]\n  N3[\"peakY = top - 80\"]\n  N4[\"Door: midX - 25 to midX + 25\"]\n  N5[/\"Print walls, peak, door\"/]\n  N6([\"End\"])\n  N0 --> N1\n  N1 --> N2\n  N2 --> N3\n  N3 --> N4\n  N4 --> N5\n  N5 --> N6",
+      "sample": {
+        "id": "house-plan",
+        "title": "Planning the house coordinates",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int left = 200, top = 200, right = 400, bottom = 350;\n    int midX = (left + right) / 2;\n    int peakY = top - 80;\n    int doorLeft = midX - 25;\n    int doorRight = midX + 25;\n    int doorTop = 280;\n    cout << \"Walls: (\" << left << \", \" << top << \") to (\" << right << \", \" << bottom << \")\" << endl;\n    cout << \"Roof peak: (\" << midX << \", \" << peakY << \")\" << endl;\n    cout << \"Door: (\" << doorLeft << \", \" << doorTop << \") to (\" << doorRight << \", \" << bottom << \")\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Walls: (200, 200) to (400, 350)\nRoof peak: (300, 120)\nDoor: (275, 280) to (325, 350)\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "The four numbers of the wall rectangle."
+          },
+          {
+            "line": 7,
+            "text": "The middle of the wall: (200 + 400) / 2 = 300. The roof peak and the door are centred here."
+          },
+          {
+            "line": 8,
+            "text": "The peak is 80 pixels ABOVE the top edge, so we SUBTRACT: 200 - 80 = 120 (y grows downwards)."
+          },
+          {
+            "line": 9,
+            "text": "The door is 50 wide, so 25 pixels left of the middle: 275."
+          },
+          {
+            "line": 10,
+            "text": "25 pixels right of the middle: 325."
+          },
+          {
+            "line": 11,
+            "text": "The door starts at y = 280 and goes down to the bottom of the walls (350)."
+          },
+          {
+            "line": 12,
+            "text": "Prints the wall corners."
+          },
+          {
+            "line": 13,
+            "text": "Prints the peak (300, 120): the numbers used in the roof lines."
+          },
+          {
+            "line": 14,
+            "text": "Prints the door corners; its bottom is the bottom of the walls."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 6,
+              "vars": {
+                "left": "200",
+                "top": "200",
+                "right": "400",
+                "bottom": "350"
+              },
+              "note": "The wall rectangle is stored.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "midX": "300"
+              },
+              "note": "midX = (200 + 400) / 2 = 300.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "peakY": "120"
+              },
+              "note": "peakY = 200 - 80 = 120, higher on the screen than the walls.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "doorLeft": "275"
+              },
+              "note": "doorLeft = 300 - 25 = 275.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "doorRight": "325"
+              },
+              "note": "doorRight = 300 + 25 = 325.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "doorTop": "280"
+              },
+              "note": "The door top is fixed at 280.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Prints the walls.",
+              "out": "Walls: (200, 200) to (400, 350)\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Prints the roof peak.",
+              "out": "Roof peak: (300, 120)\n"
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Prints the door.",
+              "out": "Door: (275, 280) to (325, 350)\n"
+            }
+          ],
+          "types": {
+            "left": "int",
+            "top": "int",
+            "right": "int",
+            "bottom": "int",
+            "midX": "int",
+            "peakY": "int",
+            "doorLeft": "int",
+            "doorRight": "int",
+            "doorTop": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Draw a simpler house: walls, a two-line roof, a door and a window with a cross, plus the label Home. Use the plan walls (150, 200) to (350, 350), roof peak (250, 120).",
+      "pseudocode": [
+        "START",
+        "Switch to graphics mode, colour WHITE",
+        "Draw the walls (150, 200) to (350, 350)",
+        "Draw the roof: (150, 200) to (250, 120), then (250, 120) to (350, 200)",
+        "Draw the door (225, 280) to (275, 350)",
+        "Draw the window (170, 230) to (210, 270) with a vertical and a horizontal line through its middle",
+        "Write Home below the house",
+        "Wait for a key, then close graphics",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  N0([\"Start\"])\n  N1[\"Graphics mode, colour WHITE\"]\n  N2[\"Walls rectangle\"]\n  N3[\"Roof: two lines to the peak\"]\n  N4[\"Door rectangle\"]\n  N5[\"Window rectangle and cross\"]\n  N6[\"Text: Home\"]\n  N7[\"Wait for key, close graphics\"]\n  N8([\"End\"])\n  N0 --> N1\n  N1 --> N2\n  N2 --> N3\n  N3 --> N4\n  N4 --> N5\n  N5 --> N6\n  N6 --> N7\n  N7 --> N8",
+      "sample": {
+        "id": "house-window",
+        "title": "House with a window",
+        "code": "#include <graphics.h>\n#include <conio.h>\n\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    setcolor(WHITE);\n    rectangle(150, 200, 350, 350);\n    line(150, 200, 250, 120);\n    line(250, 120, 350, 200);\n    rectangle(225, 280, 275, 350);\n    rectangle(170, 230, 210, 270);\n    line(190, 230, 190, 270);\n    line(170, 250, 210, 250);\n    outtextxy(215, 380, (char*)\"Home\");\n    getch();\n    closegraph();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": true,
+        "expectedOutput": "",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "Brings in the graphics library. graphics.h is NOT standard C++: it exists only in Turbo C++ / WinBGIm setups."
+          },
+          {
+            "line": 6,
+            "text": "gd (graphics driver) is set to DETECT so the library finds the screen mode itself. gm (graphics mode) is filled in by initgraph."
+          },
+          {
+            "line": 7,
+            "text": "Switches the screen to graphics mode. With WinBGIm the path can be empty."
+          },
+          {
+            "line": 8,
+            "text": "One colour for the whole picture, so it is set once, before all the shapes."
+          },
+          {
+            "line": 9,
+            "text": "Walls: 200 wide, 150 tall."
+          },
+          {
+            "line": 10,
+            "text": "Left roof line: from the top-left wall corner up to the peak (250, 120). Up means a smaller y."
+          },
+          {
+            "line": 11,
+            "text": "Right roof line: from the peak down to the top-right wall corner."
+          },
+          {
+            "line": 12,
+            "text": "Door, 50 wide, centred on x = 250, bottom on the wall's bottom edge."
+          },
+          {
+            "line": 13,
+            "text": "Window frame, 40 by 40."
+          },
+          {
+            "line": 14,
+            "text": "Vertical bar through the middle of the window (x = 190)."
+          },
+          {
+            "line": 15,
+            "text": "Horizontal bar through the middle (y = 250)."
+          },
+          {
+            "line": 16,
+            "text": "Label under the house."
+          },
+          {
+            "line": 17,
+            "text": "Waits for a key press so the picture stays on the screen."
+          },
+          {
+            "line": 18,
+            "text": "Leaves graphics mode and frees its memory."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write the program from the notes: draw a white house (walls, two-line roof, door), colour the walls red, add a yellow sun at the top right, and write My House below. (Exact notes program; on a Turbo C++ lab PC the path is C:\\TURBOC3\\BGI, with WinBGIm use an empty string.)",
+      "pseudocode": [
+        "START",
+        "Switch to graphics mode; background BLACK, colour WHITE",
+        "Draw walls (200, 200) to (400, 350)",
+        "Draw roof lines (200, 200)-(300, 120) and (300, 120)-(400, 200)",
+        "Draw door (275, 280) to (325, 350)",
+        "Fill style SOLID RED, floodfill inside the walls (210, 210) with border WHITE",
+        "Colour YELLOW, draw the sun circle (520, 90) r 40, fill it YELLOW",
+        "Colour WHITE, write My House at (240, 380)",
+        "Wait for a key, then close graphics",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  N0([\"Start\"])\n  N1[\"Graphics mode, BLACK background, WHITE\"]\n  N2[\"Walls, roof, door\"]\n  N3[\"Fill walls RED\"]\n  N4[\"Yellow sun with yellow fill\"]\n  N5[\"Colour WHITE, text My House\"]\n  N6[\"Wait for key, close graphics\"]\n  N7([\"End\"])\n  N0 --> N1\n  N1 --> N2\n  N2 --> N3\n  N3 --> N4\n  N4 --> N5\n  N5 --> N6\n  N6 --> N7",
+      "sample": {
+        "id": "house-notes",
+        "title": "The notes' house program",
+        "code": "#include <graphics.h>\n#include <conio.h>\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"C:\\\\TURBOC3\\\\BGI\");   // use \"\" with WinBGIm\n    setbkcolor(BLACK);\n    setcolor(WHITE);\n    rectangle(200, 200, 400, 350);          // walls\n    line(200, 200, 300, 120);               // roof left\n    line(300, 120, 400, 200);               // roof right\n    rectangle(275, 280, 325, 350);          // door\n    setfillstyle(SOLID_FILL, RED);          // colour the walls\n    floodfill(210, 210, WHITE);\n    setcolor(YELLOW);\n    circle(520, 90, 40);                    // sun\n    setfillstyle(SOLID_FILL, YELLOW);\n    floodfill(520, 90, YELLOW);\n    setcolor(WHITE);\n    outtextxy(240, 380, (char*)\"My House\");\n    getch();                                // wait for a key\n    closegraph();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": true,
+        "expectedOutput": "",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "Brings in the graphics library. graphics.h is NOT standard C++: it exists only in Turbo C++ / WinBGIm setups."
+          },
+          {
+            "line": 5,
+            "text": "gd (graphics driver) is set to DETECT so the library finds the screen mode itself. gm (graphics mode) is filled in by initgraph."
+          },
+          {
+            "line": 6,
+            "text": "Switches the screen to graphics mode. With WinBGIm the path can be empty."
+          },
+          {
+            "line": 7,
+            "text": "Black background (the default)."
+          },
+          {
+            "line": 8,
+            "text": "Outline colour for the house."
+          },
+          {
+            "line": 9,
+            "text": "The walls."
+          },
+          {
+            "line": 10,
+            "text": "Roof, left side, up to the peak (300, 120)."
+          },
+          {
+            "line": 11,
+            "text": "Roof, right side."
+          },
+          {
+            "line": 12,
+            "text": "The door, centred at x = 300."
+          },
+          {
+            "line": 13,
+            "text": "Fill will be solid red."
+          },
+          {
+            "line": 14,
+            "text": "(210, 210) is just inside the top-left corner of the walls. The paint spreads through the wall area and stops at WHITE lines. The door has its own white outline, so the paint cannot enter the door. The roof triangle is a separate closed region (the walls' top edge closes it), so it stays unfilled."
+          },
+          {
+            "line": 16,
+            "text": "Sun, drawn in YELLOW (set on the line before)."
+          },
+          {
+            "line": 18,
+            "text": "Fills the sun yellow."
+          },
+          {
+            "line": 20,
+            "text": "Label below the house, in white."
+          },
+          {
+            "line": 21,
+            "text": "Waits for a key press so the picture stays on the screen."
+          },
+          {
+            "line": 22,
+            "text": "Leaves graphics mode and frees its memory."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Roof as two line() calls",
+      "when": "A triangle roof you control exactly",
+      "example": "line(200, 200, 300, 120); line(300, 120, 400, 200);"
+    },
+    {
+      "way": "Roof peak in the middle",
+      "when": "Symmetric house",
+      "example": "peakX = (left + right) / 2"
+    },
+    {
+      "way": "Door centred on the walls",
+      "when": "Door of width 50",
+      "example": "rectangle(midX - 25, doorTop, midX + 25, bottom)"
+    },
+    {
+      "way": "Window with a cross",
+      "when": "Extra detail",
+      "example": "rectangle(170,230,210,270); line(190,230,190,270); line(170,250,210,250);"
+    },
+    {
+      "way": "Fill with setfillstyle + floodfill",
+      "when": "Colouring the walls or the sun",
+      "example": "setfillstyle(SOLID_FILL, RED); floodfill(210, 210, WHITE);"
+    },
+    {
+      "way": "Path in initgraph",
+      "when": "Turbo C++ needs the BGI folder, WinBGIm uses an empty string",
+      "example": "initgraph(&gd, &gm, (char*)\"C:\\\\TURBOC3\\\\BGI\");"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "line(200, 200, 300, 280);   // peak BELOW the wall",
+      "right": "line(200, 200, 300, 120);   // peak ABOVE the wall: smaller y",
+      "error": "No compiler error. The roof points into the house, because y grows downwards."
+    },
+    {
+      "wrong": "rectangle(275, 280, 325, 300);   // door floats in the air",
+      "right": "rectangle(275, 280, 325, 350);   // bottom = bottom of the walls",
+      "error": "No compiler error, but the door does not reach the bottom of the walls."
+    },
+    {
+      "wrong": "floodfill(210, 210, RED);   // border colour is wrong",
+      "right": "floodfill(210, 210, WHITE);   // the outline is WHITE",
+      "error": "No compiler error. The border colour must be the colour of the outline; with a wrong border the paint does not stop at the walls."
+    },
+    {
+      "wrong": "line(200, 200, 300, 120);\n// forgot the right roof line",
+      "right": "line(200, 200, 300, 120);\nline(300, 120, 400, 200);",
+      "error": "No compiler error, but the roof is open on one side."
+    }
+  ],
+  "examTips": [
+    "Start your answer with a small coordinate plan: walls, peak, door. It gains marks and prevents mistakes.",
+    "Know the notes' house program: rectangle for walls, two lines for the roof, rectangle for the door, floodfill, circle for the sun, outtextxy.",
+    "The roof peak has a SMALLER y than the wall top. The door bottom equals the wall bottom.",
+    "Set the colour before each shape, and the floodfill border colour equals the outline colour.",
+    "Mention that the program runs under Turbo C++ or WinBGIm, and that initgraph's path differs between the two."
+  ],
+  "romanSummary": [
+    "Ghar banane se pehle coordinates ka plan kaghaz par likhein: walls, roof ki choti, darwaza.",
+    "Walls rectangle se, roof do line() se, darwaza chhote rectangle se, sooraj circle se aur text outtextxy se banta hai.",
+    "Roof ki choti ka y chhota hota hai kyun ke y neeche ki taraf barhta hai.",
+    "Rang bharne ke liye setfillstyle aur floodfill, border ka colour outline wala hi dein.",
+    "Yeh programs lab PC par Turbo C++ ya WinBGIm mein chalte hain, page ka canvas sirf simulation hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In the notes' house, which function draws the walls?",
+      "options": [
+        "rectangle",
+        "circle",
+        "outtextxy",
+        "putpixel"
+      ],
+      "answer": "rectangle",
+      "hint": "Walls have four straight sides.",
+      "explanation": "rectangle(200, 200, 400, 350) draws the walls."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How many line() calls make the roof?",
+      "options": [
+        "2",
+        "1",
+        "3",
+        "4"
+      ],
+      "answer": "2",
+      "hint": "The wall's top edge is already drawn by the rectangle.",
+      "explanation": "One line from the left wall corner to the peak and one from the peak to the right wall corner."
+    },
+    {
+      "id": "p3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "The walls run from x = 200 to x = 400. Where is the middle (roof peak x)?",
+      "options": [
+        "300",
+        "200",
+        "400",
+        "600"
+      ],
+      "answer": "300",
+      "hint": "Add and halve.",
+      "explanation": "(200 + 400) / 2 = 300."
+    },
+    {
+      "id": "p4",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill the blank to draw a door 50 pixels wide centred on x = 300, standing on the bottom edge y = 350 and starting at y = 280.\n\nrectangle(___, 280, 325, 350);",
+      "answer": "275",
+      "hint": "300 - 25.",
+      "explanation": "The left edge of a door 50 wide centred at 300 is 300 - 25 = 275; the right edge is 325."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "The roof of this house points DOWN into the walls. Fix the two roof lines (walls are (200, 200) to (400, 350)).\n\nline(200, 200, 300, 280);\nline(300, 280, 400, 200);",
+      "answer": "line(200, 200, 300, 120);\nline(300, 120, 400, 200);",
+      "hint": "A roof peak is higher than the wall top.",
+      "explanation": "Higher means a smaller y: 120, not 280."
+    },
+    {
+      "id": "p6",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Why does the program call floodfill(210, 210, WHITE) with WHITE as the last argument?",
+      "options": [
+        "WHITE is the colour of the walls' outline, so the paint stops there",
+        "WHITE is the new fill colour",
+        "WHITE is the background",
+        "WHITE hides the door"
+      ],
+      "answer": "WHITE is the colour of the walls' outline, so the paint stops there",
+      "hint": "Third argument = border.",
+      "explanation": "The walls were drawn with setcolor(WHITE), so the outline is white and floodfill stops at white pixels."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a graphics program that draws a house: walls (100, 200) to (300, 350), a two-line roof with its peak at (200, 120), and a door from (175, 280) to (225, 350).",
+      "answer": "#include <graphics.h>\n#include <conio.h>\n\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    setcolor(WHITE);\n    rectangle(100, 200, 300, 350);\n    line(100, 200, 200, 120);\n    line(200, 120, 300, 200);\n    rectangle(175, 280, 225, 350);\n    getch();\n    closegraph();\n    return 0;\n}",
+      "hint": "Walls, then two roof lines meeting at (200, 120), then the door.",
+      "explanation": "The middle of the walls is (100 + 300) / 2 = 200, which matches the peak x and the centre of the door (175 to 225). Runs on a lab PC; the page only simulates it."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What should you do BEFORE writing the code of a drawing?",
+      "options": [
+        "Plan the coordinates on a grid",
+        "Call closegraph",
+        "Press a key",
+        "Delete the screen"
+      ],
+      "answer": "Plan the coordinates on a grid",
+      "hint": "Like an architect.",
+      "explanation": "A plan with coordinates makes the code simple."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which shape is the sun in the notes' program?",
+      "options": [
+        "circle",
+        "rectangle",
+        "line",
+        "arc"
+      ],
+      "answer": "circle",
+      "hint": "It is round.",
+      "explanation": "The sun is circle(520, 90, 40)."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "The roof peak is at y = 120 and the wall top at y = 200. Which is higher on the screen?",
+      "options": [
+        "The roof peak",
+        "The wall top",
+        "They are level",
+        "Cannot say"
+      ],
+      "answer": "The roof peak",
+      "hint": "Smaller y is higher.",
+      "explanation": "120 is smaller than 200, so the peak is above the wall top."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which call writes the label under the house?",
+      "options": [
+        "outtextxy",
+        "floodfill",
+        "setcolor",
+        "delay"
+      ],
+      "answer": "outtextxy",
+      "hint": "Text on the graphics screen.",
+      "explanation": "outtextxy(x, y, text) writes text at a position."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "In initgraph(&gd, &gm, (char*)\"C:\\\\TURBOC3\\\\BGI\"), what is the third argument?",
+      "options": [
+        "The folder holding the BGI driver files (Turbo C++)",
+        "The screen width",
+        "The colour",
+        "The file to draw"
+      ],
+      "answer": "The folder holding the BGI driver files (Turbo C++)",
+      "hint": "With WinBGIm it is empty.",
+      "explanation": "Turbo C++ loads its drivers from that folder; WinBGIm does not need it, so an empty string is used."
+    }
+  ],
+  "sources": [
+    "Example: drawing a simple house",
+    "Shapes, colours and text"
+  ]
+}

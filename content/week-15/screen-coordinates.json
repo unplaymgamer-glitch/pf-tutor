@@ -1,0 +1,559 @@
+{
+  "slug": "screen-coordinates",
+  "week": 15,
+  "title": "Screen coordinates: pixels and the (x, y) grid",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "canvas",
+      "title": "Pixels: where do (0, 0), (100, 50) and the red row land?",
+      "sampleId": "pixels-demo"
+    },
+    {
+      "kind": "canvas",
+      "title": "A rectangle from (100, 50) to (400, 250) with its diagonals",
+      "sampleId": "rect-centre"
+    },
+    {
+      "kind": "match",
+      "title": "Match each coordinate idea to its meaning",
+      "pairs": [
+        {
+          "term": "Origin (0, 0)",
+          "meaning": "The TOP-LEFT corner of the screen"
+        },
+        {
+          "term": "x grows",
+          "meaning": "To the right"
+        },
+        {
+          "term": "y grows",
+          "meaning": "DOWNWARDS (opposite of a maths graph)"
+        },
+        {
+          "term": "640 x 480",
+          "meaning": "Classic VGA screen: x = 0..639, y = 0..479"
+        },
+        {
+          "term": "getmaxx() / getmaxy()",
+          "meaning": "Return the largest x and the largest y (639 and 479)"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can say where any point (x, y) appears on the screen, and work out the width, height and centre of a shape from its coordinates.",
+  "warmup": "Think of the seating plan of a cricket stadium stand: seat A1 is in the top-left corner, you count seats to the right along the row, and rows go DOWN the stand. To tell a friend where to sit you say 'column 40, row 12'. The computer screen is the same: every tiny dot has a column number (x) and a row number (y), and counting starts at the top-left.",
+  "definition": "The screen is a grid of tiny dots called pixels. A point is named by two numbers (x, y). x counts pixels from the left edge, y counts pixels from the TOP edge. The origin (0, 0) is the top-left corner. In the classic VGA mode the screen is 640 pixels wide and 480 pixels tall, so x runs from 0 to 639 and y runs from 0 to 479. The functions getmaxx() and getmaxy() give the largest x and the largest y. graphics.h is not standard C++. It runs only on a lab PC with Turbo C++ (DOSBox) or Code::Blocks/Dev-C++ plus the WinBGIm library, so the in-page compiler cannot run these programs. The canvas on this page is a simulation that draws what the same calls would draw.",
+  "howItWorks": "Step 1: forget the maths graph from school: there, y goes UP. On the screen y goes DOWN, so a bigger y means LOWER on the screen. Step 2: a point (x, y) is x pixels from the left and y pixels from the top. Step 3: the centre of the 640 x 480 screen is about (320, 240). Step 4: for any rectangle with corners (left, top) and (right, bottom), width = right - left, height = bottom - top, and the centre is ((left + right) / 2, (top + bottom) / 2). That is plain arithmetic, so the console sample below really runs. The two drawing samples use putpixel, line and rectangle, and the canvas simulates them.",
+  "syntax": "// point (x, y): x = pixels from the LEFT, y = pixels from the TOP\n// origin (0, 0) = top-left;  VGA screen = 640 x 480\n\nputpixel(x, y, color);                // one dot at (x, y)\nint maxX = getmaxx();                 // 639 on a 640 x 480 screen\nint maxY = getmaxy();                 // 479 on a 640 x 480 screen\n\n// rectangle with top-left (left, top) and bottom-right (right, bottom)\nint width  = right - left;            // how wide\nint height = bottom - top;            // how tall\nint cx = (left + right) / 2;          // centre x\nint cy = (top + bottom) / 2;          // centre y",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Draw single pixels: one in the top-left corner (0, 0), a yellow one at (100, 50), a light green one at (300, 200), and a row of red pixels along y = 100 from x = 400 to x = 600.",
+      "pseudocode": [
+        "START",
+        "Switch to graphics mode",
+        "Put a WHITE pixel at (0, 0)",
+        "Put a YELLOW pixel at (100, 50)",
+        "Put a LIGHTGREEN pixel at (300, 200)",
+        "FOR x from 400 to 600 step 10: put a RED pixel at (x, 100)",
+        "Wait for a key, then close graphics",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  N0([\"Start\"])\n  N1[\"Switch to graphics mode\"]\n  N2[\"Put pixels at (0,0), (100,50), (300,200)\"]\n  N3[\"Loop: red pixels at (x,100), x = 400..600\"]\n  N4[\"Wait for key, close graphics\"]\n  N5([\"End\"])\n  N0 --> N1\n  N1 --> N2\n  N2 --> N3\n  N3 --> N4\n  N4 --> N5",
+      "sample": {
+        "id": "pixels-demo",
+        "title": "Pixels at chosen coordinates",
+        "code": "#include <graphics.h>\n#include <conio.h>\n\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    putpixel(0, 0, WHITE);\n    putpixel(100, 50, YELLOW);\n    putpixel(300, 200, LIGHTGREEN);\n    for (int x = 400; x <= 600; x += 10)\n    {\n        putpixel(x, 100, RED);\n    }\n    getch();\n    closegraph();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": true,
+        "expectedOutput": "",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "Brings in the graphics library. graphics.h is NOT standard C++: it exists only in Turbo C++ / WinBGIm setups."
+          },
+          {
+            "line": 6,
+            "text": "gd (graphics driver) is set to DETECT so the library finds the screen mode itself. gm (graphics mode) is filled in by initgraph."
+          },
+          {
+            "line": 7,
+            "text": "Switches the screen to graphics mode. With WinBGIm the path can be empty."
+          },
+          {
+            "line": 8,
+            "text": "Origin: the very top-left dot of the screen. It is tiny, so look closely."
+          },
+          {
+            "line": 9,
+            "text": "100 pixels from the left, 50 pixels down from the top. The third argument is the colour."
+          },
+          {
+            "line": 10,
+            "text": "Further right and LOWER than the yellow dot, because y = 200 is bigger than 50."
+          },
+          {
+            "line": 11,
+            "text": "The loop moves x along 400, 410, 420 ... 600. y stays 100, so the dots form a horizontal row."
+          },
+          {
+            "line": 13,
+            "text": "Runs once for every x in the loop: 21 red dots in a row."
+          },
+          {
+            "line": 15,
+            "text": "Waits for a key press so the picture stays on the screen."
+          },
+          {
+            "line": 16,
+            "text": "Leaves graphics mode and frees its memory."
+          }
+        ]
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "A rectangle has its top-left corner at (100, 50) and its bottom-right corner at (400, 250). Print its width, height and centre point. (This is the arithmetic you need before drawing; it is a normal console program that really runs.)",
+      "pseudocode": [
+        "START",
+        "left = 100, top = 50, right = 400, bottom = 250",
+        "width = right - left",
+        "height = bottom - top",
+        "cx = (left + right) / 2",
+        "cy = (top + bottom) / 2",
+        "PRINT width, height and the centre (cx, cy)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  N0([\"Start\"])\n  N1[\"left=100, top=50, right=400, bottom=250\"]\n  N2[\"width = right - left\"]\n  N3[\"height = bottom - top\"]\n  N4[\"cx = (left + right) / 2\"]\n  N5[\"cy = (top + bottom) / 2\"]\n  N6[/\"Print width, height, centre\"/]\n  N7([\"End\"])\n  N0 --> N1\n  N1 --> N2\n  N2 --> N3\n  N3 --> N4\n  N4 --> N5\n  N5 --> N6\n  N6 --> N7",
+      "sample": {
+        "id": "rect-measure",
+        "title": "Width, height and centre from coordinates",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int left = 100, top = 50, right = 400, bottom = 250;\n    int width = right - left;\n    int height = bottom - top;\n    int cx = (left + right) / 2;\n    int cy = (top + bottom) / 2;\n    cout << \"Width  = \" << width << endl;\n    cout << \"Height = \" << height << endl;\n    cout << \"Centre = (\" << cx << \", \" << cy << \")\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Width  = 300\nHeight = 200\nCentre = (250, 150)\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Four ints store the two corners: (left, top) and (right, bottom). We use left and right instead of x1, x2 so the meaning is clear."
+          },
+          {
+            "line": 7,
+            "text": "Width = right - left = 400 - 100 = 300 pixels."
+          },
+          {
+            "line": 8,
+            "text": "Height = bottom - top = 250 - 50 = 200. Because y grows downwards, bottom is the BIGGER number."
+          },
+          {
+            "line": 9,
+            "text": "Centre x is halfway between left and right: (100 + 400) / 2 = 250. Both numbers are int, so this is integer division."
+          },
+          {
+            "line": 10,
+            "text": "Centre y: (50 + 250) / 2 = 150."
+          },
+          {
+            "line": 11,
+            "text": "Prints the width."
+          },
+          {
+            "line": 12,
+            "text": "Prints the height."
+          },
+          {
+            "line": 13,
+            "text": "Prints the centre as a point in brackets."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 6,
+              "vars": {
+                "left": "100",
+                "top": "50",
+                "right": "400",
+                "bottom": "250"
+              },
+              "note": "The two corners are stored: top-left (100, 50), bottom-right (400, 250).",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "width": "300"
+              },
+              "note": "width = 400 - 100 = 300.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "height": "200"
+              },
+              "note": "height = 250 - 50 = 200.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "cx": "250"
+              },
+              "note": "cx = (100 + 400) / 2 = 250.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "cy": "150"
+              },
+              "note": "cy = (50 + 250) / 2 = 150.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Prints the width.",
+              "out": "Width  = 300\n"
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Prints the height.",
+              "out": "Height = 200\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Prints the centre point.",
+              "out": "Centre = (250, 150)\n"
+            }
+          ],
+          "types": {
+            "left": "int",
+            "top": "int",
+            "right": "int",
+            "bottom": "int",
+            "width": "int",
+            "height": "int",
+            "cx": "int",
+            "cy": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Draw a white rectangle with corners (100, 50) and (400, 250). Draw both of its diagonals in light cyan and mark the point where they cross with a yellow pixel. Give the coordinates of that point.",
+      "pseudocode": [
+        "START",
+        "Switch to graphics mode",
+        "Set colour WHITE, draw the rectangle (100, 50) to (400, 250)",
+        "Set colour LIGHTCYAN",
+        "Draw diagonal from (100, 50) to (400, 250)",
+        "Draw diagonal from (400, 50) to (100, 250)",
+        "Put a YELLOW pixel at the centre (250, 150)",
+        "Wait for a key, then close graphics",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  N0([\"Start\"])\n  N1[\"Switch to graphics mode\"]\n  N2[\"Colour WHITE, rectangle (100,50)-(400,250)\"]\n  N3[\"Colour LIGHTCYAN, two diagonals\"]\n  N4[\"Yellow pixel at centre (250,150)\"]\n  N5[\"Wait for key, close graphics\"]\n  N6([\"End\"])\n  N0 --> N1\n  N1 --> N2\n  N2 --> N3\n  N3 --> N4\n  N4 --> N5\n  N5 --> N6",
+      "sample": {
+        "id": "rect-centre",
+        "title": "Rectangle, diagonals and centre point",
+        "code": "#include <graphics.h>\n#include <conio.h>\n\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    setcolor(WHITE);\n    rectangle(100, 50, 400, 250);\n    setcolor(LIGHTCYAN);\n    line(100, 50, 400, 250);\n    line(400, 50, 100, 250);\n    putpixel(250, 150, YELLOW);\n    getch();\n    closegraph();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": true,
+        "expectedOutput": "",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "Brings in the graphics library. graphics.h is NOT standard C++: it exists only in Turbo C++ / WinBGIm setups."
+          },
+          {
+            "line": 6,
+            "text": "gd (graphics driver) is set to DETECT so the library finds the screen mode itself. gm (graphics mode) is filled in by initgraph."
+          },
+          {
+            "line": 7,
+            "text": "Switches the screen to graphics mode. With WinBGIm the path can be empty."
+          },
+          {
+            "line": 8,
+            "text": "Choose the colour BEFORE drawing; the next shape uses it."
+          },
+          {
+            "line": 9,
+            "text": "Order is left, top, right, bottom: top-left (100, 50), bottom-right (400, 250). It is 300 wide and 200 tall."
+          },
+          {
+            "line": 10,
+            "text": "A new colour for the two diagonals."
+          },
+          {
+            "line": 11,
+            "text": "From the top-left corner to the bottom-right corner."
+          },
+          {
+            "line": 12,
+            "text": "From the top-right corner (400, 50) to the bottom-left corner (100, 250)."
+          },
+          {
+            "line": 13,
+            "text": "The diagonals cross at the centre: ((100 + 400) / 2, (50 + 250) / 2) = (250, 150)."
+          },
+          {
+            "line": 14,
+            "text": "Waits for a key press so the picture stays on the screen."
+          },
+          {
+            "line": 15,
+            "text": "Leaves graphics mode and frees its memory."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "putpixel(x, y, color)",
+      "when": "Marking one exact point",
+      "example": "putpixel(100, 50, YELLOW);"
+    },
+    {
+      "way": "getmaxx() and getmaxy()",
+      "when": "You need the screen size without hard-coding 639 and 479",
+      "example": "int w = getmaxx() + 1;   // 640 on VGA"
+    },
+    {
+      "way": "width = right - left",
+      "when": "Size of a rectangle from its corners",
+      "example": "400 - 100 = 300"
+    },
+    {
+      "way": "height = bottom - top",
+      "when": "bottom is the larger y (lower on screen)",
+      "example": "250 - 50 = 200"
+    },
+    {
+      "way": "centre = ((left + right) / 2, (top + bottom) / 2)",
+      "when": "Placing a circle or text in the middle of a shape",
+      "example": "(250, 150)"
+    },
+    {
+      "way": "Screen centre",
+      "when": "Centring something on a 640 x 480 screen",
+      "example": "circle(320, 240, 50);"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "// want a point 50 pixels ABOVE (100, 200)\nputpixel(100, 250, WHITE);",
+      "right": "putpixel(100, 150, WHITE);   // up means a SMALLER y",
+      "error": "No compiler error. The dot is drawn, but 50 pixels BELOW, because y grows downwards."
+    },
+    {
+      "wrong": "int width = left - right;",
+      "right": "int width = right - left;",
+      "error": "No compiler error, but the answer is negative (-300). Always subtract the smaller x from the bigger x."
+    },
+    {
+      "wrong": "putpixel(700, 500, RED);",
+      "right": "putpixel(600, 400, RED);   // inside 0-639 and 0-479",
+      "error": "No compiler error and nothing visible: points outside the screen are clipped away."
+    },
+    {
+      "wrong": "rectangle(400, 250, 100, 50);",
+      "right": "rectangle(100, 50, 400, 250);   // left, top, right, bottom",
+      "error": "No compiler error, but the arguments are in the wrong order (right and bottom first), so the shape is not what you planned."
+    }
+  ],
+  "examTips": [
+    "Always write 'origin = top-left, y increases downwards' first; examiners check this.",
+    "Argument order is left, top, right, bottom for rectangle, and x1, y1, x2, y2 for line. Draw the points on a small grid before coding.",
+    "VGA is 640 x 480, so the largest x is 639 and the largest y is 479 (counting starts at 0).",
+    "Centre of a shape: add the two coordinates and divide by 2. Width and height: subtract.",
+    "If asked whether graphics.h is standard C++, answer no: it needs Turbo C++ or WinBGIm."
+  ],
+  "romanSummary": [
+    "Screen chhote chhote dots (pixels) ki grid hai. Origin (0, 0) UPAR-LEFT corner hai.",
+    "x right ki taraf barhta hai aur y NEECHE ki taraf barhta hai, maths ke graph se ulta.",
+    "VGA mode 640 x 480 hai: x 0 se 639 aur y 0 se 479. getmaxx() aur getmaxy() sab se bara x aur y dete hain.",
+    "Width = right - left, height = bottom - top, centre = (left + right) / 2 aur (top + bottom) / 2.",
+    "graphics.h standard C++ nahi hai, Turbo C++ ya WinBGIm chahiye. Is page ka canvas sirf simulation hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Where is the origin (0, 0) on a graphics screen?",
+      "options": [
+        "Top-left corner",
+        "Bottom-left corner",
+        "Centre of the screen",
+        "Top-right corner"
+      ],
+      "answer": "Top-left corner",
+      "hint": "Think of the seating plan: seat 1 is in the top-left.",
+      "explanation": "In graphics mode (0, 0) is the top-left pixel. This is different from a maths graph."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which point is HIGHER on the screen: (200, 80) or (200, 300)?",
+      "options": [
+        "(200, 80)",
+        "(200, 300)",
+        "They are at the same height",
+        "Cannot be known"
+      ],
+      "answer": "(200, 80)",
+      "hint": "Bigger y means lower.",
+      "explanation": "y grows downwards, so the smaller y (80) is nearer the top."
+    },
+    {
+      "id": "p3",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Complete the code. The rectangle has corners (left, top) and (right, bottom).\n\nint width = right ___ left;",
+      "answer": "-",
+      "hint": "How do you find the distance between two numbers?",
+      "explanation": "Width is the difference: right - left."
+    },
+    {
+      "id": "p4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "On a 640 x 480 VGA screen, what does getmaxx() return?",
+      "options": [
+        "639",
+        "640",
+        "479",
+        "480"
+      ],
+      "answer": "639",
+      "hint": "Counting starts at 0.",
+      "explanation": "x runs 0..639, so the largest x is 639. getmaxy() would return 479."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "A student wants a white dot 50 pixels BELOW the point (100, 100) but writes this. Fix the line.\n\nputpixel(100, 50, WHITE);",
+      "answer": "putpixel(100, 150, WHITE);",
+      "hint": "Down means y gets bigger.",
+      "explanation": "100 + 50 = 150. The student moved UP by subtracting; on the screen down is +y."
+    },
+    {
+      "id": "p6",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "A rectangle goes from (100, 50) to (400, 250). What is its centre point?",
+      "options": [
+        "(250, 150)",
+        "(300, 200)",
+        "(500, 300)",
+        "(150, 100)"
+      ],
+      "answer": "(250, 150)",
+      "hint": "Add the two x values and divide by 2; do the same for y.",
+      "explanation": "(100 + 400) / 2 = 250 and (50 + 250) / 2 = 150."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a graphics program that draws a rectangle with corners (50, 60) and (250, 160) and marks its centre (150, 110) with a yellow pixel. Use initgraph with DETECT and close graphics at the end.",
+      "answer": "#include <graphics.h>\n#include <conio.h>\n\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    rectangle(50, 60, 250, 160);\n    putpixel(150, 110, YELLOW);\n    getch();\n    closegraph();\n    return 0;\n}",
+      "hint": "Centre = ((left + right) / 2, (top + bottom) / 2).",
+      "explanation": "The rectangle call takes left, top, right, bottom. The centre is (50 + 250) / 2 = 150 and (60 + 160) / 2 = 110. This runs on a lab PC with graphics.h, not in the page compiler."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In graphics mode, in which direction does y increase?",
+      "options": [
+        "Downwards",
+        "Upwards",
+        "To the right",
+        "To the left"
+      ],
+      "answer": "Downwards",
+      "hint": "Opposite of a maths graph.",
+      "explanation": "y counts pixels from the top edge, so it increases downwards."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which statement about graphics.h is true?",
+      "options": [
+        "It is not part of standard C++",
+        "It is built into every C++ compiler",
+        "It works only in the page compiler",
+        "It replaces iostream"
+      ],
+      "answer": "It is not part of standard C++",
+      "hint": "Think of the setup note: Turbo C++ or WinBGIm.",
+      "explanation": "graphics.h comes from Turbo C++ / WinBGIm and must be installed separately."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "A rectangle has left = 100 and right = 400. What is its width?",
+      "options": [
+        "300",
+        "500",
+        "250",
+        "-300"
+      ],
+      "answer": "300",
+      "hint": "Subtract.",
+      "explanation": "400 - 100 = 300."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "On VGA 640 x 480, which point is the bottom-right pixel?",
+      "options": [
+        "(639, 479)",
+        "(640, 480)",
+        "(0, 479)",
+        "(639, 0)"
+      ],
+      "answer": "(639, 479)",
+      "hint": "Largest x, largest y.",
+      "explanation": "Bottom means the largest y; right means the largest x; counting starts at 0."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "A point (x, y) is moved 30 pixels UP on the screen. What happens to the numbers?",
+      "options": [
+        "y decreases by 30",
+        "y increases by 30",
+        "x decreases by 30",
+        "x increases by 30"
+      ],
+      "answer": "y decreases by 30",
+      "hint": "Up means toward the top edge.",
+      "explanation": "Up is toward y = 0, so you subtract from y."
+    }
+  ],
+  "sources": [
+    "Screen coordinates",
+    "Pixels and the origin",
+    "VGA resolution 640 x 480",
+    "getmaxx and getmaxy"
+  ]
+}

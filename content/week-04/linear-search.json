@@ -1,0 +1,559 @@
+{
+  "slug": "linear-search",
+  "week": 4,
+  "title": "Linear search: looking for a value in an array",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "array",
+      "title": "Linear search: watch every box being checked (target 12)",
+      "mode": "search",
+      "values": [
+        23,
+        7,
+        45,
+        12,
+        9,
+        56,
+        31,
+        18
+      ],
+      "target": 12
+    },
+    {
+      "kind": "array",
+      "title": "A value that appears twice, or not at all (try other targets)",
+      "mode": "search",
+      "values": [
+        8,
+        3,
+        5,
+        3,
+        9,
+        1
+      ],
+      "target": 3
+    }
+  ],
+  "goal": "After this you can search a value in an array with a loop, report the position of the first match or 'not found', find all positions, and count comparisons.",
+  "warmup": "You lost your phone charger in a pile of 8 bags in the hostel store room. You open bag 1, then bag 2, then bag 3, one after another, and stop the moment you find it. If it is in none of the bags you only know that after opening ALL of them. This is linear search: check one by one from the start, stop at the first match, and say 'not found' only after the last one.",
+  "definition": "Linear search (also called sequential search) checks the elements of an array one by one, from index 0 onwards, and compares each with the value we want (the key or target). It works on any array, sorted or not. We usually keep a variable pos that starts as -1. The value -1 means 'not found yet', and it is safe because -1 can never be a real index.",
+  "howItWorks": "Look at the sweep in the visual. The loop variable i visits index 0, 1, 2 and so on. At each box it asks one question: is a[i] equal to the key? If yes, we save pos = i and use break to stop searching, because the first match is enough. If the loop ends without a match, pos is still -1, so we print 'not found'. Note the order: the 'found or not found' message must be printed AFTER the loop, not inside it, because one wrong box does not mean the value is missing. To find every occurrence, do not use break: let the loop run to the end and print or count each match. Each box check is called a comparison. Best case: the key is in the first box, 1 comparison. Worst case: the key is in the last box or missing, n comparisons. So the more boxes, the longer the search can take.",
+  "syntax": "int pos = -1;                      // -1 means 'not found yet'\nfor (int i = 0; i < n; i++) {\n    if (a[i] == key) {             // == compares, = would assign\n        pos = i;                   // remember the index\n        break;                     // stop at the first match\n    }\n}\nif (pos != -1) {\n    cout << \"Found at index \" << pos;\n} else {\n    cout << \"Not found\";\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "An array holds 23, 7, 45, 12, 9, 56, 31, 18. Read a number and print the index where it is first found, or say it is not found.",
+      "pseudocode": [
+        "START",
+        "SET pos = -1",
+        "READ key",
+        "FOR i = 0 TO 7: IF a[i] = key THEN pos = i and STOP the loop",
+        "IF pos is not -1 THEN PRINT key found at index pos",
+        "ELSE PRINT key not found",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"pos = -1\"]\n  B --> C[/Read key/]\n  C --> D[\"i = 0\"]\n  D --> E{i < 8?}\n  E -->|Yes| F{\"a[i] == key?\"}\n  F -->|Yes| G[\"pos = i\"]\n  F -->|No| H[\"i = i + 1\"]\n  H --> E\n  G --> I{pos != -1?}\n  E -->|No| I\n  I -->|Yes| J[/Print found at pos/]\n  I -->|No| K[/Print not found/]\n  J --> L([End])\n  K --> L",
+      "sample": {
+        "id": "search-key",
+        "title": "Search a key in the array",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[8] = {23, 7, 45, 12, 9, 56, 31, 18};\n    int key;\n    int pos = -1;\n    cin >> key;\n    for (int i = 0; i < 8; i++) {\n        if (a[i] == key) {\n            pos = i;\n            break;\n        }\n    }\n    if (pos != -1) {\n        cout << key << \" found at index \" << pos << endl;\n    } else {\n        cout << key << \" not found\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "12",
+        "expectedOutput": "12 found at index 3\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "The array in which we search. Its indexes are 0 to 7."
+          },
+          {
+            "line": 6,
+            "text": "key is the value we are looking for."
+          },
+          {
+            "line": 7,
+            "text": "pos starts at -1, which means 'not found'."
+          },
+          {
+            "line": 9,
+            "text": "Visits every index from 0 to 7."
+          },
+          {
+            "line": 10,
+            "text": "Compares the current box with the key. Note the double ==."
+          },
+          {
+            "line": 11,
+            "text": "Match: remember the index."
+          },
+          {
+            "line": 12,
+            "text": "break leaves the loop at once, so we do not check the rest."
+          },
+          {
+            "line": 15,
+            "text": "After the loop: if pos changed, the key was found."
+          },
+          {
+            "line": 18,
+            "text": "pos is still -1, so no box matched."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {},
+              "note": "The array holds 23, 7, 45, 12, 9, 56, 31, 18.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "key": "?"
+              },
+              "note": "key is created.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "pos": "-1"
+              },
+              "note": "pos is -1: nothing found yet.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "key": "12"
+              },
+              "note": "The user types 12. We look for 12.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "0"
+              },
+              "note": "i = 0: is a[0] = 23 equal to 12? No. Go on.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "1"
+              },
+              "note": "i = 1: is a[1] = 7 equal to 12? No.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "2"
+              },
+              "note": "i = 2: is a[2] = 45 equal to 12? No.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "3"
+              },
+              "note": "i = 3: is a[3] = 12 equal to 12? Yes! That is 4 comparisons so far.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "pos": "3"
+              },
+              "note": "Save the index: pos = 3.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "break stops the loop. Boxes 4 to 7 are never checked.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "pos is 3, not -1, so the key was found.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "Prints the result.",
+              "out": "12 found at index 3\n"
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "key": "int",
+            "pos": "int",
+            "i": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "The array is 4, 9, 4, 7, 4, 2. Read a key and print ALL positions where it appears, and how many times it appears.",
+      "pseudocode": [
+        "START",
+        "SET count = 0",
+        "READ key",
+        "FOR i = 0 TO 5: IF a[i] = key THEN PRINT i and count = count + 1",
+        "PRINT count",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read key/]\n  B --> C[\"count = 0, i = 0\"]\n  C --> D{i < 6?}\n  D -->|Yes| E{\"a[i] == key?\"}\n  E -->|Yes| F[/Print i/]\n  F --> G[\"count = count + 1\"]\n  E -->|No| H[\"i = i + 1\"]\n  G --> H\n  H --> D\n  D -->|No| I[/Print count/]\n  I --> J([End])",
+      "sample": {
+        "id": "all-occurrences",
+        "title": "All positions of a key",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[6] = {4, 9, 4, 7, 4, 2};\n    int key;\n    cin >> key;\n    int count = 0;\n    cout << \"Positions:\";\n    for (int i = 0; i < 6; i++) {\n        if (a[i] == key) {\n            cout << \" \" << i;\n            count++;\n        }\n    }\n    cout << endl;\n    cout << key << \" appears \" << count << \" time(s)\" << endl;\n    return 0;\n}\n",
+        "stdin": "4",
+        "expectedOutput": "Positions: 0 2 4\n4 appears 3 time(s)\n",
+        "explanation": [
+          {
+            "line": 8,
+            "text": "count remembers how many matches we found."
+          },
+          {
+            "line": 9,
+            "text": "Prints the label once, before the loop."
+          },
+          {
+            "line": 10,
+            "text": "The loop checks all 6 boxes. There is no break, because we want every match."
+          },
+          {
+            "line": 11,
+            "text": "Compares the box with the key."
+          },
+          {
+            "line": 12,
+            "text": "Prints the index of this match."
+          },
+          {
+            "line": 13,
+            "text": "Adds 1 to the number of matches."
+          },
+          {
+            "line": 16,
+            "text": "Moves to a new line after the positions."
+          },
+          {
+            "line": 17,
+            "text": "Reports the total. If it is 0 the key is missing."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Read n (at most 20) and n integers, then read a key. Search the key and print its position counting from 1 and the number of comparisons made. If it is missing, print Not found and the number of comparisons.",
+      "pseudocode": [
+        "START",
+        "READ n and the n values",
+        "READ key",
+        "SET found = false, comparisons = 0",
+        "FOR i = 0 TO n - 1: comparisons = comparisons + 1; IF a[i] = key THEN found = true, position = i + 1, STOP",
+        "IF found THEN PRINT position and comparisons",
+        "ELSE PRINT Not found and comparisons",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read n, values, key/]\n  B --> C[\"found = false, comparisons = 0, i = 0\"]\n  C --> D{i < n?}\n  D -->|Yes| E[\"comparisons = comparisons + 1\"]\n  E --> F{\"a[i] == key?\"}\n  F -->|Yes| G[\"found = true, position = i + 1\"]\n  F -->|No| H[\"i = i + 1\"]\n  H --> D\n  G --> I{found?}\n  D -->|No| I\n  I -->|Yes| J[/Print position, comparisons/]\n  I -->|No| K[/Print Not found, comparisons/]\n  J --> L([End])\n  K --> L",
+      "sample": {
+        "id": "count-comparisons",
+        "title": "Search with a found flag and comparison count",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int MAX = 20;\n    int a[MAX];\n    int n, key;\n    cin >> n;\n    for (int i = 0; i < n; i++) {\n        cin >> a[i];\n    }\n    cin >> key;\n    bool found = false;\n    int comparisons = 0;\n    int position = -1;\n    for (int i = 0; i < n; i++) {\n        comparisons++;\n        if (a[i] == key) {\n            found = true;\n            position = i + 1;\n            break;\n        }\n    }\n    if (found) {\n        cout << \"Found at position \" << position << \" after \" << comparisons << \" comparisons\" << endl;\n    } else {\n        cout << \"Not found after \" << comparisons << \" comparisons\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "5 30 10 50 20 40 20",
+        "expectedOutput": "Found at position 4 after 4 comparisons\n",
+        "explanation": [
+          {
+            "line": 8,
+            "text": "Reads the size first."
+          },
+          {
+            "line": 12,
+            "text": "Reads the key after the array has been filled."
+          },
+          {
+            "line": 13,
+            "text": "found is a flag. It starts false and becomes true only on a match."
+          },
+          {
+            "line": 14,
+            "text": "Counts how many boxes we compare."
+          },
+          {
+            "line": 17,
+            "text": "Counts the current comparison BEFORE the test, so the matching box is counted too."
+          },
+          {
+            "line": 19,
+            "text": "Marks the key as found."
+          },
+          {
+            "line": 20,
+            "text": "Humans count from 1, so we store i + 1 as the position."
+          },
+          {
+            "line": 21,
+            "text": "Stops at the first match."
+          },
+          {
+            "line": 24,
+            "text": "If the loop ended without a match, found is still false and the else part runs."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "pos = -1 flag with break",
+      "when": "You need the index of the FIRST match",
+      "example": "if (a[i] == key) { pos = i; break; }"
+    },
+    {
+      "way": "bool found flag",
+      "when": "You only need yes or no",
+      "example": "bool found = false; ... if (a[i] == key) found = true;"
+    },
+    {
+      "way": "No break, loop to the end",
+      "when": "You need ALL positions or the count",
+      "example": "if (a[i] == key) { cout << i << \" \"; count++; }"
+    },
+    {
+      "way": "No break, keep overwriting pos",
+      "when": "You need the LAST match",
+      "example": "if (a[i] == key) pos = i;"
+    },
+    {
+      "way": "Count comparisons",
+      "when": "The question asks how many checks were made",
+      "example": "comparisons++; if (a[i] == key) break;"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "for (int i = 0; i < n; i++) {\n    if (a[i] == key) cout << \"Found\";\n    else cout << \"Not found\";\n}",
+      "right": "int pos = -1;\nfor (int i = 0; i < n; i++) {\n    if (a[i] == key) { pos = i; break; }\n}\nif (pos != -1) cout << \"Found\"; else cout << \"Not found\";",
+      "error": "No compiler error. 'Not found' is printed for every box that does not match, so you get many wrong lines. Decide after the loop."
+    },
+    {
+      "wrong": "if (a[i] = key) {\n    pos = i;\n}",
+      "right": "if (a[i] == key) {\n    pos = i;\n}",
+      "error": "No compiler error (g++ may warn about the assignment in the condition). a[i] = key copies the key into the array and is true whenever the key is not 0."
+    },
+    {
+      "wrong": "int pos = 0;\n// ... loop that may find nothing\nif (pos != 0) cout << \"Found\";",
+      "right": "int pos = -1;\n// ... loop that may find nothing\nif (pos != -1) cout << \"Found\";",
+      "error": "No compiler error. 0 is a real index, so a key found in the first box looks like 'not found'. Use -1."
+    },
+    {
+      "wrong": "for (int i = 0; i <= n; i++) {\n    if (a[i] == key) pos = i;\n}",
+      "right": "for (int i = 0; i < n; i++) {\n    if (a[i] == key) pos = i;\n}",
+      "error": "No compiler error. a[n] is outside the used part of the array, so the last comparison reads a garbage value."
+    },
+    {
+      "wrong": "for (int i = 0; i < n; i++) {\n    if (a[i] == key) {\n        pos = i;\n    }\n}\n// wanted the FIRST match",
+      "right": "for (int i = 0; i < n; i++) {\n    if (a[i] == key) {\n        pos = i;\n        break;\n    }\n}",
+      "error": "No compiler error. Without break the loop continues and pos ends up holding the LAST match, not the first."
+    }
+  ],
+  "examTips": [
+    "Start with pos = -1 and decide found / not found AFTER the loop.",
+    "Use == for comparing. A single = assigns and is a classic exam trap.",
+    "break gives the FIRST match. No break and pos = i each time gives the LAST match.",
+    "Best case is 1 comparison (key in the first box). Worst case is n comparisons (last box or missing).",
+    "Linear search does not need a sorted array."
+  ],
+  "romanSummary": [
+    "Linear search mein array ko shuru se aakhir tak ek ek element check karte hain.",
+    "pos = -1 ka matlab hai abhi tak nahi mila. Match mile to pos = i aur break.",
+    "Found ya not found ka message loop ke BAAD print karo, loop ke andar nahi.",
+    "Best case mein 1 comparison lagta hai, worst case mein n comparisons."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Why do we start pos with -1 in a linear search?",
+      "options": [
+        "-1 can never be a valid index, so it means 'not found'",
+        "-1 is the fastest value",
+        "Arrays start at index -1",
+        "Because cin reads -1 first"
+      ],
+      "answer": "-1 can never be a valid index, so it means 'not found'",
+      "hint": "Think about which numbers can be array indexes.",
+      "explanation": "Indexes start at 0, so -1 is never a real position. It is a safe 'not found' signal."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\nint a[5] = {3, 8, 3, 1, 3};\nint key = 3, c = 0;\nfor (int i = 0; i < 5; i++) {\n    if (a[i] == key) c++;\n}\ncout << c;",
+      "answer": "3",
+      "hint": "c counts the matches.",
+      "explanation": "The value 3 is at indexes 0, 2 and 4, so c becomes 3."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint a[4] = {5, 9, 2, 7};\nint pos = -1;\nfor (int i = 0; i < 4; i++) {\n    if (a[i] > 6) {\n        pos = i;\n        break;\n    }\n}\ncout << pos;",
+      "answer": "1",
+      "hint": "The loop stops at the first box bigger than 6.",
+      "explanation": "5 is not above 6. 9 is, at index 1, so pos is 1 and break leaves the loop."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "The same program, but the break line is removed. What does it print?\n\nint a[4] = {5, 9, 2, 7};\nint pos = -1;\nfor (int i = 0; i < 4; i++) {\n    if (a[i] > 6) {\n        pos = i;\n    }\n}\ncout << pos;",
+      "answer": "3",
+      "hint": "Without break the loop visits all four boxes.",
+      "explanation": "9 (index 1) and 7 (index 3) are above 6. pos is overwritten, so the last match, index 3, remains."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This code prints a message for every wrong box. Fix it so that it prints only one message after searching.\n\nfor (int i = 0; i < n; i++) {\n    if (a[i] == key) cout << \"found\";\n    else cout << \"not found\";\n}",
+      "answer": "bool found = false;\nfor (int i = 0; i < n; i++) {\n    if (a[i] == key) {\n        found = true;\n        break;\n    }\n}\nif (found) cout << \"found\";\nelse cout << \"not found\";",
+      "hint": "One wrong box does not mean the key is missing.",
+      "explanation": "Use a flag while looping, and print the message once after the loop ends."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blanks.\n\nint pos = ____;\nfor (int i = 0; i < n; i++) {\n    if (a[i] ____ key) {\n        pos = i;\n        ____;\n    }\n}",
+      "answer": "int pos = -1;\nfor (int i = 0; i < n; i++) {\n    if (a[i] == key) {\n        pos = i;\n        break;\n    }\n}",
+      "hint": "One value for 'not found', one comparison operator, one keyword to stop.",
+      "explanation": "-1 means not found. == compares. break stops the loop after the first match."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "The array is 5, 3, 8, 3, 1. Write a program that reads a key and prints the index of its LAST occurrence, or -1 if it is not there.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int a[5] = {5, 3, 8, 3, 1};\n    int key;\n    cin >> key;\n    int pos = -1;\n    for (int i = 0; i < 5; i++) {\n        if (a[i] == key) {\n            pos = i;\n        }\n    }\n    cout << pos << endl;\n    return 0;\n}",
+      "hint": "Do not use break. Let every match overwrite pos.",
+      "explanation": "Each match replaces pos, so after the loop pos holds the last matching index."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "An array has 1000 elements. In the worst case, how many comparisons does a linear search make?",
+      "options": [
+        "1000",
+        "1",
+        "500",
+        "10"
+      ],
+      "answer": "1000",
+      "hint": "The worst case means the key is last or missing.",
+      "explanation": "If the key is in the last box, or not in the array, every one of the 1000 boxes is compared."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does linear search do?",
+      "options": [
+        "Checks the elements one by one from the start",
+        "Always checks the middle element first",
+        "Sorts the array first",
+        "Checks only the last element"
+      ],
+      "answer": "Checks the elements one by one from the start",
+      "hint": "The word 'linear' means in a line.",
+      "explanation": "It compares the key with each element in order until it finds it or reaches the end."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is the best case of linear search?",
+      "options": [
+        "The key is in the first box (1 comparison)",
+        "The key is in the last box",
+        "The key is missing",
+        "The array is sorted"
+      ],
+      "answer": "The key is in the first box (1 comparison)",
+      "hint": "What is the luckiest possible situation?",
+      "explanation": "If the first element is the key, we stop after 1 comparison."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which operator must be used to compare a[i] with key?",
+      "options": [
+        "==",
+        "=",
+        "!=",
+        "=>"
+      ],
+      "answer": "==",
+      "hint": "One of them assigns, one compares.",
+      "explanation": "== compares two values. A single = assigns and would change a[i]."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What does pos hold after the loop if the key is not in the array?",
+      "options": [
+        "-1",
+        "0",
+        "n",
+        "The last index"
+      ],
+      "answer": "-1",
+      "hint": "It was set before the loop and never changed.",
+      "explanation": "pos starts at -1 and changes only on a match."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "To print ALL positions of a key, what must you NOT do?",
+      "options": [
+        "Use break after the first match",
+        "Keep looping to the end",
+        "Print i inside the if",
+        "Use a counter"
+      ],
+      "answer": "Use break after the first match",
+      "hint": "break ends the loop early.",
+      "explanation": "break would stop at the first match, so the other matches would never be found."
+    }
+  ],
+  "sources": [
+    "Searching: linear search",
+    "Finding the position of an element",
+    "Found / not found flag",
+    "Searching all occurrences",
+    "Best and worst case of linear search"
+  ]
+}

@@ -1,0 +1,652 @@
+{
+  "slug": "three-d-arrays",
+  "week": 6,
+  "title": "Three-dimensional arrays: layers of tables",
+  "defaultView": "visualize",
+  "order": 5,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Read int a[2][3][4] one size at a time",
+      "pairs": [
+        {
+          "term": "First size: 2",
+          "meaning": "Number of layers (tables stacked like the pages of a book)"
+        },
+        {
+          "term": "Second size: 3",
+          "meaning": "Number of rows in every layer"
+        },
+        {
+          "term": "Third size: 4",
+          "meaning": "Number of columns in every row"
+        },
+        {
+          "term": "2 x 3 x 4 = 24",
+          "meaning": "Total number of elements: multiply all three sizes"
+        },
+        {
+          "term": "a[1][2][0]",
+          "meaning": "Layer 1, row 2, column 0 (counting from 0)"
+        },
+        {
+          "term": "Three nested loops",
+          "meaning": "Outer loop for layers, middle loop for rows, inner loop for columns"
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Marks example: int marks[2][3][3] means terms, students, subjects",
+      "pairs": [
+        {
+          "term": "marks[0][1][2]",
+          "meaning": "Term 0, student 1, subject 2"
+        },
+        {
+          "term": "marks[1][0][0]",
+          "meaning": "Term 1, student 0, subject 0 (the first mark of the second term)"
+        },
+        {
+          "term": "Loop over t",
+          "meaning": "Moves from one term to the next"
+        },
+        {
+          "term": "Loop over s",
+          "meaning": "Moves from one student to the next inside a term"
+        },
+        {
+          "term": "Loop over j",
+          "meaning": "Moves across the subjects of one student"
+        },
+        {
+          "term": "2 x 3 x 3",
+          "meaning": "18 marks stored in total"
+        }
+      ]
+    },
+    {
+      "kind": "array",
+      "title": "Flattened view of int a[2][2][3]: the 12 boxes sit in one line, layer after layer",
+      "mode": "access",
+      "values": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    }
+  ],
+  "goal": "After this you can read the three sizes of a 3-D array, say how many elements it holds, initialise it, and visit every element with three nested loops.",
+  "warmup": "Your university keeps the marks of students for two terms. For one term you can draw a table: one row per student, one column per subject. That is a 2-D table. Now put the second term's table behind the first one, like pages in a notebook. To find one mark you need three things: which term (page), which student (row), which subject (column). A 3-D array is exactly a stack of such tables.",
+  "definition": "A 3-D array is an array whose every element is a 2-D array. It is declared with three sizes: type name[layers][rows][columns];. For example int a[2][3][4]; has 2 layers, each layer has 3 rows, and each row has 4 columns. The total number of elements is the product of the three sizes: 2 x 3 x 4 = 24. An element is reached with three indexes in the same order: a[layer][row][column]. Every index starts from 0.",
+  "howItWorks": "There is no 3-D model to look at in memory. Think of the layers as pages: the first index chooses the page, the second index chooses the row on that page, and the third chooses the column. The computer actually stores all elements in one long line, layer after layer, row after row (see the flattened array visual). For initialisation use nested braces: one pair for the whole array, one pair for each layer, one pair for each row. To visit every element use three nested loops, one for each index. The outer loop is the layer, the middle loop is the row, the inner loop is the column. The loop limits must be the three sizes in the same order as the declaration, and each loop uses < (never <=), because the last valid index is size - 1. Total elements = layers x rows x columns, so int a[2][3][4] holds 24 values and the innermost statement runs 24 times.",
+  "syntax": "// type name[layers][rows][columns];\nint a[2][3][4];                 // 2 layers, 3 rows, 4 columns = 24 elements\n\n// initialisation: one brace pair per layer, one per row\nint b[2][2][3] = {\n    {{1, 2, 3}, {4, 5, 6}},     // layer 0\n    {{7, 8, 9}, {10, 11, 12}}   // layer 1\n};\n\n// access: a[layer][row][column]\nb[1][0][2] = 99;               // layer 1, row 0, column 2\n\n// visit every element with three nested loops\nfor (int l = 0; l < 2; l++)            // layers\n    for (int r = 0; r < 2; r++)        // rows\n        for (int c = 0; c < 3; c++)    // columns\n            cout << b[l][r][c] << \" \";\n",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Store the numbers 1 to 8 in a 3-D array with 2 layers, 2 rows and 2 columns, and add them all up with three nested loops.",
+      "pseudocode": [
+        "START",
+        "SET a (2 x 2 x 2) with the numbers 1 to 8",
+        "SET total = 0",
+        "FOR l = 0 to 1",
+        "  FOR r = 0 to 1",
+        "    FOR c = 0 to 1",
+        "      total = total + a[l][r][c]",
+        "PRINT total",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Set array a and total = 0]\n  B --> C{More layers?}\n  C -->|Yes| D{More rows?}\n  D -->|Yes| E{More columns?}\n  E -->|Yes| F[\"total += a l r c\"]\n  F --> E\n  E -->|No| D\n  D -->|No| C\n  C -->|No| G[/Print total/]\n  G --> H([End])",
+      "sample": {
+        "id": "sum-2x2x2",
+        "title": "Sum of a 2 x 2 x 2 array",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[2][2][2] = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};\n    int total = 0;\n    for (int l = 0; l < 2; l++) {\n        for (int r = 0; r < 2; r++) {\n            for (int c = 0; c < 2; c++) {\n                total += a[l][r][c];\n            }\n        }\n    }\n    cout << \"Total = \" << total << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Total = 36\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Layer 0 is {{1, 2}, {3, 4}} and layer 1 is {{5, 6}, {7, 8}}. There are 2 x 2 x 2 = 8 elements."
+          },
+          {
+            "line": 6,
+            "text": "The running total starts at 0."
+          },
+          {
+            "line": 7,
+            "text": "Outer loop: l is the layer number, 0 and 1."
+          },
+          {
+            "line": 8,
+            "text": "Middle loop: r is the row number inside the layer."
+          },
+          {
+            "line": 9,
+            "text": "Inner loop: c is the column number inside the row."
+          },
+          {
+            "line": 10,
+            "text": "Adds the element at layer l, row r, column c. This line runs 8 times."
+          },
+          {
+            "line": 14,
+            "text": "Prints 1 + 2 + ... + 8 = 36."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "The array is created: layer 0 holds 1 2 / 3 4 and layer 1 holds 5 6 / 7 8.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "total": "0"
+              },
+              "note": "total starts at 0.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "l": "0",
+                "r": "0",
+                "c": "0",
+                "total": "1"
+              },
+              "note": "a[0][0][0] = 1. total = 0 + 1 = 1.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "l": "0",
+                "r": "0",
+                "c": "1",
+                "total": "3"
+              },
+              "note": "a[0][0][1] = 2. total = 1 + 2 = 3.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "l": "0",
+                "r": "1",
+                "c": "0",
+                "total": "6"
+              },
+              "note": "Next row. a[0][1][0] = 3. total = 3 + 3 = 6.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "l": "0",
+                "r": "1",
+                "c": "1",
+                "total": "10"
+              },
+              "note": "a[0][1][1] = 4. total = 6 + 4 = 10. Layer 0 is finished.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "l": "1",
+                "r": "0",
+                "c": "0",
+                "total": "15"
+              },
+              "note": "Next layer. a[1][0][0] = 5. total = 10 + 5 = 15.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "l": "1",
+                "r": "0",
+                "c": "1",
+                "total": "21"
+              },
+              "note": "a[1][0][1] = 6. total = 15 + 6 = 21.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "l": "1",
+                "r": "1",
+                "c": "0",
+                "total": "28"
+              },
+              "note": "a[1][1][0] = 7. total = 21 + 7 = 28.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "l": "1",
+                "r": "1",
+                "c": "1",
+                "total": "36"
+              },
+              "note": "a[1][1][1] = 8. total = 28 + 8 = 36. All 8 elements are done.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Prints the total.",
+              "out": "Total = 36\n"
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "l": "int",
+            "r": "int",
+            "c": "int",
+            "total": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "The marks of 3 students in 3 subjects are stored for 2 terms in int marks[2][3][3]. Print the table of each term, then add up all the marks of student 1 over both terms.",
+      "pseudocode": [
+        "START",
+        "SET marks (2 terms x 3 students x 3 subjects)",
+        "FOR each term t: PRINT the heading",
+        "  FOR each student s: FOR each subject j: PRINT marks[t][s][j]",
+        "SET total = 0",
+        "FOR each term t: FOR each subject j: total = total + marks[t][1][j]",
+        "PRINT number of elements and total",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Set marks array]\n  B --> C{More terms?}\n  C -->|Yes| D[/Print Term t/]\n  D --> E[/Print each student's row/]\n  E --> C\n  C -->|No| F[total = 0]\n  F --> G[\"Add marks t 1 j for all t and j\"]\n  G --> H[/Print elements and total/]\n  H --> I([End])",
+      "sample": {
+        "id": "marks-terms",
+        "title": "Marks of students in subjects over terms",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int TERMS = 2, STUDENTS = 3, SUBJECTS = 3;\n    int marks[TERMS][STUDENTS][SUBJECTS] = {\n        {{70, 65, 80}, {55, 60, 75}, {90, 85, 95}},\n        {{72, 68, 78}, {60, 58, 70}, {92, 88, 97}}\n    };\n    for (int t = 0; t < TERMS; t++) {\n        cout << \"Term \" << t << \":\" << endl;\n        for (int s = 0; s < STUDENTS; s++) {\n            for (int j = 0; j < SUBJECTS; j++) {\n                cout << marks[t][s][j] << \" \";\n            }\n            cout << endl;\n        }\n    }\n    int total = 0;\n    for (int t = 0; t < TERMS; t++) {\n        for (int j = 0; j < SUBJECTS; j++) {\n            total += marks[t][1][j];\n        }\n    }\n    cout << \"Elements: \" << TERMS * STUDENTS * SUBJECTS << endl;\n    cout << \"Student 1 total over both terms: \" << total << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Term 0:\n70 65 80 \n55 60 75 \n90 85 95 \nTerm 1:\n72 68 78 \n60 58 70 \n92 88 97 \nElements: 18\nStudent 1 total over both terms: 378\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "The three sizes are named constants: 2 terms, 3 students, 3 subjects."
+          },
+          {
+            "line": 6,
+            "text": "The array has TERMS layers, STUDENTS rows and SUBJECTS columns."
+          },
+          {
+            "line": 7,
+            "text": "Term 0: one inner brace pair for each student."
+          },
+          {
+            "line": 8,
+            "text": "Term 1, in the same shape."
+          },
+          {
+            "line": 10,
+            "text": "Outer loop over terms (layers)."
+          },
+          {
+            "line": 11,
+            "text": "Prints a heading before each term's table."
+          },
+          {
+            "line": 12,
+            "text": "Middle loop over students (rows)."
+          },
+          {
+            "line": 13,
+            "text": "Inner loop over subjects (columns)."
+          },
+          {
+            "line": 14,
+            "text": "Prints one mark: term t, student s, subject j."
+          },
+          {
+            "line": 16,
+            "text": "A new line after each student's marks."
+          },
+          {
+            "line": 19,
+            "text": "total will add up the marks of ONE student, student 1."
+          },
+          {
+            "line": 22,
+            "text": "The student index is fixed at 1. Only the term and the subject change, so only two loops are needed."
+          },
+          {
+            "line": 25,
+            "text": "The number of elements is the product of the three sizes: 2 x 3 x 3 = 18."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a program that reads the 8 values of a 2 x 2 x 2 array from the keyboard and prints the largest value with its three indexes.",
+      "pseudocode": [
+        "START",
+        "READ the 8 values into a[l][r][c] with three loops",
+        "SET big = a[0][0][0] and its place (0, 0, 0)",
+        "FOR l, r, c over all elements:",
+        "  IF a[l][r][c] > big THEN big = a[l][r][c], save l, r, c",
+        "PRINT big and the three indexes",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read 8 values/]\n  B --> C[\"big = a 0 0 0, place = 0 0 0\"]\n  C --> D{More elements?}\n  D -->|Yes| E{\"element > big?\"}\n  E -->|Yes| F[Save big and l, r, c]\n  E -->|No| D\n  F --> D\n  D -->|No| G[/Print big and its place/]\n  G --> H([End])",
+      "sample": {
+        "id": "largest-3d",
+        "title": "Largest element of a 3-D array",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[2][2][2];\n    for (int l = 0; l < 2; l++)\n        for (int r = 0; r < 2; r++)\n            for (int c = 0; c < 2; c++)\n                cin >> a[l][r][c];\n    int big = a[0][0][0];\n    int bl = 0, br = 0, bc = 0;\n    for (int l = 0; l < 2; l++) {\n        for (int r = 0; r < 2; r++) {\n            for (int c = 0; c < 2; c++) {\n                if (a[l][r][c] > big) {\n                    big = a[l][r][c];\n                    bl = l; br = r; bc = c;\n                }\n            }\n        }\n    }\n    cout << \"Largest = \" << big << \" at [\" << bl << \"][\" << br << \"][\" << bc << \"]\" << endl;\n    return 0;\n}\n",
+        "stdin": "3 9 2 7 1 8 4 6",
+        "expectedOutput": "Largest = 9 at [0][0][1]\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A 2 x 2 x 2 array: 8 elements, not yet filled."
+          },
+          {
+            "line": 6,
+            "text": "Three nested loops read the values. They go layer by layer, row by row, so the first 4 numbers fill layer 0."
+          },
+          {
+            "line": 9,
+            "text": "cin puts the next typed number into a[l][r][c]."
+          },
+          {
+            "line": 10,
+            "text": "The first element is the best so far."
+          },
+          {
+            "line": 11,
+            "text": "Its three indexes are all 0."
+          },
+          {
+            "line": 12,
+            "text": "Second set of loops: this time they look at every element."
+          },
+          {
+            "line": 15,
+            "text": "A bigger value than the best so far?"
+          },
+          {
+            "line": 16,
+            "text": "Remember the new biggest value."
+          },
+          {
+            "line": 17,
+            "text": "Remember all THREE indexes: layer, row and column."
+          },
+          {
+            "line": 22,
+            "text": "Prints the value and its place in the form [layer][row][column]."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Declare without values",
+      "when": "You will fill it later with loops or cin",
+      "example": "int a[2][3][4];"
+    },
+    {
+      "way": "Full nested-brace initialisation",
+      "when": "Small tables written by hand",
+      "example": "int a[2][2][2] = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};"
+    },
+    {
+      "way": "Zero everything",
+      "when": "You want all elements to start at 0",
+      "example": "int a[2][3][4] = {};"
+    },
+    {
+      "way": "Named constants for sizes",
+      "when": "The same sizes are used in the declaration and in the loops",
+      "example": "const int T = 2, S = 3, J = 3; int marks[T][S][J];"
+    },
+    {
+      "way": "Fix one index, loop over the others",
+      "when": "You need one layer, one row, or one student only",
+      "example": "for (int t = 0; t < 2; t++) for (int j = 0; j < 3; j++) total += marks[t][1][j];"
+    },
+    {
+      "way": "Read the sizes",
+      "when": "Counting elements in an exam",
+      "example": "int a[3][4][5]  ->  3 layers, 4 rows, 5 columns, 3 x 4 x 5 = 60 elements"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int a[2][2][2] = {1, 2, 3, 4, 5, 6, 7, 8, 9};",
+      "right": "int a[2][2][2] = {1, 2, 3, 4, 5, 6, 7, 8};",
+      "error": "too many initializers for 'int [2][2][2]'"
+    },
+    {
+      "wrong": "int a[2][3][4];\na[2][0][0] = 5;   // layers are 0 and 1 only",
+      "right": "int a[2][3][4];\na[1][0][0] = 5;   // last valid layer is size - 1",
+      "error": "No compiler error. Index 2 is outside an array with 2 layers, so the program writes into memory that does not belong to the array. This can crash or give wrong results."
+    },
+    {
+      "wrong": "for (int l = 0; l < 3; l++)       // a is a[2][3][4]\n    for (int r = 0; r < 2; r++)\n        for (int c = 0; c < 4; c++)\n            cout << a[l][r][c];",
+      "right": "for (int l = 0; l < 2; l++)\n    for (int r = 0; r < 3; r++)\n        for (int c = 0; c < 4; c++)\n            cout << a[l][r][c];",
+      "error": "No compiler error. The loop limits do not follow the declaration order, so the program reads beyond the array and prints garbage."
+    },
+    {
+      "wrong": "cout << a[1][2];   // a is int a[2][3][4]",
+      "right": "cout << a[1][2][0];",
+      "error": "No compiler error. With only two indexes the result is a whole row, not a number, so you do not see the value you wanted. A 3-D array needs three indexes to reach one element."
+    }
+  ],
+  "examTips": [
+    "Read the declaration slowly: the first size is the number of layers, the second is rows, the third is columns. Write 'layers x rows x columns' next to it.",
+    "Total elements = product of all three sizes. int a[3][4][5] has 60 elements.",
+    "A 3-D array needs three nested loops, and the limits must match the sizes in the same order. The innermost statement runs total-elements times.",
+    "Valid indexes run from 0 to size - 1. Say it in your answer when you explain an out-of-range error.",
+    "In real-life questions, decide what each index means first: for example marks[term][student][subject]."
+  ],
+  "romanSummary": [
+    "3-D array bohat si 2-D tables ka set hai, jaise kitaab ke pages: int a[layers][rows][cols].",
+    "Total elements teeno sizes ko multiply karne se milte hain. Misal: a[2][3][4] mein 2 x 3 x 4 = 24 elements hain.",
+    "Ek element tak pahunchne ke liye teen index lagte hain: a[layer][row][column], aur index 0 se shuru hota hai.",
+    "Poore array ko process karne ke liye teen nested loops lagte hain: bahar layer ka loop, beech mein row ka, andar column ka."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How many elements does int a[3][4][5] hold?",
+      "options": [
+        "60",
+        "12",
+        "20",
+        "45"
+      ],
+      "answer": "60",
+      "hint": "Multiply the three sizes.",
+      "explanation": "3 x 4 x 5 = 60."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In int a[2][3][4], what does a[1][2][0] mean?",
+      "options": [
+        "Layer 1, row 2, column 0",
+        "Layer 2, row 3, column 1",
+        "Row 1, column 2, layer 0",
+        "The 12th element counting from 1"
+      ],
+      "answer": "Layer 1, row 2, column 0",
+      "hint": "The indexes are in the same order as the sizes in the declaration.",
+      "explanation": "The first index picks the layer, the second the row and the third the column. All of them count from 0."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint a[2][2][2] = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};\ncout << a[1][0][1] << \" \" << a[0][1][1] << endl;",
+      "answer": "6 4",
+      "hint": "Find layer 1 first (the second brace group), then its row 0.",
+      "explanation": "a[1][0][1] is layer 1, row 0, column 1, which is 6. a[0][1][1] is layer 0, row 1, column 1, which is 4."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint a[2][2][3] = {{{1, 2, 3}, {4, 5, 6}}, {{7, 8, 9}, {10, 11, 12}}};\nint s = 0;\nfor (int l = 0; l < 2; l++)\n    for (int c = 0; c < 3; c++)\n        s += a[l][1][c];\ncout << s << endl;",
+      "answer": "48",
+      "hint": "Row 1 is fixed. Add row 1 of both layers.",
+      "explanation": "Row 1 of layer 0 is 4 5 6 (sum 15). Row 1 of layer 1 is 10 11 12 (sum 33). Total 15 + 33 = 48."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\nint a[2][2][2] = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};\nint s = 0;\nfor (int l = 0; l < 2; l++)\n    s += a[l][l][l];\ncout << s << endl;",
+      "answer": "9",
+      "hint": "The three indexes are always equal: first (0,0,0), then (1,1,1).",
+      "explanation": "a[0][0][0] is 1 and a[1][1][1] is 8, so s = 1 + 8 = 9."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This code should set every element of int a[2][3][4] to 0 but it goes out of range. Fix it.\n\nfor (int l = 0; l < 2; l++)\n    for (int r = 0; r < 3; r++)\n        for (int c = 0; c <= 4; c++)\n            a[l][r][c] = 0;",
+      "answer": "for (int l = 0; l < 2; l++)\n    for (int r = 0; r < 3; r++)\n        for (int c = 0; c < 4; c++)\n            a[l][r][c] = 0;",
+      "hint": "Look at the innermost loop condition. What is the last valid column index?",
+      "explanation": "There are 4 columns, so the valid indexes are 0 to 3. The condition must be c < 4, not c <= 4."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "The array is int marks[2][3][4] (terms, students, subjects). Fill in the blank to loop over all students.\n\nfor (int s = 0; s < ____; s++)",
+      "answer": "for (int s = 0; s < 3; s++)",
+      "hint": "Students are the second size.",
+      "explanation": "The second size is the number of rows, which is the number of students: 3."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write the loops that add all the elements of int a[2][3][4] (already filled) and print the sum.",
+      "answer": "int sum = 0;\nfor (int l = 0; l < 2; l++) {\n    for (int r = 0; r < 3; r++) {\n        for (int c = 0; c < 4; c++) {\n            sum += a[l][r][c];\n        }\n    }\n}\ncout << sum << endl;",
+      "hint": "Three loops with limits 2, 3 and 4, and a sum that starts at 0.",
+      "explanation": "The loop limits follow the declaration order. The statement inside runs 2 x 3 x 4 = 24 times."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How many nested loops are needed to visit every element of a 3-D array?",
+      "options": [
+        "3",
+        "1",
+        "2",
+        "4"
+      ],
+      "answer": "3",
+      "hint": "One loop for each index.",
+      "explanation": "One loop each for the layer, the row and the column."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How many elements are in int a[2][3][4]?",
+      "options": [
+        "24",
+        "9",
+        "12",
+        "14"
+      ],
+      "answer": "24",
+      "hint": "Multiply, do not add.",
+      "explanation": "2 x 3 x 4 = 24."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is the last valid index of the middle size in int a[2][5][3]?",
+      "options": [
+        "4",
+        "5",
+        "2",
+        "3"
+      ],
+      "answer": "4",
+      "hint": "The middle size is 5. Indexes start at 0.",
+      "explanation": "A size of 5 means indexes 0, 1, 2, 3, 4."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which declaration has 2 layers, each with 5 rows and 6 columns?",
+      "options": [
+        "int a[2][5][6];",
+        "int a[5][6][2];",
+        "int a[6][5][2];",
+        "int a[2][6][5];"
+      ],
+      "answer": "int a[2][5][6];",
+      "hint": "Order: layers, rows, columns.",
+      "explanation": "The sizes are written in the order layers, rows, columns."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "In marks[t][s][j] with 2 terms, 3 students and 4 subjects, how many times does the innermost line run in a full three-loop traversal?",
+      "options": [
+        "24",
+        "9",
+        "12",
+        "18"
+      ],
+      "answer": "24",
+      "hint": "It runs once for every element.",
+      "explanation": "2 x 3 x 4 = 24 elements, so the innermost line runs 24 times."
+    }
+  ],
+  "sources": [
+    "Three-dimensional arrays",
+    "Multi-dimensional arrays",
+    "Nested loops with arrays"
+  ]
+}

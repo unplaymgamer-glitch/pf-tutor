@@ -1,0 +1,699 @@
+{
+  "slug": "goto-statement",
+  "week": 3,
+  "title": "The goto statement: jumping to a label (and why we avoid it)",
+  "defaultView": "visualize",
+  "order": 4,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "What happens when the computer meets a goto",
+      "stages": [
+        {
+          "name": "1. Run line by line",
+          "detail": "The computer reads statements from top to bottom, as always."
+        },
+        {
+          "name": "2. Meet goto done;",
+          "detail": "The word goto names a label. The computer stops reading the next line."
+        },
+        {
+          "name": "3. Find the label",
+          "detail": "It looks for 'done:' inside the SAME function."
+        },
+        {
+          "name": "4. Jump",
+          "detail": "Everything between the goto and the label is skipped, even loops that are half finished."
+        },
+        {
+          "name": "5. Continue after the label",
+          "detail": "Normal top-to-bottom reading starts again from the label."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match the term with its meaning",
+      "pairs": [
+        {
+          "term": "label",
+          "meaning": "A name followed by a colon (like done:) that marks a place in the code"
+        },
+        {
+          "term": "goto label;",
+          "meaning": "Jumps straight to that label, with no condition"
+        },
+        {
+          "term": "spaghetti code",
+          "meaning": "Code with so many jumps that its path is tangled and hard to follow"
+        },
+        {
+          "term": "flag variable",
+          "meaning": "A bool (true/false) that remembers whether something happened, used instead of goto"
+        },
+        {
+          "term": "break",
+          "meaning": "A cleaner statement that leaves only the innermost loop"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can read and write a simple goto with a label, explain why programmers avoid goto, and replace a goto that escapes nested loops with a flag.",
+  "warmup": "Imagine a bus route with a rule: 'If the bus is full, go straight to the depot'. The driver does not follow the normal route stop by stop. He just jumps to the depot. goto works the same way: the program leaves its normal top-to-bottom path and jumps to a place with a name. It sounds handy. But if a bus had 20 such rules pointing everywhere, nobody could tell where it will end up. That is why people avoid goto.",
+  "definition": "goto is a statement that jumps straight to a label without checking any condition. A label is a name followed by a colon, written in front of a statement, for example done:. The label must be in the same function as the goto. goto can jump forward or backward. Jumping backward makes a loop. Jumping forward skips code.",
+  "howItWorks": "Run the first example step by step. At line 6 the label start: is only a bookmark. The computer passes through it normally the first time. Later, when the if is true, goto start; sends the computer back up to that bookmark, and the lines run again. That is a loop made by hand. A for or while loop does the same job, but you can see its start, condition and end in one place. With goto you must search the whole function for the label. Many goto statements together make 'spaghetti code': the path of the program looks like a plate of noodles. The second example shows the one case where goto looks useful: leaving two nested loops at once. A break only leaves the INNER loop, so goto done; seems easier. But the third example shows the cleaner way: a bool flag that both loops check. Rule for this course: know goto for the exam, but prefer loops, break, continue, flags and functions. You also cannot jump over a variable's creation into its scope (see Mistakes). Next lesson: break and continue, the safe 'exceptions' inside loops.",
+  "syntax": "label_name:           // a label: any name, then a colon\n    statement;\n\ngoto label_name;      // jump to the label (same function only)\n\n// backward jump (makes a loop):\nagain:\n    // ... code ...\n    if (condition) goto again;\n\n// forward jump (skips code):\n    if (problem) goto cleanup;\n    // ... skipped when problem is true ...\ncleanup:\n    // ... code continues here ...\n",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Print the numbers 1 to 5 on one line without using for or while. Use a label and goto to build the loop.",
+      "pseudocode": [
+        "START",
+        "i = 1",
+        "LABEL start:",
+        "PRINT i",
+        "i = i + 1",
+        "IF i <= 5 THEN GOTO start",
+        "PRINT new line",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[i = 1]\n  B --> C[/Print i/]\n  C --> D[i = i + 1]\n  D --> E{i <= 5?}\n  E -->|\"Yes: goto start\"| C\n  E -->|No| F([End])",
+      "sample": {
+        "id": "goto-loop",
+        "title": "A loop built with goto",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int i = 1;\nstart:\n    cout << i << \" \";\n    i++;\n    if (i <= 5) {\n        goto start;\n    }\n    cout << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "1 2 3 4 5 \n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "i is the counter. It starts at 1."
+          },
+          {
+            "line": 6,
+            "text": "start: is a label. It does nothing by itself. It is a name for this place in the code."
+          },
+          {
+            "line": 7,
+            "text": "Prints the current value of i and a space."
+          },
+          {
+            "line": 8,
+            "text": "Adds 1 to i so the loop can finish."
+          },
+          {
+            "line": 9,
+            "text": "The condition. goto is only reached while i is still 5 or less."
+          },
+          {
+            "line": 10,
+            "text": "Jumps back to the label start. Execution continues from line 7."
+          },
+          {
+            "line": 12,
+            "text": "When the condition is false the goto is skipped and we arrive here. Prints a new line."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "i": "1"
+              },
+              "note": "i is created and set to 1.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Label 'start' is just a bookmark. Execution flows through it and prints 1.",
+              "out": "1 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "2"
+              },
+              "note": "i++ makes i equal to 2.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Is 2 <= 5? Yes, so goto start jumps back up to the label.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Back at the label. Prints 2.",
+              "out": "2 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "3"
+              },
+              "note": "i becomes 3.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "3 <= 5 is true. Jump back again.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Prints 3.",
+              "out": "3 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "4"
+              },
+              "note": "i becomes 4.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "4 <= 5 is true. Jump back again.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Prints 4.",
+              "out": "4 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "5"
+              },
+              "note": "i becomes 5.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "5 <= 5 is true. Jump back one more time.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Prints 5.",
+              "out": "5 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "6"
+              },
+              "note": "i becomes 6.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Is 6 <= 5? No. The goto is NOT executed and the program falls down to the next line.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Prints a new line.",
+              "out": "\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "i": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Search the multiplication table 1 to 3 for the first pair whose product is 6. When it is found, print it and leave BOTH loops at once with goto.",
+      "pseudocode": [
+        "START",
+        "FOR i = 1 TO 3",
+        "  FOR j = 1 TO 3",
+        "    IF i * j == 6 THEN PRINT pair, GOTO done",
+        "PRINT \"Not found\"",
+        "LABEL done:",
+        "PRINT \"Search finished\"",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[i = 1]\n  B --> C{i <= 3?}\n  C -->|No| N[/Print Not found/]\n  C -->|Yes| D[j = 1]\n  D --> E{j <= 3?}\n  E -->|No| F[i = i + 1]\n  F --> C\n  E -->|Yes| G{i * j == 6?}\n  G -->|No| H[j = j + 1]\n  H --> E\n  G -->|Yes| I[/Print pair/]\n  I -->|\"goto done\"| J[/Print Search finished/]\n  N --> J\n  J --> K([End])",
+      "sample": {
+        "id": "goto-escape",
+        "title": "Escaping two loops with goto",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    for (int i = 1; i <= 3; i++) {\n        for (int j = 1; j <= 3; j++) {\n            if (i * j == 6) {\n                cout << \"Found: \" << i << \" x \" << j << endl;\n                goto done;\n            }\n        }\n    }\n    cout << \"Not found\" << endl;\ndone:\n    cout << \"Search finished\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Found: 2 x 3\nSearch finished\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Outer loop: i takes the values 1, 2, 3."
+          },
+          {
+            "line": 6,
+            "text": "Inner loop: j takes the values 1, 2, 3 for every i."
+          },
+          {
+            "line": 7,
+            "text": "Is the product exactly 6?"
+          },
+          {
+            "line": 8,
+            "text": "The pair has been found, so print it."
+          },
+          {
+            "line": 9,
+            "text": "goto done jumps out of both loops. A break here would leave only the inner loop."
+          },
+          {
+            "line": 13,
+            "text": "Only reached if no pair was found (the goto skips it when a pair exists)."
+          },
+          {
+            "line": 14,
+            "text": "The label. Both the normal path and the goto arrive here."
+          },
+          {
+            "line": 15,
+            "text": "Runs in every case."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "i": "1"
+              },
+              "note": "Outer loop: i starts at 1.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "j": "1"
+              },
+              "note": "Inner loop, j = 1. 1 x 1 = 1, not 6.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "j": "2"
+              },
+              "note": "j = 2. 1 x 2 = 2, not 6.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "j": "3"
+              },
+              "note": "j = 3. 1 x 3 = 3, not 6. The inner loop ends.",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "i": "2"
+              },
+              "note": "Outer loop moves to i = 2.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "j": "1"
+              },
+              "note": "j = 1. 2 x 1 = 2, not 6.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "j": "2"
+              },
+              "note": "j = 2. 2 x 2 = 4, not 6.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "j": "3"
+              },
+              "note": "j = 3. 2 x 3 = 6. The test is true!",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Prints the pair that was found.",
+              "out": "Found: 2 x 3\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "goto done leaps out of BOTH loops at once. The Not found line (line 13) is skipped.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "We land after the label and continue normally.",
+              "out": "Search finished\n"
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "i": "int",
+            "j": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Rewrite the previous search WITHOUT goto. Use a bool flag called found, and also count how many pairs were checked. Print the pair and the number of checks.",
+      "pseudocode": [
+        "START",
+        "found = false, checks = 0",
+        "FOR i = 1 TO 3 while not found",
+        "  FOR j = 1 TO 3 while not found",
+        "    checks = checks + 1",
+        "    IF i * j == 6 THEN PRINT pair, found = true",
+        "IF NOT found THEN PRINT \"Not found\"",
+        "PRINT checks",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"found = false, checks = 0\"]\n  B --> C{\"i <= 3 and not found?\"}\n  C -->|No| N{found false?}\n  C -->|Yes| D{\"j <= 3 and not found?\"}\n  D -->|No| E[i = i + 1]\n  E --> C\n  D -->|Yes| F[checks = checks + 1]\n  F --> G{i * j == 6?}\n  G -->|No| H[j = j + 1]\n  H --> D\n  G -->|Yes| I[/Print pair/]\n  I --> J[found = true]\n  J --> H\n  N -->|Yes| O[/Print Not found/]\n  N -->|No| P[/Print checks/]\n  O --> P\n  P --> Q([End])",
+      "sample": {
+        "id": "flag-instead-of-goto",
+        "title": "A flag instead of goto",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    bool found = false;\n    int checks = 0;\n    for (int i = 1; i <= 3 && !found; i++) {\n        for (int j = 1; j <= 3 && !found; j++) {\n            checks++;\n            if (i * j == 6) {\n                cout << \"Found: \" << i << \" x \" << j << endl;\n                found = true;\n            }\n        }\n    }\n    if (!found) {\n        cout << \"Not found\" << endl;\n    }\n    cout << \"Checks: \" << checks << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Found: 2 x 3\nChecks: 6\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "found remembers whether the pair was seen. false means not yet."
+          },
+          {
+            "line": 6,
+            "text": "checks counts how many products were tested."
+          },
+          {
+            "line": 7,
+            "text": "The outer loop also stops as soon as found becomes true."
+          },
+          {
+            "line": 8,
+            "text": "The inner loop uses the same flag, so it stops too."
+          },
+          {
+            "line": 9,
+            "text": "One more pair is being checked."
+          },
+          {
+            "line": 10,
+            "text": "The product test."
+          },
+          {
+            "line": 12,
+            "text": "Raise the flag. Both loops will see it on their next condition check."
+          },
+          {
+            "line": 16,
+            "text": "Prints a message only if the flag was never raised."
+          },
+          {
+            "line": 19,
+            "text": "Prints how many pairs were tested before stopping."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Backward goto",
+      "when": "Repeating code (this is what for/while do for you)",
+      "example": "again: ... if (x < 5) goto again;"
+    },
+    {
+      "way": "Forward goto",
+      "when": "Skipping code, for example to a cleanup section",
+      "example": "if (error) goto cleanup; ... cleanup: cout << \"bye\";"
+    },
+    {
+      "way": "Escape nested loops with goto",
+      "when": "Leaving two or more loops at once (seen in old code)",
+      "example": "goto done;"
+    },
+    {
+      "way": "Flag variable",
+      "when": "Better replacement: loop conditions check a bool",
+      "example": "for (i = 0; i < n && !found; i++)"
+    },
+    {
+      "way": "Put the loops in a function and use return",
+      "when": "Also a clean way to stop everything (functions come in Week 7)",
+      "example": "if (i * j == 6) return;"
+    },
+    {
+      "way": "break",
+      "when": "Leaves only the innermost loop",
+      "example": "if (x == 0) break;"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "goto skip;\nint x = 5;\nskip:\ncout << x;",
+      "right": "int x = 5;\ngoto skip;\nskip:\ncout << x;",
+      "error": "jump to label 'skip' ... crosses initialization of 'int x'"
+    },
+    {
+      "wrong": "goto nowhere;",
+      "right": "goto done;\n// ...\ndone:",
+      "error": "label 'nowhere' used but not defined"
+    },
+    {
+      "wrong": "start:\ncout << i;\ngoto start;   // no condition",
+      "right": "start:\ncout << i;\ni++;\nif (i <= 5) goto start;",
+      "error": "No compiler error. A goto with no condition and no way out is an infinite loop: the program never stops."
+    },
+    {
+      "wrong": "start;\ncout << i;",
+      "right": "start:\ncout << i;",
+      "error": "A label needs a colon, not a semicolon. With a semicolon the compiler reports that 'start' was not declared in this scope."
+    }
+  ],
+  "examTips": [
+    "A label is a name followed by a colon. goto label; jumps there. Both must be in the same function.",
+    "Trace goto programs line by line and write the value of every variable after each jump.",
+    "A goto without a condition around it is always taken. Look for the if that decides.",
+    "goto is discouraged because it creates spaghetti code. Say this sentence in 'why' questions.",
+    "To leave nested loops cleanly, use a bool flag or a function with return. break leaves only one loop."
+  ],
+  "romanSummary": [
+    "goto program ko seedha kisi label par bhej deta hai. Label ek naam hota hai jis ke baad colon (:) aata hai.",
+    "goto se loop bhi ban jata hai, lekin code uljha hua ban jata hai jise spaghetti code kehte hain.",
+    "Isi liye goto se bachna chahiye. Exam ke liye samajh lein, assignment mein tab use karein jab kaha jaye.",
+    "Nested loops se bahar nikalna ho to bool flag ya function ka return behtar hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is a label in C++?",
+      "options": [
+        "A name followed by a colon that marks a place in the code",
+        "A variable that stores text",
+        "A comment that explains a loop",
+        "A function that prints messages"
+      ],
+      "answer": "A name followed by a colon that marks a place in the code",
+      "hint": "Look at how done: is written.",
+      "explanation": "A label is an identifier plus a colon. goto jumps to it."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\nint i = 1;\nagain:\ncout << i << \" \";\ni++;\nif (i <= 3) goto again;",
+      "answer": "1 2 3",
+      "hint": "Follow the jump back each time i is still 3 or less.",
+      "explanation": "Prints 1, then i becomes 2 and the goto jumps back. Prints 2, i becomes 3, jumps back. Prints 3, i becomes 4 and the if is false."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\ncout << \"A\";\ngoto end;\ncout << \"B\";\nend:\ncout << \"C\";",
+      "answer": "AC",
+      "hint": "What happens to the line between the goto and the label?",
+      "explanation": "A prints, goto jumps over cout << \"B\" and lands on the label, then C prints."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This code does not compile. Fix it.\n\ngoto skip;\nint x = 5;\nskip:\ncout << x;",
+      "answer": "int x = 5;\ngoto skip;\nskip:\ncout << x;",
+      "hint": "The compiler complains that the jump crosses the initialization of x.",
+      "explanation": "A jump may not skip over the line that creates and sets a variable. Declare x before the goto."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill the blanks to print 1 2 3 using a label and goto.\n\nint i = 1;\n____:\ncout << i << \" \";\ni++;\nif (i <= 3) ____ again;",
+      "answer": "int i = 1;\nagain:\ncout << i << \" \";\ni++;\nif (i <= 3) goto again;",
+      "hint": "A label ends with a colon; the keyword for jumping is goto.",
+      "explanation": "The label is again: and the jump is goto again;"
+    },
+    {
+      "id": "p6",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a complete program that prints 5 4 3 2 1 on one line using a label and goto (no for or while).",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int n = 5;\nagain:\n    cout << n << \" \";\n    n--;\n    if (n >= 1) {\n        goto again;\n    }\n    cout << endl;\n    return 0;\n}",
+      "hint": "Count down with n-- and keep jumping while n is at least 1.",
+      "explanation": "The label marks the print. After printing we reduce n and jump back while n >= 1."
+    },
+    {
+      "id": "p7",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which is the cleanest way to stop two nested loops once a value is found?",
+      "options": [
+        "Use a bool flag checked by both loop conditions",
+        "Write break once and hope it leaves both loops",
+        "Use many goto statements",
+        "Delete the loops"
+      ],
+      "answer": "Use a bool flag checked by both loop conditions",
+      "hint": "goto is possible, but the course recommends something else.",
+      "explanation": "A flag (or a function with return) keeps the loops readable. break alone leaves only the inner loop."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Why do programmers avoid goto?",
+      "options": [
+        "It makes code tangled and hard to follow (spaghetti code)",
+        "It is slower than every loop",
+        "It only works with integers",
+        "It is not part of C++"
+      ],
+      "answer": "It makes code tangled and hard to follow (spaghetti code)",
+      "hint": "Think of the bus with 20 rules.",
+      "explanation": "Too many jumps make the path of the program hard to read and debug."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which line is a correct label?",
+      "options": [
+        "done:",
+        "done;",
+        "goto done",
+        "label(done)"
+      ],
+      "answer": "done:",
+      "hint": "A label uses a colon.",
+      "explanation": "done: is a label. The others are not."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Where must the label of a goto be?",
+      "options": [
+        "In the same function as the goto",
+        "In any file of the project",
+        "Only before the goto",
+        "Only at the end of main"
+      ],
+      "answer": "In the same function as the goto",
+      "hint": "Labels are not visible in other functions.",
+      "explanation": "goto can only jump inside one function."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "How many loops does break leave?",
+      "options": [
+        "Only the innermost loop",
+        "All loops",
+        "Every loop in the function",
+        "None"
+      ],
+      "answer": "Only the innermost loop",
+      "hint": "Think about nested loops.",
+      "explanation": "break leaves one loop. To leave several you need a flag, a function return or goto."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "A goto jumps backward with a condition and the condition never becomes false. What happens?",
+      "options": [
+        "An infinite loop",
+        "The compiler removes it",
+        "The program prints nothing and stops",
+        "The goto is ignored"
+      ],
+      "answer": "An infinite loop",
+      "hint": "Like a while(true).",
+      "explanation": "The program keeps jumping back and never reaches the end."
+    }
+  ],
+  "sources": [
+    "goto statement",
+    "Labels",
+    "Exceptions in loops (introduction)",
+    "Jump statements"
+  ]
+}

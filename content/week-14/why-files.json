@@ -1,0 +1,609 @@
+{
+  "slug": "why-files",
+  "week": 14,
+  "title": "Why files? Data that survives after the program ends",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "The life of a file operation: open, check, use, close",
+      "stages": [
+        {
+          "name": "1. Open",
+          "detail": "Create a stream object (ofstream to write, ifstream to read) and give it the file name: ofstream out(\"data.txt\");"
+        },
+        {
+          "name": "2. Check",
+          "detail": "Ask if the file really opened: if (!out). A file can fail to open (missing file, wrong folder, no permission)."
+        },
+        {
+          "name": "3. Read / write",
+          "detail": "Use << to put data into the file or >> and getline to take data out of it, exactly like cout and cin."
+        },
+        {
+          "name": "4. Close",
+          "detail": "Call out.close(). All data is saved and the file is free for other programs."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each file idea to its meaning",
+      "pairs": [
+        {
+          "term": "ofstream",
+          "meaning": "Output file stream: writes data INTO a file (like cout)"
+        },
+        {
+          "term": "ifstream",
+          "meaning": "Input file stream: reads data FROM a file (like cin)"
+        },
+        {
+          "term": "fstream",
+          "meaning": "One stream that can read and write"
+        },
+        {
+          "term": "#include <fstream>",
+          "meaning": "The header that gives you all the file streams"
+        },
+        {
+          "term": "ios::app",
+          "meaning": "Open for append: keep the old content, add at the end"
+        },
+        {
+          "term": "if (!out)",
+          "meaning": "Check that the file opened correctly"
+        },
+        {
+          "term": "close()",
+          "meaning": "Finish with the file and save everything"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can explain why programs need files, name the three file streams, and follow the open, check, use, close steps for any file task.",
+  "warmup": "Think of your mobile phone contacts. When you switch the phone off, the numbers are still there tomorrow. That is because they are saved in the phone's storage. Now think of a number you only remember in your head while you search for a pen: if somebody distracts you, it is gone. A normal C++ variable is like the number in your head. When the program ends, it is gone. A file is like the saved contact list.",
+  "definition": "A file is a named place on the disk (for example marks.txt) where data is stored permanently. Variables live in RAM, which is temporary, so everything in them is lost when the program ends, and anything typed with the keyboard has to be typed again at the next run. A text file stores data as readable characters: you can open it in Notepad. (A binary file stores the raw bytes of the data instead and is not readable in Notepad; in this course we use text files only.) In C++ you work with a file through a stream, an object that carries data to or from the file. The header <fstream> gives you three stream types: ofstream (output, writes to a file, like cout), ifstream (input, reads from a file, like cin) and fstream (can do both).",
+  "howItWorks": "Every file task follows the same steps. (1) #include <fstream>. (2) Create a stream object and give it the file name, for example ofstream out(\"data.txt\"); this also opens the file. (3) Check that it opened with if (!out). (4) Use << (writing) or >> and getline (reading). (5) Close the file with out.close(). Watch the trace: the first stream creates names.txt and writes Ali, the second opens the SAME file with ios::app and adds Sana, the third reads it back. The file name is a relative path: the program looks for it in its working folder, which is the folder where the program is run. A name like \"data.txt\" means \"in my own folder\". Do not write a full path such as C:\\\\Users\\\\Ali\\\\data.txt, because it will not exist on another computer. When you write with ofstream and the file already exists, its old content is erased. To keep the old content and add new text at the end, open the file with ios::app. In the examples of this week every program writes a file first and then reads it back, so you can see the result without any other tool.",
+  "syntax": "#include <fstream>              // header for all file streams\n\nofstream out(\"data.txt\");       // open for writing (old content erased)\nif (!out) {                     // check: did it open?\n    cout << \"Error opening file!\" << endl;\n    return 1;\n}\nout << \"text\" << 42 << endl;    // write, exactly like cout\nout.close();                    // close when finished\n\nifstream in(\"data.txt\");        // open for reading\nif (!in) { cout << \"File not found!\" << endl; return 1; }\nstring line;\ngetline(in, line);              // read one line\nin.close();\n\nofstream more(\"data.txt\", ios::app);   // append: keep old content\nfstream both;                          // can read and write",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write the line Hello, file! into a file called hello.txt. Then open the same file, read the line back and print it on the screen.",
+      "pseudocode": [
+        "START",
+        "OPEN hello.txt for writing; if it did not open, stop",
+        "WRITE the line Hello, file!",
+        "CLOSE the file",
+        "OPEN hello.txt for reading; if it did not open, stop",
+        "READ one line",
+        "CLOSE the file",
+        "PRINT the line",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Open hello.txt for writing]\n  B --> C{File opened?}\n  C -- No --> X[/Print error/]\n  C -- Yes --> D[Write the line]\n  D --> E[Close the file]\n  E --> F[Open hello.txt for reading]\n  F --> G[Read one line]\n  G --> H[Close the file]\n  H --> I[/Print the line/]\n  I --> J([End])\n  X --> J",
+      "sample": {
+        "id": "hello-file",
+        "title": "Write a line, read it back",
+        "code": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nint main() {\n    ofstream out(\"hello.txt\");\n    if (!out) {\n        cout << \"Cannot open hello.txt\" << endl;\n        return 1;\n    }\n    out << \"Hello, file!\" << endl;\n    out.close();\n\n    ifstream in(\"hello.txt\");\n    if (!in) {\n        cout << \"Cannot open hello.txt\" << endl;\n        return 1;\n    }\n    string line;\n    getline(in, line);\n    in.close();\n    cout << \"Read back: \" << line << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Read back: Hello, file!\n",
+        "explanation": [
+          {
+            "line": 3,
+            "text": "string is needed because we store the line in a string variable."
+          },
+          {
+            "line": 7,
+            "text": "Creates the output stream out and opens hello.txt for writing. If the file does not exist, it is created."
+          },
+          {
+            "line": 8,
+            "text": "Checks that the file opened. If not, the program prints a message and stops."
+          },
+          {
+            "line": 12,
+            "text": "Writes into the file exactly like cout writes to the screen. endl ends the line."
+          },
+          {
+            "line": 13,
+            "text": "Closes the file so everything is saved."
+          },
+          {
+            "line": 15,
+            "text": "Creates the input stream in and opens the same file for reading."
+          },
+          {
+            "line": 21,
+            "text": "Reads one whole line from the file into the string line."
+          },
+          {
+            "line": 23,
+            "text": "Shows what was stored in the file."
+          }
+        ]
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "A program opens notes.txt for reading before the file exists, so the open fails. Show how the check if (!stream) catches this, then create the file and open it again successfully.",
+      "pseudocode": [
+        "START",
+        "TRY to open notes.txt for reading",
+        "IF it did not open, PRINT a warning",
+        "CREATE notes.txt and write one line",
+        "TRY to open notes.txt again",
+        "IF it opened, READ the line and PRINT it",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Try to open notes.txt for reading]\n  B --> C{Opened?}\n  C -- No --> D[/Print: does not exist yet/]\n  C -- Yes --> E[Skip the warning]\n  D --> F[Create notes.txt and write a line]\n  E --> F\n  F --> G[Open notes.txt again]\n  G --> H{Opened?}\n  H -- Yes --> I[Read the line]\n  I --> J[/Print the line/]\n  H -- No --> K([End])\n  J --> K",
+      "sample": {
+        "id": "check-open",
+        "title": "Why we check if the file opened",
+        "code": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nint main() {\n    ifstream first(\"notes.txt\");\n    if (!first) {\n        cout << \"notes.txt does not exist yet\" << endl;\n    }\n\n    ofstream make(\"notes.txt\");\n    make << \"Week 14: files\" << endl;\n    make.close();\n\n    ifstream second(\"notes.txt\");\n    if (second) {\n        string line;\n        getline(second, line);\n        cout << \"Now it exists: \" << line << endl;\n    }\n    second.close();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "notes.txt does not exist yet\nNow it exists: Week 14: files\n",
+        "explanation": [
+          {
+            "line": 7,
+            "text": "Tries to open notes.txt for reading. In a new empty folder the file is not there, so the open fails."
+          },
+          {
+            "line": 8,
+            "text": "!first is true when the stream is in a failed state, that is, when the file did not open. (Run the program a second time and this message will not appear, because the file now exists.)"
+          },
+          {
+            "line": 12,
+            "text": "Opening for WRITING creates the file if it is missing."
+          },
+          {
+            "line": 13,
+            "text": "Puts one line of text into the file."
+          },
+          {
+            "line": 16,
+            "text": "Now the file exists, so this open succeeds."
+          },
+          {
+            "line": 17,
+            "text": "A stream used as a condition is true when it is in a good state, so this means the file opened."
+          },
+          {
+            "line": 19,
+            "text": "Reads the line that we wrote earlier."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Exam question: Write the name Ali into names.txt, then ADD the name Sana without losing Ali. Finally read the file and print every line with its line number.",
+      "pseudocode": [
+        "START",
+        "OPEN names.txt for writing and write Ali",
+        "CLOSE",
+        "OPEN names.txt in append mode and write Sana",
+        "CLOSE",
+        "OPEN names.txt for reading",
+        "SET count = 0",
+        "WHILE a line can be read: count = count + 1, PRINT count and the line",
+        "CLOSE",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Write Ali with ofstream]\n  B --> C[Close]\n  C --> D[Open again with ios::app]\n  D --> E[Write Sana and close]\n  E --> F[Open names.txt for reading]\n  F --> G[count = 0]\n  G --> H{Can a line be read?}\n  H -- Yes --> I[count = count + 1]\n  I --> J[/Print count and the line/]\n  J --> H\n  H -- No --> K[Close the file]\n  K --> L([End])",
+      "sample": {
+        "id": "append-names",
+        "title": "Write, append, read back",
+        "code": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nint main() {\n    ofstream out(\"names.txt\");\n    if (!out) {\n        cout << \"Cannot open names.txt\" << endl;\n        return 1;\n    }\n    out << \"Ali\" << endl;\n    out.close();\n\n    ofstream more(\"names.txt\", ios::app);\n    if (!more) {\n        cout << \"Cannot open names.txt\" << endl;\n        return 1;\n    }\n    more << \"Sana\" << endl;\n    more.close();\n\n    ifstream in(\"names.txt\");\n    if (!in) {\n        cout << \"Cannot open names.txt\" << endl;\n        return 1;\n    }\n    string line;\n    int count = 0;\n    while (getline(in, line)) {\n        count++;\n        cout << count << \": \" << line << endl;\n    }\n    in.close();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "1: Ali\n2: Sana\n",
+        "explanation": [
+          {
+            "line": 7,
+            "text": "Opens names.txt for writing. Any old content would be erased."
+          },
+          {
+            "line": 12,
+            "text": "First line of the file."
+          },
+          {
+            "line": 15,
+            "text": "ios::app = append. The old content (Ali) is kept and new output goes after it."
+          },
+          {
+            "line": 20,
+            "text": "Second line of the file."
+          },
+          {
+            "line": 23,
+            "text": "Opens the file for reading from the beginning."
+          },
+          {
+            "line": 29,
+            "text": "Counts the lines that we read."
+          },
+          {
+            "line": 30,
+            "text": "Reads one line each time. When there are no more lines the read fails and the loop stops by itself."
+          },
+          {
+            "line": 32,
+            "text": "Prints the line number and the line."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 7,
+              "vars": {
+                "file": "(empty)"
+              },
+              "note": "The program creates the stream object out and opens names.txt for writing. The file did not exist, so it is created empty.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {
+                "file": "Ali"
+              },
+              "note": "out works like cout, but the text goes into the file, not the screen.",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {
+                "file": "Ali"
+              },
+              "note": "The first stream is closed. Ali is safely saved on the disk.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "file": "Ali"
+              },
+              "note": "The file is opened again, this time with ios::app (append). The old content Ali is KEPT and new text will go after it.",
+              "out": ""
+            },
+            {
+              "line": 20,
+              "vars": {
+                "file": "Ali | Sana"
+              },
+              "note": "Sana is added at the end of the file (shown here as lines separated by |).",
+              "out": ""
+            },
+            {
+              "line": 21,
+              "vars": {
+                "file": "Ali | Sana"
+              },
+              "note": "The appending stream is closed.",
+              "out": ""
+            },
+            {
+              "line": 23,
+              "vars": {},
+              "note": "Now an input stream in opens the same file for reading, starting from the first line.",
+              "out": ""
+            },
+            {
+              "line": 29,
+              "vars": {
+                "count": "0"
+              },
+              "note": "count will count the lines we read.",
+              "out": ""
+            },
+            {
+              "line": 30,
+              "vars": {
+                "line": "Ali"
+              },
+              "note": "getline reads the first line into line.",
+              "out": ""
+            },
+            {
+              "line": 31,
+              "vars": {
+                "count": "1"
+              },
+              "note": "One line was read, so count becomes 1.",
+              "out": ""
+            },
+            {
+              "line": 32,
+              "vars": {},
+              "note": "The line is shown on the screen with its number.",
+              "out": "1: Ali\n"
+            },
+            {
+              "line": 30,
+              "vars": {
+                "line": "Sana"
+              },
+              "note": "getline reads the second line.",
+              "out": ""
+            },
+            {
+              "line": 31,
+              "vars": {
+                "count": "2"
+              },
+              "note": "count becomes 2.",
+              "out": ""
+            },
+            {
+              "line": 32,
+              "vars": {},
+              "note": "Second line printed.",
+              "out": "2: Sana\n"
+            },
+            {
+              "line": 34,
+              "vars": {},
+              "note": "The loop condition failed at the end of the file, so the loop stopped. Now the file is closed.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "file": "file",
+            "count": "int",
+            "line": "string"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "ofstream out(\"f.txt\");",
+      "when": "Writing. Creates the file or ERASES the old content.",
+      "example": "ofstream out(\"marks.txt\"); out << 78 << endl;"
+    },
+    {
+      "way": "ofstream out(\"f.txt\", ios::app);",
+      "when": "Appending. Keeps the old content and adds at the end.",
+      "example": "ofstream out(\"marks.txt\", ios::app); out << 91 << endl;"
+    },
+    {
+      "way": "ifstream in(\"f.txt\");",
+      "when": "Reading. The file must already exist.",
+      "example": "ifstream in(\"marks.txt\"); in >> x;"
+    },
+    {
+      "way": "fstream f(\"f.txt\", ios::in);",
+      "when": "One kind of object for reading or writing; the mode says which.",
+      "example": "fstream f(\"marks.txt\", ios::out);"
+    },
+    {
+      "way": "out.close();",
+      "when": "Always, when you finish with the file.",
+      "example": "out.close();"
+    },
+    {
+      "way": "if (!out) { ... }",
+      "when": "Right after opening, to catch a missing file or wrong folder.",
+      "example": "if (!out) { cout << \"Error\"; return 1; }"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "#include <iostream>\nusing namespace std;\nint main() {\n    ofstream out(\"data.txt\");\n    out << \"Hi\" << endl;\n    return 0;\n}",
+      "right": "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main() {\n    ofstream out(\"data.txt\");\n    out << \"Hi\" << endl;\n    return 0;\n}",
+      "error": "The compiler reports error: variable 'std::ofstream out' has initializer but incomplete type. The file streams live in <fstream>, so you must include it."
+    },
+    {
+      "wrong": "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main() {\n    ofstream in(\"data.txt\");\n    int x;\n    in >> x;\n    return 0;\n}",
+      "right": "ifstream in(\"data.txt\");\nint x;\nin >> x;",
+      "error": "The compiler reports error: no match for 'operator>>' (operand types are 'std::ofstream' {aka 'std::basic_ofstream<char>'} and 'int'). An ofstream can only write. To read you need an ifstream."
+    },
+    {
+      "wrong": "ofstream out(\"scores.txt\");   // run again later to add a score\nout << 55 << endl;",
+      "right": "ofstream out(\"scores.txt\", ios::app);\nout << 55 << endl;",
+      "error": "No compiler error. Plain ofstream erases the old content every time the program runs, so earlier scores disappear. Use ios::app to keep them."
+    },
+    {
+      "wrong": "ifstream in(\"data.txt\");\nint x;\nin >> x;      // file was never checked",
+      "right": "ifstream in(\"data.txt\");\nif (!in) { cout << \"File not found!\" << endl; return 1; }\nint x;\nin >> x;",
+      "error": "No compiler error. If data.txt is missing or in another folder, the read quietly fails and x holds a useless value. Always check right after opening."
+    },
+    {
+      "wrong": "ifstream in(\"C:\\\\Users\\\\Ali\\\\data.txt\");",
+      "right": "ifstream in(\"data.txt\");",
+      "error": "No compiler error. The long path only works on one computer. Use a plain file name and keep the file in the program's working folder."
+    }
+  ],
+  "examTips": [
+    "Learn the steps in order: include <fstream>, create the stream, open, check, read/write, close. Exams often ask you to list them.",
+    "ofstream = output (write), ifstream = input (read), fstream = both. A common 1-mark question.",
+    "Plain ofstream erases old content. If the question says \"add\" or \"keep the previous records\", the answer needs ios::app.",
+    "Write if (!out) or if (!in) right after opening. Examiners give marks for the check.",
+    "Say the reason for files: RAM is temporary, a file is permanent."
+  ],
+  "romanSummary": [
+    "Variable ka data RAM mein hota hai, program band hote hi khatam ho jata hai. File mein data disk par permanent rehta hai.",
+    "<fstream> include karein: ofstream likhne ke liye, ifstream parhne ke liye, fstream dono ke liye.",
+    "Steps: stream banao, file kholo, check karo (if (!out)), parho ya likho, aakhir mein close() karo.",
+    "ofstream purana data mita deta hai; purana data rakhna ho to ios::app use karein.",
+    "File ka naam sirf \"data.txt\" likhein, poora path nahi, program usi folder mein dhoondta hai jahan woh chal raha hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which stream type do you use to WRITE data into a file?",
+      "options": [
+        "ofstream",
+        "ifstream",
+        "istream",
+        "cin"
+      ],
+      "answer": "ofstream",
+      "hint": "o stands for output.",
+      "explanation": "ofstream is the output file stream. It works like cout, but the data goes to a file."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which header must you include to use file streams?",
+      "options": [
+        "<fstream>",
+        "<iostream> only",
+        "<file>",
+        "<stdio.h>"
+      ],
+      "answer": "<fstream>",
+      "hint": "The name has the word stream in it.",
+      "explanation": "<fstream> declares ofstream, ifstream and fstream."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    ofstream out(\"a.txt\");\n    out << \"Pakistan\" << endl;\n    out.close();\n    ifstream in(\"a.txt\");\n    string word;\n    in >> word;\n    cout << word << \" \" << word.length();\n    return 0;\n}",
+      "answer": "Pakistan 8",
+      "hint": "Whatever was written is what is read back.",
+      "explanation": "The word Pakistan is written, then read back with >>. It has 8 letters."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    ofstream a(\"t.txt\");\n    a << \"one\" << endl;\n    a.close();\n    ofstream b(\"t.txt\");\n    b << \"two\" << endl;\n    b.close();\n    ifstream in(\"t.txt\");\n    string line;\n    int n = 0;\n    while (getline(in, line)) {\n        n++;\n        cout << line << endl;\n    }\n    cout << n;\n    return 0;\n}",
+      "answer": "two\r\n1",
+      "hint": "The second ofstream has no ios::app.",
+      "explanation": "The second open erases the old content, so only two is in the file. One line is read: it prints two, then 1."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank so the new mark is ADDED at the end of the file and the old marks stay.\n\nofstream out(\"marks.txt\", ios::____);\nout << 70 << endl;",
+      "answer": "app",
+      "hint": "Short for append.",
+      "explanation": "ios::app opens the file for appending."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This program should read a number from data.txt but it does not compile. Fix it.\n\nofstream in(\"data.txt\");\nint x;\nin >> x;",
+      "answer": "ifstream in(\"data.txt\");\nint x;\nin >> x;",
+      "hint": "Which stream type reads?",
+      "explanation": "Reading needs an ifstream. An ofstream can only write."
+    },
+    {
+      "id": "p7",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Your program writes a file with ofstream out(\"list.txt\"); every time it runs. What happens to the old content?",
+      "options": [
+        "It is erased",
+        "It is kept",
+        "It is copied to the screen",
+        "The program stops"
+      ],
+      "answer": "It is erased",
+      "hint": "Plain ofstream is not append mode.",
+      "explanation": "The default mode ios::out erases the old content. Use ios::app to keep it."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a complete program that writes your city name (use Lahore) into city.txt, closes the file, opens it again, reads the word back and prints it. Check both opens.",
+      "answer": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    ofstream out(\"city.txt\");\n    if (!out) { cout << \"Cannot open city.txt\" << endl; return 1; }\n    out << \"Lahore\" << endl;\n    out.close();\n    ifstream in(\"city.txt\");\n    if (!in) { cout << \"Cannot open city.txt\" << endl; return 1; }\n    string city;\n    in >> city;\n    in.close();\n    cout << city << endl;\n    return 0;\n}",
+      "hint": "ofstream, check, <<, close, then ifstream, check, >>.",
+      "explanation": "Write, close, open for reading, read, print. Each open is followed by an if check."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Why do programs use files?",
+      "options": [
+        "Data in a file stays after the program ends",
+        "Files make the program run faster",
+        "Variables cannot store numbers",
+        "Files replace the compiler"
+      ],
+      "answer": "Data in a file stays after the program ends",
+      "hint": "Think RAM versus disk.",
+      "explanation": "Variables are lost when the program ends. A file is stored on the disk."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which class reads from a file, like cin?",
+      "options": [
+        "ifstream",
+        "ofstream",
+        "string",
+        "ostream"
+      ],
+      "answer": "ifstream",
+      "hint": "i for input.",
+      "explanation": "ifstream is the input file stream."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What does if (!out) test right after ofstream out(\"a.txt\"); ?",
+      "options": [
+        "Whether the file failed to open",
+        "Whether the file is empty",
+        "Whether the file is closed",
+        "Whether out is a number"
+      ],
+      "answer": "Whether the file failed to open",
+      "hint": "The ! means not.",
+      "explanation": "!out is true when the stream is in a failed state, for example the file could not be opened."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which statement ADDS a line at the end of old.txt without erasing it?",
+      "options": [
+        "ofstream out(\"old.txt\", ios::app);",
+        "ofstream out(\"old.txt\");",
+        "ifstream out(\"old.txt\");",
+        "fstream out(\"old.txt\", ios::in);"
+      ],
+      "answer": "ofstream out(\"old.txt\", ios::app);",
+      "hint": "Look for append.",
+      "explanation": "ios::app keeps the old content."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "A text file differs from a binary file because a text file...",
+      "options": [
+        "can be opened and read in Notepad",
+        "can only store numbers",
+        "is always empty",
+        "cannot be written by C++"
+      ],
+      "answer": "can be opened and read in Notepad",
+      "hint": "Readable characters.",
+      "explanation": "A text file stores readable characters."
+    }
+  ],
+  "sources": [
+    "Why files?",
+    "File streams ofstream, ifstream, fstream",
+    "Opening, checking and closing a file"
+  ]
+}

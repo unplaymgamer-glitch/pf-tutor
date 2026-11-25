@@ -1,0 +1,780 @@
+{
+  "slug": "array-of-structures-to-function",
+  "week": 13,
+  "title": "Passing an array of structures to a function",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match each idea to its meaning",
+      "pairs": [
+        {
+          "term": "void f(Student list[], int n)",
+          "meaning": "Receives the original array and its count; changes are kept"
+        },
+        {
+          "term": "f(cls, 3)",
+          "meaning": "The call: array name without [] and the number of records"
+        },
+        {
+          "term": "const Student list[]",
+          "meaning": "The function may read the records but not change them"
+        },
+        {
+          "term": "Why pass n separately?",
+          "meaning": "The function only gets the address of the array, so it cannot know the size"
+        },
+        {
+          "term": "list[i].marks",
+          "meaning": "The marks member of record number i"
+        },
+        {
+          "term": "findByName returns -1",
+          "meaning": "No record matched, so there is no valid index"
+        }
+      ]
+    },
+    {
+      "kind": "pipeline",
+      "title": "How an array of structures travels to a function",
+      "stages": [
+        {
+          "name": "1. The call",
+          "detail": "main writes addBonus(cls, 3): the array name and the count."
+        },
+        {
+          "name": "2. No copy of the records",
+          "detail": "Only the address of the first record is passed. list is the same array as cls."
+        },
+        {
+          "name": "3. The loop",
+          "detail": "for (i = 0; i < n; i++) visits list[0] ... list[n-1], using list[i].member."
+        },
+        {
+          "name": "4. Back in main",
+          "detail": "The records were changed in place, so main sees the new values with no return needed."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can pass an array of structures and its count to functions that read, print, search and find the best record, and you know why the original array is changed.",
+  "warmup": "A class teacher keeps one register with the records of 50 students. She hands the SAME register to the clerk to add bonus marks, and the next day to the coordinator to print the toppers. Nobody photocopies all 50 pages first. The register (array) goes to each person, along with a note saying how many pages are filled (the count).",
+  "definition": "An array of structures is passed to a function like any array: write the array name in the call and give the parameter as Type list[] in the function header. The function receives the address of the first record, so no copy is made and the function works on the ORIGINAL array: changes stay after the function returns. The array does not carry its size, so the count n is passed as a second argument. Use const Type list[] when the function only reads the records.",
+  "howItWorks": "Step through the trace. In addBonus the parameter list is not a copy of cls: it is the same array. So list[0].marks += 5 changes cls[0].marks in main. n is a normal int, so it IS a copy. Common jobs follow the same pattern. Read INTO the array: the function fills list[i].name and list[i].marks with cin and returns how many records it read. Print: a loop that shows each record, with const. Search: a loop that compares list[i].name with the key and returns the index i, or -1 when nothing matches. Best record: keep a variable best with the index of the best record so far, and update it whenever a better one appears. A menu connects them: a do-while loop reads a choice and a switch calls one function for each case. Remember that the array has a fixed size, so always keep n at most that size.",
+  "syntax": "struct Student { string name; int marks; };\n\nvoid readAll(Student list[], int n);          // fills the original array\nvoid printAll(const Student list[], int n);   // read only\nint  findByName(const Student list[], int n, string key); // index or -1\nint  bestIndex(const Student list[], int n);  // index of the highest marks\n\nStudent cls[50];\nint n = 3;\nprintAll(cls, n);       // array name only, no brackets, then the count\ncout << cls[bestIndex(cls, n)].name;",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Keep 3 students in an array of structures. Write one function that adds 5 bonus marks to everybody and one that prints the list. Does the bonus stay in main's array?",
+      "pseudocode": [
+        "START",
+        "SET cls = Ali 60, Sara 75, Zain 88",
+        "CALL addBonus(cls, 3): each record gets 5 more",
+        "CALL printAll(cls, 3)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[cls has 3 students]\n  B --> C[addBonus: loop over records]\n  C --> D[Each marks plus 5]\n  D --> E[printAll: loop over records]\n  E --> F[/Print name and marks/]\n  F --> G([End])",
+      "sample": {
+        "id": "aos-bonus",
+        "title": "Pass an array of structures with its count",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    string name;\n    int marks;\n};\n\nvoid addBonus(Student list[], int n) {\n    for (int i = 0; i < n; i++) {\n        list[i].marks += 5;\n    }\n}\n\nvoid printAll(const Student list[], int n) {\n    for (int i = 0; i < n; i++) {\n        cout << list[i].name << \" \" << list[i].marks << endl;\n    }\n}\n\nint main() {\n    Student cls[3] = {{\"Ali\", 60}, {\"Sara\", 75}, {\"Zain\", 88}};\n    addBonus(cls, 3);\n    printAll(cls, 3);\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Ali 65\nSara 80\nZain 93\n",
+        "explanation": [
+          {
+            "line": 10,
+            "text": "The array parameter list[] receives the array. The count n must be passed separately because the function cannot know the size."
+          },
+          {
+            "line": 11,
+            "text": "Loop over the n records."
+          },
+          {
+            "line": 12,
+            "text": "list[i] is one record. .marks is its member. This changes the ORIGINAL array."
+          },
+          {
+            "line": 16,
+            "text": "const means this function may read the records but not change them."
+          },
+          {
+            "line": 18,
+            "text": "Prints one record per line."
+          },
+          {
+            "line": 23,
+            "text": "An array of 3 structures filled with initialiser lists."
+          },
+          {
+            "line": 24,
+            "text": "Write only the array name, without []. Then the count."
+          },
+          {
+            "line": 25,
+            "text": "Shows the changed records."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 22,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 23,
+              "vars": {
+                "cls[0].marks": "60",
+                "cls[1].marks": "75",
+                "cls[2].marks": "88"
+              },
+              "note": "main creates an array of 3 Student records.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "cls[0].marks": "60",
+                    "cls[1].marks": "75",
+                    "cls[2].marks": "88"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 24,
+              "vars": {
+                "n": "3"
+              },
+              "note": "We pass the array name and the count. The array is NOT copied: list is the same array as cls. n is a copy of 3.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "cls[0].marks": "60",
+                    "cls[1].marks": "75",
+                    "cls[2].marks": "88"
+                  }
+                },
+                {
+                  "fn": "addBonus(list, n)",
+                  "vars": {
+                    "list": "is cls (same array)",
+                    "n": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "0"
+              },
+              "note": "i starts at 0.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "cls[0].marks": "60",
+                    "cls[1].marks": "75",
+                    "cls[2].marks": "88"
+                  }
+                },
+                {
+                  "fn": "addBonus(list, n)",
+                  "vars": {
+                    "list": "is cls (same array)",
+                    "n": "3",
+                    "i": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {
+                "cls[0].marks": "65"
+              },
+              "note": "list[0] is cls[0], so Ali gets 5 more: 65.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "cls[0].marks": "65",
+                    "cls[1].marks": "75",
+                    "cls[2].marks": "88"
+                  }
+                },
+                {
+                  "fn": "addBonus(list, n)",
+                  "vars": {
+                    "list": "is cls (same array)",
+                    "n": "3",
+                    "i": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {
+                "i": "1",
+                "cls[1].marks": "80"
+              },
+              "note": "i = 1: Sara gets 5 more: 80.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "cls[0].marks": "65",
+                    "cls[1].marks": "80",
+                    "cls[2].marks": "88"
+                  }
+                },
+                {
+                  "fn": "addBonus(list, n)",
+                  "vars": {
+                    "list": "is cls (same array)",
+                    "n": "3",
+                    "i": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {
+                "i": "2",
+                "cls[2].marks": "93"
+              },
+              "note": "i = 2: Zain gets 5 more: 93.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "cls[0].marks": "65",
+                    "cls[1].marks": "80",
+                    "cls[2].marks": "93"
+                  }
+                },
+                {
+                  "fn": "addBonus(list, n)",
+                  "vars": {
+                    "list": "is cls (same array)",
+                    "n": "3",
+                    "i": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 25,
+              "vars": {
+                "n": "3",
+                "i": "0"
+              },
+              "note": "addBonus is finished and the original array keeps the changes. printAll gets the same array (const: read only).",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "cls[0].marks": "65",
+                    "cls[1].marks": "80",
+                    "cls[2].marks": "93"
+                  }
+                },
+                {
+                  "fn": "printAll(list, n)",
+                  "vars": {
+                    "list": "is cls (same array)",
+                    "n": "3",
+                    "i": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "i = 0: prints Ali 65.",
+              "out": "Ali 65\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "cls[0].marks": "65",
+                    "cls[1].marks": "80",
+                    "cls[2].marks": "93"
+                  }
+                },
+                {
+                  "fn": "printAll(list, n)",
+                  "vars": {
+                    "list": "is cls (same array)",
+                    "n": "3",
+                    "i": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 18,
+              "vars": {
+                "i": "1"
+              },
+              "note": "i = 1: prints Sara 80.",
+              "out": "Sara 80\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "cls[0].marks": "65",
+                    "cls[1].marks": "80",
+                    "cls[2].marks": "93"
+                  }
+                },
+                {
+                  "fn": "printAll(list, n)",
+                  "vars": {
+                    "list": "is cls (same array)",
+                    "n": "3",
+                    "i": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 18,
+              "vars": {
+                "i": "2"
+              },
+              "note": "i = 2: prints Zain 93.",
+              "out": "Zain 93\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "cls[0].marks": "65",
+                    "cls[1].marks": "80",
+                    "cls[2].marks": "93"
+                  }
+                },
+                {
+                  "fn": "printAll(list, n)",
+                  "vars": {
+                    "list": "is cls (same array)",
+                    "n": "3",
+                    "i": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 26,
+              "vars": {},
+              "note": "The program ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "cls[0].marks": "65",
+                    "cls[1].marks": "80",
+                    "cls[2].marks": "93"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "cls[0].marks": "int",
+            "cls[1].marks": "int",
+            "cls[2].marks": "int",
+            "i": "int",
+            "n": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "A canteen keeps products in an array of structures. Write functions to print all products, find the total stock value, and restock items with fewer than 5 pieces.",
+      "pseudocode": [
+        "START",
+        "SET shop = Pen, Notebook, Ruler",
+        "restock: if qty < 5 add 10",
+        "printAll",
+        "totalValue: sum of qty * price",
+        "PRINT total",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[shop has 3 products]\n  B --> C[restock: qty below 5 gets 10 more]\n  C --> D[/printAll/]\n  D --> E[totalValue adds qty times price]\n  E --> F[/Print stock value/]\n  F --> G([End])",
+      "sample": {
+        "id": "aos-shop",
+        "title": "Canteen stock: print, total and restock",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Product {\n    string name;\n    int qty;\n    double price;\n};\n\nvoid printAll(const Product list[], int n) {\n    for (int i = 0; i < n; i++)\n        cout << list[i].name << \"  x\" << list[i].qty << \"  @ \" << list[i].price << endl;\n}\n\ndouble totalValue(const Product list[], int n) {\n    double t = 0;\n    for (int i = 0; i < n; i++)\n        t += list[i].qty * list[i].price;\n    return t;\n}\n\nvoid restock(Product list[], int n, int amount) {\n    for (int i = 0; i < n; i++)\n        if (list[i].qty < 5) list[i].qty += amount;\n}\n\nint main() {\n    Product shop[3] = { {\"Pen\", 20, 30}, {\"Notebook\", 3, 150}, {\"Ruler\", 2, 50} };\n    restock(shop, 3, 10);\n    printAll(shop, 3);\n    cout << \"Stock value: Rs. \" << totalValue(shop, 3) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Pen  x20  @ 30\nNotebook  x13  @ 150\nRuler  x12  @ 50\nStock value: Rs. 3150\n",
+        "explanation": [
+          {
+            "line": 11,
+            "text": "Read-only access to the array: const."
+          },
+          {
+            "line": 16,
+            "text": "Adds qty x price for every product and returns the total."
+          },
+          {
+            "line": 19,
+            "text": "One record's value is added to the running total."
+          },
+          {
+            "line": 23,
+            "text": "No const: this function changes the original array."
+          },
+          {
+            "line": 25,
+            "text": "Only products with fewer than 5 pieces are restocked."
+          },
+          {
+            "line": 29,
+            "text": "Three products: name, quantity, price."
+          },
+          {
+            "line": 30,
+            "text": "Notebook 3 -> 13 and Ruler 2 -> 12. Pen stays 20."
+          },
+          {
+            "line": 32,
+            "text": "20*30 + 13*150 + 12*50 = 3150."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a menu program for student records using an array of structures: read the records, print them, search a student by name and find the topper. Each job is a function that receives the array and the count. Study the program and give its exact output for the given input.",
+      "pseudocode": [
+        "START",
+        "REPEAT",
+        "  READ choice",
+        "  CASE 1: readAll fills the array, returns n",
+        "  CASE 2: printAll",
+        "  CASE 3: findByName, show marks or not found",
+        "  CASE 4: bestIndex, show the topper",
+        "  CASE 0: print Bye",
+        "UNTIL choice is 0",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read choice/]\n  B --> C{Which choice?}\n  C -- 1 --> D[readAll]\n  C -- 2 --> E[printAll]\n  C -- 3 --> F[findByName]\n  C -- 4 --> G[bestIndex]\n  C -- 0 --> H[/Print Bye/]\n  D --> I{choice is 0?}\n  E --> I\n  F --> I\n  G --> I\n  I -- No --> B\n  H --> J([End])",
+      "sample": {
+        "id": "aos-menu",
+        "title": "Menu: read, print, search and find the best",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    string name;\n    int marks;\n};\n\nint readAll(Student list[], int maxSize) {\n    int n;\n    cin >> n;\n    if (n > maxSize) n = maxSize;\n    for (int i = 0; i < n; i++) {\n        cin >> list[i].name >> list[i].marks;\n    }\n    return n;\n}\n\nvoid printAll(const Student list[], int n) {\n    for (int i = 0; i < n; i++) {\n        cout << i + 1 << \". \" << list[i].name << \" \" << list[i].marks << endl;\n    }\n}\n\nint findByName(const Student list[], int n, string key) {\n    for (int i = 0; i < n; i++) {\n        if (list[i].name == key) return i;\n    }\n    return -1;\n}\n\nint bestIndex(const Student list[], int n) {\n    int best = 0;\n    for (int i = 1; i < n; i++) {\n        if (list[i].marks > list[best].marks) best = i;\n    }\n    return best;\n}\n\nint main() {\n    Student cls[10];\n    int n = 0;\n    int choice;\n    do {\n        cin >> choice;\n        switch (choice) {\n            case 1:\n                n = readAll(cls, 10);\n                cout << n << \" records read\" << endl;\n                break;\n            case 2:\n                printAll(cls, n);\n                break;\n            case 3: {\n                string key;\n                cin >> key;\n                int idx = findByName(cls, n, key);\n                if (idx == -1) cout << key << \" not found\" << endl;\n                else cout << key << \" has \" << cls[idx].marks << \" marks\" << endl;\n                break;\n            }\n            case 4: {\n                int b = bestIndex(cls, n);\n                cout << \"Topper: \" << cls[b].name << \" (\" << cls[b].marks << \")\" << endl;\n                break;\n            }\n            case 0:\n                cout << \"Bye\" << endl;\n                break;\n            default:\n                cout << \"Invalid choice\" << endl;\n        }\n    } while (choice != 0);\n    return 0;\n}\n",
+        "stdin": "1\n3\nAli 60\nSara 75\nZain 88\n2\n3\nSara\n3\nBilal\n4\n9\n0\n",
+        "graphics": false,
+        "expectedOutput": "3 records read\n1. Ali 60\n2. Sara 75\n3. Zain 88\nSara has 75 marks\nBilal not found\nTopper: Zain (88)\nInvalid choice\nBye\n",
+        "explanation": [
+          {
+            "line": 10,
+            "text": "Reads records INTO the caller's array, so the array must be passed without const. It returns how many were read."
+          },
+          {
+            "line": 13,
+            "text": "Protects the array from overflow."
+          },
+          {
+            "line": 15,
+            "text": "Each record is filled member by member."
+          },
+          {
+            "line": 20,
+            "text": "Only reads, so const."
+          },
+          {
+            "line": 26,
+            "text": "Linear search. Returns the index, or -1 if the name is not in the list."
+          },
+          {
+            "line": 28,
+            "text": "Strings can be compared with ==."
+          },
+          {
+            "line": 33,
+            "text": "Finds the position of the highest marks. best remembers the best index so far."
+          },
+          {
+            "line": 36,
+            "text": "A better record replaces the champion."
+          },
+          {
+            "line": 42,
+            "text": "Room for 10 students. n counts how many are really used."
+          },
+          {
+            "line": 47,
+            "text": "The menu: each case calls one function."
+          },
+          {
+            "line": 49,
+            "text": "The function fills cls and gives back the count."
+          },
+          {
+            "line": 55,
+            "text": "Braces are needed because variables key and idx are declared inside the case."
+          },
+          {
+            "line": 59,
+            "text": "-1 means not found."
+          },
+          {
+            "line": 74,
+            "text": "The menu repeats until the user enters 0."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "void f(Student list[], int n)",
+      "when": "The function must change the records (read input, add bonus, restock).",
+      "example": "void addBonus(Student list[], int n);  // addBonus(cls, 3);"
+    },
+    {
+      "way": "void f(const Student list[], int n)",
+      "when": "The function only reads (print, total, search, best).",
+      "example": "void printAll(const Student list[], int n);"
+    },
+    {
+      "way": "Return an index",
+      "when": "Search and best-record functions: give back the position, then use cls[idx].",
+      "example": "int idx = findByName(cls, n, \"Sara\");\nif (idx != -1) cout << cls[idx].marks;"
+    },
+    {
+      "way": "Return a count",
+      "when": "A function that fills the array tells main how many records it stored.",
+      "example": "n = readAll(cls, 50);"
+    },
+    {
+      "way": "Pass one element",
+      "when": "The function needs only one record, so it receives cls[i] as a structure (by value, reference or const reference).",
+      "example": "void show(const Student &s);\nshow(cls[2]);"
+    },
+    {
+      "way": "switch menu",
+      "when": "One program offers many jobs; each case calls one function.",
+      "example": "switch (choice) {\n  case 1: n = readAll(cls, 10); break;\n  case 2: printAll(cls, n); break;\n}"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "printAll(cls);",
+      "right": "printAll(cls, 3);",
+      "error": "error: too few arguments to function 'void printAll(const Student*, int)'"
+    },
+    {
+      "wrong": "void reset(const Student list[]) {\n    list[0].marks = 0;\n}",
+      "right": "void reset(Student list[]) {\n    list[0].marks = 0;\n}",
+      "error": "error: assignment of member 'Student::marks' in read-only object"
+    },
+    {
+      "wrong": "printAll(cls[], 3);",
+      "right": "printAll(cls, 3);",
+      "error": "error: expected primary-expression before ']' token"
+    },
+    {
+      "wrong": "int count = sizeof(list) / sizeof(list[0]);   // inside the function",
+      "right": "Pass the count n as a parameter.",
+      "error": "The compiler accepts it, but inside the function list is only an address, so the result is wrong (not the real number of records). Always pass the count."
+    },
+    {
+      "wrong": "for (int i = 0; i <= n; i++)\n    cout << list[i].name;",
+      "right": "for (int i = 0; i < n; i++)\n    cout << list[i].name;",
+      "error": "No compiler error. The loop reads one record beyond the last one, which is out of bounds and gives garbage or a crash."
+    }
+  ],
+  "examTips": [
+    "Say clearly: an array is passed by address, so the function changes the original array. No & is needed for arrays.",
+    "Always pass the count with the array. The function cannot find the size by itself.",
+    "Use const in the header of functions that only print, search or sum. It shows you know they do not modify the records.",
+    "For search, return the index and -1 for not found; check for -1 before using cls[idx].",
+    "For the best record keep the INDEX of the best so far (best = i), not just the marks, so you can print the name too."
+  ],
+  "romanSummary": [
+    "Array of structures function ko normal array ki tarah jata hai: sirf array ka naam likhte hain, bracket nahi.",
+    "Function ko array ka address milta hai, copy nahi, is liye original array badal jata hai.",
+    "Array ka size function ko nahi pata hota, is liye count n alag se bhejna parta hai: printAll(cls, n).",
+    "Sirf parhna ho to const Student list[] likhein. Search mein index return karte hain, na milne par -1.",
+    "Menu program mein do-while aur switch use hota hai, har case mein ek function call hota hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does a function receive when you pass an array of structures?",
+      "options": [
+        "The address of the original array",
+        "A full copy of all records",
+        "Only the first record's name",
+        "Nothing; arrays cannot be passed"
+      ],
+      "answer": "The address of the original array",
+      "hint": "No copy of the records is made.",
+      "explanation": "Arrays are passed by address, so the function works on the original."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nstruct P { int v; };\nvoid inc(P list[], int n) {\n    for (int i = 0; i < n; i++) list[i].v++;\n}\nint main() {\n    P a[3] = {{1}, {2}, {3}};\n    inc(a, 3);\n    cout << a[0].v << a[1].v << a[2].v;\n    return 0;\n}",
+      "answer": "234",
+      "hint": "The function changes the original array.",
+      "explanation": "Each v goes up by 1, so the output is 234."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nstruct P { int v; };\nint best(const P list[], int n) {\n    int b = 0;\n    for (int i = 1; i < n; i++)\n        if (list[i].v > list[b].v) b = i;\n    return b;\n}\nint main() {\n    P a[4] = {{4}, {9}, {2}, {9}};\n    cout << best(a, 4);\n    return 0;\n}",
+      "answer": "1",
+      "hint": "> is strict: a tie does not replace the best.",
+      "explanation": "The best index starts at 0. 9 at index 1 beats 4. The second 9 is not greater than 9, so b stays 1."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This function should add 10 to every record's marks, but it does not compile. Fix the header.\n\nvoid addTen(const Student list[], int n) {\n    for (int i = 0; i < n; i++)\n        list[i].marks += 10;\n}",
+      "answer": "void addTen(Student list[], int n) {\n    for (int i = 0; i < n; i++)\n        list[i].marks += 10;\n}",
+      "hint": "The function changes the records.",
+      "explanation": "const forbids changes. A function that modifies the array must not use const."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Complete the call so the function receives the array and the number of records.\n\nStudent cls[50];\nint n = 5;\nprintAll(____);",
+      "answer": "cls, n",
+      "hint": "Array name, then the count.",
+      "explanation": "Write the array name without brackets and then the count: printAll(cls, n)."
+    },
+    {
+      "id": "p6",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a function total that receives an array of Student structures (name, marks) and the count n and returns the sum of all marks.",
+      "answer": "int total(const Student list[], int n) {\n    int sum = 0;\n    for (int i = 0; i < n; i++) {\n        sum += list[i].marks;\n    }\n    return sum;\n}",
+      "hint": "Start with sum = 0 and loop over the records.",
+      "explanation": "The loop adds the marks of every record. const is fine because we only read."
+    },
+    {
+      "id": "p7",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\nstruct S { string name; int m; };\nint find(const S list[], int n, string key) {\n    for (int i = 0; i < n; i++)\n        if (list[i].name == key) return i;\n    return -1;\n}\nint main() {\n    S a[3] = {{\"Ali\", 50}, {\"Sara\", 70}, {\"Zain\", 90}};\n    cout << find(a, 3, \"Zain\") << \" \" << find(a, 3, \"Bilal\");\n    return 0;\n}",
+      "answer": "2 -1",
+      "hint": "Indexes start at 0.",
+      "explanation": "Zain is at index 2. Bilal is not in the list, so find returns -1."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Why do we pass the count n together with the array?",
+      "options": [
+        "The function cannot know the array's size",
+        "n is a required keyword",
+        "The array would be copied otherwise",
+        "The compiler needs it for const"
+      ],
+      "answer": "The function cannot know the array's size",
+      "hint": "The function gets only an address.",
+      "explanation": "An array parameter is just an address, so the size must be sent separately."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How is an array of structures written in the call?",
+      "options": [
+        "printAll(cls, n);",
+        "printAll(cls[], n);",
+        "printAll(&cls[], n);",
+        "printAll(Student cls, n);"
+      ],
+      "answer": "printAll(cls, n);",
+      "hint": "No brackets in the call.",
+      "explanation": "Only the array name is written in the call."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "A function adds bonus marks to list[i].marks. What happens to the array in main?",
+      "options": [
+        "It is changed too",
+        "It stays the same",
+        "It is copied back later",
+        "It is deleted"
+      ],
+      "answer": "It is changed too",
+      "hint": "Same array, no copy.",
+      "explanation": "The function works on the original array."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What should findByName return when the name is not in the list?",
+      "options": [
+        "-1",
+        "0",
+        "The last index",
+        "The name"
+      ],
+      "answer": "-1",
+      "hint": "0 is a valid index.",
+      "explanation": "-1 is never a valid index, so it safely means not found."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "When should the parameter be const Student list[]?",
+      "options": [
+        "When the function only reads the records",
+        "When the function fills the array",
+        "When the array is empty",
+        "Always, for every function"
+      ],
+      "answer": "When the function only reads the records",
+      "hint": "Think print and search.",
+      "explanation": "const forbids changes, so use it only for read-only functions."
+    }
+  ],
+  "sources": [
+    "Passing an array of structures to a function",
+    "Functions that read, print, search and find the best record",
+    "Menu with switch"
+  ]
+}

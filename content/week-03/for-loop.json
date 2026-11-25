@@ -1,0 +1,672 @@
+{
+  "slug": "for-loop",
+  "week": 3,
+  "title": "The for loop: repeating a fixed number of times",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "Anatomy of for (int i = 1; i <= 3; i++)",
+      "stages": [
+        {
+          "name": "1. Initialise (once)",
+          "detail": "int i = 1; runs only one time, at the very start. The loop variable i is born with value 1."
+        },
+        {
+          "name": "2. Check the condition",
+          "detail": "Is i <= 3? If it is false the loop ends and the program jumps past the loop. If true, go on."
+        },
+        {
+          "name": "3. Run the body",
+          "detail": "The statements inside { } run once. This is the work you want to repeat."
+        },
+        {
+          "name": "4. Update",
+          "detail": "i++ adds 1 to i. The update always runs AFTER the body."
+        },
+        {
+          "name": "5. Check again",
+          "detail": "Go back to step 2 with the new i. Steps 2, 3, 4 repeat until the condition becomes false. Initialise is never repeated."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each part of the for loop with its job",
+      "pairs": [
+        {
+          "term": "Initialisation",
+          "meaning": "Gives the loop variable its starting value. Runs once."
+        },
+        {
+          "term": "Condition",
+          "meaning": "Checked before every round. The loop continues while it is true."
+        },
+        {
+          "term": "Update",
+          "meaning": "Changes the loop variable after each round (i++, i--, i += 2)."
+        },
+        {
+          "term": "Body",
+          "meaning": "The statements that are repeated."
+        },
+        {
+          "term": "Iteration",
+          "meaning": "One full round of the body."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can write a for loop that repeats a block a known number of times, count up or down in any step, and trace it round by round.",
+  "warmup": "Your teacher says: 'Write your name five times.' You do not stop to think each time. You count: one, two, three, four, five, and you stop at five. You started from a number (1), you asked 'have I reached the end?', you did the work, and you moved the count up. A for loop is exactly this counting routine written for the computer. Printing 'Welcome to PF' 100 times would need 100 lines without a loop. With a loop it needs three.",
+  "definition": "A loop repeats a block of code. A for loop is the loop you use when you know in advance how many times to repeat. It keeps its three control parts together in one line: initialisation (where to start), condition (when to continue) and update (how to move). One run of the body is called an iteration.",
+  "howItWorks": "Step through the pipeline above. The order is always: initialise ONCE, then check the condition, then run the body, then update, then check again, and so on. The update never runs before the first body. When the condition becomes false, the loop stops and the program continues with the line after the closing brace. Because the check comes first, a for loop can run zero times: for (int i = 10; i < 5; i++) never enters the body, since 10 < 5 is false from the start. Tip: i <= 5 starting at 1 gives 5 rounds. i < 5 starting at 1 gives only 4. Mixing up < and <= is the most common off-by-one mistake. In the dry-run table, write one row per iteration with the value of i and the result of the condition. Examiners love this.",
+  "syntax": "for (initialisation; condition; update) {\n    // body: runs once per iteration\n}\n\n// count up:      for (int i = 1; i <= 5; i++)\n// count down:    for (int i = 5; i >= 1; i--)\n// step of 2:     for (int i = 0; i <= 10; i += 2)\n// two variables: for (int i = 0, j = 10; i < j; i++, j--)\n// note: no semicolon after the closing parenthesis ) of the for",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Print the numbers 1 to 5 on one line, then print their sum.",
+      "pseudocode": [
+        "START",
+        "sum = 0",
+        "FOR i = 1 TO 5 (step 1):",
+        "    PRINT i",
+        "    sum = sum + i",
+        "PRINT sum",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[sum = 0]\n  B --> C[i = 1]\n  C --> D{i <= 5?}\n  D -->|Yes| E[/Print i/]\n  E --> F[sum = sum + i]\n  F --> G[i = i + 1]\n  G --> D\n  D -->|No| H[/Print sum/]\n  H --> I([End])",
+      "sample": {
+        "id": "sum-1-to-5",
+        "title": "Print 1 to 5 and their sum",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int sum = 0;\n    for (int i = 1; i <= 5; i++) {\n        cout << i << \" \";\n        sum += i;\n    }\n    cout << endl << \"Sum = \" << sum << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "1 2 3 4 5 \nSum = 15\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "sum is a box that collects the total. It starts at 0 BEFORE the loop so it is not reset in every round."
+          },
+          {
+            "line": 6,
+            "text": "The for header. int i = 1 runs once, i <= 5 is checked before every round, i++ runs after every round."
+          },
+          {
+            "line": 7,
+            "text": "Body: prints the current value of i followed by a space."
+          },
+          {
+            "line": 8,
+            "text": "Adds i to sum. sum += i means sum = sum + i."
+          },
+          {
+            "line": 10,
+            "text": "After the loop ends (i became 6), print the total. This line runs only once."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "sum": "0"
+              },
+              "note": "sum is created and set to 0.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "i": "1"
+              },
+              "note": "Initialisation runs once: i = 1. Condition 1 <= 5 is true, so we enter the body.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Print 1.",
+              "out": "1 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "sum": "1"
+              },
+              "note": "sum = 0 + 1 = 1.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "2"
+              },
+              "note": "Update made i = 2; 2 <= 5 is true. Print 2.",
+              "out": "2 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "sum": "3"
+              },
+              "note": "sum = 1 + 2 = 3.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "3"
+              },
+              "note": "Update made i = 3; 3 <= 5 is true. Print 3.",
+              "out": "3 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "sum": "6"
+              },
+              "note": "sum = 3 + 3 = 6.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "4"
+              },
+              "note": "Update made i = 4; 4 <= 5 is true. Print 4.",
+              "out": "4 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "sum": "10"
+              },
+              "note": "sum = 6 + 4 = 10.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "5"
+              },
+              "note": "Update made i = 5; 5 <= 5 is true. Print 5.",
+              "out": "5 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "sum": "15"
+              },
+              "note": "sum = 10 + 5 = 15.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "i": "6"
+              },
+              "note": "Update made i = 6. Is 6 <= 5? False, so the loop ends.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Prints the total.",
+              "out": "\nSum = 15\n"
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "i": "int",
+            "sum": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read a number n and print its multiplication table from 1 to 10.",
+      "pseudocode": [
+        "START",
+        "READ n",
+        "FOR i = 1 TO 10:",
+        "    PRINT n x i = n*i",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read n/]\n  B --> C[i = 1]\n  C --> D{i <= 10?}\n  D -->|Yes| E[/Print n x i = n*i/]\n  E --> F[i = i + 1]\n  F --> D\n  D -->|No| G([End])",
+      "sample": {
+        "id": "table-of-n",
+        "title": "Multiplication table",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 1; i <= 10; i++) {\n        cout << n << \" x \" << i << \" = \" << n * i << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "7",
+        "expectedOutput": "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n7 x 10 = 70\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Reads the number whose table we want."
+          },
+          {
+            "line": 7,
+            "text": "i counts from 1 to 10. The loop runs exactly 10 times."
+          },
+          {
+            "line": 8,
+            "text": "Each round prints one line of the table. n stays the same, only i changes."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Read n and print its factorial n! = 1 x 2 x ... x n. Trace the loop for n = 5.",
+      "pseudocode": [
+        "START",
+        "READ n",
+        "fact = 1",
+        "FOR i = 1 TO n:",
+        "    fact = fact * i",
+        "PRINT n and fact",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read n/]\n  B --> C[fact = 1]\n  C --> D[i = 1]\n  D --> E{i <= n?}\n  E -->|Yes| F[fact = fact * i]\n  F --> G[i = i + 1]\n  G --> E\n  E -->|No| H[/Print n and fact/]\n  H --> I([End])",
+      "sample": {
+        "id": "factorial",
+        "title": "Factorial with a for loop",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    long long fact = 1;\n    for (int i = 1; i <= n; i++) {\n        fact *= i;\n    }\n    cout << n << \"! = \" << fact << endl;\n    return 0;\n}\n",
+        "stdin": "5",
+        "expectedOutput": "5! = 120\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Reads n."
+          },
+          {
+            "line": 7,
+            "text": "fact starts at 1, NOT 0. Multiplying by 0 would keep the answer 0 forever. long long holds big results."
+          },
+          {
+            "line": 8,
+            "text": "i runs from 1 up to n."
+          },
+          {
+            "line": 9,
+            "text": "Multiply the running answer by i in each round."
+          },
+          {
+            "line": 11,
+            "text": "After the loop, prints for example 5! = 120."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "n": "?"
+              },
+              "note": "n is created.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "n": "5"
+              },
+              "note": "cin reads 5.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "fact": "1"
+              },
+              "note": "fact starts at 1.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "1"
+              },
+              "note": "i = 1, 1 <= 5 true.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "fact": "1"
+              },
+              "note": "fact = 1 * 1 = 1.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "2"
+              },
+              "note": "i++ gives 2. 2 <= 5 is true.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "fact": "2"
+              },
+              "note": "fact = 1 * 2 = 2.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "3"
+              },
+              "note": "i++ gives 3. 3 <= 5 is true.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "fact": "6"
+              },
+              "note": "fact = 2 * 3 = 6.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "4"
+              },
+              "note": "i++ gives 4. 4 <= 5 is true.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "fact": "24"
+              },
+              "note": "fact = 6 * 4 = 24.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "5"
+              },
+              "note": "i++ gives 5. 5 <= 5 is true.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "fact": "120"
+              },
+              "note": "fact = 24 * 5 = 120.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "6"
+              },
+              "note": "i++ gives 6. 6 <= 5 is false: loop ends.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Prints the result.",
+              "out": "5! = 120\n"
+            }
+          ],
+          "types": {
+            "n": "int",
+            "fact": "long long",
+            "i": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Count up by 1",
+      "when": "1 to n, most common",
+      "example": "for (int i = 1; i <= n; i++)"
+    },
+    {
+      "way": "Count down",
+      "when": "Countdown, reverse order",
+      "example": "for (int i = 5; i >= 1; i--)"
+    },
+    {
+      "way": "Step of 2 (or any step)",
+      "when": "Even/odd numbers, every 5th item",
+      "example": "for (int i = 2; i <= 20; i += 2)"
+    },
+    {
+      "way": "Start from 0",
+      "when": "Array-style counting: n rounds with i < n",
+      "example": "for (int i = 0; i < n; i++)"
+    },
+    {
+      "way": "Two variables in one for",
+      "when": "Two things move together (use commas)",
+      "example": "for (int i = 0, j = 10; i < j; i++, j--)"
+    },
+    {
+      "way": "Loop that never runs",
+      "when": "Condition false at the start, so zero iterations",
+      "example": "for (int i = 10; i < 5; i++) // body skipped"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "for (int i = 1, i <= 5, i++) {\n    cout << i;\n}",
+      "right": "for (int i = 1; i <= 5; i++) {\n    cout << i;\n}",
+      "error": "expected ';' before '<=' token"
+    },
+    {
+      "wrong": "for (int i = 1; i <= 3; i++);\n{\n    cout << \"Hi \";\n}",
+      "right": "for (int i = 1; i <= 3; i++) {\n    cout << \"Hi \";\n}",
+      "error": "No compiler error. The semicolon is an empty body, so the loop spins three times doing nothing and Hi prints only once."
+    },
+    {
+      "wrong": "// wants 1 2 3 4 5\nfor (int i = 1; i < 5; i++)\n    cout << i << \" \";",
+      "right": "for (int i = 1; i <= 5; i++)\n    cout << i << \" \";",
+      "error": "No compiler error. This is an off-by-one mistake: it prints 1 2 3 4 and misses 5."
+    },
+    {
+      "wrong": "for (int i = 1; i <= 3; i++) {\n    cout << i;\n}\ncout << i;",
+      "right": "int i;\nfor (i = 1; i <= 3; i++) {\n    cout << i;\n}\ncout << i;",
+      "error": "'i' was not declared in this scope"
+    },
+    {
+      "wrong": "for (int i = 10; i >= 1; i++)\n    cout << i;",
+      "right": "for (int i = 10; i >= 1; i--)\n    cout << i;",
+      "error": "No compiler error, but the update moves away from the stopping point, so i keeps growing and the loop does not end when expected (it is a bug, not a compile error)."
+    }
+  ],
+  "examTips": [
+    "Always write the order: initialise once, condition, body, update, condition again.",
+    "Make a dry-run table: one row per iteration with i, the condition result and the other variables.",
+    "Count the iterations: for i = a; i <= b; i++ runs b - a + 1 times. With i < b it runs b - a times.",
+    "Put a running total or product starting value BEFORE the loop: 0 for a sum, 1 for a product.",
+    "Look for a semicolon right after the for(...) in exam code: it makes the body empty."
+  ],
+  "romanSummary": [
+    "for loop tab use karte hain jab pata ho kitni baar repeat karna hai.",
+    "Is ki teen parts hain: initialization (shuru ki value), condition (kab tak chalna hai), update (har round ke baad change).",
+    "Initialization sirf ek dafa chalti hai, phir condition, body, update, condition ka chakkar chalta hai.",
+    "for(...) ke baad semicolon na lagayein, warna body khali ho jati hai.",
+    "< aur <= ka farq yaad rakhein, warna ek round kam ya zyada ho jata hai (off-by-one)."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In for (int i = 1; i <= 3; i++), how many times does the part int i = 1 run?",
+      "options": [
+        "Once",
+        "Three times",
+        "Four times",
+        "Every iteration"
+      ],
+      "answer": "Once",
+      "hint": "Initialisation is the 'start' of the loop.",
+      "explanation": "Initialisation runs once, before the first check. Only the condition, body and update repeat."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this print?\n\nfor (int i = 1; i <= 10; i += 3)\n    cout << i << \" \";",
+      "answer": "1 4 7 10",
+      "hint": "i goes up by 3 each time. Stop when i is more than 10.",
+      "explanation": "i takes the values 1, 4, 7, 10. The next value 13 fails i <= 10."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\nfor (int i = 5; i > 0; i--)\n    cout << i;",
+      "answer": "54321",
+      "hint": "i goes down. When does i > 0 become false?",
+      "explanation": "i is 5, 4, 3, 2, 1 and the loop stops when i is 0. There are no spaces, so the digits are joined."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\nint count = 0;\nfor (int i = 0; i < 5; i++);\n    count++;\ncout << count;",
+      "answer": "1",
+      "hint": "Look carefully at the semicolon after the for line.",
+      "explanation": "The semicolon makes the loop body empty. The loop does nothing five times, and count++ runs just once afterwards."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this print?\n\nfor (int i = 0, j = 10; i < j; i += 2, j -= 2)\n    cout << i << \",\" << j << \" \";",
+      "answer": "0,10 2,8 4,6",
+      "hint": "Write i and j in a table. Stop when i < j is false.",
+      "explanation": "Rounds: (0,10), (2,8), (4,6). Then i = 6 and j = 4, and 6 < 4 is false."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This should print 1 2 3 4 5 but it prints 1 2 3 4. Fix it.\n\nfor (int i = 1; i < 5; i++)\n    cout << i << \" \";",
+      "answer": "for (int i = 1; i <= 5; i++)\n    cout << i << \" \";",
+      "hint": "Does the loop run when i is 5?",
+      "explanation": "i < 5 is false when i is 5. Use i <= 5 to include 5."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Complete the loop so that it prints the even numbers 2 4 6 ... 20.\n\nfor (int i = ___; i <= 20; ___)\n    cout << i << \" \";",
+      "answer": "for (int i = 2; i <= 20; i += 2)\n    cout << i << \" \";",
+      "hint": "Start at 2 and jump by 2.",
+      "explanation": "Start at 2 and add 2 each time (i += 2)."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that reads n and prints the sum 1 + 2 + ... + n.",
+      "answer": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n, sum = 0;\n    cin >> n;\n    for (int i = 1; i <= n; i++) {\n        sum += i;\n    }\n    cout << sum << endl;\n    return 0;\n}",
+      "hint": "Start sum at 0 and add i in each round.",
+      "explanation": "A for loop from 1 to n adds each value of i to sum. sum must start at 0 before the loop."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "When is a for loop the best choice?",
+      "options": [
+        "When the number of repetitions is known in advance",
+        "When the body must run at least once",
+        "When we read until the user types -1",
+        "When there is no loop variable"
+      ],
+      "answer": "When the number of repetitions is known in advance",
+      "hint": "Think of 'repeat 10 times'.",
+      "explanation": "for keeps start, end and step together, so it suits counted loops."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which part of a for loop runs only once?",
+      "options": [
+        "Initialisation",
+        "Condition",
+        "Update",
+        "Body"
+      ],
+      "answer": "Initialisation",
+      "hint": "It sets the starting value.",
+      "explanation": "Initialisation runs once at the start. The others repeat."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "How many times does for (int i = 1; i <= 8; i++) run its body?",
+      "options": [
+        "8",
+        "7",
+        "9",
+        "1"
+      ],
+      "answer": "8",
+      "hint": "Count 1, 2, ..., 8.",
+      "explanation": "The values are 1 to 8, which is 8 iterations."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is the problem in for (int i = 0; i < 3; i++); { cout << \"Hi\"; }?",
+      "options": [
+        "The semicolon makes the loop body empty",
+        "The loop runs forever",
+        "i is not declared",
+        "cout is spelled wrong"
+      ],
+      "answer": "The semicolon makes the loop body empty",
+      "hint": "Look right after the closing parenthesis.",
+      "explanation": "The ; is the whole body, so the braces run once after the loop."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "What does for (int i = 10; i < 5; i++) do?",
+      "options": [
+        "Runs zero times",
+        "Runs 5 times",
+        "Runs forever",
+        "Does not compile"
+      ],
+      "answer": "Runs zero times",
+      "hint": "Check the condition with the starting value.",
+      "explanation": "10 < 5 is false at the very first check, so the body is skipped."
+    }
+  ],
+  "sources": [
+    "The for loop",
+    "Loops: initialisation, condition, update",
+    "Counting loops",
+    "Dry run of loops"
+  ]
+}

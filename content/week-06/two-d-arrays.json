@@ -1,0 +1,591 @@
+{
+  "slug": "two-d-arrays",
+  "week": 6,
+  "title": "Two-dimensional arrays: tables of rows and columns",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "matrix",
+      "title": "A 3 x 4 table: watch the loops visit every row and column to find the largest element",
+      "op": "search",
+      "a": [
+        [
+          12,
+          5,
+          8,
+          3
+        ],
+        [
+          7,
+          21,
+          9,
+          14
+        ],
+        [
+          4,
+          16,
+          2,
+          10
+        ]
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each word with its meaning",
+      "pairs": [
+        {
+          "term": "Row",
+          "meaning": "A horizontal line of elements. The FIRST index in m[i][j]."
+        },
+        {
+          "term": "Column",
+          "meaning": "A vertical line of elements. The SECOND index in m[i][j]."
+        },
+        {
+          "term": "Index",
+          "meaning": "The position number of a row or a column. It starts at 0."
+        },
+        {
+          "term": "Element",
+          "meaning": "One value of the table, for example m[1][2]."
+        },
+        {
+          "term": "Row-major order",
+          "meaning": "The way C++ stores a table in memory: the whole first row, then the second row, and so on."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can declare a 2-D array, fill it with nested braces, read and print it with nested loops, and calculate row sums and column sums.",
+  "warmup": "Look at the result sheet pinned outside your classroom. Each row is one student and each column is one subject. To find Ali's mark in Maths you go to Ali's ROW and then to the Maths COLUMN. A cinema ticket works the same way: Row 3, Seat 5. A one-dimensional array is a single line of boxes. A two-dimensional array is a whole table of boxes, and you need TWO numbers to find a box.",
+  "definition": "A 2-D array stores values in rows and columns, like a table or a matrix. It is declared with two sizes: type name[ROWS][COLUMNS]. int m[3][4] has 3 rows and 4 columns, so it holds 3 x 4 = 12 values. An element is reached with two indexes, m[row][column], and both indexes start at 0. So the first element is m[0][0] and the last one in int m[3][4] is m[2][3].",
+  "howItWorks": "Think of the table with the row on the side and the column on top. m[1][2] means: go to row 1, then column 2. To visit every element we use two loops, one inside the other. The OUTER loop picks a row (i). For that row the INNER loop moves across all the columns (j). After the inner loop finishes, we print a new line and the outer loop moves to the next row. This is how input and output are done. Row sum: keep i fixed and let j change. Column sum: keep j fixed and let i change, so the outer loop is the column. Inside the computer memory is not a table but one long line. C++ stores the table row by row (row-major order): all of row 0, then all of row 1, and so on. That is why filling a table with cin fills the first row first.",
+  "syntax": "int m[3][4];                                  // 3 rows, 4 columns (rows first)\nint t[2][3] = {{1, 2, 3}, {4, 5, 6}};         // one inner {} per row\nm[1][2] = 50;                                 // row 1, column 2 (counting from 0)\nfor (int i = 0; i < 3; i++) {                 // outer loop: rows\n    for (int j = 0; j < 4; j++) {             // inner loop: columns\n        cin >> m[i][j];                       // fills the table row by row\n    }\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Store the numbers 1 to 12 in a table with 3 rows and 4 columns. Print the element in row 1, column 2, and then print the whole table row by row.",
+      "pseudocode": [
+        "START",
+        "DECLARE m[3][4] = {{1,2,3,4},{5,6,7,8},{9,10,11,12}}",
+        "PRINT m[1][2]",
+        "FOR i = 0 TO 2 (each row)",
+        "    FOR j = 0 TO 3 (each column)",
+        "        PRINT m[i][j]",
+        "    PRINT a new line",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Declare m[3][4] with 12 values\"]\n  B --> C[/\"Print m[1][2]\"/]\n  C --> D[i = 0]\n  D --> E{\"i < 3?\"}\n  E -->|Yes| F[j = 0]\n  F --> G{\"j < 4?\"}\n  G -->|Yes| H[/\"Print m[i][j]\"/]\n  H --> I[j = j + 1]\n  I --> G\n  G -->|No| J[/Print new line/]\n  J --> K[i = i + 1]\n  K --> E\n  E -->|No| L([End])",
+      "sample": {
+        "id": "table-print",
+        "title": "A 3 x 4 table printed row by row",
+        "code": "#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nint main() {\n    int m[3][4] = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}};\n    cout << \"m[1][2] = \" << m[1][2] << endl;\n    for (int i = 0; i < 3; i++) {\n        for (int j = 0; j < 4; j++) {\n            cout << setw(4) << m[i][j];\n        }\n        cout << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "m[1][2] = 7\n   1   2   3   4\n   5   6   7   8\n   9  10  11  12\n",
+        "explanation": [
+          {
+            "line": 2,
+            "text": "iomanip gives us setw(), which gives every number the same width so the columns line up."
+          },
+          {
+            "line": 6,
+            "text": "A table with 3 rows and 4 columns: 12 boxes. Each inner pair of braces is one row."
+          },
+          {
+            "line": 7,
+            "text": "Row 1, column 2. Counting starts from 0, so this is the 2nd row and the 3rd column: the value 7."
+          },
+          {
+            "line": 8,
+            "text": "Outer loop = ROWS. i goes 0, 1, 2."
+          },
+          {
+            "line": 9,
+            "text": "Inner loop = COLUMNS. For each row, j goes 0, 1, 2, 3."
+          },
+          {
+            "line": 10,
+            "text": "Prints m[i][j] in a field 4 characters wide."
+          },
+          {
+            "line": 12,
+            "text": "After a whole row is printed, move to the next line. This line is OUTSIDE the inner loop."
+          }
+        ]
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "A 2 x 3 table holds the marks {{4, 7, 2}, {6, 1, 9}}. Print the total of each row.",
+      "pseudocode": [
+        "START",
+        "DECLARE m[2][3]",
+        "FOR i = 0 TO 1",
+        "    SET rowSum = 0",
+        "    FOR j = 0 TO 2",
+        "        rowSum = rowSum + m[i][j]",
+        "    PRINT rowSum",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"m = 2 x 3 table\"]\n  B --> C[i = 0]\n  C --> D{\"i < 2?\"}\n  D -->|Yes| E[rowSum = 0, j = 0]\n  E --> F{\"j < 3?\"}\n  F -->|Yes| G[\"rowSum = rowSum + m[i][j]\"]\n  G --> H[j = j + 1]\n  H --> F\n  F -->|No| I[/Print rowSum/]\n  I --> J[i = i + 1]\n  J --> D\n  D -->|No| K([End])",
+      "sample": {
+        "id": "row-sums",
+        "title": "Row sums with nested loops",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int m[2][3] = {{4, 7, 2}, {6, 1, 9}};\n    for (int i = 0; i < 2; i++) {\n        int rowSum = 0;\n        for (int j = 0; j < 3; j++) {\n            rowSum = rowSum + m[i][j];\n        }\n        cout << \"Row \" << i << \" sum = \" << rowSum << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Row 0 sum = 13\nRow 1 sum = 16\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "2 rows, 3 columns, filled row by row from the nested braces."
+          },
+          {
+            "line": 6,
+            "text": "The outer loop picks a row."
+          },
+          {
+            "line": 7,
+            "text": "Reset the total for each new row. If this line were above the outer loop, totals would pile up across rows."
+          },
+          {
+            "line": 8,
+            "text": "The inner loop walks across the columns of the chosen row."
+          },
+          {
+            "line": 9,
+            "text": "i stays fixed (the row) while j changes (the column). Adds every element of row i."
+          },
+          {
+            "line": 11,
+            "text": "Printed once per row, after the inner loop has finished."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "m": "{{4, 7, 2}, {6, 1, 9}}"
+              },
+              "note": "The table has 2 rows and 3 columns. Row 0 is 4 7 2. Row 1 is 6 1 9.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "i": "0"
+              },
+              "note": "The outer loop starts with row 0.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "rowSum": "0"
+              },
+              "note": "A fresh total for this row. It is created INSIDE the row loop, so it restarts at 0 for every row.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "j": "0",
+                "rowSum": "4"
+              },
+              "note": "j = 0: add m[0][0] = 4. rowSum is 4.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "j": "1",
+                "rowSum": "11"
+              },
+              "note": "j = 1: add m[0][1] = 7. rowSum is 11.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "j": "2",
+                "rowSum": "13"
+              },
+              "note": "j = 2: add m[0][2] = 2. rowSum is 13. The inner loop ends.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Row 0 is finished, so print its total.",
+              "out": "Row 0 sum = 13\n"
+            },
+            {
+              "line": 6,
+              "vars": {
+                "i": "1"
+              },
+              "note": "The outer loop moves to row 1.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "rowSum": "0"
+              },
+              "note": "rowSum is reset to 0 for the new row.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "j": "0",
+                "rowSum": "6"
+              },
+              "note": "j = 0: add m[1][0] = 6.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "j": "1",
+                "rowSum": "7"
+              },
+              "note": "j = 1: add m[1][1] = 1. rowSum is 7.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "j": "2",
+                "rowSum": "16"
+              },
+              "note": "j = 2: add m[1][2] = 9. rowSum is 16.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Print the total of row 1.",
+              "out": "Row 1 sum = 16\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Both rows are done. The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "m": "int[2][3]",
+            "i": "int",
+            "j": "int",
+            "rowSum": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Read a 3 x 3 matrix. Print the sum of every row, the sum of every column, and the sum of the main diagonal.",
+      "pseudocode": [
+        "START",
+        "READ 9 numbers into m[3][3] row by row",
+        "FOR each row i: add m[i][0..2], PRINT the row sum",
+        "FOR each column j: add m[0..2][j], PRINT the column sum",
+        "SET diagonal = 0",
+        "FOR i = 0 TO 2: diagonal = diagonal + m[i][i]",
+        "PRINT diagonal",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read 9 numbers into m/]\n  B --> C[\"For each row i: rowSum = sum of m[i][j]\"]\n  C --> D[/Print row sums/]\n  D --> E[\"For each column j: colSum = sum of m[i][j]\"]\n  E --> F[/Print column sums/]\n  F --> G[\"diagonal = sum of m[i][i]\"]\n  G --> H[/Print diagonal/]\n  H --> I([End])",
+      "sample": {
+        "id": "sums-diagonal",
+        "title": "Row sums, column sums and diagonal",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int m[3][3];\n    for (int i = 0; i < 3; i++) {\n        for (int j = 0; j < 3; j++) {\n            cin >> m[i][j];\n        }\n    }\n    for (int i = 0; i < 3; i++) {\n        int rowSum = 0;\n        for (int j = 0; j < 3; j++) {\n            rowSum = rowSum + m[i][j];\n        }\n        cout << \"Row \" << i << \": \" << rowSum << endl;\n    }\n    for (int j = 0; j < 3; j++) {\n        int colSum = 0;\n        for (int i = 0; i < 3; i++) {\n            colSum = colSum + m[i][j];\n        }\n        cout << \"Column \" << j << \": \" << colSum << endl;\n    }\n    int diagonal = 0;\n    for (int i = 0; i < 3; i++) {\n        diagonal = diagonal + m[i][i];\n    }\n    cout << \"Diagonal: \" << diagonal << endl;\n    return 0;\n}\n",
+        "stdin": "2 4 6 1 3 5 7 9 8",
+        "expectedOutput": "Row 0: 12\nRow 1: 9\nRow 2: 24\nColumn 0: 10\nColumn 1: 16\nColumn 2: 19\nDiagonal: 13\n",
+        "explanation": [
+          {
+            "line": 8,
+            "text": "Reads 9 numbers, filling the table ROW BY ROW: the first three go to row 0, and so on."
+          },
+          {
+            "line": 12,
+            "text": "Row sums: the OUTER loop is the row i, the inner loop j walks across."
+          },
+          {
+            "line": 14,
+            "text": "i is fixed (one row) while j changes."
+          },
+          {
+            "line": 19,
+            "text": "Column sums: the loops swap roles. The OUTER loop is now the column j."
+          },
+          {
+            "line": 21,
+            "text": "j is fixed (one column) while i walks down the rows. The element is still written m[i][j]: row first, column second."
+          },
+          {
+            "line": 27,
+            "text": "The main diagonal has row = column: m[0][0], m[1][1], m[2][2]. One loop is enough."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Declaration",
+      "when": "Two sizes in two pairs of brackets: rows first, then columns.",
+      "example": "int m[3][4];   // 3 rows, 4 columns, 12 elements"
+    },
+    {
+      "way": "Initialise with nested braces",
+      "when": "One inner pair of braces per row. This is the clearest way.",
+      "example": "int m[2][3] = {{1, 2, 3}, {4, 5, 6}};"
+    },
+    {
+      "way": "Initialise with one flat list",
+      "when": "Also legal. The values fill the table row by row.",
+      "example": "int m[2][3] = {1, 2, 3, 4, 5, 6};"
+    },
+    {
+      "way": "All zeros",
+      "when": "Start a table with every element 0.",
+      "example": "int z[2][3] = {0};"
+    },
+    {
+      "way": "Leave out the row count",
+      "when": "The compiler counts the rows. The column count can NEVER be left out.",
+      "example": "int t[][3] = {{1, 2, 3}, {4, 5, 6}};"
+    },
+    {
+      "way": "Access one element",
+      "when": "Two indexes, row first then column, both starting from 0.",
+      "example": "m[1][2] = 50;   cout << m[1][2];"
+    },
+    {
+      "way": "Read or print the whole table",
+      "when": "Nested loops: outer = rows (i), inner = columns (j).",
+      "example": "for (i...) for (j...) cin >> m[i][j];"
+    },
+    {
+      "way": "Row sum / column sum",
+      "when": "Row sum: i fixed, j changes. Column sum: j fixed, i changes.",
+      "example": "rowSum += m[i][j];   colSum += m[i][j];"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int m[3,4];",
+      "right": "int m[3][4];",
+      "error": "error: expected ']' before ',' token"
+    },
+    {
+      "wrong": "int x = m[1,2];",
+      "right": "int x = m[1][2];",
+      "error": "error: invalid conversion from 'int*' to 'int' [-fpermissive]"
+    },
+    {
+      "wrong": "int m[][] = {{1, 2}, {3, 4}};",
+      "right": "int m[][2] = {{1, 2}, {3, 4}};",
+      "error": "error: declaration of 'm' as multidimensional array must have bounds for all dimensions except the first"
+    },
+    {
+      "wrong": "int m[3][4];\nfor (int i = 0; i < 4; i++)\n    for (int j = 0; j < 3; j++)\n        cin >> m[i][j];",
+      "right": "int m[3][4];\nfor (int i = 0; i < 3; i++)\n    for (int j = 0; j < 4; j++)\n        cin >> m[i][j];",
+      "error": "No compiler error. The row loop must stop at the number of rows (3) and the column loop at the number of columns (4). With the bounds swapped, the program writes outside the array (undefined behaviour)."
+    }
+  ],
+  "examTips": [
+    "Say it as a rule: the first index is the ROW and the second index is the COLUMN. Write it in the margin before you start.",
+    "For a table with R rows and C columns the outer loop runs to R and the inner loop to C. Do not swap them.",
+    "A row sum needs a fresh total (set to 0) for each row, so declare it inside the outer loop. Check this in column sums too.",
+    "Show indexes in your trace: write m[1][2] = 7 and not just 7.",
+    "Remember that the last valid element is m[R-1][C-1]. Going outside the array gives no compiler error but wrong results."
+  ],
+  "romanSummary": [
+    "2-D array rows aur columns ki table hai. int m[3][4] ka matlab 3 rows aur 4 columns, yaani 12 elements.",
+    "Element m[row][col] se milta hai. Dono index 0 se shuru hote hain, pehle row phir column.",
+    "Input aur output ke liye nested loop lagta hai: bahar wala loop rows (i), andar wala loop columns (j).",
+    "Row sum mein i fixed rehta hai aur j badalta hai. Column sum mein j fixed aur i badalta hai.",
+    "Memory mein table row by row store hoti hai, aur har row ke baad cout << endl se nayi line shuru karte hain."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How many elements does int m[3][4]; have?",
+      "options": [
+        "12",
+        "7",
+        "3",
+        "4"
+      ],
+      "answer": "12",
+      "hint": "rows x columns",
+      "explanation": "3 rows with 4 columns each: 3 x 4 = 12 elements."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which element is the very first one of a 2-D array called m?",
+      "options": [
+        "m[0][0]",
+        "m[1][1]",
+        "m[1][0]",
+        "m[0][1]"
+      ],
+      "answer": "m[0][0]",
+      "hint": "Indexes start from 0 in both directions.",
+      "explanation": "Both the row index and the column index start at 0."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this code print?\n\nint t[2][3] = {{1, 2, 3}, {4, 5, 6}};\ncout << t[1][0] << \" \" << t[0][2];",
+      "answer": "4 3",
+      "hint": "The first index is the row, the second is the column.",
+      "explanation": "t[1][0] is row 1, column 0, which is 4. t[0][2] is row 0, column 2, which is 3."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this code print?\n\nint m[3][3] = {{3, 1, 4}, {1, 5, 9}, {2, 6, 5}};\nint s = 0;\nfor (int i = 0; i < 3; i++) {\n    s = s + m[i][i];\n}\ncout << s;",
+      "answer": "13",
+      "hint": "m[i][i] has row = column. Which cells are those?",
+      "explanation": "The loop adds m[0][0] = 3, m[1][1] = 5 and m[2][2] = 5. That is the main diagonal and the total is 13."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this code print?\n\nint m[2][3] = {{4, 7, 2}, {6, 1, 9}};\nint s = 0;\nfor (int i = 0; i < 2; i++) {\n    s = s + m[i][1];\n}\ncout << s;",
+      "answer": "8",
+      "hint": "The column index stays at 1. Which column is that?",
+      "explanation": "m[0][1] = 7 and m[1][1] = 1, so the loop adds the second column and prints 8."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "The table is declared int m[3][4]; (3 rows, 4 columns). This code should print it row by row but it goes outside the array. Fix the loops.\n\nfor (int i = 0; i < 4; i++) {\n    for (int j = 0; j < 3; j++) {\n        cout << m[i][j] << \" \";\n    }\n    cout << endl;\n}",
+      "answer": "for (int i = 0; i < 3; i++) {\n    for (int j = 0; j < 4; j++) {\n        cout << m[i][j] << \" \";\n    }\n    cout << endl;\n}",
+      "hint": "The first size is the number of rows.",
+      "explanation": "The outer loop runs over rows, so it must stop at 3. The inner loop runs over columns, so it must stop at 4. The bounds were swapped."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write the code that declares int m[2][3] and reads its 6 elements from the keyboard, row by row.",
+      "answer": "int m[2][3];\nfor (int i = 0; i < 2; i++) {\n    for (int j = 0; j < 3; j++) {\n        cin >> m[i][j];\n    }\n}",
+      "hint": "Outer loop = rows, inner loop = columns.",
+      "explanation": "The outer loop goes through the 2 rows. For every row the inner loop reads the 3 columns, so the numbers fill the table row by row."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "How does C++ store int m[2][3] in memory?",
+      "options": [
+        "Row by row: m[0][0], m[0][1], m[0][2], m[1][0], m[1][1], m[1][2]",
+        "Column by column: m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]",
+        "Randomly",
+        "Only the first row is stored"
+      ],
+      "answer": "Row by row: m[0][0], m[0][1], m[0][2], m[1][0], m[1][1], m[1][2]",
+      "hint": "It is called row-major order.",
+      "explanation": "Memory is one long line. C++ puts the whole first row, then the whole second row, and so on."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "int marks[5][3]; means a table with",
+      "options": [
+        "5 rows and 3 columns",
+        "3 rows and 5 columns",
+        "5 rows and 5 columns",
+        "15 rows"
+      ],
+      "answer": "5 rows and 3 columns",
+      "hint": "The first size is rows.",
+      "explanation": "The first size is the number of rows and the second is the number of columns."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In m[i][j], what does j stand for?",
+      "options": [
+        "The column index",
+        "The row index",
+        "The total number of elements",
+        "The value"
+      ],
+      "answer": "The column index",
+      "hint": "Row first, column second.",
+      "explanation": "In m[row][column] the first index picks the row and the second index picks the column."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "To print a table row by row, which loop is the OUTER loop?",
+      "options": [
+        "The one over rows",
+        "The one over columns",
+        "Either, it makes no difference",
+        "There is no loop needed"
+      ],
+      "answer": "The one over rows",
+      "hint": "Think of reading a page line by line.",
+      "explanation": "The outer loop picks a row; the inner loop prints all columns of that row. Then cout << endl moves to the next line."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which declaration is valid?",
+      "options": [
+        "int t[][3] = {{1, 2, 3}, {4, 5, 6}};",
+        "int t[][] = {{1, 2, 3}, {4, 5, 6}};",
+        "int t[2,3];",
+        "int t(2)(3);"
+      ],
+      "answer": "int t[][3] = {{1, 2, 3}, {4, 5, 6}};",
+      "hint": "Which size may be left out?",
+      "explanation": "Only the row count may be omitted. The column count is always required."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "In m[3][4], which element is the last one?",
+      "options": [
+        "m[2][3]",
+        "m[3][4]",
+        "m[3][3]",
+        "m[4][3]"
+      ],
+      "answer": "m[2][3]",
+      "hint": "Indexes stop one before the size.",
+      "explanation": "Rows go 0 to 2 and columns go 0 to 3, so the last element is m[2][3]."
+    }
+  ],
+  "sources": [
+    "Two-dimensional arrays",
+    "Declaration and initialisation of 2-D arrays",
+    "Accessing elements with row and column indexes",
+    "Reading and printing a matrix with nested loops",
+    "Row sums and column sums"
+  ]
+}

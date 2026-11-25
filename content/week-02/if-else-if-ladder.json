@@ -1,0 +1,554 @@
+{
+  "slug": "if-else-if-ladder",
+  "week": 2,
+  "title": "The if-else-if ladder: choosing one path out of many",
+  "defaultView": "visualize",
+  "order": 4,
+  "visuals": [
+    {
+      "kind": "decision",
+      "title": "Grade ladder: change the marks and watch which branch runs",
+      "vars": [
+        {
+          "name": "marks",
+          "label": "Marks",
+          "min": 0,
+          "max": 100,
+          "value": 74
+        }
+      ],
+      "branches": [
+        {
+          "expr": "marks >= 85",
+          "label": "Grade A"
+        },
+        {
+          "expr": "marks >= 70",
+          "label": "Grade B"
+        },
+        {
+          "expr": "marks >= 60",
+          "label": "Grade C"
+        },
+        {
+          "expr": "marks >= 50",
+          "label": "Grade D"
+        }
+      ],
+      "elseLabel": "Grade F"
+    },
+    {
+      "kind": "decision",
+      "title": "Rickshaw fare slabs: change the distance",
+      "vars": [
+        {
+          "name": "km",
+          "label": "Distance (km)",
+          "min": 1,
+          "max": 20,
+          "value": 12
+        }
+      ],
+      "branches": [
+        {
+          "expr": "km <= 2",
+          "label": "Fare Rs 100"
+        },
+        {
+          "expr": "km <= 5",
+          "label": "Fare Rs 150"
+        },
+        {
+          "expr": "km <= 10",
+          "label": "Fare Rs 250"
+        }
+      ],
+      "elseLabel": "Fare Rs 250 + 30 per km after 10 km"
+    }
+  ],
+  "goal": "After this you can choose one result out of many using an if-else-if ladder, and explain why the order of the conditions matters.",
+  "warmup": "A teacher looks at your marks and gives a grade. She does not check every grade. She starts at the top: 'Is it 85 or more? No. 70 or more? Yes, so it is B.' She stops there. She does not go on to check C or D. A rickshaw driver does the same with fare slabs: up to 2 km is Rs 100, up to 5 km is Rs 150, and so on. You check from the top and stop at the first 'yes'.",
+  "definition": "An if-else-if ladder is a chain of conditions checked from top to bottom. The computer runs the block of the FIRST condition that is true and skips all the rest. The final else is optional. It runs when none of the conditions was true. Use a ladder when there are more than two possible results and they exclude each other (a mark can be only one grade).",
+  "howItWorks": "Press Play on the flowchart or move the slider. The computer tests the first condition. If it is false, it moves down to the next one. The moment a condition is true, that block runs and the computer jumps past the whole ladder. Order matters: because the first true condition wins, put the strictest test first. If you test marks >= 50 before marks >= 85, a student with 90 marks would be stopped at the first test and get the wrong grade. Also notice that later tests do not need '&& marks < 85'. If marks were 85 or more, an earlier test would already have won.",
+  "syntax": "if (condition1) {\n    // runs only if condition1 is true\n} else if (condition2) {\n    // runs only if condition1 was false AND condition2 is true\n} else if (condition3) {\n    // runs only if 1 and 2 were false AND condition3 is true\n} else {\n    // runs only if none of the conditions above was true\n}\n// only ONE block runs, then the program continues here",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Read the marks of a student and print the grade: 85 or more is A, 70 or more is B, 60 or more is C, anything lower is F.",
+      "pseudocode": [
+        "START",
+        "READ marks",
+        "IF marks >= 85 THEN PRINT \"Grade: A\"",
+        "ELSE IF marks >= 70 THEN PRINT \"Grade: B\"",
+        "ELSE IF marks >= 60 THEN PRINT \"Grade: C\"",
+        "ELSE PRINT \"Grade: F\"",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read marks/]\n  B --> C{marks >= 85?}\n  C -->|Yes| D[/Print A/]\n  C -->|No| E{marks >= 70?}\n  E -->|Yes| F[/Print B/]\n  E -->|No| G{marks >= 60?}\n  G -->|Yes| H[/Print C/]\n  G -->|No| I[/Print F/]\n  D --> J([End])\n  F --> J\n  H --> J\n  I --> J",
+      "sample": {
+        "id": "grade-ladder",
+        "title": "Grade calculator",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int marks;\n    cin >> marks;\n    if (marks >= 85) {\n        cout << \"Grade: A\" << endl;\n    } else if (marks >= 70) {\n        cout << \"Grade: B\" << endl;\n    } else if (marks >= 60) {\n        cout << \"Grade: C\" << endl;\n    } else {\n        cout << \"Grade: F\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "74",
+        "expectedOutput": "Grade: B\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "marks is a whole number, so we use int."
+          },
+          {
+            "line": 6,
+            "text": "Reads the marks typed by the user."
+          },
+          {
+            "line": 7,
+            "text": "First test. Only marks of 85 or more get an A."
+          },
+          {
+            "line": 9,
+            "text": "Reached only when the first test was false. So marks are already below 85, and we only ask if they are 70 or more."
+          },
+          {
+            "line": 11,
+            "text": "Reached only when marks are below 70. Is it 60 or more?"
+          },
+          {
+            "line": 13,
+            "text": "The final else catches everything that failed all the tests above."
+          },
+          {
+            "line": 16,
+            "text": "The ladder is finished. Execution continues here."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "marks": "?"
+              },
+              "note": "A box called marks is created. It has no value yet.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "marks": "74"
+              },
+              "note": "cin reads 74 into marks.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Is 74 >= 85? No, false. Move down to the next test.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Is 74 >= 70? Yes, true. This block runs.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Prints Grade: B. The rest of the ladder (C and F) is skipped.",
+              "out": "Grade: B\n"
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "marks": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "A rickshaw charges Rs 100 for up to 2 km, Rs 150 for up to 5 km, Rs 250 for up to 10 km, and after 10 km it adds Rs 30 for every extra km. Read the distance and print the fare.",
+      "pseudocode": [
+        "START",
+        "READ km",
+        "IF km <= 2 THEN fare = 100",
+        "ELSE IF km <= 5 THEN fare = 150",
+        "ELSE IF km <= 10 THEN fare = 250",
+        "ELSE fare = 250 + (km - 10) * 30",
+        "PRINT fare",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read km/]\n  B --> C{km <= 2?}\n  C -->|Yes| D[fare = 100]\n  C -->|No| E{km <= 5?}\n  E -->|Yes| F[fare = 150]\n  E -->|No| G{km <= 10?}\n  G -->|Yes| H[fare = 250]\n  G -->|No| I[\"fare = 250 + (km - 10) * 30\"]\n  D --> J[/Print fare/]\n  F --> J\n  H --> J\n  I --> J\n  J --> K([End])",
+      "sample": {
+        "id": "rickshaw-fare",
+        "title": "Rickshaw fare slabs",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int km;\n    cin >> km;\n    int fare;\n    if (km <= 2) {\n        fare = 100;\n    } else if (km <= 5) {\n        fare = 150;\n    } else if (km <= 10) {\n        fare = 250;\n    } else {\n        fare = 250 + (km - 10) * 30;\n    }\n    cout << \"Fare: Rs \" << fare << endl;\n    return 0;\n}\n",
+        "stdin": "12",
+        "expectedOutput": "Fare: Rs 310\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Reads the distance in kilometres."
+          },
+          {
+            "line": 7,
+            "text": "fare will hold the answer. Every branch of the ladder sets it."
+          },
+          {
+            "line": 8,
+            "text": "Slab 1: up to 2 km."
+          },
+          {
+            "line": 10,
+            "text": "Slab 2: more than 2 but up to 5 km. We know it is above 2 because the first test failed."
+          },
+          {
+            "line": 12,
+            "text": "Slab 3: up to 10 km."
+          },
+          {
+            "line": 15,
+            "text": "Last slab: the first 10 km cost Rs 250, then Rs 30 for each extra km."
+          },
+          {
+            "line": 17,
+            "text": "After the ladder, one common line prints the fare."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "km": "12"
+              },
+              "note": "cin reads 12 into km.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "fare": "?"
+              },
+              "note": "fare is created but empty for now.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Is 12 <= 2? No.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Is 12 <= 5? No.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Is 12 <= 10? No.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "fare": "310"
+              },
+              "note": "No test matched, so else runs: 250 + (12 - 10) * 30 = 250 + 60 = 310.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "Prints the fare.",
+              "out": "Fare: Rs 310\n"
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "km": "int",
+            "fare": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Electricity bill: the first 100 units cost Rs 10 each. Units 101 to 200 cost Rs 15 each. Units above 200 cost Rs 20 each. Read the units used and print the bill. Print Invalid units for a negative number.",
+      "pseudocode": [
+        "START",
+        "READ units",
+        "IF units < 0 THEN PRINT \"Invalid units\"",
+        "ELSE IF units <= 100 THEN bill = units * 10",
+        "ELSE IF units <= 200 THEN bill = 100*10 + (units-100)*15",
+        "ELSE bill = 100*10 + 100*15 + (units-200)*20",
+        "PRINT bill (when valid)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read units/]\n  B --> C{units < 0?}\n  C -->|Yes| D[/Print Invalid units/]\n  C -->|No| E{units <= 100?}\n  E -->|Yes| F[bill = units * 10]\n  E -->|No| G{units <= 200?}\n  G -->|Yes| H[\"bill = 1000 + (units - 100) * 15\"]\n  G -->|No| I[\"bill = 2500 + (units - 200) * 20\"]\n  F --> J[/Print bill/]\n  H --> J\n  I --> J\n  D --> K([End])\n  J --> K",
+      "sample": {
+        "id": "electricity-bill",
+        "title": "Electricity bill slabs",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int units;\n    cin >> units;\n    double bill;\n    if (units < 0) {\n        cout << \"Invalid units\" << endl;\n    } else if (units <= 100) {\n        bill = units * 10;\n        cout << \"Bill: Rs \" << bill << endl;\n    } else if (units <= 200) {\n        bill = 100 * 10 + (units - 100) * 15;\n        cout << \"Bill: Rs \" << bill << endl;\n    } else {\n        bill = 100 * 10 + 100 * 15 + (units - 200) * 20;\n        cout << \"Bill: Rs \" << bill << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "250",
+        "expectedOutput": "Bill: Rs 3500\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Reads the units consumed."
+          },
+          {
+            "line": 7,
+            "text": "bill is double because money may have decimals in real life."
+          },
+          {
+            "line": 8,
+            "text": "Invalid input is checked FIRST, before any slab."
+          },
+          {
+            "line": 10,
+            "text": "Slab 1: every unit costs Rs 10."
+          },
+          {
+            "line": 13,
+            "text": "Slab 2: the first 100 units cost Rs 1000, the remaining units cost Rs 15 each."
+          },
+          {
+            "line": 17,
+            "text": "Slab 3: Rs 1000 for the first slab, Rs 1500 for the second, then Rs 20 for each unit above 200."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "if / else (two paths)",
+      "when": "Only two possible results",
+      "example": "if (marks >= 50) cout << \"Pass\"; else cout << \"Fail\";"
+    },
+    {
+      "way": "if / else if / else (ladder)",
+      "when": "Three or more results that exclude each other",
+      "example": "if (m >= 85) g = 'A'; else if (m >= 70) g = 'B'; else g = 'C';"
+    },
+    {
+      "way": "Ladder without a final else",
+      "when": "You do nothing when no test matches",
+      "example": "if (x == 1) cout << \"One\"; else if (x == 2) cout << \"Two\";"
+    },
+    {
+      "way": "Separate if statements",
+      "when": "Several independent checks; more than one can run",
+      "example": "if (x > 10) cout << \"A\"; if (x > 5) cout << \"B\";"
+    },
+    {
+      "way": "Ladder with a range test inside &&",
+      "when": "Order cannot be arranged, so each test states both limits",
+      "example": "else if (marks >= 70 && marks < 85)"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "if (m >= 50) cout << \"D\"; else if (m >= 70) cout << \"B\"; else if (m >= 85) cout << \"A\";",
+      "right": "if (m >= 85) cout << \"A\"; else if (m >= 70) cout << \"B\"; else if (m >= 50) cout << \"D\";",
+      "error": "No compiler error. The code compiles, but a student with 90 marks gets D, because the first true test wins."
+    },
+    {
+      "wrong": "if (marks >= 60) cout << \"C\"; elseif (marks >= 50) cout << \"D\";",
+      "right": "if (marks >= 60) cout << \"C\"; else if (marks >= 50) cout << \"D\";",
+      "error": "'elseif' was not declared in this scope"
+    },
+    {
+      "wrong": "if (marks >= 85) cout << \"A\"; else if marks >= 70 cout << \"B\";",
+      "right": "if (marks >= 85) cout << \"A\"; else if (marks >= 70) cout << \"B\";",
+      "error": "expected '(' before 'marks'"
+    },
+    {
+      "wrong": "if (x > 10) cout << \"A\"; if (x > 5) cout << \"B\"; else cout << \"C\";",
+      "right": "if (x > 10) cout << \"A\"; else if (x > 5) cout << \"B\"; else cout << \"C\";",
+      "error": "No compiler error. Two separate ifs are not one ladder: with x = 15 the program prints AB."
+    }
+  ],
+  "examTips": [
+    "Only ONE block of a ladder ever runs: the first one whose condition is true.",
+    "Put the strictest or most specific condition first (85 before 70 before 50).",
+    "You do not need && marks < 85 in the second test, because an earlier test already caught those values.",
+    "Check invalid input (like negative marks) at the top of the ladder.",
+    "In a slab problem, add the earlier slabs fully and charge only the extra units at the new rate."
+  ],
+  "romanSummary": [
+    "Jab do se zyada options hon to if-else-if ladder use karte hain.",
+    "Conditions upar se neeche check hoti hain, aur jo pehli condition true ho wahi block chalta hai, baaki skip ho jate hain.",
+    "Order bohat zaroori hai: pehle sab se sakht condition likho, jaise marks >= 85 phir >= 70.",
+    "Aakhri else un sab ke liye hai jab koi bhi condition true na ho."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In an if-else-if ladder, how many blocks can run in one execution?",
+      "options": [
+        "Exactly one at most",
+        "All blocks whose condition is true",
+        "Always two",
+        "None unless there is an else"
+      ],
+      "answer": "Exactly one at most",
+      "hint": "Think about the teacher who stops at the first yes.",
+      "explanation": "Once one condition is true, its block runs and the rest of the ladder is skipped. If nothing is true and there is no else, zero blocks run, so at most one."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\nint m = 90;\nif (m >= 50) cout << \"D\";\nelse if (m >= 70) cout << \"B\";\nelse if (m >= 85) cout << \"A\";",
+      "answer": "D",
+      "hint": "Which test is checked first, and is it true for 90?",
+      "explanation": "90 >= 50 is true, so D is printed and the other tests are skipped. The order of the tests is wrong for a grade program."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint x = 15;\nif (x > 10) cout << \"A\";\nif (x > 5) cout << \"B\";\nelse cout << \"C\";",
+      "answer": "AB",
+      "hint": "These are two separate if statements, not one ladder.",
+      "explanation": "The first if is true so A prints. The second if is a new statement that is also true, so B prints. The else belongs to the second if and is skipped."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This should print B for marks from 70 to 84, but a student with 90 marks also gets B. Fix the code.\n\nif (marks >= 70) cout << \"B\";\nelse if (marks >= 85) cout << \"A\";\nelse cout << \"C\";",
+      "answer": "if (marks >= 85) cout << \"A\";\nelse if (marks >= 70) cout << \"B\";\nelse cout << \"C\";",
+      "hint": "The first true test wins. Which test should come first?",
+      "explanation": "Put the strictest test (>= 85) first. Otherwise every mark of 70 or more is caught by the first test."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blanks so that the program prints Hot for temp above 35, Warm for 20 to 35, and Cold otherwise.\n\nif (temp ____ 35) cout << \"Hot\";\n____ if (temp >= 20) cout << \"Warm\";\n____ cout << \"Cold\";",
+      "answer": "if (temp > 35) cout << \"Hot\";\nelse if (temp >= 20) cout << \"Warm\";\nelse cout << \"Cold\";",
+      "hint": "The blanks are one operator and two keywords.",
+      "explanation": "Use > for 'above 35', then else if for the middle slab, then a plain else for everything else."
+    },
+    {
+      "id": "p6",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "A canteen gives a discount on the bill: 20% if the bill is above 2000, 10% if above 1000, otherwise none. Write a program that reads the bill (double) and prints the amount to pay.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    double bill;\n    cin >> bill;\n    double pay;\n    if (bill > 2000) {\n        pay = bill * 0.80;\n    } else if (bill > 1000) {\n        pay = bill * 0.90;\n    } else {\n        pay = bill;\n    }\n    cout << \"Pay: \" << pay << endl;\n    return 0;\n}",
+      "hint": "Test the biggest slab (above 2000) first.",
+      "explanation": "A ladder with the largest limit first. A bill of 2500 is above 2000 and gets 20% off."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "When should you use an if-else-if ladder?",
+      "options": [
+        "When there are more than two exclusive results",
+        "When you want to repeat code",
+        "When you need to read input",
+        "When you want to stop the program"
+      ],
+      "answer": "When there are more than two exclusive results",
+      "hint": "Think of grades: A, B, C, F.",
+      "explanation": "A ladder chooses one result out of many."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does the final else of a ladder do?",
+      "options": [
+        "Runs when none of the conditions above was true",
+        "Always runs",
+        "Runs before the first if",
+        "Checks the first condition again"
+      ],
+      "answer": "Runs when none of the conditions above was true",
+      "hint": "It means 'none of the above'.",
+      "explanation": "The final else is the catch-all branch."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "marks = 90. Which ladder gives the correct grade A for it?",
+      "options": [
+        "if (marks >= 85) A; else if (marks >= 70) B;",
+        "if (marks >= 50) D; else if (marks >= 85) A;",
+        "if (marks >= 70) B; else if (marks >= 85) A;",
+        "if (marks >= 60) C; else if (marks >= 85) A;"
+      ],
+      "answer": "if (marks >= 85) A; else if (marks >= 70) B;",
+      "hint": "The strictest test must come first.",
+      "explanation": "Only the first option tests >= 85 before the weaker tests."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "x = 15. What does: if (x > 10) cout << \"A\"; else if (x > 5) cout << \"B\"; print?",
+      "options": [
+        "A",
+        "B",
+        "AB",
+        "Nothing"
+      ],
+      "answer": "A",
+      "hint": "Once the first test is true, the rest is skipped.",
+      "explanation": "x > 10 is true, so A prints and else if is never checked."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Which is the correct keyword spelling for a ladder step?",
+      "options": [
+        "else if",
+        "elseif",
+        "else-if",
+        "elif"
+      ],
+      "answer": "else if",
+      "hint": "Two separate words in C++.",
+      "explanation": "C++ uses else if as two words. elseif and elif are not C++."
+    }
+  ],
+  "sources": [
+    "if-else-if ladder",
+    "Selection statements",
+    "Decision making with multiple conditions"
+  ]
+}

@@ -1,0 +1,600 @@
+{
+  "slug": "arrays-intro",
+  "week": 4,
+  "title": "Arrays: many values under one name",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "array",
+      "title": "Array boxes: pick an index, read it, change it, and try going out of bounds",
+      "mode": "access",
+      "values": [
+        70,
+        85,
+        62,
+        90,
+        78
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match the array word with its meaning",
+      "pairs": [
+        {
+          "term": "element",
+          "meaning": "One value stored in the array"
+        },
+        {
+          "term": "index",
+          "meaning": "The position number of an element; the first one is 0"
+        },
+        {
+          "term": "size",
+          "meaning": "How many elements the array can hold (written in the brackets when you declare it)"
+        },
+        {
+          "term": "last index",
+          "meaning": "size - 1"
+        },
+        {
+          "term": "out of bounds",
+          "meaning": "Using an index below 0 or at least size; C++ does not stop you, but the result is wrong or dangerous"
+        },
+        {
+          "term": "int a[5] = {0};",
+          "meaning": "Makes all 5 elements zero"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can declare an array, give it starting values, read and change its elements by index, and explain why the last index is size - 1.",
+  "warmup": "A university has a row of lockers numbered 0, 1, 2, 3, 4. The whole row has one name, 'Row A', and you open one locker by its number. Now imagine you must store the marks of 50 students. Will you create 50 variables called m1, m2 ... m50? That is painful and you cannot loop over them. Instead you make ONE array of 50 boxes. One name, many values.",
+  "definition": "An array is a collection of values of the SAME type stored next to each other in memory under ONE name. Each value is an element. You reach an element with its index (position number) in square brackets, like marks[2]. Indexes start at 0. An array of size N has indexes 0 to N-1. The size is fixed when you declare the array and it must be a constant.",
+  "howItWorks": "Declare with type, name and size: int marks[5]; This reserves 5 int boxes in a row. Open the array visual and move the index slider. The box at the index lights up. Index 0 is the first box, not the second. So the third student is marks[2]. The last box has index size - 1 = 4. If you push the slider to 5 the visual warns you: marks[5] does not exist. C++ will NOT stop you. It will read or overwrite whatever memory comes next, which gives strange values or crashes. This is called out of bounds. You can give starting values in braces: int marks[5] = {70, 85, 62, 90, 78}; If you give fewer values, the rest become 0: int c[5] = {1, 2}; means 1 2 0 0 0. int d[5] = {0}; makes all five 0. If you write no braces at all, the boxes hold garbage (old leftover values). You may leave out the size when you give values: int e[] = {4, 8, 15}; the compiler counts 3. The size must be a constant: a number like 5 or a const int SIZE = 5;. Why not separate variables? With an array you can use a loop and the index: marks[i] for i = 0, 1, 2, ... You cannot write m + i with separate variables. Arrays are almost always used with a for loop from i = 0 while i < SIZE. The next lessons do exactly that.",
+  "syntax": "dataType arrayName[size];            // declared, values are garbage\nint a[5];\nint b[5] = {10, 20, 30, 40, 50}; // all five values given\nint c[5] = {1, 2};             // 1 2 0 0 0 (the rest become 0)\nint d[5] = {0};                // 0 0 0 0 0\nint e[] = {4, 8, 15};          // size 3, counted by the compiler\n\nconst int SIZE = 10;           // size must be a constant\ndouble prices[SIZE];\n\nb[0]            // first element (index 0)\nb[4]            // last element (index = size - 1)\nb[2] = 99;      // change one element\ncout << b[2];   // read one element\n",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Store the marks 70, 85, 62, 90 and 78 in an array. Print the first, third and last marks. Then change the third mark to 100 and print it again.",
+      "pseudocode": [
+        "START",
+        "CREATE array marks of size 5 = {70, 85, 62, 90, 78}",
+        "PRINT marks[0]",
+        "PRINT marks[2]",
+        "PRINT marks[4]",
+        "SET marks[2] = 100",
+        "PRINT marks[2]",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"marks = 70, 85, 62, 90, 78\"]\n  B --> C[/Print marks 0/]\n  C --> D[/Print marks 2/]\n  D --> E[/Print marks 4/]\n  E --> F[\"marks 2 = 100\"]\n  F --> G[/Print marks 2/]\n  G --> H([End])",
+      "sample": {
+        "id": "marks-array",
+        "title": "Reading and changing array elements",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int marks[5] = {70, 85, 62, 90, 78};\n    cout << \"First: \" << marks[0] << endl;\n    cout << \"Third: \" << marks[2] << endl;\n    cout << \"Last: \" << marks[4] << endl;\n    marks[2] = 100;\n    cout << \"Third now: \" << marks[2] << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "First: 70\nThird: 62\nLast: 78\nThird now: 100\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "int marks[5] creates five boxes. The braces give the starting values: marks[0] = 70, marks[1] = 85, and so on."
+          },
+          {
+            "line": 6,
+            "text": "marks[0] is the first element, because indexes start at 0."
+          },
+          {
+            "line": 7,
+            "text": "marks[2] is the third element."
+          },
+          {
+            "line": 8,
+            "text": "The last index is size - 1 = 4. marks[5] would be out of bounds."
+          },
+          {
+            "line": 9,
+            "text": "An element works like a normal variable, so you can assign to it."
+          },
+          {
+            "line": 10,
+            "text": "Reads the changed element."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "marks[0]": "70",
+                "marks[1]": "85",
+                "marks[2]": "62",
+                "marks[3]": "90",
+                "marks[4]": "78"
+              },
+              "note": "One declaration creates five boxes in a row. They share the name marks and are numbered 0 to 4.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "marks[0] is the FIRST box (index 0). It holds 70.",
+              "out": "First: 70\n"
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "marks[2] is the THIRD box because counting starts at 0. It holds 62.",
+              "out": "Third: 62\n"
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "The last box of a size-5 array is index 4 (size - 1). It holds 78.",
+              "out": "Last: 78\n"
+            },
+            {
+              "line": 9,
+              "vars": {
+                "marks[2]": "100"
+              },
+              "note": "Writing into box 2 replaces 62 with 100. The other boxes do not change.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Reads box 2 again. It now holds 100.",
+              "out": "Third now: 100\n"
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "marks[0]": "int",
+            "marks[1]": "int",
+            "marks[2]": "int",
+            "marks[3]": "int",
+            "marks[4]": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Show what the compiler puts in an array when you give too few values, when you use {0}, and when you leave out the size.",
+      "pseudocode": [
+        "START",
+        "b = {1, 2} so the rest are 0",
+        "c = {0} so all are 0",
+        "d = {4, 8, 15} so size is 3",
+        "FOR i = 0 TO 4 PRINT b[i]",
+        "FOR i = 0 TO 4 PRINT c[i]",
+        "PRINT d[2]",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"b = 1 2 0 0 0\"]\n  B --> C[\"c = 0 0 0 0 0\"]\n  C --> D[\"d = 4 8 15\"]\n  D --> E[i = 0]\n  E --> F{i < 5?}\n  F -->|Yes| G[/Print b i/]\n  G --> H[i = i + 1]\n  H --> F\n  F -->|No| I[/Print c and d 2/]\n  I --> J([End])",
+      "sample": {
+        "id": "init-forms",
+        "title": "Partial, zero and automatic-size initialisation",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int b[5] = {1, 2};\n    int c[5] = {0};\n    int d[] = {4, 8, 15};\n    cout << \"b: \";\n    for (int i = 0; i < 5; i++) {\n        cout << b[i] << \" \";\n    }\n    cout << endl;\n    cout << \"c: \";\n    for (int i = 0; i < 5; i++) {\n        cout << c[i] << \" \";\n    }\n    cout << endl;\n    cout << \"d[2] = \" << d[2] << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "b: 1 2 0 0 0 \nc: 0 0 0 0 0 \nd[2] = 15\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Only two values given. The other three elements are set to 0 automatically."
+          },
+          {
+            "line": 6,
+            "text": "{0} gives the first element 0 and the rest become 0 too. A quick way to clear an array."
+          },
+          {
+            "line": 7,
+            "text": "No size in the brackets. The compiler counts three values, so d has size 3 and its last index is 2."
+          },
+          {
+            "line": 9,
+            "text": "A loop visits every index from 0 to 4. i < 5 stops before index 5."
+          },
+          {
+            "line": 10,
+            "text": "b[i] changes with i: first b[0], then b[1], and so on."
+          },
+          {
+            "line": 18,
+            "text": "d[2] is the last element of d."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Five students scored 70, 85, 62, 90 and 78. Store the marks in an array, find the total and the average. (SIZE must be a constant.)",
+      "pseudocode": [
+        "START",
+        "SIZE = 5",
+        "marks = {70, 85, 62, 90, 78}",
+        "sum = 0",
+        "FOR i = 0 TO SIZE - 1",
+        "  sum = sum + marks[i]",
+        "PRINT sum",
+        "PRINT sum / SIZE as a decimal",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"marks = 70, 85, 62, 90, 78, sum = 0\"]\n  B --> C[i = 0]\n  C --> D{\"i < SIZE?\"}\n  D -->|Yes| E[\"sum = sum + marks i\"]\n  E --> F[i = i + 1]\n  F --> D\n  D -->|No| G[/Print sum/]\n  G --> H[/Print average/]\n  H --> I([End])",
+      "sample": {
+        "id": "marks-sum-average",
+        "title": "Total and average of an array",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int SIZE = 5;\n    int marks[SIZE] = {70, 85, 62, 90, 78};\n    int sum = 0;\n    for (int i = 0; i < SIZE; i++) {\n        sum += marks[i];\n    }\n    cout << \"Sum: \" << sum << endl;\n    cout << \"Average: \" << (double)sum / SIZE << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Sum: 385\nAverage: 77\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A constant for the size. The array size must be a constant."
+          },
+          {
+            "line": 6,
+            "text": "The array has SIZE elements and starting values."
+          },
+          {
+            "line": 7,
+            "text": "sum is a normal variable that collects the total."
+          },
+          {
+            "line": 8,
+            "text": "The index starts at 0 and stops at SIZE - 1 (the test is i < SIZE, not i <= SIZE)."
+          },
+          {
+            "line": 9,
+            "text": "Adds the element at position i to the total."
+          },
+          {
+            "line": 12,
+            "text": "(double)sum turns the total into a decimal first, so the division keeps any fraction."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "marks[0]": "70",
+                "marks[1]": "85",
+                "marks[2]": "62",
+                "marks[3]": "90",
+                "marks[4]": "78"
+              },
+              "note": "The array marks has 5 boxes. SIZE is a constant, so the size is fixed.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "sum": "0"
+              },
+              "note": "sum starts at 0.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "0",
+                "sum": "70"
+              },
+              "note": "i = 0: add marks[0] = 70. sum = 70.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "1",
+                "sum": "155"
+              },
+              "note": "i = 1: add marks[1] = 85. sum = 155.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "2",
+                "sum": "217"
+              },
+              "note": "i = 2: add marks[2] = 62. sum = 217.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "3",
+                "sum": "307"
+              },
+              "note": "i = 3: add marks[3] = 90. sum = 307.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "4",
+                "sum": "385"
+              },
+              "note": "i = 4: add marks[4] = 78. sum = 385. Then i becomes 5, the test i < SIZE is false, the loop ends.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Prints the total.",
+              "out": "Sum: 385\n"
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "(double)sum makes the division exact: 385 / 5 = 77.",
+              "out": "Average: 77\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "marks[0]": "int",
+            "marks[1]": "int",
+            "marks[2]": "int",
+            "marks[3]": "int",
+            "marks[4]": "int",
+            "i": "int",
+            "sum": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Declare only",
+      "when": "Values will be filled later (they are garbage until then)",
+      "example": "int a[5];"
+    },
+    {
+      "way": "Full initialisation",
+      "when": "You know all the starting values",
+      "example": "int b[5] = {10, 20, 30, 40, 50};"
+    },
+    {
+      "way": "Partial initialisation",
+      "when": "Only the first few are given; the rest become 0",
+      "example": "int c[5] = {1, 2};   // 1 2 0 0 0"
+    },
+    {
+      "way": "All zero",
+      "when": "You want a clean array",
+      "example": "int d[5] = {0};"
+    },
+    {
+      "way": "Size from the values",
+      "when": "Let the compiler count",
+      "example": "int e[] = {4, 8, 15, 16, 23, 42};   // size 6"
+    },
+    {
+      "way": "Constant size",
+      "when": "The size is used in many places (loops, checks)",
+      "example": "const int SIZE = 10;\ndouble prices[SIZE];"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int a[3] = {1, 2, 3, 4};",
+      "right": "int a[4] = {1, 2, 3, 4};",
+      "error": "too many initializers for 'int [3]'"
+    },
+    {
+      "wrong": "int a[3] = {1, 2, 3};\nint b[3];\nb = a;",
+      "right": "for (int i = 0; i < 3; i++) {\n    b[i] = a[i];\n}",
+      "error": "invalid array assignment"
+    },
+    {
+      "wrong": "int a[3] = {1, 2, 3};\ncout << a[1.5];",
+      "right": "cout << a[1];",
+      "error": "invalid types 'int [3][double]' for array subscript"
+    },
+    {
+      "wrong": "int a[5] = {1, 2, 3, 4, 5};\ncout << a[5];   // thinking 5 is the last",
+      "right": "cout << a[4];   // last index = size - 1",
+      "error": "No compiler error. a[5] does not exist: the program reads some unknown memory and prints garbage or may crash."
+    }
+  ],
+  "examTips": [
+    "Index starts at 0. The last index of size N is N-1. The loop test is i < N, not i <= N.",
+    "C++ does not check array bounds. Out-of-bounds access compiles but is a runtime or logic error.",
+    "Fewer initial values than the size: the rest become 0. No initial values: the boxes hold garbage.",
+    "The array size must be a constant (a number or a const int), not an ordinary variable.",
+    "You cannot copy one array into another with =. Copy element by element with a loop."
+  ],
+  "romanSummary": [
+    "Array ek hi type ki bohat si values ka collection hai jo memory mein saath saath store hoti hain aur ek hi naam se access hoti hain.",
+    "Har element ka index hota hai jo 0 se shuru hota hai. Size 5 ho to index 0 se 4 tak, yaani last index size - 1.",
+    "C++ boundary check nahi karta, is liye marks[5] likhna ghalat aur khatarnak hai.",
+    "Kam values dein to baaki 0 ho jati hain, aur size ek constant honi chahiye."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is the index of the first element of an array?",
+      "options": [
+        "0",
+        "1",
+        "-1",
+        "The size of the array"
+      ],
+      "answer": "0",
+      "hint": "Think of lockers numbered from 0.",
+      "explanation": "Indexes in C++ start at 0."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "For int a[10], what is the last valid index?",
+      "options": [
+        "9",
+        "10",
+        "11",
+        "1"
+      ],
+      "answer": "9",
+      "hint": "Size minus one.",
+      "explanation": "Indexes go from 0 to size - 1, so 0 to 9."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\nint a[4] = {5, 10, 15, 20};\ncout << a[1] + a[3];",
+      "answer": "30",
+      "hint": "a[1] is the second element, a[3] is the last.",
+      "explanation": "a[1] = 10 and a[3] = 20, so the sum is 30."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint a[5] = {1, 2};\ncout << a[0] + a[1] + a[4];",
+      "answer": "3",
+      "hint": "What value do the missing elements get?",
+      "explanation": "The three missing elements become 0, so a[4] = 0. The sum is 1 + 2 + 0 = 3."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This code should store 0 to 4 in the array, but it goes out of bounds. Fix it.\n\nint a[5];\nfor (int i = 0; i <= 5; i++) {\n    a[i] = i;\n}",
+      "answer": "int a[5];\nfor (int i = 0; i < 5; i++) {\n    a[i] = i;\n}",
+      "hint": "What is the last valid index of a size-5 array?",
+      "explanation": "With <= the loop also writes a[5], which does not exist. The test must be i < 5."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill the blanks to declare an array of 5 doubles named prices with every element set to 0.\n\n____ prices[____] = {0};",
+      "answer": "double prices[5] = {0};",
+      "hint": "The type comes first, then the name, then the size in brackets.",
+      "explanation": "double is the element type and 5 is the size. {0} sets all the elements to 0."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a complete program that stores 12, 7, 9, 30, 4, 18 in an array (use const int SIZE = 6;) and prints the first and the last element using SIZE - 1 for the last index. Print them as First: 12 and Last: 18 on separate lines.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    const int SIZE = 6;\n    int a[SIZE] = {12, 7, 9, 30, 4, 18};\n    cout << \"First: \" << a[0] << endl;\n    cout << \"Last: \" << a[SIZE - 1] << endl;\n    return 0;\n}",
+      "hint": "The last index is SIZE - 1.",
+      "explanation": "a[0] is the first element and a[SIZE - 1] is a[5], the last."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is an array?",
+      "options": [
+        "Many values of the same type stored under one name",
+        "A single number",
+        "A loop that repeats code",
+        "A kind of function"
+      ],
+      "answer": "Many values of the same type stored under one name",
+      "hint": "One name, many boxes.",
+      "explanation": "An array holds several values of one type in consecutive memory under one name."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "int marks[5]; Which element does marks[2] mean?",
+      "options": [
+        "The third element",
+        "The second element",
+        "The fifth element",
+        "The last element"
+      ],
+      "answer": "The third element",
+      "hint": "Count from 0.",
+      "explanation": "Index 0 is first, 1 is second, 2 is third."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "int c[5] = {1, 2}; What is c[3]?",
+      "options": [
+        "0",
+        "3",
+        "Garbage",
+        "An error"
+      ],
+      "answer": "0",
+      "hint": "What happens to values you do not give?",
+      "explanation": "The remaining elements are set to 0."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What happens if you write a[5] = 1; for int a[5]?",
+      "options": [
+        "It compiles but writes outside the array (undefined behaviour)",
+        "The compiler always reports an error",
+        "It extends the array to size 6",
+        "It is the same as a[4] = 1"
+      ],
+      "answer": "It compiles but writes outside the array (undefined behaviour)",
+      "hint": "C++ does not check bounds.",
+      "explanation": "The compiler usually accepts it. At run time it damages memory outside the array."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Which declaration is valid standard C++ for an array of 8 integers?",
+      "options": [
+        "const int N = 8; int a[N];",
+        "int n = 8; int a[n];",
+        "int a[-8];",
+        "int a[];"
+      ],
+      "answer": "const int N = 8; int a[N];",
+      "hint": "The size must be a constant.",
+      "explanation": "A const int is a constant, so it is allowed. A normal variable is not standard C++ as an array size."
+    }
+  ],
+  "sources": [
+    "Arrays: definition",
+    "One-dimensional arrays",
+    "Declaration and initialisation",
+    "Accessing array elements",
+    "Array indexing and bounds"
+  ]
+}

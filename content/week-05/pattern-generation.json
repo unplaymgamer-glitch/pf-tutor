@@ -1,0 +1,564 @@
+{
+  "slug": "pattern-generation",
+  "week": 5,
+  "title": "Pattern generation with nested loops",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "pattern",
+      "title": "Pyramid: change n and watch spaces and stars appear row by row",
+      "shape": "pyramid",
+      "n": 4
+    },
+    {
+      "kind": "pattern",
+      "title": "Diamond: a pyramid on top and an upside-down pyramid below",
+      "shape": "diamond",
+      "n": 4
+    },
+    {
+      "kind": "match",
+      "title": "Match each part of the pattern to the loop that prints it",
+      "pairs": [
+        {
+          "term": "The rows (lines) of the pattern",
+          "meaning": "the outer loop, i = 1 to n"
+        },
+        {
+          "term": "The stars in one row",
+          "meaning": "an inner loop over j (columns)"
+        },
+        {
+          "term": "The blank spaces before the stars",
+          "meaning": "another inner loop, s = 1 to n - i"
+        },
+        {
+          "term": "Moving to the next line",
+          "meaning": "cout << endl; after the inner loops"
+        },
+        {
+          "term": "Right triangle: stars in row i",
+          "meaning": "for (j = 1; j <= i; j++)"
+        },
+        {
+          "term": "Pyramid: stars in row i",
+          "meaning": "for (j = 1; j <= 2 * i - 1; j++)"
+        },
+        {
+          "term": "Inverted triangle: rows",
+          "meaning": "outer loop counts down, i = n to 1"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can print star and number patterns (triangle, inverted triangle, pyramid, diamond, hollow square) by using one outer loop for rows and inner loops for spaces and stars, and you can work out the loop formula from a picture.",
+  "warmup": "Look at a cricket stadium from above, or at the seats in a classroom: rows and columns. A row is one line from left to right, and each row has a number of seats. To fill the room you walk row by row, and in each row you walk seat by seat. Printing a pattern is the same walk. The outer loop chooses the row. The inner loop walks along that row and prints one symbol for each seat. When the row is finished you press Enter (endl) to go to the next row.",
+  "definition": "Pattern printing means using a loop inside another loop (nested loops) to draw a shape with characters. The outer loop counts the ROWS. An inner loop counts the COLUMNS: the stars, the numbers or the spaces in that row. The inner loop runs completely, from start to end, for every single round of the outer loop. After the inner loop finishes, cout << endl; ends the row.",
+  "howItWorks": "The secret is a small table. Before you write any code, draw the pattern and write, for each row number i, how many spaces and how many stars it has. Then find a formula of i (and of n, the number of rows). Right triangle: row i has i stars. Inverted triangle: the same but the rows go from n down to 1. Pyramid with n = 4: row 1 has 3 spaces and 1 star, row 2 has 2 spaces and 3 stars, row 3 has 1 space and 5 stars, row 4 has 0 spaces and 7 stars. So spaces = n - i and stars = 2 * i - 1. Each of those formulas becomes the end value of an inner loop. The order inside one row is always: spaces first, stars second, then endl. A diamond is a pyramid (rows 1 to n) followed by an upside-down pyramid (rows n - 1 down to 1). A hollow square prints a star only on the border (first or last row, first or last column) and a space everywhere else.",
+  "syntax": "for (int i = 1; i <= n; i++) {          // outer loop: one round per ROW\n    for (int s = 1; s <= n - i; s++) {  // inner loop 1: the spaces of this row\n        cout << \" \";\n    }\n    for (int j = 1; j <= 2 * i - 1; j++) {  // inner loop 2: the stars of this row\n        cout << \"*\";\n    }\n    cout << endl;                        // end of the row: go to the next line\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Print a right triangle of stars with 3 rows. Row 1 has one star, row 2 has two stars and row 3 has three stars.",
+      "pseudocode": [
+        "START",
+        "SET n = 3",
+        "FOR i = 1 TO n",
+        "  FOR j = 1 TO i: PRINT \"*\"",
+        "  PRINT new line",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[n = 3, i = 1]\n  B --> C{i <= n?}\n  C -->|Yes| D[j = 1]\n  D --> E{j <= i?}\n  E -->|Yes| F[/Print star/]\n  F --> G[\"j = j + 1\"]\n  G --> E\n  E -->|No| H[/Print new line/]\n  H --> I[\"i = i + 1\"]\n  I --> C\n  C -->|No| J([End])",
+      "sample": {
+        "id": "right-triangle",
+        "title": "Right triangle with 3 rows",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n = 3;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= i; j++) {\n            cout << \"*\";\n        }\n        cout << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "*\n**\n***\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "n is the number of rows."
+          },
+          {
+            "line": 6,
+            "text": "OUTER loop. i is the row number: 1, 2, 3."
+          },
+          {
+            "line": 7,
+            "text": "INNER loop. j counts the stars in the current row. It goes up to i, so row i gets i stars."
+          },
+          {
+            "line": 8,
+            "text": "Prints one star. No endl here, so all stars of one row stay on the same line."
+          },
+          {
+            "line": 10,
+            "text": "Runs once per row, AFTER the inner loop is finished. It moves the cursor to the next line."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "n": "3"
+              },
+              "note": "n = 3 means 3 rows.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "i": "1"
+              },
+              "note": "Outer loop: row 1 starts. The inner loop will print 1 star.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "j": "1"
+              },
+              "note": "Inner loop: j = 1, and j <= 1, so print one star.",
+              "out": "*"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Inner loop is finished (j went past 1). endl moves to the next line.",
+              "out": "\n"
+            },
+            {
+              "line": 6,
+              "vars": {
+                "i": "2"
+              },
+              "note": "Outer loop: row 2 starts. The inner loop will print 2 stars.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "j": "1"
+              },
+              "note": "Inner loop: j = 1, and j <= 2, so print one star.",
+              "out": "*"
+            },
+            {
+              "line": 8,
+              "vars": {
+                "j": "2"
+              },
+              "note": "Inner loop: j = 2, and j <= 2, so print one star.",
+              "out": "*"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Inner loop is finished (j went past 2). endl moves to the next line.",
+              "out": "\n"
+            },
+            {
+              "line": 6,
+              "vars": {
+                "i": "3"
+              },
+              "note": "Outer loop: row 3 starts. The inner loop will print 3 stars.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "j": "1"
+              },
+              "note": "Inner loop: j = 1, and j <= 3, so print one star.",
+              "out": "*"
+            },
+            {
+              "line": 8,
+              "vars": {
+                "j": "2"
+              },
+              "note": "Inner loop: j = 2, and j <= 3, so print one star.",
+              "out": "*"
+            },
+            {
+              "line": 8,
+              "vars": {
+                "j": "3"
+              },
+              "note": "Inner loop: j = 3, and j <= 3, so print one star.",
+              "out": "*"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Inner loop is finished (j went past 3). endl moves to the next line.",
+              "out": "\n"
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "The outer loop is finished. The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "n": "int",
+            "i": "int",
+            "j": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Print a pyramid of stars with 4 rows. Each row is centred, so it needs spaces before the stars. Row i has n - i spaces and 2i - 1 stars.",
+      "pseudocode": [
+        "START",
+        "SET n = 4",
+        "FOR i = 1 TO n",
+        "  FOR s = 1 TO n - i: PRINT space",
+        "  FOR j = 1 TO 2 * i - 1: PRINT star",
+        "  PRINT new line",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[n = 4, i = 1]\n  B --> C{i <= n?}\n  C -->|Yes| D[\"Print n - i spaces\"]\n  D --> E[\"Print 2i - 1 stars\"]\n  E --> F[/Print new line/]\n  F --> G[\"i = i + 1\"]\n  G --> C\n  C -->|No| H([End])",
+      "sample": {
+        "id": "pyramid",
+        "title": "Pyramid with 4 rows",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n = 4;\n    for (int i = 1; i <= n; i++) {\n        for (int s = 1; s <= n - i; s++) {\n            cout << \" \";\n        }\n        for (int j = 1; j <= 2 * i - 1; j++) {\n            cout << \"*\";\n        }\n        cout << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "   *\n  ***\n *****\n*******\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "The pyramid has 4 rows."
+          },
+          {
+            "line": 6,
+            "text": "Outer loop: row 1, 2, 3, 4."
+          },
+          {
+            "line": 7,
+            "text": "First inner loop prints the spaces. Row 1 needs 3, row 4 needs 0, so the count is n - i."
+          },
+          {
+            "line": 8,
+            "text": "One space for each round of the s loop."
+          },
+          {
+            "line": 10,
+            "text": "Second inner loop prints the stars. The widths are 1, 3, 5, 7, so the count is 2 * i - 1."
+          },
+          {
+            "line": 11,
+            "text": "One star for each round of the j loop."
+          },
+          {
+            "line": 13,
+            "text": "Ends the row."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a program that reads n and prints a diamond made of stars. The upper half (including the middle row) has n rows. Example: for n = 3 the diamond has 5 rows.",
+      "pseudocode": [
+        "START",
+        "READ n",
+        "FOR i = 1 TO n: print n - i spaces, 2i - 1 stars, new line",
+        "FOR i = n - 1 DOWN TO 1: print n - i spaces, 2i - 1 stars, new line",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read n/]\n  B --> C[\"Upper half: i = 1 to n\"]\n  C --> D[\"Print n - i spaces and 2i - 1 stars\"]\n  D --> E[\"Lower half: i = n - 1 down to 1\"]\n  E --> F[\"Print n - i spaces and 2i - 1 stars\"]\n  F --> G([End])",
+      "sample": {
+        "id": "diamond",
+        "title": "Diamond of stars",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    for (int i = 1; i <= n; i++) {\n        for (int s = 1; s <= n - i; s++) {\n            cout << \" \";\n        }\n        for (int j = 1; j <= 2 * i - 1; j++) {\n            cout << \"*\";\n        }\n        cout << endl;\n    }\n\n    for (int i = n - 1; i >= 1; i--) {\n        for (int s = 1; s <= n - i; s++) {\n            cout << \" \";\n        }\n        for (int j = 1; j <= 2 * i - 1; j++) {\n            cout << \"*\";\n        }\n        cout << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "3",
+        "expectedOutput": "  *\n ***\n*****\n ***\n  *\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Reads the number of rows of the upper half."
+          },
+          {
+            "line": 8,
+            "text": "Upper half: a normal pyramid, rows 1 to n. The last row is the widest one (the middle of the diamond)."
+          },
+          {
+            "line": 9,
+            "text": "The number of spaces before the stars in the current row (upper half)."
+          },
+          {
+            "line": 12,
+            "text": "The number of stars in the current row."
+          },
+          {
+            "line": 18,
+            "text": "Lower half: the same pyramid upside down. It starts at n - 1, because row n was already printed in the middle."
+          },
+          {
+            "line": 19,
+            "text": "The same two formulas work in the lower half. Only the order of i changes (it counts down)."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Right triangle",
+      "when": "row i has i stars",
+      "example": "for (int i = 1; i <= n; i++) {\n    for (int j = 1; j <= i; j++) cout << \"*\";\n    cout << endl;\n}"
+    },
+    {
+      "way": "Inverted triangle",
+      "when": "rows count down from n to 1",
+      "example": "for (int i = n; i >= 1; i--) {\n    for (int j = 1; j <= i; j++) cout << \"*\";\n    cout << endl;\n}"
+    },
+    {
+      "way": "Number triangle",
+      "when": "print j instead of a star",
+      "example": "for (int i = 1; i <= n; i++) {\n    for (int j = 1; j <= i; j++) cout << j << \" \";\n    cout << endl;\n}"
+    },
+    {
+      "way": "Pyramid",
+      "when": "spaces n - i, stars 2i - 1",
+      "example": "for (int i = 1; i <= n; i++) {\n    for (int s = 1; s <= n - i; s++) cout << \" \";\n    for (int j = 1; j <= 2 * i - 1; j++) cout << \"*\";\n    cout << endl;\n}"
+    },
+    {
+      "way": "Solid square",
+      "when": "n rows and n columns",
+      "example": "for (int i = 1; i <= n; i++) {\n    for (int j = 1; j <= n; j++) cout << \"*\";\n    cout << endl;\n}"
+    },
+    {
+      "way": "Hollow square",
+      "when": "star only on the border",
+      "example": "for (int i = 1; i <= n; i++) {\n    for (int j = 1; j <= n; j++) {\n        if (i == 1 || i == n || j == 1 || j == n) cout << \"*\";\n        else cout << \" \";\n    }\n    cout << endl;\n}"
+    },
+    {
+      "way": "Diamond",
+      "when": "pyramid, then upside-down pyramid",
+      "example": "// upper: i = 1 to n; lower: i = n - 1 down to 1\n// both rows use spaces = n - i and stars = 2i - 1"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "for (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= i; j++) {\n        cout << \"*\";\n    }\n}\ncout << endl;",
+      "right": "Put cout << endl; INSIDE the outer loop, after the inner loop.",
+      "error": "No compiler error. Everything is printed on one line: ******."
+    },
+    {
+      "wrong": "for (int j = 1; j <= i; j++) {\n    cout << \"*\" << endl;\n}",
+      "right": "cout << \"*\";   // endl only after the inner loop",
+      "error": "No compiler error. endl inside the inner loop puts every star on its own line: * / * / * / * / * / *."
+    },
+    {
+      "wrong": "for (int j = 1; j <= n; j++) {   // should stop at i\n    cout << \"*\";\n}",
+      "right": "for (int j = 1; j <= i; j++)",
+      "error": "No compiler error. The inner loop always runs n times, so you get a solid square instead of a triangle: *** / *** / ***."
+    },
+    {
+      "wrong": "// pyramid without the spaces loop\nfor (int j = 1; j <= 2 * i - 1; j++) cout << \"*\";",
+      "right": "Print n - i spaces BEFORE the stars.",
+      "error": "No compiler error. Without spaces the shape is not centred; for n = 3 it prints * / *** / *****."
+    },
+    {
+      "wrong": "for (int j = 1, j <= i, j++)",
+      "right": "for (int j = 1; j <= i; j++)",
+      "error": "The compiler reports a syntax error. The parts of a for header are separated by semicolons, not commas."
+    }
+  ],
+  "examTips": [
+    "Draw a table first: row i, number of spaces, number of stars. Then guess the formula.",
+    "Outer loop = rows. Inner loop = columns (stars, numbers or spaces). endl goes after the inner loops, inside the outer loop.",
+    "Pyramid: spaces = n - i, stars = 2i - 1. Diamond: pyramid for i = 1 to n, then i = n - 1 down to 1.",
+    "To make the shape smaller or bigger, change only n. Do not type the numbers 3 or 4 inside the loops.",
+    "Hollow shapes: use an if inside the inner loop and print a star only on the first or last row or column."
+  ],
+  "romanSummary": [
+    "Pattern mein outer loop rows ke liye hota hai aur inner loop har row ke columns (stars ya spaces) ke liye.",
+    "Har row ke baad cout << endl likho, lekin inner loop ke bahar aur outer loop ke andar.",
+    "Pehle table banao: row i par kitne spaces aur kitne stars hain, phir formula nikalo.",
+    "Right triangle mein row i par i stars. Pyramid mein spaces n - i aur stars 2 * i - 1.",
+    "Diamond ka matlab hai upar seedha pyramid aur neeche ulta pyramid (i = n - 1 se 1 tak)."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In a nested-loop pattern, what does the OUTER loop usually control?",
+      "options": [
+        "The rows (lines)",
+        "The stars in one row",
+        "The spaces only",
+        "The program ending"
+      ],
+      "answer": "The rows (lines)",
+      "hint": "Think of walking row by row in a classroom.",
+      "explanation": "The outer loop picks the row. The inner loop walks along the row."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\nint n = 3;\nfor (int i = 1; i <= n; i++) {\n    for (int j = 1; j <= i; j++) {\n        cout << j;\n    }\n    cout << endl;\n}",
+      "answer": "1\n12\n123",
+      "hint": "Row i prints the numbers 1 up to i.",
+      "explanation": "Row 1 prints 1, row 2 prints 12 and row 3 prints 123."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint n = 4;\nfor (int i = n; i >= 1; i--) {\n    for (int j = 1; j <= i; j++) {\n        cout << \"*\";\n    }\n    cout << endl;\n}",
+      "answer": "****\n***\n**\n*",
+      "hint": "i counts down from 4 to 1.",
+      "explanation": "The first row has 4 stars and each next row has one less: an inverted triangle."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This code should print a right triangle but prints all the stars on ONE line. Fix it.\n\nfor (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= i; j++) {\n        cout << \"*\";\n    }\n}\ncout << endl;",
+      "answer": "Move cout << endl; inside the outer loop, after the inner loop:\nfor (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= i; j++) {\n        cout << \"*\";\n    }\n    cout << endl;\n}",
+      "hint": "When should the cursor go to the next line?",
+      "explanation": "The new line must be printed once per ROW. That is after the inner loop but still inside the outer loop."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank so that the first inner loop prints the correct number of spaces for a pyramid with n rows.\n\nfor (int i = 1; i <= n; i++) {\n    for (int s = 1; s <= ____; s++) {\n        cout << \" \";\n    }\n    for (int j = 1; j <= 2 * i - 1; j++) {\n        cout << \"*\";\n    }\n    cout << endl;\n}",
+      "answer": "n - i",
+      "hint": "Row 1 needs the most spaces, the last row needs none.",
+      "explanation": "In a pyramid with n rows, row i has n - i spaces. For n = 4, row 1 has 3 spaces and row 4 has 0."
+    },
+    {
+      "id": "p6",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write the loops that print a hollow square of stars with n rows and n columns (n is already read).",
+      "answer": "for (int i = 1; i <= n; i++) {\n    for (int j = 1; j <= n; j++) {\n        if (i == 1 || i == n || j == 1 || j == n) {\n            cout << \"*\";\n        } else {\n            cout << \" \";\n        }\n    }\n    cout << endl;\n}",
+      "hint": "A star goes only on the first or last row, or the first or last column.",
+      "explanation": "The if test is true only on the border of the square. Everywhere else a space is printed, so the inside stays empty."
+    },
+    {
+      "id": "p7",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\nint n = 3;\nfor (int i = 1; i <= n; i++) {\n    for (int s = 1; s <= n - i; s++) {\n        cout << \"-\";\n    }\n    for (int j = 1; j <= 2 * i - 1; j++) {\n        cout << i;\n    }\n    cout << endl;\n}",
+      "answer": "--1\n-222\n33333",
+      "hint": "Spaces are shown as dashes. The stars are replaced by the row number.",
+      "explanation": "Row 1: 2 dashes and one 1. Row 2: 1 dash and three 2s. Row 3: no dash and five 3s."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "How many stars are in row 5 of a pyramid (formula 2 * i - 1)?",
+      "options": [
+        "9",
+        "10",
+        "5",
+        "11"
+      ],
+      "answer": "9",
+      "hint": "Put i = 5 in the formula.",
+      "explanation": "2 * 5 - 1 = 9."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Where does cout << endl; go when printing a triangle?",
+      "options": [
+        "Inside the outer loop, after the inner loop",
+        "Inside the inner loop",
+        "Before the outer loop",
+        "It is not needed"
+      ],
+      "answer": "Inside the outer loop, after the inner loop",
+      "hint": "The cursor moves down once per row.",
+      "explanation": "endl runs once per row, so it belongs after the inner loop and inside the outer loop."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "For a right triangle, how many stars does row i have?",
+      "options": [
+        "i",
+        "n",
+        "2 * i - 1",
+        "n - i"
+      ],
+      "answer": "i",
+      "hint": "Row 1 has 1 star, row 2 has 2 stars.",
+      "explanation": "The inner loop runs from 1 to i."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "How many spaces does row i of a pyramid with n rows need?",
+      "options": [
+        "n - i",
+        "i",
+        "2 * i - 1",
+        "n + i"
+      ],
+      "answer": "n - i",
+      "hint": "The top row needs the most spaces.",
+      "explanation": "Row 1 needs n - 1 spaces and row n needs none."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which loop header prints an inverted triangle (the first row is the longest)?",
+      "options": [
+        "for (int i = n; i >= 1; i--)",
+        "for (int i = 1; i <= n; i++)",
+        "for (int i = 0; i < n; i--)",
+        "for (int i = n; i <= 1; i++)"
+      ],
+      "answer": "for (int i = n; i >= 1; i--)",
+      "hint": "The row length must start big and shrink.",
+      "explanation": "Counting i down from n to 1 gives rows of n, n-1, ..., 1 stars."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "A diamond with an upper half of n rows has how many rows in total?",
+      "options": [
+        "2 * n - 1",
+        "2 * n",
+        "n + 1",
+        "n * n"
+      ],
+      "answer": "2 * n - 1",
+      "hint": "The middle row is shared.",
+      "explanation": "The upper half has n rows and the lower half has n - 1 rows, so 2n - 1 in total."
+    }
+  ],
+  "sources": [
+    "Pattern Generation (Stars, Diamond shapes, etc.)",
+    "Nested Loops"
+  ]
+}

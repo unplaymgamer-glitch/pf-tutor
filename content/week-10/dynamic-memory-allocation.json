@@ -1,0 +1,753 @@
+{
+  "slug": "dynamic-memory-allocation",
+  "week": 10,
+  "title": "Dynamic memory: new and delete",
+  "defaultView": "visualize",
+  "order": 4,
+  "visuals": [
+    {
+      "kind": "memory",
+      "title": "new, use, delete: the pointer on the stack and the box on the heap",
+      "cells": [
+        {
+          "name": "p",
+          "type": "int*",
+          "addr": "0x1000"
+        },
+        {
+          "name": "heap int",
+          "type": "int",
+          "addr": "0x5000"
+        }
+      ],
+      "steps": [
+        {
+          "code": "int *p = new int(5);",
+          "note": "new makes a box on the heap holding 5. p (on the stack) stores its address.",
+          "values": {
+            "p": "0x5000",
+            "heap int": "5"
+          },
+          "points": {
+            "p": "heap int"
+          }
+        },
+        {
+          "code": "*p = *p + 10;",
+          "note": "*p follows the arrow to the heap box and changes it to 15.",
+          "values": {
+            "heap int": "15"
+          },
+          "points": {
+            "p": "heap int"
+          }
+        },
+        {
+          "code": "delete p;",
+          "note": "The heap box is given back. p still holds the old address: it is dangling.",
+          "values": {
+            "heap int": "freed"
+          },
+          "points": {
+            "p": "heap int"
+          }
+        },
+        {
+          "code": "p = nullptr;",
+          "note": "Now p points to nothing, so it cannot be used by mistake.",
+          "values": {
+            "p": "nullptr"
+          },
+          "points": {
+            "p": ""
+          }
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match the word to its meaning",
+      "pairs": [
+        {
+          "term": "new int(5)",
+          "meaning": "Make an int box on the heap holding 5 and return its address"
+        },
+        {
+          "term": "delete p",
+          "meaning": "Give the heap box back to the computer"
+        },
+        {
+          "term": "nullptr",
+          "meaning": "A pointer value that means: points to nothing"
+        },
+        {
+          "term": "Memory leak",
+          "meaning": "Heap memory you no longer have an address for and never deleted"
+        },
+        {
+          "term": "Dangling pointer",
+          "meaning": "A pointer that still holds the address of memory that was already deleted"
+        },
+        {
+          "term": "Double delete",
+          "meaning": "Deleting the same box twice: a serious error (undefined behaviour)"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can create a variable on the heap with new, use it through a pointer, give it back with delete, and avoid memory leaks and dangling pointers.",
+  "warmup": "Think of a rented hall for a wedding. You book it when you need it (new), you get a key with the address written on it (the pointer), and when the function is over you must return the hall (delete). If you lose the key without returning the hall, nobody can use it and you keep paying: that is a memory leak. If you return the hall but keep walking to the old address, you find strangers there: that is a dangling pointer.",
+  "definition": "Dynamic memory allocation means asking for memory WHILE the program is running. You need it when the size is known only at run time (for example the user types how many students), or when data must stay alive after the function that created it has ended. The operator new takes a box from the heap and returns its address, so you keep the answer in a pointer. The operator delete gives the box back. Local variables live on the stack and disappear automatically. Heap boxes live until you delete them.",
+  "howItWorks": "Step 1: new int(5) finds a free int-sized place on the heap, puts 5 in it, and returns its address. Step 2: you store that address in a pointer, for example int *p = new int(5);. The pointer p is a normal variable on the stack. The box it points to is on the heap. Step 3: you use the box with *p, exactly like an ordinary variable. Step 4: when you are done, delete p; gives the box back. After delete, the pointer p still holds the old address, but the box is no longer yours, so p is a dangling pointer. Good habit: write p = nullptr; straight after delete. Rules to remember: every new needs exactly one delete, never use a pointer after delete, never delete the same address twice (double delete), and never overwrite the only pointer to a box with another address, or the old box is lost (leak). Initialisation: new int; gives an unknown value, new int(5); gives 5, new int(); gives 0.",
+  "syntax": "int *p = new int;        // box with unknown (garbage) value\n*p = 42;                 // use it through the pointer\n\nint *q = new int(5);     // box that starts as 5\ndouble *d = new double(3.75);\nint *z = new int();      // box that starts as 0\n\ndelete p;                // give the box back\np = nullptr;             // p now points to nothing\n\n// new returns an ADDRESS, so the left side must be a pointer:\n// int x = new int(5);   // wrong: int cannot hold an address",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Create an int on the heap with value 5, print it, add 10, print it again, then delete it and set the pointer to nullptr. Show that the pointer now equals nullptr.",
+      "pseudocode": [
+        "START",
+        "p = new int(5)",
+        "PRINT *p",
+        "*p = *p + 10",
+        "PRINT *p",
+        "delete p",
+        "p = nullptr",
+        "IF p is nullptr THEN PRINT message",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"p = new int(5)\"]\n  B --> C[/\"Print *p\"/]\n  C --> D[\"*p = *p + 10\"]\n  D --> E[/\"Print *p\"/]\n  E --> F[\"delete p\"]\n  F --> G[\"p = nullptr\"]\n  G --> H{\"p == nullptr?\"}\n  H -->|Yes| I[/\"Print p points to nothing\"/]\n  I --> J([End])",
+      "sample": {
+        "id": "dma-single",
+        "title": "One int on the heap: new, use, delete",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int *p = new int(5);\n    cout << \"Value: \" << *p << endl;\n    *p = *p + 10;\n    cout << \"Now: \" << *p << endl;\n    delete p;\n    p = nullptr;\n    if (p == nullptr) {\n        cout << \"p points to nothing\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Value: 5\nNow: 15\np points to nothing\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "new int(5) makes an int box on the heap holding 5 and returns its address. p is an ordinary pointer stored on the stack."
+          },
+          {
+            "line": 6,
+            "text": "*p follows the address in p to the heap box, so it prints 5."
+          },
+          {
+            "line": 7,
+            "text": "The heap box is used just like a normal variable, only through *p."
+          },
+          {
+            "line": 9,
+            "text": "delete gives the heap box back. It does not erase p itself."
+          },
+          {
+            "line": 10,
+            "text": "After delete, point p to nullptr so it cannot be used by mistake."
+          },
+          {
+            "line": 11,
+            "text": "We can safely test a pointer for nullptr. We must never dereference it."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts. Nothing is on the heap yet.",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "p": "address of the heap box",
+                "*p": "5"
+              },
+              "note": "new asks the heap for one int box, puts 5 inside, and gives back its address. p stores that address.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "*p means: go to the address in p and read the box. It holds 5.",
+              "out": "Value: 5\n"
+            },
+            {
+              "line": 7,
+              "vars": {
+                "*p": "15"
+              },
+              "note": "Read 5 from the heap box, add 10, write 15 back into the same box.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "The heap box now holds 15.",
+              "out": "Now: 15\n"
+            },
+            {
+              "line": 9,
+              "vars": {
+                "*p": "freed"
+              },
+              "note": "The heap box is given back. p still holds the old address, so p is now a dangling pointer. Never use *p after this.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "p": "nullptr"
+              },
+              "note": "We set p to nullptr so it clearly points to nothing.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "p == nullptr is true, so the if body runs.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Safe check passed.",
+              "out": "p points to nothing\n"
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Program ends. Every new had a delete, so no leak.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "p": "int*",
+            "*p": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Show three ways to create heap variables (no value, a value in brackets, empty brackets) and one double. Print all four and free them.",
+      "pseudocode": [
+        "START",
+        "a = new int; *a = 7",
+        "b = new int(20)",
+        "c = new int()",
+        "d = new double(3.75)",
+        "PRINT all four",
+        "delete all four",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"a = new int, then *a = 7\"]\n  B --> C[\"b = new int(20)\"]\n  C --> D[\"c = new int()  value 0\"]\n  D --> E[\"d = new double(3.75)\"]\n  E --> F[/\"Print *a *b *c *d\"/]\n  F --> G[\"delete a, b, c, d\"]\n  G --> H([End])",
+      "sample": {
+        "id": "dma-init-forms",
+        "title": "Three ways to start a heap variable",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int *a = new int;\n    *a = 7;\n    int *b = new int(20);\n    int *c = new int();\n    double *d = new double(3.75);\n\n    cout << \"a = \" << *a << endl;\n    cout << \"b = \" << *b << endl;\n    cout << \"c = \" << *c << endl;\n    cout << \"d = \" << *d << endl;\n\n    delete a;\n    delete b;\n    delete c;\n    delete d;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "a = 7\nb = 20\nc = 0\nd = 3.75\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "No value given: the box holds garbage until we assign. That is why the next line writes 7."
+          },
+          {
+            "line": 6,
+            "text": "Assign after allocating."
+          },
+          {
+            "line": 7,
+            "text": "Allocate and initialise in one step with round brackets."
+          },
+          {
+            "line": 8,
+            "text": "Empty round brackets give the value 0 for numbers."
+          },
+          {
+            "line": 9,
+            "text": "The pointer type must match the box type: double box, double pointer."
+          },
+          {
+            "line": 14,
+            "text": "Prints 3.75."
+          },
+          {
+            "line": 16,
+            "text": "Every new needs its own delete: four new, four delete."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a function makeBox that creates an int on the heap with a given start value and returns it. In main make two boxes (10 and 20), store their sum in the first, print both, and free everything correctly.",
+      "pseudocode": [
+        "START",
+        "x = makeBox(10), y = makeBox(20)",
+        "*x = *x + *y",
+        "PRINT *x, *y",
+        "delete x, delete y",
+        "set x and y to nullptr",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"x = makeBox(10)\"]\n  B --> C[\"y = makeBox(20)\"]\n  C --> D[\"*x = *x + *y\"]\n  D --> E[/\"Print *x and *y\"/]\n  E --> F[\"delete x and y\"]\n  F --> G[\"x = y = nullptr\"]\n  G --> H([End])",
+      "sample": {
+        "id": "dma-function-box",
+        "title": "Heap data outlives the function that made it",
+        "code": "#include <iostream>\nusing namespace std;\n\nint *makeBox(int start) {\n    int *box = new int(start);\n    return box;\n}\n\nint main() {\n    int *x = makeBox(10);\n    int *y = makeBox(20);\n    *x = *x + *y;\n    cout << \"x = \" << *x << \", y = \" << *y << endl;\n    delete x;\n    delete y;\n    x = nullptr;\n    y = nullptr;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "x = 30, y = 20\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "The function returns an int pointer: the address of a heap box."
+          },
+          {
+            "line": 5,
+            "text": "The box is created on the heap, so it does not die when makeBox ends. A normal local variable would."
+          },
+          {
+            "line": 6,
+            "text": "We return the address, not the box. The caller now owns the box and must delete it."
+          },
+          {
+            "line": 10,
+            "text": "x receives the address of the first box."
+          },
+          {
+            "line": 12,
+            "text": "Two separate boxes, read through two pointers."
+          },
+          {
+            "line": 14,
+            "text": "The caller is responsible for the delete, because makeBox gave the box away."
+          },
+          {
+            "line": 16,
+            "text": "Clean up the pointers after delete."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 10,
+              "vars": {
+                "start": "10"
+              },
+              "note": "main calls makeBox(10). A new stack frame appears with start = 10.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "makeBox(start)",
+                  "vars": {
+                    "start": "10"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {
+                "box": "-> heap box A (10)"
+              },
+              "note": "new makes a heap box holding 10. box (on the stack) stores its address.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "makeBox(start)",
+                  "vars": {
+                    "start": "10",
+                    "box": "-> heap box A"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {
+                "x": "-> heap box A (10)"
+              },
+              "note": "The function returns the ADDRESS. The frame of makeBox vanishes, but heap box A stays alive. x now owns it.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "-> heap box A (10)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {
+                "y": "-> heap box B (20)"
+              },
+              "note": "The same again: a second heap box B holding 20 is created and y points to it.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "-> A (10)",
+                    "y": "-> B (20)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {
+                "*x": "30"
+              },
+              "note": "10 + 20 = 30 is stored in box A. Box B is unchanged.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "-> A (30)",
+                    "y": "-> B (20)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Prints the two heap values.",
+              "out": "x = 30, y = 20\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "-> A (30)",
+                    "y": "-> B (20)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {
+                "*x": "freed"
+              },
+              "note": "Box A is returned to the heap.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "dangling",
+                    "y": "-> B (20)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {
+                "*y": "freed"
+              },
+              "note": "Box B is returned too.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "dangling",
+                    "y": "dangling"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 17,
+              "vars": {
+                "x": "nullptr",
+                "y": "nullptr"
+              },
+              "note": "Both pointers are set to nullptr. No leaks, no dangling pointers.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "nullptr",
+                    "y": "nullptr"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "x": "int*",
+            "y": "int*",
+            "box": "int*"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "new int;",
+      "when": "You will assign the value yourself right after. Until then the box holds garbage.",
+      "example": "int *p = new int;\n*p = 42;"
+    },
+    {
+      "way": "new int(5);",
+      "when": "You want the box to start with a known value.",
+      "example": "int *p = new int(5);"
+    },
+    {
+      "way": "new int();",
+      "when": "You want a zero-filled box.",
+      "example": "int *p = new int();  // 0"
+    },
+    {
+      "way": "new int{5}; (C++11)",
+      "when": "Curly-bracket initialisation, same meaning as round brackets.",
+      "example": "int *p = new int{5};"
+    },
+    {
+      "way": "delete p; then p = nullptr;",
+      "when": "Always, when you are finished with the box.",
+      "example": "delete p;\np = nullptr;"
+    },
+    {
+      "way": "Return a heap pointer from a function",
+      "when": "The data must outlive the function. The caller must delete it.",
+      "example": "int *makeBox(int v) { return new int(v); }"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int *p = new int(5);\ncout << *p;\n// forgot delete p;",
+      "right": "int *p = new int(5);\ncout << *p;\ndelete p;\np = nullptr;",
+      "error": "No compiler message. The program runs, but the 4 bytes are never returned: a memory leak. In a long program that runs for hours many leaks fill the memory."
+    },
+    {
+      "wrong": "int *p = new int(5);\ndelete p;\ncout << *p;   // dangling pointer",
+      "right": "int *p = new int(5);\ncout << *p;\ndelete p;\np = nullptr;",
+      "error": "Usually no compiler message. After delete the box is not yours. Reading it is undefined behaviour: it may print garbage or crash."
+    },
+    {
+      "wrong": "int *p = new int(5);\ndelete p;\ndelete p;   // double delete",
+      "right": "int *p = new int(5);\ndelete p;\np = nullptr;\ndelete p;   // deleting nullptr is safe and does nothing",
+      "error": "No compiler message, but deleting the same address twice is undefined behaviour and often crashes the program at run time. (This is why we set p = nullptr after delete.)"
+    },
+    {
+      "wrong": "int p = new int(5);",
+      "right": "int *p = new int(5);",
+      "error": "error: invalid conversion from 'int*' to 'int' [-fpermissive]. new returns an address, so the variable on the left must be a pointer."
+    },
+    {
+      "wrong": "int *p = new int(5);\np = new int(6);   // old box lost\ndelete p;",
+      "right": "int *p = new int(5);\ndelete p;\np = new int(6);\ndelete p;",
+      "error": "No compiler message. The first box (5) has no pointer any more, so it can never be deleted: a leak. Delete before you reuse the pointer."
+    }
+  ],
+  "examTips": [
+    "Say the pair out loud: every new must have a matching delete. Examiners look for it.",
+    "After delete write p = nullptr; and mention that it avoids a dangling pointer.",
+    "new returns an address, so the left side is always a pointer: int *p = new int(5);",
+    "Stack variables are freed automatically at the end of the function. Heap variables are freed only by delete.",
+    "Know the three problems by name: memory leak (forgot delete), dangling pointer (used after delete), double delete (deleted twice)."
+  ],
+  "romanSummary": [
+    "Dynamic memory ka matlab hai program chalte waqt heap se memory maangna, jab size pehle se maloom na ho ya data function ke baad bhi zinda rakhna ho.",
+    "new heap par box banata hai aur uska address wapas deta hai, jise hum pointer mein rakhte hain: int *p = new int(5);",
+    "Kaam khatam hone par delete p; likhte hain aur phir p = nullptr; taake dangling pointer na bane.",
+    "delete bhool gaye to memory leak hota hai. Ek address ko do dafa delete karna (double delete) bhi ghalat hai.",
+    "Har new ke saath ek delete zaroor likhein."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which operator takes memory from the heap while the program is running?",
+      "options": [
+        "new",
+        "delete",
+        "nullptr",
+        "sizeof"
+      ],
+      "answer": "new",
+      "hint": "It creates a new box.",
+      "explanation": "new allocates heap memory and returns its address. delete gives it back."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does new int(5) return?",
+      "options": [
+        "The address of the new int box",
+        "The number 5",
+        "A copy of the box",
+        "Nothing"
+      ],
+      "answer": "The address of the new int box",
+      "hint": "That is why the left side is a pointer.",
+      "explanation": "new always returns the address of the memory it created. The value 5 lives inside the box."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int *p = new int(4);\n    int *q = p;\n    *q = 9;\n    cout << *p << endl;\n    delete p;\n    return 0;\n}\n",
+      "answer": "9",
+      "hint": "p and q hold the same address.",
+      "explanation": "q is a second pointer to the SAME box. Writing 9 through q changes the box that p also sees."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Find the bug (it compiles and runs):\n\nint *p = new int(5);\np = new int(6);\ncout << *p;\ndelete p;",
+      "answer": "The first box (5) is lost because p was overwritten without delete: a memory leak. Fix: delete p; before p = new int(6);",
+      "hint": "Count the new and the delete.",
+      "explanation": "Two new, one delete. The box holding 5 can no longer be reached, so it can never be deleted."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill the blank to give the memory back:\n\nint *p = new int(7);\n______ p;\np = nullptr;",
+      "answer": "delete",
+      "hint": "The opposite of new.",
+      "explanation": "delete p; returns the heap box. Then p = nullptr; makes p safe."
+    },
+    {
+      "id": "p6",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write code that allocates a double on the heap with value 2.5, prints its value multiplied by 2, then frees it.",
+      "answer": "double *d = new double(2.5);\ncout << *d * 2 << endl;\ndelete d;\nd = nullptr;",
+      "hint": "new double(...), then *d, then delete.",
+      "explanation": "new double(2.5) makes the box, *d reads it (2.5 * 2 = 5), delete d frees it."
+    },
+    {
+      "id": "p7",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int *a = new int(2);\n    int *b = new int(3);\n    *a = *a * *b;\n    b = a;\n    cout << *a << \" \" << *b << endl;\n    delete a;\n    return 0;\n}\n",
+      "answer": "6 6",
+      "hint": "After b = a, both pointers hold the same address.",
+      "explanation": "*a becomes 6. Then b is given a's address, so both print 6. (The old box of b was lost: a leak.)"
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Why do we need dynamic memory?",
+      "options": [
+        "The size may be known only at run time, or the data must outlive a function",
+        "It makes the program run faster than the stack always",
+        "Because the stack has no variables",
+        "Because pointers cannot point to local variables"
+      ],
+      "answer": "The size may be known only at run time, or the data must outlive a function",
+      "hint": "Think of 'How many students?'",
+      "explanation": "Stack sizes are fixed at compile time. The heap lets us decide while running and keep data after a function returns."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does a memory leak mean?",
+      "options": [
+        "Heap memory that was never deleted and can no longer be reached",
+        "A pointer that points to nullptr",
+        "Deleting memory twice",
+        "Using a variable before declaring it"
+      ],
+      "answer": "Heap memory that was never deleted and can no longer be reached",
+      "hint": "You forgot something.",
+      "explanation": "Forgetting delete leaves the box allocated with no way to return it."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "After delete p; what is the best next line?",
+      "options": [
+        "p = nullptr;",
+        "p = 0.0;",
+        "delete p;",
+        "*p = 5;"
+      ],
+      "answer": "p = nullptr;",
+      "hint": "Make the pointer safe.",
+      "explanation": "p still holds the old address. Setting it to nullptr avoids a dangling pointer."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is a dangling pointer?",
+      "options": [
+        "A pointer that holds the address of memory that was already deleted",
+        "A pointer that is nullptr",
+        "A pointer to a global variable",
+        "A pointer with no type"
+      ],
+      "answer": "A pointer that holds the address of memory that was already deleted",
+      "hint": "The box is gone but the address remains.",
+      "explanation": "Using it is undefined behaviour."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which line is correct?",
+      "options": [
+        "int *p = new int(5);",
+        "int p = new int(5);",
+        "int *p = int(5);",
+        "new int(5) = p;"
+      ],
+      "answer": "int *p = new int(5);",
+      "hint": "new returns an address.",
+      "explanation": "The variable that receives an address must be a pointer."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "What happens when you run delete p; twice on the same address?",
+      "options": [
+        "Undefined behaviour, often a crash",
+        "Nothing, it is always safe",
+        "The value becomes 0",
+        "The compiler gives an error"
+      ],
+      "answer": "Undefined behaviour, often a crash",
+      "hint": "The box is already gone after the first delete.",
+      "explanation": "Double delete is a serious error. Setting p = nullptr after the first delete makes the second one harmless."
+    }
+  ],
+  "sources": [
+    "Dynamic memory allocation (DMA)",
+    "new and delete operators",
+    "Single dynamic variable",
+    "Memory leak",
+    "Dangling pointer"
+  ]
+}

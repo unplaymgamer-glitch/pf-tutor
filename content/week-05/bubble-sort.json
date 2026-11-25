@@ -1,0 +1,625 @@
+{
+  "slug": "bubble-sort",
+  "week": 5,
+  "title": "Bubble Sort: the biggest value bubbles to the end",
+  "defaultView": "visualize",
+  "order": 4,
+  "visuals": [
+    {
+      "kind": "sort",
+      "title": "Bubble Sort on 5 1 4 2 8: watch the largest value bubble to the right",
+      "algo": "bubble",
+      "values": [
+        5,
+        1,
+        4,
+        2,
+        8
+      ],
+      "compare": false
+    },
+    {
+      "kind": "sort",
+      "title": "Almost sorted data: the early-exit flag stops after one extra pass",
+      "algo": "bubble",
+      "values": [
+        1,
+        2,
+        4,
+        3,
+        5,
+        6
+      ],
+      "compare": false
+    },
+    {
+      "kind": "match",
+      "title": "Match each bubble sort idea to its meaning",
+      "pairs": [
+        {
+          "term": "Compare neighbours",
+          "meaning": "look at a[j] and a[j + 1], two values side by side"
+        },
+        {
+          "term": "Swap",
+          "meaning": "exchange the two values with a temporary variable when they are in the wrong order"
+        },
+        {
+          "term": "One pass",
+          "meaning": "one trip along the unsorted part; the largest value ends at the right end"
+        },
+        {
+          "term": "n - 1 passes",
+          "meaning": "enough to sort n values (the last value is then in place automatically)"
+        },
+        {
+          "term": "j < N - 1 - pass",
+          "meaning": "the inner loop shrinks, because the last values are already sorted"
+        },
+        {
+          "term": "swapped flag",
+          "meaning": "if a pass made no swap, the array is sorted and we can break out"
+        },
+        {
+          "term": "n(n - 1) / 2",
+          "meaning": "the number of comparisons in a full sort without early exit"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can sort an array with Bubble Sort, explain what happens in each pass, say why the inner loop shrinks, and trace a pass by hand on four or five numbers.",
+  "warmup": "Imagine five students standing in a line for assembly, and the teacher says: stand in order of height, shortest first. You cannot see the whole line at once, so you only look at the two students next to each other. If the left one is taller, they swap places. You walk down the line doing this for every pair. At the end of the walk the tallest student has been pushed all the way to the right end, like a bubble floating up in a glass of water. Then you repeat the walk, but the last student is already correct, so you stop one place earlier each time.",
+  "definition": "Bubble Sort is a simple way to sort an array. It repeatedly compares two NEIGHBOURING elements and swaps them if they are in the wrong order. One full trip along the array is called a pass. After pass 1 the largest value has bubbled to the last position. After pass 2 the second largest is in the second-to-last position, and so on. An array of N elements needs at most N - 1 passes. Sorting ascending means smallest first. Sorting descending means largest first.",
+  "howItWorks": "Use the Visualize tab and press Play. Look at the bars. The two bars being compared are highlighted. If the left bar is taller, they swap. Here is the logic in four lines. (1) Outer loop: pass = 0 to N - 2. That is N - 1 passes. (2) Inner loop: j = 0 while j < N - 1 - pass. In each step compare a[j] with a[j + 1]. (3) If a[j] > a[j + 1] swap them using a temporary variable. (4) After the inner loop, the biggest unsorted value is in its final place. Why does the inner loop shrink? After pass 0 the last 1 value is final. After pass 1 the last 2 values are final. So pass number 'pass' needs to look only at the first N - pass values, which means the last pair to compare is (N - 2 - pass, N - 1 - pass), and that is why the condition is j < N - 1 - pass. Counting comparisons: pass 0 makes N - 1, pass 1 makes N - 2, ... the last pass makes 1. The total is (N - 1) + (N - 2) + ... + 1 = N(N - 1) / 2. For N = 5 that is 10. Optional improvement: use a bool flag called swapped. Set it to false at the start of each pass and to true when a swap happens. If a whole pass finishes with swapped still false, the array is already sorted and we can break. For descending order, change only the comparison: use a[j] < a[j + 1].",
+  "syntax": "for (int pass = 0; pass < N - 1; pass++) {        // N - 1 passes\n    for (int j = 0; j < N - 1 - pass; j++) {      // inner loop shrinks every pass\n        if (a[j] > a[j + 1]) {                    // use < for descending order\n            int temp = a[j];                      // swap with a temporary box\n            a[j] = a[j + 1];\n            a[j + 1] = temp;\n        }\n    }\n}\n// optional early exit:\n//   bool swapped = false;  at the start of each pass\n//   swapped = true;        inside the if, after a swap\n//   if (!swapped) break;   after the inner loop",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Sort the array {5, 1, 4, 2, 8} in ascending order with Bubble Sort. Print the array after every pass and the final sorted array.",
+      "pseudocode": [
+        "START",
+        "SET array a = {5, 1, 4, 2, 8}, N = 5",
+        "FOR pass = 0 TO N - 2",
+        "  FOR j = 0 TO N - 2 - pass",
+        "    IF a[j] > a[j + 1] THEN swap a[j] and a[j + 1]",
+        "  PRINT the array after this pass",
+        "PRINT the sorted array",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"pass = 0\"]\n  B --> C{pass < N - 1?}\n  C -->|Yes| D[\"j = 0\"]\n  D --> E{\"j < N - 1 - pass?\"}\n  E -->|Yes| F{\"a[j] > a[j+1]?\"}\n  F -->|Yes| G[Swap a j and a j+1]\n  F -->|No| H[\"j = j + 1\"]\n  G --> H\n  H --> E\n  E -->|No| I[/Print array after pass/]\n  I --> J[\"pass = pass + 1\"]\n  J --> C\n  C -->|No| K[/Print sorted array/]\n  K --> L([End])",
+      "sample": {
+        "id": "bubble-basic",
+        "title": "Bubble Sort, ascending, with printing after each pass",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int N = 5;\n    int a[N] = {5, 1, 4, 2, 8};\n\n    for (int pass = 0; pass < N - 1; pass++) {\n        for (int j = 0; j < N - 1 - pass; j++) {\n            if (a[j] > a[j + 1]) {\n                int temp = a[j];\n                a[j] = a[j + 1];\n                a[j + 1] = temp;\n            }\n        }\n        cout << \"After pass \" << pass + 1 << \": \";\n        for (int k = 0; k < N; k++) {\n            cout << a[k] << \" \";\n        }\n        cout << endl;\n    }\n\n    cout << \"Sorted: \";\n    for (int k = 0; k < N; k++) {\n        cout << a[k] << \" \";\n    }\n    cout << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "After pass 1: 1 4 2 5 8 \nAfter pass 2: 1 2 4 5 8 \nAfter pass 3: 1 2 4 5 8 \nAfter pass 4: 1 2 4 5 8 \nSorted: 1 2 4 5 8 \n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "N is the size of the array."
+          },
+          {
+            "line": 6,
+            "text": "The unsorted data. The same array will be rearranged in place."
+          },
+          {
+            "line": 8,
+            "text": "Outer loop: one round per pass. N - 1 passes are enough."
+          },
+          {
+            "line": 9,
+            "text": "Inner loop: walks along the unsorted part. N - 1 - pass means it gets shorter every pass, because the last values are already in place."
+          },
+          {
+            "line": 10,
+            "text": "Compares two neighbours. If the left one is bigger, they are in the wrong order. Use < here to sort in descending order."
+          },
+          {
+            "line": 11,
+            "text": "Swap step 1: save the left value in a temporary box."
+          },
+          {
+            "line": 12,
+            "text": "Swap step 2: move the right value to the left."
+          },
+          {
+            "line": 13,
+            "text": "Swap step 3: put the saved value on the right."
+          },
+          {
+            "line": 16,
+            "text": "After the inner loop finishes, one pass is complete. Print the pass number (pass starts at 0, so we add 1)."
+          },
+          {
+            "line": 17,
+            "text": "A small loop that prints all elements of the array."
+          },
+          {
+            "line": 23,
+            "text": "After all passes, the whole array is in ascending order."
+          }
+        ]
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Sort {1, 2, 4, 3, 5} with Bubble Sort using an early-exit flag. Print the array after each pass, how many passes were used and how many comparisons were made.",
+      "pseudocode": [
+        "START",
+        "SET array a = {1, 2, 4, 3, 5}, comparisons = 0, passes = 0",
+        "FOR pass = 0 TO N - 2",
+        "  swapped = false, passes = passes + 1",
+        "  FOR j = 0 TO N - 2 - pass",
+        "    comparisons = comparisons + 1",
+        "    IF a[j] > a[j + 1] THEN swap and swapped = true",
+        "  PRINT the array",
+        "  IF swapped is false THEN stop",
+        "PRINT passes and comparisons",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"pass = 0\"]\n  B --> C{pass < N - 1?}\n  C -->|Yes| D[\"swapped = false\"]\n  D --> E[\"Inner loop: compare and swap, set swapped = true on a swap\"]\n  E --> F[/Print array/]\n  F --> G{swapped?}\n  G -->|No| K[/Print passes and comparisons/]\n  G -->|Yes| H[\"pass = pass + 1\"]\n  H --> C\n  C -->|No| K\n  K --> L([End])",
+      "sample": {
+        "id": "bubble-early-exit",
+        "title": "Bubble Sort with early exit and counters",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int N = 5;\n    int a[N] = {1, 2, 4, 3, 5};\n    int comparisons = 0;\n    int passes = 0;\n\n    for (int pass = 0; pass < N - 1; pass++) {\n        bool swapped = false;\n        passes++;\n        for (int j = 0; j < N - 1 - pass; j++) {\n            comparisons++;\n            if (a[j] > a[j + 1]) {\n                int temp = a[j];\n                a[j] = a[j + 1];\n                a[j + 1] = temp;\n                swapped = true;\n            }\n        }\n        cout << \"After pass \" << pass + 1 << \": \";\n        for (int k = 0; k < N; k++) {\n            cout << a[k] << \" \";\n        }\n        cout << endl;\n        if (!swapped) {\n            break;\n        }\n    }\n\n    cout << \"Passes used: \" << passes << endl;\n    cout << \"Comparisons: \" << comparisons << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "After pass 1: 1 2 3 4 5 \nAfter pass 2: 1 2 3 4 5 \nPasses used: 2\nComparisons: 7\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "This array is almost sorted: only 4 and 3 are in the wrong order."
+          },
+          {
+            "line": 7,
+            "text": "Counts every comparison between neighbours."
+          },
+          {
+            "line": 8,
+            "text": "Counts how many passes really happen."
+          },
+          {
+            "line": 11,
+            "text": "Reset the flag at the start of EVERY pass. We assume nothing will be swapped."
+          },
+          {
+            "line": 12,
+            "text": "A new pass has started."
+          },
+          {
+            "line": 14,
+            "text": "One more comparison."
+          },
+          {
+            "line": 19,
+            "text": "A swap happened, so the array was NOT sorted at the start of this pass."
+          },
+          {
+            "line": 27,
+            "text": "No swap in this pass means every neighbour pair is in order, so the array is sorted. break leaves the outer loop early."
+          },
+          {
+            "line": 32,
+            "text": "Only 2 passes instead of 4, and 7 comparisons instead of the full 10."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "The array is {7, 3, 5, 1}. Trace ONE pass of Bubble Sort (ascending) by hand. Write the array after the pass and count the comparisons and swaps. Then check your answer with the program.",
+      "pseudocode": [
+        "START",
+        "SET array a = {7, 3, 5, 1}, comparisons = 0, swaps = 0",
+        "FOR j = 0 TO N - 2",
+        "  comparisons = comparisons + 1",
+        "  IF a[j] > a[j + 1] THEN swap them and swaps = swaps + 1",
+        "PRINT the array, comparisons and swaps",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"j = 0, comparisons = 0, swaps = 0\"]\n  B --> C{\"j < N - 1?\"}\n  C -->|Yes| D[\"comparisons = comparisons + 1\"]\n  D --> E{\"a[j] > a[j+1]?\"}\n  E -->|Yes| F[\"Swap, swaps = swaps + 1\"]\n  E -->|No| G[\"j = j + 1\"]\n  F --> G\n  G --> C\n  C -->|No| H[/Print array, comparisons, swaps/]\n  H --> I([End])",
+      "sample": {
+        "id": "bubble-one-pass",
+        "title": "Trace one Bubble Sort pass",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int N = 4;\n    int a[N] = {7, 3, 5, 1};\n    int comparisons = 0;\n    int swaps = 0;\n\n    for (int j = 0; j < N - 1; j++) {\n        comparisons++;\n        if (a[j] > a[j + 1]) {\n            int temp = a[j];\n            a[j] = a[j + 1];\n            a[j + 1] = temp;\n            swaps++;\n        }\n    }\n\n    cout << \"After pass 1: \";\n    for (int k = 0; k < N; k++) {\n        cout << a[k] << \" \";\n    }\n    cout << endl;\n    cout << \"Comparisons: \" << comparisons << endl;\n    cout << \"Swaps: \" << swaps << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "After pass 1: 3 5 1 7 \nComparisons: 3\nSwaps: 3\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Start: 7 3 5 1."
+          },
+          {
+            "line": 10,
+            "text": "Only one pass, so only the inner loop. j goes 0, 1, 2 (three pairs)."
+          },
+          {
+            "line": 11,
+            "text": "Pair 1 is (7, 3), pair 2 is (7, 5), pair 3 is (7, 1)."
+          },
+          {
+            "line": 12,
+            "text": "The big value 7 is always on the left, so every comparison asks for a swap."
+          },
+          {
+            "line": 16,
+            "text": "Counts the swaps. Here 3 comparisons gave 3 swaps."
+          },
+          {
+            "line": 20,
+            "text": "The result is 3 5 1 7. The largest value 7 is in its final place; the other values are only partly sorted."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "a": "7 3 5 1"
+              },
+              "note": "The array holds 7, 3, 5, 1 at positions 0 to 3.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "comparisons": "0"
+              },
+              "note": "We count how many comparisons we make.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "swaps": "0"
+              },
+              "note": "We count how many swaps we make.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "j": "0",
+                "comparisons": "1"
+              },
+              "note": "j = 0: compare a[0] = 7 with a[1] = 3.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "a": "3 7 5 1",
+                "swaps": "1"
+              },
+              "note": "7 > 3 is true, so swap them. The 7 moved one step to the right.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "j": "1",
+                "comparisons": "2"
+              },
+              "note": "j = 1: compare a[1] = 7 with a[2] = 5.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "a": "3 5 7 1",
+                "swaps": "2"
+              },
+              "note": "7 > 5 is true, so swap. The 7 keeps bubbling to the right.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "j": "2",
+                "comparisons": "3"
+              },
+              "note": "j = 2: compare a[2] = 7 with a[3] = 1.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "a": "3 5 1 7",
+                "swaps": "3"
+              },
+              "note": "7 > 1 is true, so swap. The largest value 7 is now at the end. The loop stops because j would be 3.",
+              "out": ""
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "Pass 1 is complete. Print the label.",
+              "out": "After pass 1: "
+            },
+            {
+              "line": 22,
+              "vars": {},
+              "note": "Prints the array: 7 has bubbled to the last place.",
+              "out": "3 5 1 7 "
+            },
+            {
+              "line": 24,
+              "vars": {},
+              "note": "End of the line.",
+              "out": "\n"
+            },
+            {
+              "line": 25,
+              "vars": {},
+              "note": "A pass over 4 numbers makes 3 comparisons (N - 1).",
+              "out": "Comparisons: 3\n"
+            },
+            {
+              "line": 26,
+              "vars": {},
+              "note": "Every comparison needed a swap in this pass.",
+              "out": "Swaps: 3\n"
+            }
+          ],
+          "types": {
+            "a": "int[4]",
+            "j": "int",
+            "comparisons": "int",
+            "swaps": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Ascending (small to large)",
+      "when": "Most common exam question",
+      "example": "if (a[j] > a[j + 1]) { swap }"
+    },
+    {
+      "way": "Descending (large to small)",
+      "when": "Question says largest first",
+      "example": "if (a[j] < a[j + 1]) { swap }"
+    },
+    {
+      "way": "Early exit with a flag",
+      "when": "Data may already be sorted; saves passes",
+      "example": "bool swapped = false;   // each pass\n...\nif (!swapped) break;"
+    },
+    {
+      "way": "Inner limit N - 1 - pass",
+      "when": "Standard, does not re-check the sorted end",
+      "example": "for (int j = 0; j < N - 1 - pass; j++)"
+    },
+    {
+      "way": "Inner limit N - 1 (simpler)",
+      "when": "Still correct, but wastes comparisons",
+      "example": "for (int j = 0; j < N - 1; j++)"
+    },
+    {
+      "way": "Swap with a temporary",
+      "when": "Always, to avoid losing a value",
+      "example": "int temp = a[j];\na[j] = a[j + 1];\na[j + 1] = temp;"
+    },
+    {
+      "way": "Number of comparisons",
+      "when": "N values, no early exit",
+      "example": "N * (N - 1) / 2   // 10 for N = 5"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "if (a[j] > a[j + 1]) {\n    a[j] = a[j + 1];\n    a[j + 1] = a[j];     // a[j] was already overwritten\n}",
+      "right": "int temp = a[j];\na[j] = a[j + 1];\na[j + 1] = temp;",
+      "error": "No compiler error. Without a temporary box the values are copied, not swapped. For {5, 1, 4, 2, 8} the program prints 1 1 2 2 8: the data is destroyed."
+    },
+    {
+      "wrong": "for (int j = 0; j < N; j++) {\n    if (a[j] > a[j + 1]) { ... }   // reads a[N]",
+      "right": "for (int j = 0; j < N - 1 - pass; j++)",
+      "error": "Usually no compiler error. When j = N - 1 the program reads a[N], which is outside the array (undefined behaviour). It may print garbage or give a wrong order."
+    },
+    {
+      "wrong": "// only ONE pass, no outer loop\nfor (int j = 0; j < N - 1; j++) {\n    if (a[j] > a[j + 1]) { swap }\n}",
+      "right": "Wrap the inner loop in: for (int pass = 0; pass < N - 1; pass++)",
+      "error": "No compiler error. One pass only moves the largest value to the end. For {5, 1, 4, 2, 8} the output is 1 4 2 5 8, which is not sorted."
+    },
+    {
+      "wrong": "if (a[j] < a[j + 1]) { swap }   // wanted ascending",
+      "right": "if (a[j] > a[j + 1]) { swap }",
+      "error": "No compiler error. The wrong comparison sorts in descending order: 8 5 4 2 1."
+    }
+  ],
+  "examTips": [
+    "Learn the 3 lines of a swap by heart: temp = a[j]; a[j] = a[j + 1]; a[j + 1] = temp;",
+    "After pass 1 the largest value is at the end. After pass 2 the second largest is next to it. Say this in a trace question.",
+    "N values need N - 1 passes. The inner loop limit is N - 1 - pass. Comparisons in total: N(N - 1) / 2.",
+    "Ascending uses a[j] > a[j + 1]. Descending uses a[j] < a[j + 1]. Only this sign changes.",
+    "When asked to trace, write one row per pass: the comparisons, which pairs swapped, and the array after the pass."
+  ],
+  "romanSummary": [
+    "Bubble Sort mein hum do paas wali values compare karte hain aur galat order mein hon to swap kar dete hain.",
+    "Har pass ke baad sab se bari value bubble ban kar aakhir mein pohanch jati hai.",
+    "N values ke liye N - 1 passes chahiye hote hain aur inner loop j < N - 1 - pass tak chalta hai.",
+    "Swap ke liye temp variable zaroori hai: temp = a[j]; a[j] = a[j + 1]; a[j + 1] = temp;",
+    "Ascending ke liye a[j] > a[j + 1] aur descending ke liye a[j] < a[j + 1] likho. Agar kisi pass mein swap na ho to array sorted hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "After the FIRST pass of Bubble Sort (ascending), where is the largest value?",
+      "options": [
+        "At the last position",
+        "At the first position",
+        "In the middle",
+        "It has not moved"
+      ],
+      "answer": "At the last position",
+      "hint": "The big value bubbles to the end.",
+      "explanation": "In pass 1 the largest value is carried to the right by every swap until it reaches the last place."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How many passes are enough to sort 6 numbers with Bubble Sort?",
+      "options": [
+        "5",
+        "6",
+        "7",
+        "3"
+      ],
+      "answer": "5",
+      "hint": "N - 1 passes.",
+      "explanation": "Each pass fixes the largest remaining value. After 5 passes the last value is automatically correct."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print (the array after pass 1)?\n\nint a[4] = {4, 3, 2, 1};\nfor (int j = 0; j < 3; j++) {\n    if (a[j] > a[j + 1]) {\n        int t = a[j];\n        a[j] = a[j + 1];\n        a[j + 1] = t;\n    }\n}\nfor (int k = 0; k < 4; k++) cout << a[k] << \" \";\ncout << endl;",
+      "answer": "3 2 1 4",
+      "hint": "The 4 bubbles to the end.",
+      "explanation": "4 is compared with 3, 2 and 1 and swapped every time. The others keep their order: 3 2 1 4."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "How many swaps does a full ascending Bubble Sort make on {3, 2, 1}?\n\nint a[3] = {3, 2, 1};\nint swaps = 0;\nfor (int pass = 0; pass < 2; pass++) {\n    for (int j = 0; j < 2 - pass; j++) {\n        if (a[j] > a[j + 1]) {\n            int t = a[j];\n            a[j] = a[j + 1];\n            a[j + 1] = t;\n            swaps++;\n        }\n    }\n}\ncout << swaps << endl;",
+      "answer": "3",
+      "hint": "Pass 1: 3 2 1 -> 2 3 1 -> 2 1 3. Pass 2: 2 1 -> 1 2.",
+      "explanation": "Pass 1 makes 2 swaps and pass 2 makes 1 swap, so 3 swaps in total."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This swap does not work. Rewrite the three lines so they really swap a[j] and a[j + 1].\n\na[j] = a[j + 1];\na[j + 1] = a[j];",
+      "answer": "int temp = a[j];\na[j] = a[j + 1];\na[j + 1] = temp;",
+      "hint": "Save one value before it is overwritten.",
+      "explanation": "The first line destroys the old a[j]. A temporary variable keeps it safe, so the second value can be copied back."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank so that the inner loop does not compare the values that are already sorted.\n\nfor (int pass = 0; pass < N - 1; pass++) {\n    for (int j = 0; j < ____; j++) {\n        if (a[j] > a[j + 1]) { /* swap */ }\n    }\n}",
+      "answer": "N - 1 - pass",
+      "hint": "After each pass one more value is final at the right end.",
+      "explanation": "In pass number 'pass' the last 'pass' values are already in place, and a[j + 1] must stay inside the array, so j < N - 1 - pass."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write the loops that sort the array a[N] in DESCENDING order with Bubble Sort (N and a are already declared).",
+      "answer": "for (int pass = 0; pass < N - 1; pass++) {\n    for (int j = 0; j < N - 1 - pass; j++) {\n        if (a[j] < a[j + 1]) {\n            int temp = a[j];\n            a[j] = a[j + 1];\n            a[j + 1] = temp;\n        }\n    }\n}",
+      "hint": "Only one sign changes compared to ascending.",
+      "explanation": "With a[j] < a[j + 1] the smaller value is pushed to the right, so each pass moves the smallest remaining value to the end and the array ends largest first."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "How many comparisons does Bubble Sort (no early exit) make on 6 values?",
+      "options": [
+        "15",
+        "30",
+        "36",
+        "6"
+      ],
+      "answer": "15",
+      "hint": "Use N(N - 1) / 2.",
+      "explanation": "6 x 5 / 2 = 15. The passes make 5 + 4 + 3 + 2 + 1 comparisons."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does Bubble Sort compare in each step?",
+      "options": [
+        "Two neighbouring elements",
+        "The first and last element only",
+        "The smallest element with every other element",
+        "Three elements at once"
+      ],
+      "answer": "Two neighbouring elements",
+      "hint": "Think of the students in the line.",
+      "explanation": "It compares a[j] with a[j + 1] and swaps them if they are in the wrong order."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "After each pass, which value is in its final place?",
+      "options": [
+        "The largest unsorted value",
+        "The smallest unsorted value",
+        "The middle value",
+        "The first value"
+      ],
+      "answer": "The largest unsorted value",
+      "hint": "It bubbles to the right end.",
+      "explanation": "Each pass carries the largest remaining value to the end of the unsorted part."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Why is the inner loop limit N - 1 - pass?",
+      "options": [
+        "The last values are already sorted, and a[j + 1] must stay inside the array",
+        "To make the program faster to type",
+        "Because arrays start at 1",
+        "Because swaps need extra space"
+      ],
+      "answer": "The last values are already sorted, and a[j + 1] must stay inside the array",
+      "hint": "What is already correct after pass 1?",
+      "explanation": "Each pass fixes one more value at the end, so the inner loop can stop one step earlier."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which change sorts in descending order?",
+      "options": [
+        "Use a[j] < a[j + 1] in the if",
+        "Use N + 1 passes",
+        "Start j at N",
+        "Remove the temp variable"
+      ],
+      "answer": "Use a[j] < a[j + 1] in the if",
+      "hint": "Only the comparison sign changes.",
+      "explanation": "With < the larger value moves left and the smaller one moves right."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "What does the swapped flag help with?",
+      "options": [
+        "Stopping early when a pass makes no swap",
+        "Counting the passes",
+        "Swapping faster",
+        "Sorting descending"
+      ],
+      "answer": "Stopping early when a pass makes no swap",
+      "hint": "What does no swap in a whole pass tell you?",
+      "explanation": "If no pair was swapped, every neighbour pair is in order, so the array is sorted and the loop can break."
+    }
+  ],
+  "sources": [
+    "Bubble Sort",
+    "Sorting a One-Dimensional Array"
+  ]
+}

@@ -1,0 +1,920 @@
+{
+  "slug": "program-structure",
+  "week": 16,
+  "title": "Recommended program structure for your project",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "The order of a project file, top to bottom",
+      "stages": [
+        {
+          "name": "1. #include lines",
+          "detail": "iostream, fstream, string: everything the program uses."
+        },
+        {
+          "name": "2. struct Record",
+          "detail": "Describe ONE record: id, name, value."
+        },
+        {
+          "name": "3. Constants",
+          "detail": "const int MAX = 100; so the array size has one name."
+        },
+        {
+          "name": "4. Prototypes",
+          "detail": "One line per function, so main can call them before they are defined."
+        },
+        {
+          "name": "5. main()",
+          "detail": "The array, the counter, load from file, then the menu loop with a switch."
+        },
+        {
+          "name": "6. Function definitions",
+          "detail": "addRecord, showAll, searchRecord, saveToFile, loadFromFile written after main."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each part of the skeleton to its job",
+      "pairs": [
+        {
+          "term": "struct Record",
+          "meaning": "Describes one record (its members)"
+        },
+        {
+          "term": "const int MAX",
+          "meaning": "One named size for the array"
+        },
+        {
+          "term": "Function prototype",
+          "meaning": "Tells the compiler a function exists before main"
+        },
+        {
+          "term": "do-while with switch",
+          "meaning": "The menu loop: repeat until the user chooses Quit"
+        },
+        {
+          "term": "int &n parameter",
+          "meaning": "Lets the function change main's record count"
+        },
+        {
+          "term": "const Record list[]",
+          "meaning": "The function may read the list but not change it"
+        },
+        {
+          "term": "saveToFile / loadFromFile",
+          "meaning": "Keep the data after the program closes"
+        }
+      ]
+    },
+    {
+      "kind": "switch",
+      "title": "The menu switch: which function does each choice call?",
+      "min": 1,
+      "max": 5,
+      "value": 1,
+      "cases": [
+        {
+          "value": 1,
+          "text": "addRecord(list, n)",
+          "breaks": true
+        },
+        {
+          "value": 2,
+          "text": "showAll(list, n)",
+          "breaks": true
+        },
+        {
+          "value": 3,
+          "text": "searchRecord(list, n)",
+          "breaks": true
+        },
+        {
+          "value": 4,
+          "text": "saveToFile(list, n); print Bye!",
+          "breaks": true
+        }
+      ],
+      "defaultText": "Invalid choice"
+    }
+  ],
+  "goal": "After this you can arrange a menu-driven project in the standard order: includes, struct, constants, prototypes, main with a menu loop, then function definitions, with file load and save.",
+  "warmup": "A good canteen menu board has an order: the heading, then the items, then the prices. If the prices came first, nobody could follow. A program file is the same. When everyone uses the same order, you can find things quickly and your teacher can read your code in a few minutes.",
+  "definition": "A program skeleton is a ready-made layout that you fill in. For a menu-driven project the recommended layout is: (1) #include lines, (2) a struct for one record, (3) constants such as MAX, (4) function prototypes, (5) main with the array, the counter and the menu loop, (6) the function definitions written after main. A prototype is a one-line promise: it tells the compiler a function's name and parameters so main can call it before its full code appears.",
+  "howItWorks": "Look at the full sample. main is short: it makes the array of records, a counter n for how many records are in use, loads old data from the file, and then runs a do-while loop. Inside the loop it prints the menu, reads the choice and uses a switch. Each case calls ONE function. The loop stops when the user picks Save and Exit. All the real work is in the functions after main. addRecord takes the array and the counter n by reference (int &n) because it must increase the count. showAll and searchRecord only read, so their array is const. saveToFile writes the count and then each record to a text file. loadFromFile reads it back at the start, and does nothing if the file does not exist yet. Common structure mistakes: writing the function before its prototype is known, putting everything in main, forgetting break in a case, forgetting to check n against MAX, and forgetting to pass n by reference so the count never changes.",
+  "syntax": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nstruct Record { int id; string name; double value; };   // 1 record\nconst int MAX = 100;                                    // array size\n\nvoid addRecord(Record list[], int &n);                  // prototypes\nvoid showAll(const Record list[], int n);\n\nint main() {\n    Record list[MAX];          // many records\n    int n = 0;                 // how many are used\n    int choice;\n    do {\n        // print menu, read choice\n        switch (choice) { /* one case per feature */ }\n    } while (choice != 4);\n    return 0;\n}\n\n// function definitions go below main\nvoid addRecord(Record list[], int &n) { /* ... */ }",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write a small skeleton: a struct Record (id and name), an array of 10 records, prototypes, and a menu loop with Add, Show and Quit.",
+      "pseudocode": [
+        "START",
+        "n = 0",
+        "REPEAT",
+        "  SHOW menu; READ choice",
+        "  CASE 1: addRecord",
+        "  CASE 2: showAll",
+        "  CASE 3: PRINT Bye",
+        "UNTIL choice is 3",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"n = 0\"]\n  B --> C[/\"Show menu\"/]\n  C --> D[/\"Read choice\"/]\n  D --> E{\"choice?\"}\n  E -->|1| F[\"addRecord\"]\n  E -->|2| G[\"showAll\"]\n  E -->|3| H[/\"Print Bye\"/]\n  E -->|other| I[/\"Invalid choice\"/]\n  F --> J{\"choice is 3?\"}\n  G --> J\n  I --> J\n  H --> J\n  J -->|No| C\n  J -->|Yes| K([End])",
+      "sample": {
+        "id": "skeleton-small",
+        "title": "A small skeleton: struct, array, prototypes, menu loop",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Record {\n    int id;\n    string name;\n};\n\nconst int MAX = 10;\n\nvoid addRecord(Record list[], int &n);\nvoid showAll(const Record list[], int n);\n\nint main() {\n    Record list[MAX];\n    int n = 0;\n    int choice;\n    do {\n        cout << \"1. Add  2. Show  3. Quit\" << endl;\n        cout << \"Choice: \";\n        cin >> choice;\n        switch (choice) {\n            case 1: addRecord(list, n); break;\n            case 2: showAll(list, n); break;\n            case 3: cout << \"Bye!\" << endl; break;\n            default: cout << \"Invalid choice\" << endl;\n        }\n    } while (choice != 3);\n    return 0;\n}\n\nvoid addRecord(Record list[], int &n) {\n    if (n == MAX) {\n        cout << \"List is full\" << endl;\n        return;\n    }\n    cout << \"ID: \";\n    cin >> list[n].id;\n    cout << \"Name: \";\n    cin >> list[n].name;\n    n++;\n}\n\nvoid showAll(const Record list[], int n) {\n    for (int i = 0; i < n; i++) {\n        cout << list[i].id << \" \" << list[i].name << endl;\n    }\n}\n",
+        "stdin": "1\n101\nAli\n2\n3\n",
+        "graphics": false,
+        "expectedOutput": "1. Add  2. Show  3. Quit\nChoice: ID: Name: 1. Add  2. Show  3. Quit\nChoice: 101 Ali\n1. Add  2. Show  3. Quit\nChoice: Bye!\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "One record. Part 1 after the includes: say what a record contains."
+          },
+          {
+            "line": 10,
+            "text": "A named constant for the array size. Change it in one place."
+          },
+          {
+            "line": 12,
+            "text": "Prototypes tell the compiler the function names before main. The definitions come after main."
+          },
+          {
+            "line": 13,
+            "text": "const means this function only reads the list and cannot change it."
+          },
+          {
+            "line": 16,
+            "text": "main owns the data: an array of structs and a counter n of how many records are used."
+          },
+          {
+            "line": 19,
+            "text": "The menu loop: print menu, read choice, act, repeat until Quit."
+          },
+          {
+            "line": 23,
+            "text": "One case per feature. Each case is one function call."
+          },
+          {
+            "line": 33,
+            "text": "Definitions after main. n is a reference so the function can increase main's count."
+          },
+          {
+            "line": 34,
+            "text": "Check the array is not full before writing, otherwise we would write past the end."
+          },
+          {
+            "line": 42,
+            "text": "The new record is stored at index n, then n grows."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 17,
+              "vars": {
+                "n": "0"
+              },
+              "note": "main creates the empty list (room for 10 records) and the counter n = 0. n is how many records are really stored.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "The menu loop starts. First the menu text is printed.",
+              "out": "1. Add  2. Show  3. Quit\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 21,
+              "vars": {},
+              "note": "Ask for a choice.",
+              "out": "Choice: ",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 22,
+              "vars": {
+                "choice": "1"
+              },
+              "note": "The user types 1.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "0",
+                    "choice": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 24,
+              "vars": {},
+              "note": "switch sends us to addRecord(list, n). The parameter int &n is the SAME box as main's n.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "0",
+                    "choice": "1"
+                  }
+                },
+                {
+                  "fn": "addRecord(list, n)",
+                  "vars": {
+                    "n": "(same box as main's n) 0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 38,
+              "vars": {},
+              "note": "Ask for the id.",
+              "out": "ID: ",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "0",
+                    "choice": "1"
+                  }
+                },
+                {
+                  "fn": "addRecord(list, n)",
+                  "vars": {
+                    "n": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 39,
+              "vars": {
+                "list[0].id": "101"
+              },
+              "note": "The user types 101. It is stored in the first free slot, list[n] = list[0].",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "0",
+                    "choice": "1"
+                  }
+                },
+                {
+                  "fn": "addRecord(list, n)",
+                  "vars": {
+                    "n": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 40,
+              "vars": {},
+              "note": "Ask for the name.",
+              "out": "Name: ",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "0",
+                    "choice": "1"
+                  }
+                },
+                {
+                  "fn": "addRecord(list, n)",
+                  "vars": {
+                    "n": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 41,
+              "vars": {
+                "list[0].name": "Ali"
+              },
+              "note": "The user types Ali. Record 0 is now complete.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "0",
+                    "choice": "1"
+                  }
+                },
+                {
+                  "fn": "addRecord(list, n)",
+                  "vars": {
+                    "n": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 42,
+              "vars": {
+                "n": "1"
+              },
+              "note": "n becomes 1 in main as well, because n is passed by reference.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "1",
+                    "choice": "1"
+                  }
+                },
+                {
+                  "fn": "addRecord(list, n)",
+                  "vars": {
+                    "n": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 29,
+              "vars": {},
+              "note": "Back in main. choice is 1, so the loop continues.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "1",
+                    "choice": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "Menu again.",
+              "out": "1. Add  2. Show  3. Quit\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "1",
+                    "choice": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 21,
+              "vars": {},
+              "note": "Ask again.",
+              "out": "Choice: ",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "1",
+                    "choice": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 22,
+              "vars": {
+                "choice": "2"
+              },
+              "note": "The user types 2.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "1",
+                    "choice": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 25,
+              "vars": {},
+              "note": "showAll gets a copy of n and a read-only view of the list (const).",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "1",
+                    "choice": "2"
+                  }
+                },
+                {
+                  "fn": "showAll(list, n)",
+                  "vars": {
+                    "n": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 47,
+              "vars": {
+                "i": "0"
+              },
+              "note": "The loop prints each stored record: id, space, name.",
+              "out": "101 Ali\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "1",
+                    "choice": "2"
+                  }
+                },
+                {
+                  "fn": "showAll(list, n)",
+                  "vars": {
+                    "n": "1",
+                    "i": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "Back in the loop: menu again.",
+              "out": "1. Add  2. Show  3. Quit\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "1",
+                    "choice": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 21,
+              "vars": {},
+              "note": "Ask again.",
+              "out": "Choice: ",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "1",
+                    "choice": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 22,
+              "vars": {
+                "choice": "3"
+              },
+              "note": "The user types 3.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "1",
+                    "choice": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 26,
+              "vars": {},
+              "note": "Quit: print Bye!. Then the while test (choice != 3) is false and the loop ends.",
+              "out": "Bye!\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "n": "1",
+                    "choice": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "n": "int",
+            "choice": "int",
+            "i": "int",
+            "list[0].id": "int",
+            "list[0].name": "string"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Add a search function to a list of records: findById returns the index of the record with a given id, or -1 when it is not there. Test it with id 102.",
+      "pseudocode": [
+        "START",
+        "SET list to three records",
+        "READ id",
+        "pos = findById(list, 3, id)",
+        "IF pos is -1 THEN PRINT Not found ELSE PRINT name",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/\"Read id\"/]\n  B --> C[\"pos = findById(list, 3, id)\"]\n  C --> D{\"pos == -1?\"}\n  D -->|Yes| E[/\"Print Not found\"/]\n  D -->|No| F[/\"Print Found and name\"/]\n  E --> G([End])\n  F --> G",
+      "sample": {
+        "id": "skeleton-search",
+        "title": "A search function: return the position or -1",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Record {\n    int id;\n    string name;\n};\n\nint findById(const Record list[], int n, int id);\n\nint main() {\n    Record list[3] = {{101, \"Ali\"}, {102, \"Sara\"}, {103, \"Hina\"}};\n    int id;\n    cout << \"Search ID: \";\n    cin >> id;\n    int pos = findById(list, 3, id);\n    if (pos == -1) {\n        cout << \"Not found\" << endl;\n    } else {\n        cout << \"Found: \" << list[pos].name << endl;\n    }\n    return 0;\n}\n\nint findById(const Record list[], int n, int id) {\n    for (int i = 0; i < n; i++) {\n        if (list[i].id == id) {\n            return i;\n        }\n    }\n    return -1;\n}\n",
+        "stdin": "102\n",
+        "graphics": false,
+        "expectedOutput": "Search ID: Found: Sara\n",
+        "explanation": [
+          {
+            "line": 10,
+            "text": "Prototype above main. The function returns the index of the record, or -1 when there is none."
+          },
+          {
+            "line": 13,
+            "text": "Three records filled with an initialiser list, so the example needs no typing."
+          },
+          {
+            "line": 17,
+            "text": "main only asks the question. The loop lives in the function."
+          },
+          {
+            "line": 18,
+            "text": "-1 is the usual 'not found' signal, because -1 is never a valid index."
+          },
+          {
+            "line": 26,
+            "text": "The definition after main. It must match the prototype exactly."
+          },
+          {
+            "line": 29,
+            "text": "Return as soon as the id matches."
+          },
+          {
+            "line": 32,
+            "text": "Reached only when the loop ends without a match."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write the complete recommended skeleton for a menu-driven project with Add, Show All, Search and Save and Exit. The program must load saved records when it starts and save them when it ends.",
+      "pseudocode": [
+        "START",
+        "loadFromFile",
+        "REPEAT",
+        "  SHOW menu; READ choice",
+        "  SWITCH choice: add / show / search / save and exit / invalid",
+        "UNTIL choice is 4",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Load records from file\"]\n  B --> C[/\"Show menu\"/]\n  C --> D[/\"Read choice\"/]\n  D --> E{\"choice?\"}\n  E -->|1| F[\"addRecord\"]\n  E -->|2| G[\"showAll\"]\n  E -->|3| H[\"searchRecord\"]\n  E -->|4| I[\"saveToFile, print Bye\"]\n  E -->|other| J[/\"Invalid choice\"/]\n  F --> K{\"choice is 4?\"}\n  G --> K\n  H --> K\n  J --> K\n  I --> K\n  K -->|No| C\n  K -->|Yes| L([End])",
+      "sample": {
+        "id": "skeleton-full",
+        "title": "The full recommended skeleton with file save and load",
+        "code": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nstruct Record {\n    int id;\n    string name;\n    double value;\n};\n\nconst int MAX = 100;\n\nvoid addRecord(Record list[], int &n);\nvoid showAll(const Record list[], int n);\nvoid searchRecord(const Record list[], int n);\nvoid saveToFile(const Record list[], int n);\nvoid loadFromFile(Record list[], int &n);\n\nint main() {\n    Record list[MAX];\n    int n = 0;\n    int choice;\n    loadFromFile(list, n);\n    do {\n        cout << \"\\n1. Add  2. Show All  3. Search  4. Save & Exit\\nChoice: \";\n        cin >> choice;\n        switch (choice) {\n            case 1: addRecord(list, n); break;\n            case 2: showAll(list, n); break;\n            case 3: searchRecord(list, n); break;\n            case 4: saveToFile(list, n); cout << \"Saved. Bye!\" << endl; break;\n            default: cout << \"Invalid choice\" << endl;\n        }\n    } while (choice != 4);\n    return 0;\n}\n\nvoid addRecord(Record list[], int &n) {\n    if (n >= MAX) {\n        cout << \"List is full\" << endl;\n        return;\n    }\n    cout << \"ID: \";\n    cin >> list[n].id;\n    cout << \"Name: \";\n    cin >> list[n].name;\n    cout << \"Value: \";\n    cin >> list[n].value;\n    n++;\n    cout << \"Added.\" << endl;\n}\n\nvoid showAll(const Record list[], int n) {\n    if (n == 0) {\n        cout << \"No records yet.\" << endl;\n        return;\n    }\n    for (int i = 0; i < n; i++) {\n        cout << list[i].id << \" \" << list[i].name << \" \" << list[i].value << endl;\n    }\n}\n\nvoid searchRecord(const Record list[], int n) {\n    int id;\n    cout << \"Search ID: \";\n    cin >> id;\n    for (int i = 0; i < n; i++) {\n        if (list[i].id == id) {\n            cout << \"Found: \" << list[i].name << endl;\n            return;\n        }\n    }\n    cout << \"Not found\" << endl;\n}\n\nvoid saveToFile(const Record list[], int n) {\n    ofstream out(\"records.txt\");\n    if (!out) {\n        cout << \"Cannot save the file\" << endl;\n        return;\n    }\n    out << n << endl;\n    for (int i = 0; i < n; i++) {\n        out << list[i].id << \" \" << list[i].name << \" \" << list[i].value << endl;\n    }\n}\n\nvoid loadFromFile(Record list[], int &n) {\n    ifstream in(\"records.txt\");\n    if (!in) {\n        return;\n    }\n    if (!(in >> n) || n > MAX) {\n        n = 0;\n        return;\n    }\n    for (int i = 0; i < n; i++) {\n        in >> list[i].id >> list[i].name >> list[i].value;\n    }\n}\n",
+        "stdin": "1\n101\nAli\n85.5\n1\n102\nSara\n92\n2\n3\n102\n4\n",
+        "graphics": false,
+        "expectedOutput": "\n1. Add  2. Show All  3. Search  4. Save & Exit\nChoice: ID: Name: Value: Added.\n\n1. Add  2. Show All  3. Search  4. Save & Exit\nChoice: ID: Name: Value: Added.\n\n1. Add  2. Show All  3. Search  4. Save & Exit\nChoice: 101 Ali 85.5\n102 Sara 92\n\n1. Add  2. Show All  3. Search  4. Save & Exit\nChoice: Search ID: Found: Sara\n\n1. Add  2. Show All  3. Search  4. Save & Exit\nChoice: Saved. Bye!\n",
+        "explanation": [
+          {
+            "line": 2,
+            "text": "Includes first. fstream is needed for the file functions."
+          },
+          {
+            "line": 6,
+            "text": "Then the struct: what ONE record contains."
+          },
+          {
+            "line": 12,
+            "text": "Then constants."
+          },
+          {
+            "line": 18,
+            "text": "Then all prototypes, one per feature. This list is like the table of contents of your project."
+          },
+          {
+            "line": 24,
+            "text": "Start by loading old data. If there is no file yet, the function simply does nothing."
+          },
+          {
+            "line": 32,
+            "text": "Quit saves first. Several statements are allowed in one case."
+          },
+          {
+            "line": 33,
+            "text": "Always handle a wrong menu number."
+          },
+          {
+            "line": 39,
+            "text": "From here on, function definitions after main, in the same order as the prototypes."
+          },
+          {
+            "line": 78,
+            "text": "Write: first the count, then one record per line."
+          },
+          {
+            "line": 79,
+            "text": "Always check that the file opened."
+          },
+          {
+            "line": 90,
+            "text": "Read: the same order as written. A missing file is not an error, just an empty list."
+          },
+          {
+            "line": 94,
+            "text": "A guard: a damaged file must never make us write past the end of the array."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Prototypes above main, definitions below",
+      "when": "The standard layout for projects. main stays at the top where it is easy to find.",
+      "example": "void showAll(const Record list[], int n);  // above main\n// ... main ...\nvoid showAll(const Record list[], int n) { ... }  // below main"
+    },
+    {
+      "way": "Definitions above main (no prototypes)",
+      "when": "Allowed for small programs, but main ends up at the bottom.",
+      "example": "void hello() { cout << \"Hi\"; }\nint main() { hello(); }"
+    },
+    {
+      "way": "do-while menu",
+      "when": "The menu must show at least once. The usual choice.",
+      "example": "do { ... } while (choice != 4);"
+    },
+    {
+      "way": "while (true) menu with return/break",
+      "when": "Another style; stop with break when the user chooses Quit.",
+      "example": "while (true) { ...; if (choice == 4) break; }"
+    },
+    {
+      "way": "int &n (reference) for the counter",
+      "when": "A function changes the record count, like addRecord.",
+      "example": "void addRecord(Record list[], int &n);"
+    },
+    {
+      "way": "const Record list[]",
+      "when": "A function only reads the array, like showAll or searchRecord.",
+      "example": "void showAll(const Record list[], int n);"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int main() {\n    hello();\n    return 0;\n}\nvoid hello() { cout << \"Hi\"; }",
+      "right": "void hello();   // prototype first\nint main() {\n    hello();\n    return 0;\n}\nvoid hello() { cout << \"Hi\"; }",
+      "error": "The compiler reports that 'hello' was not declared in this scope, because it meets the call before it knows the function. Add a prototype above main."
+    },
+    {
+      "wrong": "void addRecord(Record list[], int n) {\n    // ...\n    n++;\n}",
+      "right": "void addRecord(Record list[], int &n) {\n    // ...\n    n++;\n}",
+      "error": "No compiler error. Without & the function increases only its own copy of n, so main still thinks the list is empty and the new record never shows up."
+    },
+    {
+      "wrong": "case 1: addRecord(list, n);\ncase 2: showAll(list, n); break;",
+      "right": "case 1: addRecord(list, n); break;\ncase 2: showAll(list, n); break;",
+      "error": "No compiler error. Without break, choosing 1 also runs showAll (fall-through)."
+    },
+    {
+      "wrong": "list[n].id = 5;   // n may already be MAX\nn++;",
+      "right": "if (n >= MAX) {\n    cout << \"List is full\";\n    return;\n}\nlist[n].id = 5;\nn++;",
+      "error": "No compiler error. Writing past the end of the array is undefined behaviour and can crash the program or damage other data."
+    },
+    {
+      "wrong": "int main() {\n    // all 300 lines of the project here\n}",
+      "right": "int main() {\n    // only the menu loop; each case calls a function\n}",
+      "error": "It compiles, but a huge main is hard to read, test and explain. One function per feature."
+    }
+  ],
+  "examTips": [
+    "Memorise the order: includes, struct, constants, prototypes, main, function definitions.",
+    "If asked to write a menu program: do-while loop + switch with a break in every case + default for invalid input.",
+    "Explain int &n: the function changes the caller's counter. Explain const: the function must not change the array.",
+    "Loading: check that the file opened. Saving: write the count first, then the records, in the same order you will read them.",
+    "Keep main short. Say: main controls the flow, the functions do the work."
+  ],
+  "romanSummary": [
+    "Project ka standard order: include, struct, constants, function prototypes, main, aur phir functions ki definitions main ke neeche.",
+    "main mein array aur counter n hota hai, file se data load hota hai, aur do-while loop ke andar switch har feature ka function bulata hai.",
+    "Jo function count badalta hai us mein int &n likhte hain, aur jo sirf parhta hai us mein const array likhte hain.",
+    "Har case ke baad break likhein, default mein invalid choice dikhayein aur array ki limit MAX check karein.",
+    "Quit par saveToFile se data file mein likhein aur shuru mein loadFromFile se wapas parh lein."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Where do the function definitions usually go in the recommended skeleton?",
+      "options": [
+        "After main",
+        "Before the #include lines",
+        "Inside main",
+        "Inside the struct"
+      ],
+      "answer": "After main",
+      "hint": "Prototypes are above main.",
+      "explanation": "Prototypes above main promise the functions. The full code comes after main."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Why is the counter written int &n in addRecord?",
+      "options": [
+        "So the function can change main's count",
+        "So the function runs faster",
+        "To make n a constant",
+        "Because n is a string"
+      ],
+      "answer": "So the function can change main's count",
+      "hint": "Pass by reference.",
+      "explanation": "& makes n the same box as in main, so n++ is seen by main."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nstruct P {\n    int a;\n};\n\nint main() {\n    P v[3] = {{1}, {2}, {3}};\n    int total = 0;\n    for (int i = 0; i < 3; i++) {\n        total = total + v[i].a;\n    }\n    cout << total << endl;\n    return 0;\n}\n",
+      "answer": "6",
+      "hint": "Add the three members.",
+      "explanation": "The loop adds 1, 2 and 3. An array of structs is read with v[i].a."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Find the bug:\n\nint main() {\n    greet();\n    return 0;\n}\nvoid greet() { cout << \"Hello\"; }",
+      "answer": "greet is called before it is declared. Add the prototype void greet(); above main (or move the definition above main).",
+      "hint": "Does the compiler know greet at the call?",
+      "explanation": "A prototype tells the compiler the function exists before main uses it."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill the blank:\n\nswitch (choice) {\n    case 1: addRecord(list, n); ______\n    case 2: showAll(list, n); break;\n}",
+      "answer": "break;",
+      "hint": "Stop the case from running into the next one.",
+      "explanation": "break; leaves the switch. Without it case 2 would also run."
+    },
+    {
+      "id": "p6",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Why is the array declared const Record list[] in showAll?",
+      "options": [
+        "The function only reads the list and must not change it",
+        "So the list can be bigger",
+        "To save the list to a file",
+        "Because showAll returns a value"
+      ],
+      "answer": "The function only reads the list and must not change it",
+      "hint": "Think of read-only.",
+      "explanation": "const protects the data from accidental changes."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write the prototype of a function saveToFile that receives the array of Record and the number of records, and changes nothing.",
+      "answer": "void saveToFile(const Record list[], int n);",
+      "hint": "Return type, name, const array, count.",
+      "explanation": "const Record list[] means read-only. n is passed by value because it is only read."
+    },
+    {
+      "id": "p8",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int c = 0;\n    do {\n        c = c + 2;\n    } while (c < 5);\n    cout << c << endl;\n    return 0;\n}\n",
+      "answer": "6",
+      "hint": "do-while runs the body first.",
+      "explanation": "c goes 2, 4, 6. After 4 the test c < 5 is true so it repeats once more, then 6 < 5 is false."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which is the correct order in the recommended skeleton?",
+      "options": [
+        "includes, struct, constants, prototypes, main, definitions",
+        "main, includes, struct, prototypes",
+        "prototypes, main, includes, struct",
+        "struct, main, constants, includes"
+      ],
+      "answer": "includes, struct, constants, prototypes, main, definitions",
+      "hint": "Top to bottom as the notes show.",
+      "explanation": "This is the layout from the course notes."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does a function prototype do?",
+      "options": [
+        "Tells the compiler about a function before it is defined",
+        "Runs the function",
+        "Deletes the function",
+        "Creates an array"
+      ],
+      "answer": "Tells the compiler about a function before it is defined",
+      "hint": "It ends with a semicolon.",
+      "explanation": "It gives name, return type and parameters."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which loop and statement build the project menu?",
+      "options": [
+        "do-while with a switch",
+        "for with goto",
+        "recursion",
+        "typedef"
+      ],
+      "answer": "do-while with a switch",
+      "hint": "Show at least once, then choose.",
+      "explanation": "The menu appears at least once and the switch chooses the feature."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which skeleton part shows the concept 'keep data after the program closes'?",
+      "options": [
+        "saveToFile and loadFromFile",
+        "const int MAX",
+        "default: in the switch",
+        "the prototypes"
+      ],
+      "answer": "saveToFile and loadFromFile",
+      "hint": "Think of files.",
+      "explanation": "Writing to and reading from a file keeps data on disk."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "In addRecord the check if (n >= MAX) is there to:",
+      "options": [
+        "Avoid writing past the end of the array",
+        "Make the loop faster",
+        "Sort the records",
+        "Print the menu"
+      ],
+      "answer": "Avoid writing past the end of the array",
+      "hint": "The array has a fixed size.",
+      "explanation": "Index MAX does not exist, so we must stop before writing it."
+    }
+  ],
+  "sources": [
+    "Recommended program structure",
+    "Skeleton of a menu-driven project",
+    "Function prototypes and definitions after main",
+    "File save and load in a project"
+  ]
+}

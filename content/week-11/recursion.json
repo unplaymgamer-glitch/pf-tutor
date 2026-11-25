@@ -1,0 +1,1444 @@
+{
+  "slug": "recursion",
+  "week": 11,
+  "title": "Recursion: a function that calls itself",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "recursion",
+      "title": "Countdown: the call stack grows to the base case, then unwinds",
+      "fn": "countdown",
+      "n": 3
+    },
+    {
+      "kind": "recursion",
+      "title": "Factorial: calls go down, return values come back up",
+      "fn": "factorial",
+      "n": 4
+    },
+    {
+      "kind": "match",
+      "title": "Match each recursion word to its meaning",
+      "pairs": [
+        {
+          "term": "Recursion",
+          "meaning": "A function that calls itself to solve a smaller version of the same problem"
+        },
+        {
+          "term": "Base case",
+          "meaning": "The simplest input, answered directly: it stops the calls"
+        },
+        {
+          "term": "Recursive case",
+          "meaning": "The part that calls the function again with a smaller input"
+        },
+        {
+          "term": "Call stack",
+          "meaning": "The pile of waiting function calls, each with its own variables"
+        },
+        {
+          "term": "Stack overflow",
+          "meaning": "The crash that happens when the calls never stop and the stack runs out of memory"
+        },
+        {
+          "term": "Unwinding",
+          "meaning": "Calls finishing one by one and returning their answers back up the stack"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can explain what recursion is, name the base case and the recursive case, follow the call stack as it grows and unwinds, and write simple recursive functions such as countdown and factorial.",
+  "warmup": "You stand in a long queue at the fee counter and want to know your position. You cannot see the front, so you ask the person ahead of you: \"What is your position?\" He does not know either, so he asks the person ahead of him, and so on. At last the first person says \"I am number 1.\" Now the answers travel back: the second person says 2, the third says 3, and finally you hear your own number. Nobody solved the whole problem. Each person only added 1 to the answer of the person in front. That is recursion.",
+  "definition": "Recursion means a function calls itself to solve a smaller version of the same problem. Every recursive function has two parts. The BASE CASE is the simplest situation, which the function answers directly without calling itself. It is what stops the process. The RECURSIVE CASE is the part where the function calls itself with a smaller input, so that each call moves closer to the base case. The computer keeps track of all the waiting calls in a memory area called the call stack.",
+  "howItWorks": "Follow factorial(4) in the visual and the traces. Going DOWN: factorial(4) cannot answer yet because it needs factorial(3), so it calls it and waits. factorial(3) waits for factorial(2), and factorial(2) waits for factorial(1). Every call is a separate frame on the call stack with its OWN copy of n (4, 3, 2, 1), so they never mix up. At factorial(1) the base case answers 1 directly. Going UP (this is called unwinding): factorial(1) returns 1, so factorial(2) can finish 2 * 1 = 2, then factorial(3) finishes 3 * 2 = 6, then factorial(4) finishes 4 * 6 = 24. Each frame disappears after it returns. Notice WHEN code runs. Code placed BEFORE the recursive call runs on the way down. Code placed AFTER it runs on the way up, in reverse order (see the in/out example). Recursion versus a loop: the loop version of factorial uses one frame and a counter, so it is usually faster and uses less memory. Recursion often gives shorter, more natural code when a problem is defined in terms of itself. Danger: if there is no base case, or the calls never reach it, the function keeps calling itself forever. Every call needs stack memory, so the stack eventually runs out and the program crashes. This crash is called a stack overflow. (We only describe it here; never run such a program.)",
+  "syntax": "// the shape of every recursive function\nreturnType name(parameters) {\n    if (simplest case) {          // BASE CASE: answer directly, no call to itself\n        return answer;\n    }\n    // RECURSIVE CASE: call yourself with a SMALLER problem\n    return something + name(smaller problem);\n}\n\n// example: factorial\nlong long factorial(int n) {\n    if (n <= 1)                   // base case\n        return 1;\n    return n * factorial(n - 1);  // recursive case\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write a recursive function countdown(n) that prints n, n-1, ... 1 and then Go!. Call it with 2 and follow the call stack.",
+      "pseudocode": [
+        "START",
+        "Call countdown(n)",
+        "IF n is 0: print Go! and return (base case)",
+        "ELSE print n",
+        "Call countdown(n - 1) (recursive case)",
+        "When it comes back the function ends",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Call countdown with n\"]\n  B --> C{\"n == 0?\"}\n  C -- Yes --> D[/Print Go!/]\n  D --> E([Return])\n  C -- No --> F[/Print n/]\n  F --> G[\"Call countdown with n - 1, a new copy starts at the top\"]\n  G --> C",
+      "sample": {
+        "id": "countdown",
+        "title": "Countdown: a function that calls itself",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid countdown(int n) {\n    if (n == 0) {\n        cout << \"Go!\" << endl;\n        return;\n    }\n    cout << n << \" \";\n    countdown(n - 1);\n}\n\nint main() {\n    countdown(2);\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "2 1 Go!\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "The function name appears again inside its own body (line 10). That is what makes it recursive."
+          },
+          {
+            "line": 5,
+            "text": "BASE CASE: when n reaches 0 we stop calling and finish."
+          },
+          {
+            "line": 6,
+            "text": "Only the base case prints Go!."
+          },
+          {
+            "line": 7,
+            "text": "A void function can use return; to leave early. No more calls are made."
+          },
+          {
+            "line": 9,
+            "text": "RECURSIVE CASE, part 1: print the current number before calling again."
+          },
+          {
+            "line": 10,
+            "text": "RECURSIVE CASE, part 2: call the same function with a smaller number (n - 1). This moves us towards the base case."
+          },
+          {
+            "line": 14,
+            "text": "main starts the chain with n = 2."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 14,
+              "vars": {
+                "n": "2"
+              },
+              "note": "main calls countdown(2). A new frame countdown(2) is pushed on the call stack and its own n is 2.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "countdown(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "n is 2, not 0, so this is the recursive case. The if body is skipped.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "countdown(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Print n. The 2 appears on the way DOWN.",
+              "out": "2 ",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "countdown(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {
+                "n": "1"
+              },
+              "note": "countdown(2) calls itself with n - 1 = 1. A NEW frame is stacked on top. Each frame has its own n.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "countdown(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "countdown(1)",
+                  "vars": {
+                    "n": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "In the new frame n is 1, still not 0.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "countdown(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "countdown(1)",
+                  "vars": {
+                    "n": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Print 1.",
+              "out": "1 ",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "countdown(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "countdown(1)",
+                  "vars": {
+                    "n": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {
+                "n": "0"
+              },
+              "note": "countdown(1) calls countdown(0). The stack is now three frames deep.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "countdown(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "countdown(1)",
+                  "vars": {
+                    "n": "1"
+                  }
+                },
+                {
+                  "fn": "countdown(0)",
+                  "vars": {
+                    "n": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "n is 0: this is the BASE CASE. No more calls.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "countdown(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "countdown(1)",
+                  "vars": {
+                    "n": "1"
+                  }
+                },
+                {
+                  "fn": "countdown(0)",
+                  "vars": {
+                    "n": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "Print Go! and a new line.",
+              "out": "Go!\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "countdown(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "countdown(1)",
+                  "vars": {
+                    "n": "1"
+                  }
+                },
+                {
+                  "fn": "countdown(0)",
+                  "vars": {
+                    "n": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "countdown(0) returns. Its frame is removed and control goes back to countdown(1), just after its call line.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "countdown(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "countdown(1)",
+                  "vars": {
+                    "n": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "countdown(1) has nothing left to do, so it ends too. Its frame is removed.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "countdown(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "countdown(2) ends. Only main is left on the stack.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "main finishes. The whole chain of calls is over.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            }
+          ],
+          "types": {
+            "n": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Write a recursive function that finds n factorial (n! = n * (n-1) * ... * 1). Print 4! and compare with the loop version.",
+      "pseudocode": [
+        "START",
+        "factorial(n): IF n <= 1 return 1 (base case)",
+        "ELSE return n times factorial(n - 1) (recursive case)",
+        "The calls go down to n = 1, then the answers multiply on the way up",
+        "Loop version: result = 1, multiply by 2..n",
+        "PRINT both answers",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Call factorial with n\"]\n  B --> C{\"n <= 1?\"}\n  C -- Yes --> D[\"Return 1, base case\"]\n  C -- No --> E[\"Call factorial with n - 1 and wait\"]\n  E --> F[\"Return n times the answer\"]\n  D --> G([Back to the caller])\n  F --> G",
+      "sample": {
+        "id": "factorial",
+        "title": "Factorial: recursion and loop side by side",
+        "code": "#include <iostream>\nusing namespace std;\n\nlong long factorial(int n) {\n    if (n <= 1) {\n        return 1;\n    }\n    return n * factorial(n - 1);\n}\n\nlong long factorialLoop(int n) {\n    long long result = 1;\n    for (int i = 2; i <= n; i++) {\n        result = result * i;\n    }\n    return result;\n}\n\nint main() {\n    cout << \"recursive: \" << factorial(4) << endl;\n    cout << \"loop:      \" << factorialLoop(4) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "recursive: 24\nloop:      24\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "long long holds big answers. 4! = 24, and 20! still fits in a long long."
+          },
+          {
+            "line": 5,
+            "text": "BASE CASE: 1! (and 0!) is 1, so no further calls are needed."
+          },
+          {
+            "line": 6,
+            "text": "Return the answer directly."
+          },
+          {
+            "line": 8,
+            "text": "RECURSIVE CASE: n! = n * (n-1)!. The smaller problem is n - 1."
+          },
+          {
+            "line": 11,
+            "text": "The same job with a loop, for comparison."
+          },
+          {
+            "line": 12,
+            "text": "result starts at 1, the neutral value for multiplication."
+          },
+          {
+            "line": 13,
+            "text": "The loop multiplies result by 2, 3, ... n."
+          },
+          {
+            "line": 20,
+            "text": "Calls the recursive version."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 20,
+              "vars": {
+                "n": "4"
+              },
+              "note": "main calls factorial(4). Frame factorial(4) is created with n = 4.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "factorial(4)",
+                  "vars": {
+                    "n": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "4 <= 1 is false, so we use the recursive case.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "factorial(4)",
+                  "vars": {
+                    "n": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {
+                "n": "3"
+              },
+              "note": "To finish, factorial(4) needs factorial(3). It calls it and WAITS (4 * ? is not ready).",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "factorial(4)",
+                  "vars": {
+                    "n": "4"
+                  }
+                },
+                {
+                  "fn": "factorial(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "3 <= 1 is false.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "factorial(4)",
+                  "vars": {
+                    "n": "4"
+                  }
+                },
+                {
+                  "fn": "factorial(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {
+                "n": "2"
+              },
+              "note": "factorial(3) calls factorial(2) and waits.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "factorial(4)",
+                  "vars": {
+                    "n": "4"
+                  }
+                },
+                {
+                  "fn": "factorial(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                },
+                {
+                  "fn": "factorial(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "2 <= 1 is false.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "factorial(4)",
+                  "vars": {
+                    "n": "4"
+                  }
+                },
+                {
+                  "fn": "factorial(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                },
+                {
+                  "fn": "factorial(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {
+                "n": "1"
+              },
+              "note": "factorial(2) calls factorial(1) and waits. Four frames are on the stack.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "factorial(4)",
+                  "vars": {
+                    "n": "4"
+                  }
+                },
+                {
+                  "fn": "factorial(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                },
+                {
+                  "fn": "factorial(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "factorial(1)",
+                  "vars": {
+                    "n": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "1 <= 1 is true: BASE CASE reached.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "factorial(4)",
+                  "vars": {
+                    "n": "4"
+                  }
+                },
+                {
+                  "fn": "factorial(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                },
+                {
+                  "fn": "factorial(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "factorial(1)",
+                  "vars": {
+                    "n": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "factorial(1) returns 1. The answers now start to come back UP.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "factorial(4)",
+                  "vars": {
+                    "n": "4"
+                  }
+                },
+                {
+                  "fn": "factorial(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                },
+                {
+                  "fn": "factorial(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "factorial(1)",
+                  "vars": {
+                    "n": "1",
+                    "returns": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "factorial(2) receives 1 and returns 2 * 1 = 2.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "factorial(4)",
+                  "vars": {
+                    "n": "4"
+                  }
+                },
+                {
+                  "fn": "factorial(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                },
+                {
+                  "fn": "factorial(2)",
+                  "vars": {
+                    "n": "2",
+                    "returns": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "factorial(3) receives 2 and returns 3 * 2 = 6.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "factorial(4)",
+                  "vars": {
+                    "n": "4"
+                  }
+                },
+                {
+                  "fn": "factorial(3)",
+                  "vars": {
+                    "n": "3",
+                    "returns": "6"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "factorial(4) receives 6 and returns 4 * 6 = 24. The stack is back to just main.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "factorial(4)",
+                  "vars": {
+                    "n": "4",
+                    "returns": "24"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "main prints the answer it got back.",
+              "out": "recursive: 24\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 21,
+              "vars": {},
+              "note": "The loop version uses ONE frame: i goes 2, 3, 4 and result becomes 2, 6, 24. Same answer, no stack of calls.",
+              "out": "loop:      24\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 22,
+              "vars": {},
+              "note": "Done.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            }
+          ],
+          "types": {
+            "n": "int",
+            "result": "long long",
+            "i": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "What does the following program print? Explain why the \"out\" lines come in the order shown.",
+      "pseudocode": [
+        "START",
+        "Call show(3)",
+        "show(n): IF n is 0 return",
+        "Print in n (before the call)",
+        "Call show(n - 1)",
+        "Print out n (after the call returns)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Call show with n\"]\n  B --> C{\"n == 0?\"}\n  C -- Yes --> D([Return])\n  C -- No --> E[/Print in n/]\n  E --> F[\"Call show with n - 1\"]\n  F --> G[/Print out n/]\n  G --> D",
+      "sample": {
+        "id": "in-and-out",
+        "title": "Before and after the recursive call",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid show(int n) {\n    if (n == 0) return;\n    cout << \"in \" << n << endl;\n    show(n - 1);\n    cout << \"out \" << n << endl;\n}\n\nint main() {\n    show(3);\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "in 3\nin 2\nin 1\nout 1\nout 2\nout 3\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "BASE CASE written on one line: when n is 0 just return."
+          },
+          {
+            "line": 6,
+            "text": "This line runs BEFORE the recursive call, so it prints while the stack grows."
+          },
+          {
+            "line": 7,
+            "text": "RECURSIVE CASE: call show with a smaller n."
+          },
+          {
+            "line": 8,
+            "text": "This line runs AFTER the recursive call returns, so it prints while the stack unwinds, in reverse order."
+          },
+          {
+            "line": 12,
+            "text": "The first call. n = 3, 2, 1 then 0 (base case)."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 12,
+              "vars": {
+                "n": "3"
+              },
+              "note": "main calls show(3). Frame show(3) is created.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "show(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "n is 3, so line 5 did not return. Print in 3.",
+              "out": "in 3\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "show(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "n": "2"
+              },
+              "note": "Call show(2). show(3) pauses right here; the line AFTER this call has not run yet.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "show(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                },
+                {
+                  "fn": "show(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "Print in 2.",
+              "out": "in 2\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "show(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                },
+                {
+                  "fn": "show(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "n": "1"
+              },
+              "note": "Call show(1). show(2) pauses.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "show(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                },
+                {
+                  "fn": "show(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "show(1)",
+                  "vars": {
+                    "n": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "Print in 1.",
+              "out": "in 1\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "show(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                },
+                {
+                  "fn": "show(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "show(1)",
+                  "vars": {
+                    "n": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "n": "0"
+              },
+              "note": "Call show(0). Four frames are waiting or running.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "show(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                },
+                {
+                  "fn": "show(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "show(1)",
+                  "vars": {
+                    "n": "1"
+                  }
+                },
+                {
+                  "fn": "show(0)",
+                  "vars": {
+                    "n": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "n is 0: BASE CASE. show(0) returns at once and prints nothing.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "show(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                },
+                {
+                  "fn": "show(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "show(1)",
+                  "vars": {
+                    "n": "1"
+                  }
+                },
+                {
+                  "fn": "show(0)",
+                  "vars": {
+                    "n": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Back in show(1), the line after the call runs now. Print out 1.",
+              "out": "out 1\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "show(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                },
+                {
+                  "fn": "show(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                },
+                {
+                  "fn": "show(1)",
+                  "vars": {
+                    "n": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "show(1) ended; show(2) continues after its call. Print out 2.",
+              "out": "out 2\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "show(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                },
+                {
+                  "fn": "show(2)",
+                  "vars": {
+                    "n": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Now show(3) continues. Print out 3.",
+              "out": "out 3\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "show(3)",
+                  "vars": {
+                    "n": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "All frames are gone. The \"in\" lines came on the way down, the \"out\" lines on the way up.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            }
+          ],
+          "types": {
+            "n": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Print on the way down (countdown)",
+      "when": "You want the output in the same order as the calls.",
+      "example": "cout << n << \" \";\ncountdown(n - 1);   // prints 3 2 1"
+    },
+    {
+      "way": "Print on the way up",
+      "when": "You want the REVERSE order of the calls.",
+      "example": "show(n - 1);\ncout << n << \" \";   // prints 1 2 3"
+    },
+    {
+      "way": "Return a value (factorial)",
+      "when": "The answer is built from the answer of the smaller problem.",
+      "example": "return n * factorial(n - 1);"
+    },
+    {
+      "way": "Loop version",
+      "when": "A simple repeat; faster and uses less memory than recursion.",
+      "example": "long long r = 1;\nfor (int i = 2; i <= n; i++) r *= i;"
+    },
+    {
+      "way": "Base case with <= instead of ==",
+      "when": "Safer: also stops if n is 0 or negative by mistake.",
+      "example": "if (n <= 1) return 1;"
+    },
+    {
+      "way": "No base case (WRONG)",
+      "when": "Never. The calls never stop and the stack overflows.",
+      "example": "int f(int n) { return n * f(n - 1); }   // crashes"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int f(int n) {\n    return n * f(n - 1);   // no base case\n}",
+      "right": "int f(int n) {\n    if (n <= 1) return 1;  // base case\n    return n * f(n - 1);\n}",
+      "error": "No compiler error. At run time the calls never stop, each one uses stack memory, the stack runs out and the program crashes (stack overflow). We describe this and never run it."
+    },
+    {
+      "wrong": "int total(int n) {\n    if (n == 0) return 0;\n    return n + total(n + 1);   // moves AWAY from 0\n}",
+      "right": "int total(int n) {\n    if (n == 0) return 0;\n    return n + total(n - 1);   // moves TOWARDS 0\n}",
+      "error": "No compiler error. The input must get smaller each call. With n + 1 the base case is never reached, so this also ends in a stack overflow."
+    },
+    {
+      "wrong": "int f(int n) {\n    if (n <= 1) {\n        return 1;\n    }\n    n * f(n - 1);   // forgot return\n}",
+      "right": "int f(int n) {\n    if (n <= 1) {\n        return 1;\n    }\n    return n * f(n - 1);\n}",
+      "error": "g++ gives: warning: control reaches end of non-void function [-Wreturn-type]. The program still builds, but the answer is garbage because the recursive case returns nothing."
+    },
+    {
+      "wrong": "int factorial(int n) {   // int is too small for big n\n    if (n <= 1) return 1;\n    return n * factorial(n - 1);\n}",
+      "right": "long long factorial(int n) {\n    if (n <= 1) return 1;\n    return n * factorial(n - 1);\n}",
+      "error": "No compiler error. For large n the result does not fit in an int and the printed number is silently wrong. Use long long for factorials."
+    }
+  ],
+  "examTips": [
+    "Always write BOTH parts and label them: the base case (when to stop) and the recursive case (the call with a smaller input).",
+    "To trace a recursive call, draw the call stack: one box per call with its own n. Fill the answers in from the bottom up.",
+    "Code before the recursive call runs going down; code after it runs coming back up in reverse order. Exams love this in/out question.",
+    "Recursion vs loop: recursion = shorter code but uses stack memory for every call; loops are usually faster. A missing base case causes a stack overflow, a wrong loop condition causes an infinite loop.",
+    "Check that the argument moves toward the base case (n - 1, not n + 1 or n)."
+  ],
+  "romanSummary": [
+    "Recursion mein function khud ko call karta hai, har dafa chhote input ke saath.",
+    "Do cheezen zaroori hain: base case (jahan calls ruk jati hain, jaise n <= 1 return 1) aur recursive case (jaise n * factorial(n - 1)).",
+    "Calls call stack par ek ke upar ek lagti hain, har call ka apna n hota hai. Base case par pohanch kar answers upar wapas aate hain (unwinding).",
+    "Call se pehle wala code neeche jate waqt chalta hai, call ke baad wala code wapas aate waqt, ulti tarteeb mein.",
+    "Base case bhool gaye to calls kabhi nahi rukti aur stack overflow se program crash ho jata hai. Loop aam taur par tez hota hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is the base case of a recursive function?",
+      "options": [
+        "The simplest input, answered directly without calling the function again",
+        "The first call made from main",
+        "The line where the function calls itself",
+        "The return type of the function"
+      ],
+      "answer": "The simplest input, answered directly without calling the function again",
+      "hint": "It is the part that stops the recursion.",
+      "explanation": "The base case is what ends the chain of calls. Without it the function would call itself forever."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "A recursive function has no base case. What happens when it runs?",
+      "options": [
+        "The calls never stop, the stack fills up and the program crashes (stack overflow)",
+        "It prints 0 and ends normally",
+        "The compiler refuses to compile it",
+        "It runs once and stops"
+      ],
+      "answer": "The calls never stop, the stack fills up and the program crashes (stack overflow)",
+      "hint": "Every call needs stack memory.",
+      "explanation": "Nothing ever stops the calls, so the call stack runs out of memory. This is called a stack overflow."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint total(int n) {\n    if (n == 0) return 0;\n    return n + total(n - 1);\n}\nint main() {\n    cout << total(4) << endl;\n    return 0;\n}",
+      "answer": "10",
+      "hint": "total(4) = 4 + total(3) and so on down to total(0) = 0.",
+      "explanation": "4 + 3 + 2 + 1 + 0 = 10. The base case total(0) returns 0 and the answers add up on the way back."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nvoid g(int n) {\n    if (n > 0) {\n        g(n - 1);\n        cout << n << \" \";\n    }\n}\nint main() {\n    g(3);\n    return 0;\n}",
+      "answer": "1 2 3",
+      "hint": "The print comes AFTER the recursive call.",
+      "explanation": "g(3) first calls g(2), which first calls g(1), which first calls g(0) (does nothing). Then the prints happen on the way up: 1, then 2, then 3."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Find the bug. The function should add 1 + 2 + ... + n, but it crashes for total(5).\n\nint total(int n) {\n    if (n == 0) return 0;\n    return n + total(n + 1);\n}",
+      "answer": "Change total(n + 1) to total(n - 1)",
+      "hint": "Does n get closer to the base case n == 0?",
+      "explanation": "With n + 1 the value grows (5, 6, 7 ...) and never reaches 0, so the base case is never hit and the stack overflows. The recursive call must use a smaller input: total(n - 1)."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the base case so that factorial(1) returns 1:\n\nlong long factorial(int n) {\n    if (n <= 1)\n        ______\n    return n * factorial(n - 1);\n}",
+      "answer": "return 1;",
+      "hint": "What is 1! (and 0!)?",
+      "explanation": "The base case returns the answer directly, 1, so the recursion stops."
+    },
+    {
+      "id": "p7",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "How many times is factorial called in total (including the first call) when main calls factorial(5)?",
+      "options": [
+        "4",
+        "5",
+        "6",
+        "120"
+      ],
+      "answer": "5",
+      "hint": "Count the values of n: 5, 4, 3, 2, 1.",
+      "explanation": "factorial(5) calls factorial(4), which calls factorial(3), factorial(2) and factorial(1), where the base case stops. That is 5 calls and the stack is 5 frames deep (plus main)."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a recursive function void countUp(int n) that prints 1 2 3 ... n on one line (for example countUp(3) prints 1 2 3 ).",
+      "answer": "void countUp(int n) {\n    if (n == 0) return;\n    countUp(n - 1);\n    cout << n << \" \";\n}",
+      "hint": "Print AFTER the recursive call so the smaller numbers come out first.",
+      "explanation": "The base case n == 0 stops the calls. Because the cout is after the call, the prints happen while unwinding: 1 first, n last."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which two parts must every recursive function have?",
+      "options": [
+        "A loop and a counter",
+        "A base case and a recursive case",
+        "A pointer and an array",
+        "A header and a footer"
+      ],
+      "answer": "A base case and a recursive case",
+      "hint": "One stops, one repeats.",
+      "explanation": "The base case ends the recursion and the recursive case calls the function again with a smaller input."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In factorial(n), which line is the recursive case?",
+      "options": [
+        "if (n <= 1)",
+        "return 1;",
+        "return n * factorial(n - 1);",
+        "long long factorial(int n)"
+      ],
+      "answer": "return n * factorial(n - 1);",
+      "hint": "Look for the line that calls factorial again.",
+      "explanation": "The function calls itself with n - 1 there. The other return is the base case."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is factorial(4)?",
+      "options": [
+        "10",
+        "16",
+        "24",
+        "120"
+      ],
+      "answer": "24",
+      "hint": "4 * 3 * 2 * 1.",
+      "explanation": "factorial(1) = 1, factorial(2) = 2, factorial(3) = 6, factorial(4) = 4 * 6 = 24."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Compared with a loop, recursion usually...",
+      "options": [
+        "is always faster",
+        "uses more memory because every call needs a stack frame",
+        "cannot return a value",
+        "does not need a base case"
+      ],
+      "answer": "uses more memory because every call needs a stack frame",
+      "hint": "Each waiting call is stored on the call stack.",
+      "explanation": "Every call creates a frame with its own variables, so deep recursion uses more memory than a loop, which reuses one set of variables."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "In show(n) the line cout << \"out \" << n comes AFTER show(n - 1). In what order do the out lines appear for show(3)?",
+      "options": [
+        "out 3, out 2, out 1",
+        "out 1, out 2, out 3",
+        "out 2, out 3, out 1",
+        "only out 3"
+      ],
+      "answer": "out 1, out 2, out 3",
+      "hint": "The last call to start is the first to finish.",
+      "explanation": "Calls finish in reverse order of starting: show(1) ends first, then show(2), then show(3)."
+    }
+  ],
+  "sources": [
+    "Recursion",
+    "Base case and recursive case",
+    "Factorial using recursion",
+    "Recursion vs iteration"
+  ]
+}

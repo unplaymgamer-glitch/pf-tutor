@@ -1,0 +1,32 @@
+// Declarations-only stand-in for the Borland/WinBGIm graphics.h, used ONLY to type-check lesson samples with g++.
+#pragma once
+enum { DETECT = 0, VGA = 9, VGAHI = 2 };
+enum colors { BLACK, BLUE, GREEN, CYAN, RED, MAGENTA, BROWN, LIGHTGRAY, DARKGRAY, LIGHTBLUE, LIGHTGREEN, LIGHTCYAN, LIGHTRED, LIGHTMAGENTA, YELLOW, WHITE };
+enum fill_styles { EMPTY_FILL, SOLID_FILL, LINE_FILL, LTSLASH_FILL, SLASH_FILL, BKSLASH_FILL, LTBKSLASH_FILL, HATCH_FILL, XHATCH_FILL, INTERLEAVE_FILL, WIDE_DOT_FILL, CLOSE_DOT_FILL, USER_FILL };
+enum line_styles { SOLID_LINE, DOTTED_LINE, CENTER_LINE, DASHED_LINE, USERBIT_LINE };
+enum font_names { DEFAULT_FONT, TRIPLEX_FONT, SMALL_FONT, SANS_SERIF_FONT, GOTHIC_FONT };
+enum { HORIZ_DIR, VERT_DIR };
+void initgraph(int *gd, int *gm, const char *path);
+void closegraph();
+void cleardevice();
+void putpixel(int x, int y, int color);
+int getpixel(int x, int y);
+void line(int x1, int y1, int x2, int y2);
+void rectangle(int left, int top, int right, int bottom);
+void bar(int left, int top, int right, int bottom);
+void circle(int x, int y, int radius);
+void ellipse(int x, int y, int start, int end, int xr, int yr);
+void arc(int x, int y, int start, int end, int r);
+void pieslice(int x, int y, int start, int end, int r);
+void fillellipse(int x, int y, int xr, int yr);
+void drawpoly(int n, int *pts);
+void setcolor(int color);
+void setbkcolor(int color);
+void setfillstyle(int pattern, int color);
+void setlinestyle(int style, unsigned pattern, int thickness);
+void floodfill(int x, int y, int border);
+void outtextxy(int x, int y, const char *text);
+void settextstyle(int font, int dir, int size);
+int getmaxx();
+int getmaxy();
+void delay(int ms);

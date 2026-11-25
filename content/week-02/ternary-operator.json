@@ -1,0 +1,450 @@
+{
+  "slug": "ternary-operator",
+  "week": 2,
+  "title": "The ternary (conditional) operator ?:",
+  "defaultView": "visualize",
+  "order": 8,
+  "visuals": [
+    {
+      "kind": "decision",
+      "title": "Ternary in action: number % 2 == 0 ? \"even\" : \"odd\"",
+      "vars": [
+        {
+          "name": "number",
+          "label": "number",
+          "min": 0,
+          "max": 20,
+          "value": 7
+        }
+      ],
+      "branches": [
+        {
+          "expr": "number % 2 == 0",
+          "label": "even"
+        }
+      ],
+      "elseLabel": "odd"
+    },
+    {
+      "kind": "decision",
+      "title": "Nested ternary grade: marks >= 80 ? A : marks >= 65 ? B : marks >= 50 ? C : F",
+      "vars": [
+        {
+          "name": "marks",
+          "label": "marks",
+          "min": 0,
+          "max": 100,
+          "value": 72
+        }
+      ],
+      "branches": [
+        {
+          "expr": "marks >= 80",
+          "label": "A"
+        },
+        {
+          "expr": "marks >= 65",
+          "label": "B"
+        },
+        {
+          "expr": "marks >= 50",
+          "label": "C"
+        }
+      ],
+      "elseLabel": "F"
+    }
+  ],
+  "goal": "After this you can use the ?: operator to choose between two values in one line, put it safely inside cout, and decide when a normal if-else is the better choice.",
+  "warmup": "At the canteen the cashier thinks: 'If the student has a card, the price is 100, otherwise the price is 120.' One question, two possible answers, and you simply pick one. Programs do this all the time: if marks are 50 or more the result is Pass, otherwise Fail. The ternary operator lets you write this pick in one short line.",
+  "definition": "The ternary operator ?: is a short if-else that produces a value. It is called ternary because it has three parts: a condition, a value for true, and a value for false. It is written condition ? valueIfTrue : valueIfFalse. If the condition is true you get the first value, otherwise the second.",
+  "howItWorks": "The computer checks the condition first. If it is true, only the value after the ? is used. If it is false, only the value after the : is used. The other one is ignored. Because the whole thing is a value, you can store it in a variable or print it. When you print it inside cout, always put the whole ternary in brackets, because << has higher priority than ?: and would otherwise grab only a piece of it.",
+  "syntax": "// condition ? valueIfTrue : valueIfFalse\nint larger = (a > b) ? a : b;                          // store the chosen value\ncout << ((marks >= 50) ? \"Pass\" : \"Fail\");               // print it: use outer brackets\nstring g = (m >= 80) ? \"A\" : (m >= 50) ? \"B\" : \"F\";    // nesting: keep it short",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Read two numbers and print the larger one using the ternary operator.",
+      "pseudocode": [
+        "START",
+        "READ a, b",
+        "SET larger = a IF a > b, OTHERWISE b",
+        "PRINT larger",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read a and b/]\n  B --> C{\"a > b ?\"}\n  C -->|True| D[\"larger = a\"]\n  C -->|False| E[\"larger = b\"]\n  D --> F[/Print larger/]\n  E --> F\n  F --> G([End])",
+      "sample": {
+        "id": "larger-of-two",
+        "title": "Larger of two numbers",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b;\n    cout << \"Enter two numbers: \";\n    cin >> a >> b;\n    int larger = (a > b) ? a : b;\n    cout << \"Larger = \" << larger << endl;\n    return 0;\n}\n",
+        "stdin": "15 9",
+        "expectedOutput": "Enter two numbers: Larger = 15\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "a and b hold the two numbers."
+          },
+          {
+            "line": 7,
+            "text": "Reads both numbers."
+          },
+          {
+            "line": 8,
+            "text": "If a > b is true, larger gets a, otherwise it gets b. The brackets are optional here but make it easier to read."
+          },
+          {
+            "line": 9,
+            "text": "Prints the chosen value."
+          }
+        ]
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read a number. Print whether it is even or odd, and print the smaller of the number and 10. Use ternary operators inside cout.",
+      "pseudocode": [
+        "START",
+        "READ number",
+        "IF number % 2 == 0 THEN word = even ELSE word = odd",
+        "PRINT number is word",
+        "IF number < 10 THEN pick number ELSE pick 10",
+        "PRINT the smaller one",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read number/]\n  B --> C{\"number % 2 == 0 ?\"}\n  C -->|True| D[/Print even/]\n  C -->|False| E[/Print odd/]\n  D --> F{\"number < 10 ?\"}\n  E --> F\n  F -->|True| G[/Print number/]\n  F -->|False| H[/Print 10/]\n  G --> I([End])\n  H --> I",
+      "sample": {
+        "id": "even-odd-min",
+        "title": "Even or odd, and min with 10",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int number;\n    cout << \"Enter a number: \";\n    cin >> number;\n    cout << number << \" is \" << ((number % 2 == 0) ? \"even\" : \"odd\") << endl;\n    cout << \"Smaller of number and 10 is \" << ((number < 10) ? number : 10) << endl;\n    return 0;\n}\n",
+        "stdin": "7",
+        "expectedOutput": "Enter a number: 7 is odd\nSmaller of number and 10 is 7\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "number holds the input."
+          },
+          {
+            "line": 7,
+            "text": "Reads the number."
+          },
+          {
+            "line": 8,
+            "text": "The whole ternary is inside its own brackets. number % 2 == 0 is the condition. It picks the word even or odd."
+          },
+          {
+            "line": 9,
+            "text": "Another ternary inside cout. It picks number if number < 10, otherwise 10, so the smaller value is printed."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts in main().",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "The prompt is printed.",
+              "out": "Enter a number: "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "number": "7"
+              },
+              "note": "The user types 7, so number is 7.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "number": "7"
+              },
+              "note": "7 % 2 is 1, so number % 2 == 0 is false. The ternary picks the value after the colon: odd.",
+              "out": "7 is odd\n"
+            },
+            {
+              "line": 9,
+              "vars": {
+                "number": "7"
+              },
+              "note": "7 < 10 is true, so the ternary picks the value after the question mark: number, which is 7.",
+              "out": "Smaller of number and 10 is 7\n"
+            },
+            {
+              "line": 10,
+              "vars": {
+                "number": "7"
+              },
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "number": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Read marks and print the grade: A for 80 or more, B for 65 or more, C for 50 or more, otherwise F. Use a nested ternary operator.",
+      "pseudocode": [
+        "START",
+        "READ marks",
+        "IF marks >= 80 THEN grade = A",
+        "ELSE IF marks >= 65 THEN grade = B",
+        "ELSE IF marks >= 50 THEN grade = C",
+        "ELSE grade = F",
+        "PRINT grade",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read marks/]\n  B --> C{\"marks >= 80 ?\"}\n  C -->|True| D[\"grade = A\"]\n  C -->|False| E{\"marks >= 65 ?\"}\n  E -->|True| F[\"grade = B\"]\n  E -->|False| G{\"marks >= 50 ?\"}\n  G -->|True| H[\"grade = C\"]\n  G -->|False| I[\"grade = F\"]\n  D --> J[/Print grade/]\n  F --> J\n  H --> J\n  I --> J\n  J --> K([End])",
+      "sample": {
+        "id": "nested-grade",
+        "title": "Grade with a nested ternary",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    int marks;\n    cout << \"Enter marks: \";\n    cin >> marks;\n    string grade = (marks >= 80) ? \"A\" : (marks >= 65) ? \"B\" : (marks >= 50) ? \"C\" : \"F\";\n    cout << \"Grade: \" << grade << endl;\n    return 0;\n}\n",
+        "stdin": "72",
+        "expectedOutput": "Enter marks: Grade: B\n",
+        "explanation": [
+          {
+            "line": 2,
+            "text": "string lets us store words such as A or B."
+          },
+          {
+            "line": 9,
+            "text": "Read it left to right: if marks >= 80 the answer is A, otherwise ask the next question. The nested part is the false-branch of the first ?:. With 72 the first test fails, the second (>= 65) is true, so grade is B."
+          },
+          {
+            "line": 10,
+            "text": "Prints the grade. Two nesting levels is already hard to read, so for more cases an else-if ladder is better."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "x = cond ? a : b;",
+      "when": "Store one of two values",
+      "example": "int larger = (a > b) ? a : b;"
+    },
+    {
+      "way": "cout << (cond ? a : b);",
+      "when": "Print one of two values (outer brackets needed)",
+      "example": "cout << ((marks >= 50) ? \"Pass\" : \"Fail\");"
+    },
+    {
+      "way": "Calculation in a branch",
+      "when": "Each side can be an expression",
+      "example": "int q = (p > 3) ? p * 2 : p + 1;"
+    },
+    {
+      "way": "Nested ternary",
+      "when": "Three or more outcomes (keep to two levels at most)",
+      "example": "int sign = (n > 0) ? 1 : (n < 0) ? -1 : 0;"
+    },
+    {
+      "way": "Normal if-else",
+      "when": "Several statements, or a clearer layout",
+      "example": "if (marks >= 50) cout << \"Pass\"; else cout << \"Fail\";"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "cout << \"Bigger: \" << a > b ? a : b;",
+      "right": "cout << \"Bigger: \" << (a > b ? a : b);",
+      "error": "no match for 'operator>' (operand types are 'std::basic_ostream<char>' and 'int')"
+    },
+    {
+      "wrong": "int x = (m > 5) ? 1;",
+      "right": "int x = (m > 5) ? 1 : 0;",
+      "error": "expected ':' before ';' token (the ternary needs both the true value and the false value)"
+    },
+    {
+      "wrong": "cout << \"Result: \" << m >= 50 ? \"Pass\" : \"Fail\";",
+      "right": "cout << \"Result: \" << ((m >= 50) ? \"Pass\" : \"Fail\");",
+      "error": "no match for 'operator>=' (operand types are 'std::basic_ostream<char>' and 'int')"
+    },
+    {
+      "wrong": "string g = (m >= 90) ? \"A\" : (m >= 80) ? \"B\" : (m >= 70) ? \"C\" : (m >= 60) ? \"D\" : \"F\";",
+      "right": "if (m >= 90) g = \"A\";\nelse if (m >= 80) g = \"B\";\nelse if (m >= 70) g = \"C\";\nelse if (m >= 60) g = \"D\";\nelse g = \"F\";",
+      "error": "No compiler error, but deep nesting is very hard to read and easy to get wrong. Use else-if instead."
+    }
+  ],
+  "examTips": [
+    "Syntax to memorise: condition ? valueIfTrue : valueIfFalse; It has three parts, so it is called ternary.",
+    "It is an expression: it gives a value, so you can assign it or print it. An if-else is a statement and does not give a value.",
+    "Inside cout, put the whole ternary in brackets: cout << (a > b ? a : b);",
+    "Both sides of the colon should have the same kind of value (both numbers, or both text).",
+    "Use it for short two-way choices. For many cases or several statements, use if-else."
+  ],
+  "romanSummary": [
+    "Ternary operator ?: chhota sa if-else hai jo ek value deta hai.",
+    "Syntax: condition ? trueValue : falseValue.",
+    "Misal: larger = (a > b) ? a : b; yani a bara ho to a, warna b.",
+    "cout ke andar use karte waqt poora ternary brackets mein likhein.",
+    "Sirf chhote aur simple faislon ke liye use karein; lambi logic ke liye normal if-else behtar hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How many parts (operands) does the ternary operator have?",
+      "options": [
+        "Two",
+        "Three",
+        "Four",
+        "One"
+      ],
+      "answer": "Three",
+      "hint": "Condition, value if true, value if false.",
+      "explanation": "Ternary means three: the condition and two values."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int a = 8, b = 12;\n    cout << ((a > b) ? a : b) << endl;\n    return 0;\n}",
+      "answer": "12",
+      "hint": "Is a > b true?",
+      "explanation": "8 > 12 is false, so the value after the colon (b = 12) is printed."
+    },
+    {
+      "id": "p3",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blanks:\n\nstring result = (marks >= 50) __ \"Pass\" __ \"Fail\";",
+      "answer": "? and :",
+      "hint": "Condition ? true value : false value.",
+      "explanation": "The ? comes after the condition and the : separates the two values."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int n = -4;\n    int r = (n > 0) ? 1 : (n < 0) ? -1 : 0;\n    cout << r << endl;\n    return 0;\n}",
+      "answer": "-1",
+      "hint": "The first test fails, so go to the nested ternary.",
+      "explanation": "n > 0 is false, so we evaluate (n < 0) ? -1 : 0. n < 0 is true, so r becomes -1."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int p = 2;\n    int q = (p > 3) ? p * 2 : p + 1;\n    cout << q << endl;\n    return 0;\n}",
+      "answer": "3",
+      "hint": "Each side of the colon can be a calculation. Only one is done.",
+      "explanation": "p > 3 is false, so p + 1 is used: 2 + 1 = 3."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Fix the bug so it prints the bigger number:\n\ncout << \"Bigger: \" << a > b ? a : b << endl;",
+      "answer": "cout << \"Bigger: \" << (a > b ? a : b) << endl;",
+      "hint": "<< is done before ?:. Use brackets.",
+      "explanation": "Without brackets, cout << \"Bigger: \" << a is compared with b. Brackets keep the ternary together."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "medium",
+      "prompt": "Write a program that reads an integer and prints, for example, '10 is even' or '7 is odd', using a ternary operator inside cout.",
+      "answer": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    cout << n << \" is \" << ((n % 2 == 0) ? \"even\" : \"odd\") << endl;\n    return 0;\n}",
+      "hint": "Use n % 2 == 0 as the condition.",
+      "explanation": "An even number has no remainder when divided by 2."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that reads three integers and prints the smallest one using ternary operators only (no if).",
+      "answer": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b, c;\n    cin >> a >> b >> c;\n    int smallest = (a < b) ? ((a < c) ? a : c) : ((b < c) ? b : c);\n    cout << \"Smallest = \" << smallest << endl;\n    return 0;\n}",
+      "hint": "Compare a and b first, then compare the winner with c.",
+      "explanation": "If a < b, the smaller of a and c is the answer; otherwise the smaller of b and c."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is the correct syntax of the ternary operator?",
+      "options": [
+        "condition : valueIfTrue ? valueIfFalse",
+        "condition ? valueIfTrue : valueIfFalse",
+        "valueIfTrue ? condition : valueIfFalse",
+        "? condition : valueIfTrue"
+      ],
+      "answer": "condition ? valueIfTrue : valueIfFalse",
+      "hint": "Question mark first, then colon.",
+      "explanation": "The condition comes first, then ?, the true value, :, and the false value."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is the value of (5 > 3) ? 10 : 20 ?",
+      "options": [
+        "5",
+        "10",
+        "20",
+        "3"
+      ],
+      "answer": "10",
+      "hint": "Is 5 > 3 true?",
+      "explanation": "The condition is true, so the first value is chosen."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which line prints Pass or Fail correctly?",
+      "options": [
+        "cout << marks >= 50 ? \"Pass\" : \"Fail\";",
+        "cout << ((marks >= 50) ? \"Pass\" : \"Fail\");",
+        "cout << marks >= 50 ? Pass : Fail;",
+        "cout << (marks >= 50) ? \"Pass\";"
+      ],
+      "answer": "cout << ((marks >= 50) ? \"Pass\" : \"Fail\");",
+      "hint": "The whole ternary needs brackets inside cout.",
+      "explanation": "Brackets stop << from grabbing part of the expression."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "When is a normal if-else better than the ternary operator?",
+      "options": [
+        "When picking one of two simple values",
+        "When each choice needs several statements",
+        "When you want shorter code at any cost",
+        "Never, ternary is always better"
+      ],
+      "answer": "When each choice needs several statements",
+      "hint": "Think about readability.",
+      "explanation": "The ternary is for short two-way value choices. Several statements or many cases are clearer in if-else."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "int x = 7; What does cout << (x % 2 == 0 ? 1 : 2); print?",
+      "options": [
+        "1",
+        "2",
+        "0",
+        "7"
+      ],
+      "answer": "2",
+      "hint": "7 % 2 is 1.",
+      "explanation": "x % 2 == 0 is false, so the value after the colon (2) is printed."
+    }
+  ],
+  "sources": [
+    "Ternary Operator / Conditional Operator"
+  ]
+}

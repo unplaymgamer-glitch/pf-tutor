@@ -1,0 +1,664 @@
+{
+  "slug": "matrix-search-count-type",
+  "week": 6,
+  "title": "Searching, counting and checking the type of a matrix",
+  "defaultView": "visualize",
+  "order": 4,
+  "visuals": [
+    {
+      "kind": "matrix",
+      "title": "Search the matrix for its largest element and see where it sits",
+      "op": "search",
+      "a": [
+        [
+          12,
+          55,
+          7
+        ],
+        [
+          8,
+          60,
+          31
+        ],
+        [
+          44,
+          9,
+          70
+        ]
+      ]
+    },
+    {
+      "kind": "matrix",
+      "title": "Count the even numbers in a matrix",
+      "op": "count-even",
+      "a": [
+        [
+          4,
+          7,
+          2
+        ],
+        [
+          9,
+          6,
+          5
+        ],
+        [
+          8,
+          3,
+          10
+        ]
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each matrix type to its rule",
+      "pairs": [
+        {
+          "term": "Square",
+          "meaning": "Number of rows equals number of columns"
+        },
+        {
+          "term": "Diagonal",
+          "meaning": "Every element with i != j is 0"
+        },
+        {
+          "term": "Identity",
+          "meaning": "Diagonal elements (i == j) are 1 and all others are 0"
+        },
+        {
+          "term": "Symmetric",
+          "meaning": "m[i][j] equals m[j][i] for every pair"
+        },
+        {
+          "term": "Upper triangular",
+          "meaning": "Every element below the diagonal (i > j) is 0"
+        },
+        {
+          "term": "Lower triangular",
+          "meaning": "Every element above the diagonal (i < j) is 0"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can search a matrix for a value and report its row and column, find the largest element and its position, count elements that have a property, and check whether a matrix is diagonal, identity, symmetric or upper triangular using a flag.",
+  "warmup": "Think of a seating plan for an exam hall: 3 rows and 3 columns of desks, each desk with a roll number. The invigilator walks desk by desk, row by row, looking for roll number 60. When he finds it he says 'row 1, column 1'. Later the head of department asks, 'How many students have an even roll number?' The invigilator walks the same path again, but now he keeps a tally. Searching and counting a matrix is exactly this: one walk through every desk with two nested loops, and one small variable that remembers what we found.",
+  "definition": "To process a 2-D array we visit every cell with two nested loops: the outer loop i picks the row and the inner loop j picks the column. Searching means comparing each cell with a key and remembering where it matched. Counting means adding 1 to a counter each time a cell has the property we want (even, above 50, negative). To find the largest element, start with the first cell as the best so far and replace it when a bigger one appears, also saving i and j. Checking the TYPE of a square matrix uses a flag: assume the property is true (bool flag = true), scan all cells, and set the flag to false as soon as one cell breaks the rule.",
+  "howItWorks": "All four jobs use the same pair of loops: for i over rows, for j over columns. Only the line inside changes. Search: if (m[i][j] == key) save i and j in found variables. Count: if (m[i][j] % 2 == 0) count++. Largest: if (m[i][j] > big) { big = m[i][j]; save i and j }. Type check: one flag per type. The flag is true at the start. Any cell that breaks the rule makes it false. At the end, a flag that is still true means the matrix really has that type. Never start a flag as false and try to switch it to true: you would need to be sure ALL cells are good, and a single cell cannot tell you that. The rules: Square means rows = columns. Diagonal: every cell with i != j is 0. Identity: diagonal cells are 1 and all other cells are 0. Symmetric: m[i][j] == m[j][i] (the matrix equals its transpose). Upper triangular: every cell below the diagonal (i > j) is 0. Press Play on the visuals to watch the scan, the highlighted match and the counter.",
+  "syntax": "// 1. Search a key and remember where\nif (m[i][j] == key) { found = true; row = i; col = j; }\n\n// 2. Count a property (even numbers, above 50)\nif (m[i][j] % 2 == 0) evens++;\nif (m[i][j] > 50) above50++;\n\n// 3. Largest element and its position\nif (m[i][j] > big) { big = m[i][j]; bigRow = i; bigCol = j; }\n\n// 4. Type checks: start true, set false when one cell breaks the rule\nbool identity = true;                   // declared before the loops\nif (i == j && m[i][j] != 1) identity = false;   // diagonal must be 1\nif (i != j && m[i][j] != 0) identity = false;   // the rest must be 0\nif (m[i][j] != m[j][i]) symmetric = false;      // mirror cells must match\nif (i > j && m[i][j] != 0) upper = false;       // below the diagonal must be 0\n",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "A 3 x 3 matrix holds 12 55 7 / 8 60 31 / 44 9 70. Read a key from the user. Print the row and column where the key is found (or say not found). Also count the even numbers and the numbers above 50.",
+      "pseudocode": [
+        "START",
+        "SET m (3 x 3), found = false, evens = 0, above50 = 0",
+        "READ key",
+        "FOR each row i, FOR each column j:",
+        "  IF m[i][j] == key AND not found yet THEN found = true, save i and j",
+        "  IF m[i][j] is even THEN evens = evens + 1",
+        "  IF m[i][j] > 50 THEN above50 = above50 + 1",
+        "IF found THEN PRINT key and its place ELSE PRINT not found",
+        "PRINT evens and above50",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read key/]\n  B --> C[\"found = false, evens = 0, above50 = 0\"]\n  C --> D{More cells?}\n  D -->|Yes| E{\"cell == key and not found?\"}\n  E -->|Yes| F[Save found, row, column]\n  E -->|No| G{cell is even?}\n  F --> G\n  G -->|Yes| H[evens++]\n  G -->|No| I{cell > 50?}\n  H --> I\n  I -->|Yes| J[above50++]\n  I -->|No| D\n  J --> D\n  D -->|No| K[/Print results/]\n  K --> L([End])",
+      "sample": {
+        "id": "search-and-count",
+        "title": "Search a key and count with one scan",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int m[3][3] = {{12, 55, 7}, {8, 60, 31}, {44, 9, 70}};\n    int key;\n    cin >> key;\n    bool found = false;\n    int foundRow = -1, foundCol = -1;\n    int evens = 0, above50 = 0;\n    for (int i = 0; i < 3; i++) {\n        for (int j = 0; j < 3; j++) {\n            if (m[i][j] == key && !found) {\n                found = true;\n                foundRow = i;\n                foundCol = j;\n            }\n            if (m[i][j] % 2 == 0) evens++;\n            if (m[i][j] > 50) above50++;\n        }\n    }\n    if (found) cout << key << \" found at row \" << foundRow << \", column \" << foundCol << endl;\n    else cout << key << \" not found\" << endl;\n    cout << \"Even numbers: \" << evens << endl;\n    cout << \"Above 50: \" << above50 << endl;\n    return 0;\n}\n",
+        "stdin": "60",
+        "expectedOutput": "60 found at row 1, column 1\nEven numbers: 5\nAbove 50: 3\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "The matrix: 3 rows and 3 columns of whole numbers."
+          },
+          {
+            "line": 7,
+            "text": "Reads the number to look for."
+          },
+          {
+            "line": 8,
+            "text": "found is a flag. It starts false because we have not found anything yet."
+          },
+          {
+            "line": 9,
+            "text": "foundRow and foundCol remember the place. -1 means 'no place yet', because -1 is not a valid index."
+          },
+          {
+            "line": 10,
+            "text": "Two counters, both starting at 0."
+          },
+          {
+            "line": 11,
+            "text": "Outer loop: the row number i."
+          },
+          {
+            "line": 12,
+            "text": "Inner loop: the column number j. Together they visit all 9 cells."
+          },
+          {
+            "line": 13,
+            "text": "A match, and we have not already saved an earlier one. !found keeps the FIRST match."
+          },
+          {
+            "line": 14,
+            "text": "Remember that we found it, and where."
+          },
+          {
+            "line": 18,
+            "text": "A cell is even when dividing by 2 leaves remainder 0."
+          },
+          {
+            "line": 19,
+            "text": "Counts the cells above 50. Both counts are checked for every cell, in the same scan."
+          },
+          {
+            "line": 22,
+            "text": "After the scan the flag tells us if the search succeeded."
+          },
+          {
+            "line": 24,
+            "text": "Prints the two counters."
+          }
+        ]
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Find the largest element of the matrix 3 8 / 6 2 and print its value together with its row and column.",
+      "pseudocode": [
+        "START",
+        "SET m, big = m[0][0], bigRow = 0, bigCol = 0",
+        "FOR each row i, FOR each column j:",
+        "  IF m[i][j] > big THEN big = m[i][j], bigRow = i, bigCol = j",
+        "PRINT big, bigRow, bigCol",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"big = m 0 0, row = 0, col = 0\"]\n  B --> C{More cells?}\n  C -->|Yes| D{\"cell > big?\"}\n  D -->|Yes| E[Save big, row, col]\n  D -->|No| C\n  E --> C\n  C -->|No| F[/Print big, row, col/]\n  F --> G([End])",
+      "sample": {
+        "id": "largest-with-position",
+        "title": "Largest element and where it is",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int m[2][2] = {{3, 8}, {6, 2}};\n    int big = m[0][0];\n    int bigRow = 0, bigCol = 0;\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 2; j++) {\n            if (m[i][j] > big) {\n                big = m[i][j];\n                bigRow = i;\n                bigCol = j;\n            }\n        }\n    }\n    cout << \"Largest = \" << big << \" at row \" << bigRow << \", column \" << bigCol << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Largest = 8 at row 0, column 1\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A small 2 x 2 matrix so we can follow every step."
+          },
+          {
+            "line": 6,
+            "text": "Start with the first cell as the best so far. Starting with 0 would be wrong if all numbers were negative."
+          },
+          {
+            "line": 7,
+            "text": "Remember its place too: row 0, column 0."
+          },
+          {
+            "line": 8,
+            "text": "Loop over the rows."
+          },
+          {
+            "line": 9,
+            "text": "Loop over the columns."
+          },
+          {
+            "line": 10,
+            "text": "Is this cell bigger than the best so far?"
+          },
+          {
+            "line": 11,
+            "text": "If yes, it becomes the new best value."
+          },
+          {
+            "line": 12,
+            "text": "Save the row of the new best cell."
+          },
+          {
+            "line": 13,
+            "text": "Save the column of the new best cell."
+          },
+          {
+            "line": 17,
+            "text": "After the scan, big holds the largest value and bigRow, bigCol its place."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "m is created: row 0 is 3 8, row 1 is 6 2.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "big": "3"
+              },
+              "note": "big starts as the first cell, m[0][0] = 3.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "bigRow": "0",
+                "bigCol": "0"
+              },
+              "note": "Its place is row 0, column 0.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "0",
+                "j": "0"
+              },
+              "note": "i = 0, j = 0. Looking at m[0][0] = 3.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Is 3 > 3? No, so nothing changes.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "0",
+                "j": "1"
+              },
+              "note": "j = 1. Looking at m[0][1] = 8.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Is 8 > 3? Yes. This is a new best.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "big": "8"
+              },
+              "note": "big becomes 8.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {
+                "bigRow": "0"
+              },
+              "note": "Save the row: 0.",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {
+                "bigCol": "1"
+              },
+              "note": "Save the column: 1.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "1",
+                "j": "0"
+              },
+              "note": "Next row, i = 1, j = 0. Looking at m[1][0] = 6.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Is 6 > 8? No.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "1",
+                "j": "1"
+              },
+              "note": "j = 1. Looking at m[1][1] = 2.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Is 2 > 8? No. The scan is finished.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "Prints the largest value and its place.",
+              "out": "Largest = 8 at row 0, column 1\n"
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "big": "int",
+            "bigRow": "int",
+            "bigCol": "int",
+            "i": "int",
+            "j": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a program that checks whether the matrix 2 0 0 / 0 5 0 / 0 0 7 is diagonal, identity, symmetric and upper triangular. Use one flag for each type and print Yes or No for each.",
+      "pseudocode": [
+        "START",
+        "SET m (N x N) and four flags diagonal, identity, symmetric, upper = true",
+        "FOR each row i, FOR each column j:",
+        "  IF i != j AND m[i][j] != 0 THEN diagonal = false and identity = false",
+        "  IF i == j AND m[i][j] != 1 THEN identity = false",
+        "  IF m[i][j] != m[j][i] THEN symmetric = false",
+        "  IF i > j AND m[i][j] != 0 THEN upper = false",
+        "PRINT Yes or No for each flag",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"All four flags = true\"]\n  B --> C{More cells?}\n  C -->|Yes| D{\"i != j and cell != 0?\"}\n  D -->|Yes| E[diagonal = false, identity = false]\n  D -->|No| F{\"i == j and cell != 1?\"}\n  E --> F\n  F -->|Yes| G[identity = false]\n  F -->|No| H{\"cell != mirror cell?\"}\n  G --> H\n  H -->|Yes| I[symmetric = false]\n  H -->|No| J{\"i > j and cell != 0?\"}\n  I --> J\n  J -->|Yes| K[upper = false]\n  J -->|No| C\n  K --> C\n  C -->|No| L[/Print Yes or No/]\n  L --> M([End])",
+      "sample": {
+        "id": "matrix-type-flags",
+        "title": "Check four matrix types with flags",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int N = 3;\n    int m[N][N] = {{2, 0, 0}, {0, 5, 0}, {0, 0, 7}};\n    bool diagonal = true, identity = true, symmetric = true, upper = true;\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < N; j++) {\n            if (i != j && m[i][j] != 0) diagonal = false;\n            if (i == j && m[i][j] != 1) identity = false;\n            if (i != j && m[i][j] != 0) identity = false;\n            if (m[i][j] != m[j][i]) symmetric = false;\n            if (i > j && m[i][j] != 0) upper = false;\n        }\n    }\n    cout << \"Diagonal: \" << (diagonal ? \"Yes\" : \"No\") << endl;\n    cout << \"Identity: \" << (identity ? \"Yes\" : \"No\") << endl;\n    cout << \"Symmetric: \" << (symmetric ? \"Yes\" : \"No\") << endl;\n    cout << \"Upper triangular: \" << (upper ? \"Yes\" : \"No\") << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Diagonal: Yes\nIdentity: No\nSymmetric: Yes\nUpper triangular: Yes\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "N is the size. A matrix declared as m[N][N] is square, because rows = columns."
+          },
+          {
+            "line": 7,
+            "text": "Four flags, all true at the start. We assume every property holds until a cell proves otherwise."
+          },
+          {
+            "line": 10,
+            "text": "A non-zero cell off the diagonal means the matrix is not diagonal."
+          },
+          {
+            "line": 11,
+            "text": "On the diagonal an identity matrix needs 1. Here m[0][0] is 2, so identity becomes false."
+          },
+          {
+            "line": 12,
+            "text": "Off the diagonal an identity matrix needs 0."
+          },
+          {
+            "line": 13,
+            "text": "Symmetric: each cell must equal its mirror across the diagonal. We compare m[i][j] with m[j][i]."
+          },
+          {
+            "line": 14,
+            "text": "Upper triangular: cells below the diagonal (i > j) must all be 0."
+          },
+          {
+            "line": 17,
+            "text": "The conditional operator turns each flag into the words Yes or No."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Search: stop remembering after the first match",
+      "when": "You need the first place where the key appears",
+      "example": "if (m[i][j] == key && !found) { found = true; row = i; col = j; }"
+    },
+    {
+      "way": "Search: count how many times a key appears",
+      "when": "The key may repeat",
+      "example": "if (m[i][j] == key) count++;"
+    },
+    {
+      "way": "Count with a condition",
+      "when": "Even, odd, above 50, negative, and so on",
+      "example": "if (m[i][j] % 2 == 0) evens++;  if (m[i][j] > 50) above50++;"
+    },
+    {
+      "way": "Largest or smallest with position",
+      "when": "You need the value and where it is",
+      "example": "if (m[i][j] > big) { big = m[i][j]; r = i; c = j; }"
+    },
+    {
+      "way": "Flag for identity",
+      "when": "Diagonal is 1 and everything else is 0",
+      "example": "if (i == j && m[i][j] != 1) id = false; if (i != j && m[i][j] != 0) id = false;"
+    },
+    {
+      "way": "Flag for symmetric",
+      "when": "m equals its transpose",
+      "example": "if (m[i][j] != m[j][i]) sym = false;"
+    },
+    {
+      "way": "Flag for upper / lower triangular",
+      "when": "Zeros below (i > j) or above (i < j) the diagonal",
+      "example": "if (i > j && m[i][j] != 0) upper = false;   // lower: i < j"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "if (m[i][j] = key) {\n    found = true;\n}",
+      "right": "if (m[i][j] == key) {\n    found = true;\n}",
+      "error": "No compile error is guaranteed here (the compiler may only warn about = in a condition). The program overwrites the matrix with key and the condition is true whenever key is not 0."
+    },
+    {
+      "wrong": "bool identity = false;\nfor (int i = 0; i < N; i++)\n    for (int j = 0; j < N; j++)\n        if (i != j && m[i][j] != 0) identity = false;",
+      "right": "bool identity = true;\nfor (int i = 0; i < N; i++)\n    for (int j = 0; j < N; j++)\n        if (i != j && m[i][j] != 0) identity = false;",
+      "error": "No compiler error. The flag starts as false and nothing ever sets it to true, so the answer is always No. Start with true and only switch to false."
+    },
+    {
+      "wrong": "for (int j = 0; j < 3; j++) {\n    int evens = 0;\n    if (m[i][j] % 2 == 0) evens++;\n}",
+      "right": "int evens = 0;\nfor (int i = 0; i < 3; i++)\n    for (int j = 0; j < 3; j++)\n        if (m[i][j] % 2 == 0) evens++;",
+      "error": "No compiler error. The counter is created again for every cell, so it is never more than 1 and it is not visible after the loop."
+    },
+    {
+      "wrong": "for (int i = 0; i <= 3; i++)\n    for (int j = 0; j <= 3; j++)\n        if (m[i][j] > 50) count++;   // m is 3 x 3",
+      "right": "for (int i = 0; i < 3; i++)\n    for (int j = 0; j < 3; j++)\n        if (m[i][j] > 50) count++;",
+      "error": "No compiler error. Index 3 is outside a 3 x 3 matrix (valid indexes are 0, 1, 2), so the program reads memory that does not belong to the matrix and the count is unreliable."
+    }
+  ],
+  "examTips": [
+    "Say the plan before the code: 'two nested loops, one counter or one flag'. It shows the examiner you know the pattern.",
+    "For a flag, always write bool flag = true BEFORE the loops, and only set it to false inside.",
+    "Know the index rules by heart: diagonal i == j, below the diagonal i > j, above the diagonal i < j, other diagonal i + j == N - 1.",
+    "To report a position, save both i and j. Remember that indexes start from 0, so row 1, column 1 is the middle of a 3 x 3 matrix.",
+    "Identity needs BOTH conditions: diagonal is 1 and all other cells are 0. Checking only one earns half marks."
+  ],
+  "romanSummary": [
+    "Matrix mein search aur counting ke liye do nested loops lagate hain: bahar wala loop row ke liye, andar wala column ke liye.",
+    "Search mein m[i][j] == key check karte hain aur i, j save kar lete hain. Count mein jab condition sahi ho to counter++ karte hain.",
+    "Sab se bara element dhoondne ke liye pehla element big maan lo aur jab koi bara mile to big, row aur column update karo.",
+    "Matrix type check karne ke liye flag pehle true rakho, aur jaise hi koi element rule tore flag false kar do. Identity: diagonal par 1, baaki 0. Symmetric: m[i][j] == m[j][i]. Upper triangular: diagonal ke neeche (i > j) sab 0."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which rule describes an identity matrix?",
+      "options": [
+        "Diagonal cells are 1 and all other cells are 0",
+        "All cells are 1",
+        "All cells are 0",
+        "m[i][j] equals m[j][i]"
+      ],
+      "answer": "Diagonal cells are 1 and all other cells are 0",
+      "hint": "The identity matrix has a line of ones from the top-left to the bottom-right.",
+      "explanation": "Identity needs i == j cells to be 1 and i != j cells to be 0. The last option describes a symmetric matrix."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which flag-checking pattern is correct?",
+      "options": [
+        "Start true, set false when a cell breaks the rule",
+        "Start false, set true when a cell follows the rule",
+        "Start true, set true when a cell breaks the rule",
+        "Start with a random value"
+      ],
+      "answer": "Start true, set false when a cell breaks the rule",
+      "hint": "One bad cell is enough to spoil the property.",
+      "explanation": "A property holds only if ALL cells obey it, so we assume true and let any bad cell switch the flag to false."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint m[3][3] = {{5, 60, 7}, {80, 2, 51}, {50, 4, 90}};\nint cnt = 0;\nfor (int i = 0; i < 3; i++)\n    for (int j = 0; j < 3; j++)\n        if (m[i][j] > 50) cnt++;\ncout << cnt << endl;",
+      "answer": "4",
+      "hint": "Count the cells that are strictly bigger than 50. Is 50 bigger than 50?",
+      "explanation": "The cells above 50 are 60, 80, 51 and 90. The cell 50 is not above 50, so the count is 4."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint m[3][3] = {{1, 7, 3}, {7, 4, 5}, {3, 8, 6}};\nbool sym = true;\nfor (int i = 0; i < 3; i++)\n    for (int j = 0; j < 3; j++)\n        if (m[i][j] != m[j][i]) sym = false;\ncout << (sym ? \"Symmetric\" : \"Not symmetric\") << endl;",
+      "answer": "Not symmetric",
+      "hint": "Compare m[1][2] with its mirror m[2][1].",
+      "explanation": "m[1][2] is 5 but m[2][1] is 8. They differ, so sym becomes false."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint m[3][3] = {{1, 2, 3}, {0, 4, 5}, {0, 6, 7}};\nbool upper = true;\nfor (int i = 0; i < 3; i++)\n    for (int j = 0; j < 3; j++)\n        if (i > j && m[i][j] != 0) upper = false;\ncout << (upper ? \"Upper\" : \"Not upper\") << endl;",
+      "answer": "Not upper",
+      "hint": "Look at the cells below the diagonal: m[1][0], m[2][0] and m[2][1].",
+      "explanation": "m[2][1] is 6, not 0, and it is below the diagonal (2 > 1). So upper becomes false."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This program should check for an identity matrix, but it always prints No. Fix it.\n\nbool identity = false;\nfor (int i = 0; i < 3; i++)\n    for (int j = 0; j < 3; j++) {\n        if (i == j && m[i][j] != 1) identity = false;\n        if (i != j && m[i][j] != 0) identity = false;\n    }",
+      "answer": "bool identity = true;\nfor (int i = 0; i < 3; i++)\n    for (int j = 0; j < 3; j++) {\n        if (i == j && m[i][j] != 1) identity = false;\n        if (i != j && m[i][j] != 0) identity = false;\n    }",
+      "hint": "What value must the flag have before the scan starts?",
+      "explanation": "The flag starts false and the loop only ever sets it to false, so it can never become true. Start it as true."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank so the flag becomes false when the matrix is not symmetric.\n\nif (m[i][j] ____ m[j][i]) symmetric = false;",
+      "answer": "if (m[i][j] != m[j][i]) symmetric = false;",
+      "hint": "The flag turns false when the two mirror cells are different.",
+      "explanation": "Use != (not equal). If a cell differs from its mirror cell, the matrix is not symmetric."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write the loops that count the elements of a 3 x 3 matrix m that are above 50 and print the count.",
+      "answer": "int count = 0;\nfor (int i = 0; i < 3; i++) {\n    for (int j = 0; j < 3; j++) {\n        if (m[i][j] > 50) {\n            count++;\n        }\n    }\n}\ncout << count << endl;",
+      "hint": "A counter that starts at 0, two loops and one if.",
+      "explanation": "The counter is declared before the loops. The if adds 1 for every cell above 50. The result is printed after both loops end."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which condition picks the cells BELOW the main diagonal?",
+      "options": [
+        "i > j",
+        "i < j",
+        "i == j",
+        "i + j == N - 1"
+      ],
+      "answer": "i > j",
+      "hint": "Below the diagonal means the row number is bigger than the column number.",
+      "explanation": "Cell [2][0] is below the diagonal and 2 > 0."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which expression is true for every even number x?",
+      "options": [
+        "x % 2 == 0",
+        "x / 2 == 0",
+        "x % 2 == 1",
+        "x * 2 == 0"
+      ],
+      "answer": "x % 2 == 0",
+      "hint": "Even numbers leave no remainder when divided by 2.",
+      "explanation": "% gives the remainder. For an even number the remainder after dividing by 2 is 0."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "To find the largest element of a matrix with all-negative numbers, how should big start?",
+      "options": [
+        "big = m[0][0]",
+        "big = 0",
+        "big = -1",
+        "big = 100"
+      ],
+      "answer": "big = m[0][0]",
+      "hint": "The starting value must be a real element of the matrix.",
+      "explanation": "If big started at 0, no negative cell would ever beat it and the answer would be wrong."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which matrix type needs the condition m[i][j] == m[j][i]?",
+      "options": [
+        "Symmetric",
+        "Identity",
+        "Diagonal",
+        "Upper triangular"
+      ],
+      "answer": "Symmetric",
+      "hint": "Think of the matrix equal to its transpose.",
+      "explanation": "A symmetric matrix is a mirror image across the main diagonal."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "A matrix is identity. Which other types is it also?",
+      "options": [
+        "Diagonal, symmetric and upper triangular",
+        "Only diagonal",
+        "Only symmetric",
+        "None of the others"
+      ],
+      "answer": "Diagonal, symmetric and upper triangular",
+      "hint": "Check the identity matrix against each rule.",
+      "explanation": "Its off-diagonal cells are 0 (diagonal and triangular), and it equals its transpose (symmetric)."
+    }
+  ],
+  "sources": [
+    "Searching in a matrix",
+    "Counting elements in a matrix",
+    "Largest element and its position",
+    "Checking the type of a matrix"
+  ]
+}

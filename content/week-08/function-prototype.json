@@ -1,0 +1,599 @@
+{
+  "slug": "function-prototype",
+  "week": 8,
+  "title": "Function prototypes: telling the compiler about a function in advance",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "The compiler reads your file from top to bottom",
+      "stages": [
+        {
+          "name": "1. Read the top",
+          "detail": "#include and using namespace std; come first."
+        },
+        {
+          "name": "2. Read the prototypes",
+          "detail": "double circleArea(double r); The compiler notes the name, the return type and the parameter types. No body yet."
+        },
+        {
+          "name": "3. Read main()",
+          "detail": "It sees the call circleArea(3) and checks it against the prototype: right name, right number and types of arguments."
+        },
+        {
+          "name": "4. Read the definitions",
+          "detail": "Below main it finds the real code of circleArea. The compiler checks that it matches the prototype."
+        },
+        {
+          "name": "5. Link",
+          "detail": "The linker joins each call to its definition. A prototype with no definition causes a linker error."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each term to its meaning",
+      "pairs": [
+        {
+          "term": "Prototype (declaration)",
+          "meaning": "Header + semicolon, no body: announces the function to the compiler"
+        },
+        {
+          "term": "Definition",
+          "meaning": "The function with its body { }: contains the real code"
+        },
+        {
+          "term": "Function call",
+          "meaning": "Using the function, e.g. circleArea(3)"
+        },
+        {
+          "term": "int add(int, int);",
+          "meaning": "A valid prototype: parameter names are optional"
+        },
+        {
+          "term": "'add' was not declared in this scope",
+          "meaning": "The function was called before the compiler saw its prototype or definition"
+        },
+        {
+          "term": "undefined reference to add",
+          "meaning": "The prototype exists, but no matching definition was found"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can write a function prototype, explain why it is needed when a function is defined after main, and tell a declaration from a definition.",
+  "warmup": "A teacher reads the attendance list from top to bottom. If the list says 'Ali, called by the sports captain' but she has not yet met any sports captain, she is confused. If the first page says 'Sports captain: Bilal', then she knows who it is later. A prototype is that first page: it introduces a function to the compiler before the function is used.",
+  "definition": "The compiler reads your program from top to bottom. If main() calls a function that is written BELOW main, the compiler has not met it yet and gives an error. A function prototype (also called a function declaration) fixes this. It is the function header followed by a semicolon, with no body. It tells the compiler the function's name, its return type and its parameter types in advance. The definition is the full function with its body { }, and it can come later, even after main.",
+  "howItWorks": "Look at the pipeline. First the compiler reads the prototypes at the top. Then it reads main(), and when it sees circleArea(3) it already knows this function exists and what it needs, so there is no error. The real code is found further down. A prototype and its definition must agree exactly on the function name, the return type and the number and types of parameters. In a prototype the parameter names are optional: int add(int, int); is as valid as int add(int a, int b);. A definition must have names (it uses them). Teachers like this layout: prototypes at the top, then main() so that the main idea is easy to find, then the definitions below. Do not forget the semicolon after a prototype. It is what makes it a declaration instead of a function header without a body.",
+  "syntax": "// Prototype (declaration): header + semicolon, no body\nreturn_type function_name(parameter_types);\n\ndouble circleArea(double r);   // names are optional:\nbool isEven(int);              // also valid\n\nint main() {\n    // ... calls circleArea(...) and isEven(...)\n    return 0;\n}\n\n// Definition: header + body, parameter names required\ndouble circleArea(double r) {\n    return 3.14159 * r * r;\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write a program with main() first and the functions circleArea and isEven defined after it. Use prototypes at the top. Print the area of a circle of radius 3, and whether 8 is even.",
+      "pseudocode": [
+        "START",
+        "PROTOTYPES: circleArea(double), isEven(int)",
+        "In main: PRINT circleArea(3)",
+        "In main: PRINT even/odd of 8 using isEven",
+        "DEFINE circleArea: return 3.14159 * r * r",
+        "DEFINE isEven: return n % 2 == 0",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Compiler reads prototypes]\n  B --> C[main calls circleArea 3]\n  C --> D[/Print area/]\n  D --> E[main calls isEven 8]\n  E --> F{n % 2 == 0?}\n  F -->|Yes| G[/Print even/]\n  F -->|No| H[/Print odd/]\n  G --> I([End])\n  H --> I",
+      "sample": {
+        "id": "prototype-basic",
+        "title": "Prototypes at the top, definitions below main",
+        "code": "#include <iostream>\nusing namespace std;\n\n// Prototypes\ndouble circleArea(double r);\nbool isEven(int n);\n\nint main() {\n    cout << \"Area = \" << circleArea(3) << endl;\n    cout << \"8 is \" << (isEven(8) ? \"even\" : \"odd\") << endl;\n    return 0;\n}\n\n// Definitions\ndouble circleArea(double r) {\n    return 3.14159 * r * r;\n}\n\nbool isEven(int n) {\n    return n % 2 == 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Area = 28.2743\n8 is even\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Prototype: return type double, name circleArea, one double parameter, then a semicolon. No body."
+          },
+          {
+            "line": 6,
+            "text": "Prototype for isEven: returns bool, takes one int."
+          },
+          {
+            "line": 8,
+            "text": "main comes first, so the reader sees the main idea straight away."
+          },
+          {
+            "line": 9,
+            "text": "The call is accepted because of the prototype on line 5."
+          },
+          {
+            "line": 10,
+            "text": "isEven(8) returns true or false. The ternary chooses the word to print."
+          },
+          {
+            "line": 15,
+            "text": "The definition: same header as the prototype but with a body."
+          },
+          {
+            "line": 16,
+            "text": "Returns the area using the formula."
+          },
+          {
+            "line": 19,
+            "text": "The definition of isEven."
+          },
+          {
+            "line": 20,
+            "text": "n % 2 == 0 is true for even numbers."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Before main runs, the compiler has already read the two prototypes on lines 5 and 6. So it knows circleArea and isEven exist, even though their bodies are further down.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {
+                "r": "3"
+              },
+              "note": "main calls circleArea(3). The compiler checked this call against the prototype, so it was allowed. r gets the value 3.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "circleArea(r)",
+                  "vars": {
+                    "r": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "The definition (the real code) runs: 3.14159 * 3 * 3 = 28.27431 is returned.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "circleArea(r)",
+                  "vars": {
+                    "r": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Back in main, the returned number is printed. cout shows 6 significant digits, so 28.27431 appears as 28.2743.",
+              "out": "Area = 28.2743\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {
+                "n": "8"
+              },
+              "note": "main calls isEven(8). n gets 8.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "isEven(n)",
+                  "vars": {
+                    "n": "8"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "8 % 2 is 0, so 8 % 2 == 0 is true. The function returns true.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "isEven(n)",
+                  "vars": {
+                    "n": "8"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "The condition is true, so the ternary picks \"even\".",
+              "out": "8 is even\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            }
+          ],
+          "types": {
+            "r": "double",
+            "n": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "A shop calculates a bill. Write prototypes WITHOUT parameter names for total() and printLine() above main, and define them below main. total multiplies price by quantity. printLine prints a line of dashes.",
+      "pseudocode": [
+        "START",
+        "PROTOTYPES: total(double, int), printLine(int)",
+        "t = total(120.5, 4)",
+        "printLine(20)",
+        "PRINT t",
+        "DEFINE total: return price * qty",
+        "DEFINE printLine: print n dashes",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Prototypes read first]\n  B --> C[t = total 120.5 and 4]\n  C --> D[printLine 20]\n  D --> E[/Print dashes/]\n  E --> F[/Print Total/]\n  F --> G([End])",
+      "sample": {
+        "id": "prototype-no-names",
+        "title": "Prototypes without parameter names",
+        "code": "#include <iostream>\nusing namespace std;\n\ndouble total(double, int);\nvoid printLine(int);\n\nint main() {\n    double t = total(120.5, 4);\n    printLine(20);\n    cout << \"Total = \" << t << endl;\n    return 0;\n}\n\ndouble total(double price, int qty) {\n    return price * qty;\n}\n\nvoid printLine(int n) {\n    for (int i = 0; i < n; i++) {\n        cout << \"-\";\n    }\n    cout << endl;\n}\n",
+        "stdin": "",
+        "expectedOutput": "--------------------\nTotal = 482\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "A prototype without parameter names. The compiler only needs the types."
+          },
+          {
+            "line": 5,
+            "text": "printLine takes an int and returns nothing (void)."
+          },
+          {
+            "line": 8,
+            "text": "Calls total. The arguments match the types in the prototype."
+          },
+          {
+            "line": 9,
+            "text": "Calls printLine to print 20 dashes."
+          },
+          {
+            "line": 10,
+            "text": "Prints the total: 120.5 times 4 is 482."
+          },
+          {
+            "line": 14,
+            "text": "The definition must name its parameters, because the body uses them."
+          },
+          {
+            "line": 18,
+            "text": "The definition of printLine with a for loop."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a complete program using prototypes. Read two marks. Use a function higher() to find the larger mark and a function isPass() that says whether a mark is 50 or more. Print the higher mark and Pass or Fail. Put main first.",
+      "pseudocode": [
+        "START",
+        "PROTOTYPES: higher(int a, int b), isPass(int marks)",
+        "READ m1, m2",
+        "best = higher(m1, m2)",
+        "PRINT best",
+        "IF isPass(best) THEN PRINT Pass ELSE PRINT Fail",
+        "DEFINE higher: return the larger value",
+        "DEFINE isPass: return marks >= 50",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read m1 and m2/]\n  B --> C[best = higher m1 m2]\n  C --> D[/Print best/]\n  D --> E{isPass best?}\n  E -->|Yes| F[/Print Pass/]\n  E -->|No| G[/Print Fail/]\n  F --> H([End])\n  G --> H",
+      "sample": {
+        "id": "prototype-marks",
+        "title": "Higher mark and pass or fail",
+        "code": "#include <iostream>\nusing namespace std;\n\nint higher(int a, int b);\nbool isPass(int marks);\n\nint main() {\n    int m1, m2;\n    cin >> m1 >> m2;\n    int best = higher(m1, m2);\n    cout << \"Higher: \" << best << endl;\n    if (isPass(best)) {\n        cout << \"Pass\" << endl;\n    } else {\n        cout << \"Fail\" << endl;\n    }\n    return 0;\n}\n\nint higher(int a, int b) {\n    if (a > b) {\n        return a;\n    }\n    return b;\n}\n\nbool isPass(int marks) {\n    return marks >= 50;\n}\n",
+        "stdin": "72 85",
+        "expectedOutput": "Higher: 85\nPass\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "Prototype with parameter names. Good for documentation, but the names are optional."
+          },
+          {
+            "line": 5,
+            "text": "isPass returns bool."
+          },
+          {
+            "line": 9,
+            "text": "Reads two marks."
+          },
+          {
+            "line": 10,
+            "text": "Calls higher, which is defined below main."
+          },
+          {
+            "line": 12,
+            "text": "isPass returns true or false, so it can be used directly as the if condition."
+          },
+          {
+            "line": 20,
+            "text": "Definition of higher. The header matches the prototype on line 4."
+          },
+          {
+            "line": 27,
+            "text": "Definition of isPass."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Prototype with names",
+      "when": "Clear documentation: shows what each parameter means.",
+      "example": "double circleArea(double r);"
+    },
+    {
+      "way": "Prototype without names",
+      "when": "Allowed and shorter. Only the types are required.",
+      "example": "double circleArea(double);"
+    },
+    {
+      "way": "Define before main (no prototype needed)",
+      "when": "Small programs. The definition itself tells the compiler everything. But main ends up at the bottom.",
+      "example": "int add(int a, int b) { return a + b; }\nint main() { ... }"
+    },
+    {
+      "way": "Prototype above main, definition below main",
+      "when": "The usual layout: main stays on top and is easy to read.",
+      "example": "int add(int, int);\nint main() { ... }\nint add(int a, int b) { return a + b; }"
+    },
+    {
+      "way": "void prototype",
+      "when": "A function that returns nothing still needs the type word void.",
+      "example": "void printLine(int);"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int main() {\n    cout << add(2, 3);\n    return 0;\n}\nint add(int a, int b) { return a + b; }",
+      "right": "int add(int, int);   // prototype\nint main() {\n    cout << add(2, 3);\n    return 0;\n}\nint add(int a, int b) { return a + b; }",
+      "error": "error: 'add' was not declared in this scope"
+    },
+    {
+      "wrong": "int add(int a, int b)\nint main() {\n    cout << add(2, 3);\n}",
+      "right": "int add(int a, int b);\nint main() {\n    cout << add(2, 3);\n}",
+      "error": "error: expected initializer before 'int'"
+    },
+    {
+      "wrong": "int add(int a, int b);        // prototype says 2 parameters\n...\nint add(int a, int b, int c) { return a + b + c; }",
+      "right": "int add(int a, int b);\n...\nint add(int a, int b) { return a + b; }",
+      "error": "undefined reference to `add(int, int)'  (linker error: the definition has 3 parameters, so it is a different function)"
+    },
+    {
+      "wrong": "int add(int a, int b);\n...\ndouble add(int a, int b) { return a + b; }",
+      "right": "int add(int a, int b);\n...\nint add(int a, int b) { return a + b; }",
+      "error": "error: ambiguating new declaration of 'double add(int, int)'"
+    }
+  ],
+  "examTips": [
+    "Prototype = header + semicolon, no body. Definition = header + body. Write both forms in the exam.",
+    "Reason for a prototype: the compiler reads top to bottom and must know a function before it is called.",
+    "The prototype and the definition must match in name, return type and parameter types.",
+    "Parameter names are optional in a prototype but required in the definition.",
+    "Never forget the semicolon after a prototype. A common exam question is to find the missing semicolon."
+  ],
+  "romanSummary": [
+    "Compiler program ko upar se neeche parhta hai, is liye jo function main ke neeche likha ho uska prototype main se pehle dena parta hai.",
+    "Prototype function ke header jaisa hota hai lekin aakhir mein semicolon hota hai aur body nahi hoti: int add(int, int);",
+    "Prototype mein parameter ke naam optional hain, lekin definition mein naam zaroori hain.",
+    "Prototype aur definition mein name, return type aur parameter types bilkul same hone chahiye.",
+    "Is tareeqe se main() upar rehta hai aur program parhna aasan hota hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Why do we write a function prototype?",
+      "options": [
+        "To tell the compiler about a function before it is called",
+        "To make the function run faster",
+        "To store the function's result",
+        "To replace the function definition"
+      ],
+      "answer": "To tell the compiler about a function before it is called",
+      "hint": "The compiler reads top to bottom.",
+      "explanation": "A prototype introduces the function early so that calls above its definition are accepted."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which line is a valid prototype?",
+      "options": [
+        "int add(int, int);",
+        "int add(int, int)",
+        "int add(int a, int b) { }",
+        "add(int, int);"
+      ],
+      "answer": "int add(int, int);",
+      "hint": "Header, semicolon, no body.",
+      "explanation": "A prototype needs the return type, name, parameter types and a semicolon. Names are optional."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint twice(int n);\nint main() {\n    cout << twice(4) << \" \" << twice(5);\n    return 0;\n}\nint twice(int n) {\n    return n * 2;\n}",
+      "answer": "8 10",
+      "hint": "twice doubles its argument.",
+      "explanation": "twice(4) is 8 and twice(5) is 10. The prototype lets main call it before the definition."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This program gives \"'square' was not declared in this scope\". Fix it without moving the function.\n\n#include <iostream>\nusing namespace std;\nint main() {\n    cout << square(6);\n    return 0;\n}\nint square(int n) {\n    return n * n;\n}",
+      "answer": "#include <iostream>\nusing namespace std;\nint square(int n);\nint main() {\n    cout << square(6);\n    return 0;\n}\nint square(int n) {\n    return n * n;\n}",
+      "hint": "Tell the compiler about square above main.",
+      "explanation": "Add the prototype int square(int n); above main."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Complete the prototype of this function using only the types.\n\ndouble average(int a, int b) { return (a + b) / 2.0; }\n\ndouble average(____, ____);",
+      "answer": "int, int",
+      "hint": "Names are optional in a prototype.",
+      "explanation": "double average(int, int); matches the definition."
+    },
+    {
+      "id": "p6",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nvoid a();\nvoid b();\nint main() {\n    cout << \"1 \";\n    a();\n    cout << \"4 \";\n    return 0;\n}\nvoid a() {\n    cout << \"2 \";\n    b();\n}\nvoid b() {\n    cout << \"3 \";\n}",
+      "answer": "1 2 3 4",
+      "hint": "Follow each call and its return.",
+      "explanation": "main prints 1, calls a (prints 2, calls b which prints 3), returns to main and prints 4."
+    },
+    {
+      "id": "p7",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Find and fix the error in this prototype.\n\nint maxOf(int a, int b)\nint main() { ... }",
+      "answer": "int maxOf(int a, int b);\nint main() { ... }",
+      "hint": "Look at the end of the first line.",
+      "explanation": "A prototype ends with a semicolon. Without it the compiler thinks a function body must follow."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a complete program with main() first. Use the prototype bool isEven(int n); and define isEven after main. In main read an integer and print Even or Odd.",
+      "answer": "#include <iostream>\nusing namespace std;\nbool isEven(int n);\nint main() {\n    int n;\n    cin >> n;\n    if (isEven(n)) {\n        cout << \"Even\" << endl;\n    } else {\n        cout << \"Odd\" << endl;\n    }\n    return 0;\n}\nbool isEven(int n) {\n    return n % 2 == 0;\n}",
+      "hint": "Prototype on top, definition at the bottom.",
+      "explanation": "The prototype lets main call isEven before the definition appears."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "A prototype ends with what?",
+      "options": [
+        "A semicolon",
+        "A closing brace",
+        "A comma",
+        "Nothing"
+      ],
+      "answer": "A semicolon",
+      "hint": "It has no body.",
+      "explanation": "A prototype is a header followed by a semicolon."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Are parameter names required in a prototype?",
+      "options": [
+        "No, they are optional",
+        "Yes, always",
+        "Only for void functions",
+        "Only for int functions"
+      ],
+      "answer": "No, they are optional",
+      "hint": "int add(int, int); is valid.",
+      "explanation": "Only the types matter in a prototype."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "main() calls f() which is defined below main with no prototype. What happens?",
+      "options": [
+        "Compile error: f was not declared",
+        "The program runs normally",
+        "A warning only",
+        "f runs twice"
+      ],
+      "answer": "Compile error: f was not declared",
+      "hint": "The compiler reads top to bottom.",
+      "explanation": "The compiler has not seen f yet when it reads the call."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which statement about the prototype and the definition is correct?",
+      "options": [
+        "They must match in name, return type and parameter types",
+        "They may have different return types",
+        "The definition must come first",
+        "The prototype contains the body"
+      ],
+      "answer": "They must match in name, return type and parameter types",
+      "hint": "Think about what the compiler checks.",
+      "explanation": "A mismatch causes an error."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Which one is the definition?",
+      "options": [
+        "int sq(int n) { return n * n; }",
+        "int sq(int n);",
+        "int sq(int);",
+        "sq(5);"
+      ],
+      "answer": "int sq(int n) { return n * n; }",
+      "hint": "The definition has a body.",
+      "explanation": "The definition contains the actual code in braces."
+    }
+  ],
+  "sources": [
+    "Function prototype (declaration)",
+    "Declaration vs definition",
+    "Functions defined after main"
+  ]
+}

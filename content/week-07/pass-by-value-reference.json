@@ -1,0 +1,830 @@
+{
+  "slug": "pass-by-value-reference",
+  "week": 7,
+  "title": "Pass by value vs pass by reference: copy or the same box?",
+  "defaultView": "visualize",
+  "order": 4,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "What happens when you call a function: value vs reference",
+      "stages": [
+        {
+          "name": "1. The call",
+          "detail": "main() calls f(x). The computer looks at the parameter in the function header."
+        },
+        {
+          "name": "2. Make the parameter",
+          "detail": "Header has plain int a: a NEW box is made and the value of x is copied into it. Header has int &a: NO new box, a becomes another name for x."
+        },
+        {
+          "name": "3. The function runs",
+          "detail": "Changes to a go into the new copy (by value) or straight into x (by reference)."
+        },
+        {
+          "name": "4. Return to main",
+          "detail": "The copy is thrown away, so x is unchanged (by value). By reference, x already holds the new value."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each idea to its meaning",
+      "pairs": [
+        {
+          "term": "void f(int a)",
+          "meaning": "Pass by value: the function works on a copy"
+        },
+        {
+          "term": "void f(int &a)",
+          "meaning": "Pass by reference: a is another name for the caller's variable"
+        },
+        {
+          "term": "Swap that really swaps",
+          "meaning": "Needs reference parameters (int &a, int &b)"
+        },
+        {
+          "term": "Several results from one function",
+          "meaning": "Use reference parameters for the extra outputs"
+        },
+        {
+          "term": "f(5) with int &a",
+          "meaning": "Not allowed: a constant has no box to refer to"
+        },
+        {
+          "term": "Array passed to a function",
+          "meaning": "The original array is changed (no copy is made)"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can explain the difference between pass by value and pass by reference, write a swap function that really swaps, and return more than one result from a function.",
+  "warmup": "You give a friend a photocopy of your notes. He writes all over the photocopy, but your notes at home are clean. That is pass by value: the function gets a copy. Now imagine you hand over your own notebook. If he writes in it, your notebook changes. That is pass by reference: the function works on the original.",
+  "definition": "When you call a function, the values you send are called arguments. Pass by value means the function receives a COPY of each argument, so changing the parameter inside the function does not change the caller's variable. Pass by reference means the parameter is written with & (for example int &a). It does not make a new box. It becomes another name (an alias) for the caller's own variable, so changes inside the function DO change the caller's variable.",
+  "howItWorks": "Step through the first trace and watch the call stack panel. In swapByValue the function has its own boxes a and b. They start as copies of x and y. The function swaps the copies, then the copies are thrown away. main still has x = 10 and y = 20, so the swap failed. In the second trace the header says int &a, int &b. Now a is the same box as x and b is the same box as y, so the swap changes main's variables and it works. When should you use each? Use pass by value when the function only needs to READ the number (most functions). Use pass by reference when the function must CHANGE the caller's variable, or when it must give back more than one result (a function can return only one value with return, but it can fill several reference parameters). Two rules to remember: the argument for a reference parameter must be a variable, not a constant like 5. And an array is different: when you pass an array to a function, the function works on the original array, so changes are kept. You will learn the details in the next weeks.",
+  "syntax": "// pass by value: a is a COPY\nvoid f(int a) {\n    a = a + 1;      // changes only the copy\n}\n\n// pass by reference: a is the SAME box as the caller's variable\nvoid g(int &a) {\n    a = a + 1;      // changes the caller's variable\n}\n\nint x = 5;\nf(x);   // x is still 5\ng(x);   // x is now 6\n\n// several results: reference parameters carry them back\nvoid minMax(int a, int b, int &smallest, int &largest);",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write a function swapByValue that tries to swap two numbers. Call it from main with x = 10 and y = 20 and print x and y afterwards. Does the swap work?",
+      "pseudocode": [
+        "START",
+        "SET x = 10, y = 20",
+        "CALL swapByValue(x, y)  (the function gets copies)",
+        "Inside: swap the copies a and b",
+        "Come back to main (copies are gone)",
+        "PRINT x and y",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[x = 10, y = 20]\n  B --> C[Call swapByValue with copies a, b]\n  C --> D[Swap a and b inside the function]\n  D --> E[Return: copies are destroyed]\n  E --> F[/Print x and y/]\n  F --> G([End])",
+      "sample": {
+        "id": "swap-by-value",
+        "title": "The failed swap (pass by value)",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid swapByValue(int a, int b) {\n    int t = a;\n    a = b;\n    b = t;\n}\n\nint main() {\n    int x = 10, y = 20;\n    swapByValue(x, y);\n    cout << \"x = \" << x << \", y = \" << y << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "x = 10, y = 20\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "a and b are plain int parameters, so they are NEW boxes filled with copies of the arguments."
+          },
+          {
+            "line": 5,
+            "text": "t remembers a. The usual three-step swap."
+          },
+          {
+            "line": 6,
+            "text": "a gets b's value. This changes only the copy."
+          },
+          {
+            "line": 7,
+            "text": "b gets the old a. The copies are now swapped."
+          },
+          {
+            "line": 11,
+            "text": "x and y belong to main."
+          },
+          {
+            "line": 12,
+            "text": "The function receives copies of x and y. Nothing here can change x or y."
+          },
+          {
+            "line": 13,
+            "text": "Prints the unchanged values: the swap failed."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 10,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {
+                "x": "10",
+                "y": "20"
+              },
+              "note": "main creates its own boxes x and y.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "20"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {
+                "a": "10",
+                "b": "20"
+              },
+              "note": "The call swapByValue(x, y) makes NEW boxes a and b inside the function and COPIES 10 and 20 into them. These are different boxes from x and y.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "20"
+                  }
+                },
+                {
+                  "fn": "swapByValue(a, b)",
+                  "vars": {
+                    "a": "10 (copy)",
+                    "b": "20 (copy)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {
+                "t": "10"
+              },
+              "note": "t keeps a safe copy of a.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "20"
+                  }
+                },
+                {
+                  "fn": "swapByValue(a, b)",
+                  "vars": {
+                    "a": "10",
+                    "b": "20",
+                    "t": "10"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {
+                "a": "20"
+              },
+              "note": "a becomes 20. Only the copy a changes. x is still 10.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "20"
+                  }
+                },
+                {
+                  "fn": "swapByValue(a, b)",
+                  "vars": {
+                    "a": "20",
+                    "b": "20",
+                    "t": "10"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "b": "10"
+              },
+              "note": "b becomes 10. The copies are now swapped: a = 20, b = 10. But look at main: x and y did not move.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "20"
+                  }
+                },
+                {
+                  "fn": "swapByValue(a, b)",
+                  "vars": {
+                    "a": "20",
+                    "b": "10",
+                    "t": "10"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "The function ends. Its boxes a, b and t are thrown away, together with the swap that happened inside them.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "20"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "x and y were never touched, so the swap failed. This is what pass by value does.",
+              "out": "x = 10, y = 20\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "20"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "20"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "x": "int",
+            "y": "int",
+            "a": "int",
+            "b": "int",
+            "t": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Fix the swap so that it really swaps x and y. Use reference parameters.",
+      "pseudocode": [
+        "START",
+        "SET x = 10, y = 20",
+        "CALL swapByRef(x, y)  (a is x, b is y)",
+        "Inside: t = a; a = b; b = t",
+        "Come back to main",
+        "PRINT x and y",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[x = 10, y = 20]\n  B --> C[Call swapByRef: a is x, b is y]\n  C --> D[Swap a and b = swap x and y]\n  D --> E[Return to main]\n  E --> F[/Print x and y/]\n  F --> G([End])",
+      "sample": {
+        "id": "swap-by-ref",
+        "title": "A swap that works (pass by reference)",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid swapByRef(int &a, int &b) {\n    int t = a;\n    a = b;\n    b = t;\n}\n\nint main() {\n    int x = 10, y = 20;\n    swapByRef(x, y);\n    cout << \"x = \" << x << \", y = \" << y << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "x = 20, y = 10\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "The & after int makes a and b references. They are other names for the caller's variables."
+          },
+          {
+            "line": 5,
+            "text": "t is an ordinary local box. It copies the value of a, which is x."
+          },
+          {
+            "line": 6,
+            "text": "Writing to a writes into x."
+          },
+          {
+            "line": 7,
+            "text": "Writing to b writes into y."
+          },
+          {
+            "line": 12,
+            "text": "The call looks the same as before. Only the function header changed. The argument must be a variable."
+          },
+          {
+            "line": 13,
+            "text": "Prints the swapped values."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 10,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {
+                "x": "10",
+                "y": "20"
+              },
+              "note": "main creates x and y.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "20"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "The call swapByRef(x, y). The parameters are int &a and int &b. No new boxes are made for them: a is just a second NAME for the box x, and b is a second name for y.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "20"
+                  }
+                },
+                {
+                  "fn": "swapByRef(a, b)",
+                  "vars": {
+                    "a": "same box as x (10)",
+                    "b": "same box as y (20)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {
+                "t": "10"
+              },
+              "note": "t is a new local box. It copies the value of a, which is the value of x: 10.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "20"
+                  }
+                },
+                {
+                  "fn": "swapByRef(a, b)",
+                  "vars": {
+                    "a": "same box as x (10)",
+                    "b": "same box as y (20)",
+                    "t": "10"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {
+                "x": "20"
+              },
+              "note": "a = b. Since a IS x, the box x now holds 20.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "20",
+                    "y": "20"
+                  }
+                },
+                {
+                  "fn": "swapByRef(a, b)",
+                  "vars": {
+                    "a": "same box as x (20)",
+                    "b": "same box as y (20)",
+                    "t": "10"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "y": "10"
+              },
+              "note": "b = t. Since b IS y, the box y now holds 10. The swap happened in main's own boxes.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "20",
+                    "y": "10"
+                  }
+                },
+                {
+                  "fn": "swapByRef(a, b)",
+                  "vars": {
+                    "a": "same box as x (20)",
+                    "b": "same box as y (10)",
+                    "t": "10"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "The function ends. Only t is thrown away. x and y keep their new values.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "20",
+                    "y": "10"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "main prints the swapped values. The swap worked.",
+              "out": "x = 20, y = 10\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "20",
+                    "y": "10"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "20",
+                    "y": "10"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "x": "int",
+            "y": "int",
+            "t": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Study the program. Write down the exact output. Then say why addBonus does not change m but addBonusRef does, and how minMax gives back two answers.",
+      "pseudocode": [
+        "START",
+        "CALL minMax(8, 3, 15, lo, hi): mn and mx are lo and hi",
+        "PRINT lo and hi",
+        "SET m = 60",
+        "CALL addBonus(m): a copy changes",
+        "PRINT m (still 60)",
+        "CALL addBonusRef(m): m itself changes",
+        "PRINT m (65)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Call minMax: fills lo and hi]\n  B --> C[/Print lo and hi/]\n  C --> D[m = 60]\n  D --> E[Call addBonus by value]\n  E --> F[/Print m: still 60/]\n  F --> G[Call addBonusRef by reference]\n  G --> H[/Print m: now 65/]\n  H --> I([End])",
+      "sample": {
+        "id": "value-ref-exam",
+        "title": "Results by reference, bonus by value and by reference",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid minMax(int a, int b, int c, int &mn, int &mx) {\n    mn = a;\n    mx = a;\n    if (b < mn) mn = b;\n    if (c < mn) mn = c;\n    if (b > mx) mx = b;\n    if (c > mx) mx = c;\n}\n\nvoid addBonus(int marks) {\n    marks = marks + 5;\n}\n\nvoid addBonusRef(int &marks) {\n    marks = marks + 5;\n}\n\nint main() {\n    int lo, hi;\n    minMax(8, 3, 15, lo, hi);\n    cout << \"lo = \" << lo << \", hi = \" << hi << endl;\n    int m = 60;\n    addBonus(m);\n    cout << \"after addBonus: \" << m << endl;\n    addBonusRef(m);\n    cout << \"after addBonusRef: \" << m << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "lo = 3, hi = 15\nafter addBonus: 60\nafter addBonusRef: 65\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "a, b, c are inputs (by value). mn and mx are outputs (by reference)."
+          },
+          {
+            "line": 5,
+            "text": "mn and mx are the caller's lo and hi. The function fills them."
+          },
+          {
+            "line": 7,
+            "text": "If b is smaller, mn (that is lo) becomes b."
+          },
+          {
+            "line": 13,
+            "text": "By value: marks is a copy."
+          },
+          {
+            "line": 14,
+            "text": "Changes only the copy, so main's m stays 60."
+          },
+          {
+            "line": 17,
+            "text": "By reference: marks is the same box as m."
+          },
+          {
+            "line": 18,
+            "text": "Adds 5 to main's m."
+          },
+          {
+            "line": 23,
+            "text": "lo and hi are passed as the output boxes. Afterwards lo = 3 and hi = 15."
+          },
+          {
+            "line": 26,
+            "text": "Copy only: m is not changed."
+          },
+          {
+            "line": 28,
+            "text": "Same box: m becomes 65."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Pass by value: void f(int a)",
+      "when": "The function only reads the value (most functions). The argument can be a variable, a constant or an expression.",
+      "example": "int square(int n) { return n * n; }  // square(5), square(x + 1)"
+    },
+    {
+      "way": "Pass by reference: void f(int &a)",
+      "when": "The function must change the caller's variable, e.g. swap. The argument must be a variable.",
+      "example": "void swapByRef(int &a, int &b);"
+    },
+    {
+      "way": "Reference parameters as extra outputs",
+      "when": "You need more than one result from one function.",
+      "example": "void minMax(int a, int b, int c, int &mn, int &mx);"
+    },
+    {
+      "way": "Return value",
+      "when": "You need just one result. Often simpler than a reference.",
+      "example": "int bigger(int a, int b) { return a > b ? a : b; }"
+    },
+    {
+      "way": "Array parameter",
+      "when": "The function works on the original array, so changes stay (details in later weeks).",
+      "example": "void fill(int marks[], int n);"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "void swapNums(int a, int b) {\n    int t = a; a = b; b = t;\n}\n// main: swapNums(x, y); x and y stay the same",
+      "right": "void swapNums(int &a, int &b) {\n    int t = a; a = b; b = t;\n}",
+      "error": "No compiler error at all. The program runs, but x and y are unchanged because the function swapped only copies. Forgetting & and expecting a change is the most common mistake in this topic."
+    },
+    {
+      "wrong": "void swapByRef(int &a, int &b);\nswapByRef(5, 10);",
+      "right": "int p = 5, q = 10;\nswapByRef(p, q);",
+      "error": "error: cannot bind non-const lvalue reference of type 'int&' to an rvalue of type 'int'"
+    },
+    {
+      "wrong": "void half(int &n) { n = n / 2; }\ndouble d = 7.5;\nhalf(d);",
+      "right": "void half(double &n) { n = n / 2; }\ndouble d = 7.5;\nhalf(d);",
+      "error": "error: cannot bind non-const lvalue reference of type 'int&' to a value of type 'double'"
+    },
+    {
+      "wrong": "void minMax(int a, int b, int mn, int mx) {\n    mn = a < b ? a : b;\n    mx = a > b ? a : b;\n}",
+      "right": "void minMax(int a, int b, int &mn, int &mx) {\n    mn = a < b ? a : b;\n    mx = a > b ? a : b;\n}",
+      "error": "No compiler error. mn and mx are copies, so the caller never receives the answers. Every output parameter needs its own &."
+    }
+  ],
+  "examTips": [
+    "Pass by value = copy, original safe. Pass by reference (&) = same variable, original changes. Write this in one line in the exam.",
+    "In 'find the output' questions, ask for every call: is the parameter a copy or a reference? Only references change the caller's variable.",
+    "The swap function is a favourite. It works only with int &a, int &b.",
+    "An argument for a reference parameter must be a variable. swap(5, 10) is an error.",
+    "A function can return only one value. Use reference parameters when it must give back several."
+  ],
+  "romanSummary": [
+    "Pass by value mein function ko variable ki copy milti hai, is liye andar ki tabdeeli bahar asar nahi karti.",
+    "Pass by reference mein parameter ke saath & lagate hain (int &a). Ye original variable ka doosra naam ban jata hai, is liye tabdeeli original mein hoti hai.",
+    "Swap function sirf reference se kaam karta hai. & bhool jayen to koi error nahi aata, bas swap nahi hota.",
+    "Ek se zyada results wapas bhejne ke liye reference parameters use hote hain.",
+    "Reference parameter ko constant (jaise 5) nahi de sakte, variable dena parta hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "A function receives its parameter by value. What happens to the caller's variable when the function changes the parameter?",
+      "options": [
+        "It stays unchanged",
+        "It changes too",
+        "It becomes 0",
+        "The program stops"
+      ],
+      "answer": "It stays unchanged",
+      "hint": "The function works on a copy.",
+      "explanation": "By value means the function has its own copy. The caller's variable is not touched."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nvoid change(int n) { n = 99; }\nint main() {\n    int v = 5;\n    change(v);\n    cout << v;\n    return 0;\n}",
+      "answer": "5",
+      "hint": "Is n a copy or the same box as v?",
+      "explanation": "n is a copy. Setting it to 99 does not touch v, so v is still 5."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nvoid twice(int &n) { n = n * 2; }\nint main() {\n    int v = 3;\n    twice(v);\n    twice(v);\n    cout << v;\n    return 0;\n}",
+      "answer": "12",
+      "hint": "n is the same box as v each time.",
+      "explanation": "The first call makes v = 6 and the second makes v = 12."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This swap runs but does not swap x and y in main. Fix the function header only.\n\nvoid swapNums(int a, int b) {\n    int t = a;\n    a = b;\n    b = t;\n}",
+      "answer": "void swapNums(int &a, int &b) {\n    int t = a;\n    a = b;\n    b = t;\n}",
+      "hint": "The parameters must be the same boxes as the caller's variables.",
+      "explanation": "Adding & after int makes a and b references, so the swap changes the caller's variables."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank so that the function adds 10% tax to the caller's price.\n\nvoid addTax(double ____ price) {\n    price = price * 1.1;\n}",
+      "answer": "&",
+      "hint": "One character after the type.",
+      "explanation": "double &price makes price the caller's own variable, so the new value is kept."
+    },
+    {
+      "id": "p6",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nvoid f(int a, int &b) {\n    a = a + 1;\n    b = b + 1;\n}\nint main() {\n    int x = 1, y = 1;\n    f(x, y);\n    f(x, y);\n    cout << x << \" \" << y;\n    return 0;\n}",
+      "answer": "1 3",
+      "hint": "Only the second parameter is a reference.",
+      "explanation": "x is passed by value, so it stays 1. y is passed by reference and grows by 1 per call: 1, 2, 3."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a function sumAndDiff(int a, int b, int &sum, int &diff) that stores a + b in sum and a - b in diff. In main call it with 9 and 4 and print both results on one line separated by a space.",
+      "answer": "#include <iostream>\nusing namespace std;\nvoid sumAndDiff(int a, int b, int &sum, int &diff) {\n    sum = a + b;\n    diff = a - b;\n}\nint main() {\n    int s, d;\n    sumAndDiff(9, 4, s, d);\n    cout << s << \" \" << d << endl;\n    return 0;\n}",
+      "hint": "The two outputs need &.",
+      "explanation": "The inputs are by value, the two outputs are references. It prints 13 5."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which call is NOT allowed for void swapByRef(int &a, int &b)?",
+      "options": [
+        "swapByRef(5, 10)",
+        "swapByRef(x, y)",
+        "swapByRef(marks1, marks2)",
+        "swapByRef(p, q)"
+      ],
+      "answer": "swapByRef(5, 10)",
+      "hint": "A reference needs a box to refer to.",
+      "explanation": "Constants like 5 have no box, so they cannot be bound to a reference parameter."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which header makes a the same box as the caller's variable?",
+      "options": [
+        "void f(int &a)",
+        "void f(int a)",
+        "void f(const a)",
+        "void f(int a&&)"
+      ],
+      "answer": "void f(int &a)",
+      "hint": "Look for the & symbol.",
+      "explanation": "An & after the type makes the parameter a reference."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does pass by value give the function?",
+      "options": [
+        "A copy of the value",
+        "The original variable",
+        "The address of the program",
+        "Nothing"
+      ],
+      "answer": "A copy of the value",
+      "hint": "Think of the photocopy.",
+      "explanation": "The function works on its own copy."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Why does the swap function with plain int a, int b fail?",
+      "options": [
+        "It swaps only copies, so the caller's variables stay the same",
+        "It has a syntax error",
+        "The temp variable is missing",
+        "int cannot be swapped"
+      ],
+      "answer": "It swaps only copies, so the caller's variables stay the same",
+      "hint": "The code compiles and runs.",
+      "explanation": "The swap happens inside the copies, which are thrown away on return."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "A function needs to give back three results. What is the best approach for now?",
+      "options": [
+        "Use reference parameters for the results",
+        "Use three return statements",
+        "Use a global goto",
+        "It is impossible"
+      ],
+      "answer": "Use reference parameters for the results",
+      "hint": "A return can give only one value.",
+      "explanation": "Reference parameters can carry back several results."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "void inc(int &n) { n++; } What is x after int x = 4; inc(x); inc(x);?",
+      "options": [
+        "6",
+        "4",
+        "5",
+        "8"
+      ],
+      "answer": "6",
+      "hint": "Each call changes x itself.",
+      "explanation": "x is incremented twice: 4, 5, 6."
+    }
+  ],
+  "sources": [
+    "Pass-by-value vs pass-by-reference",
+    "Reference parameters",
+    "Swap function",
+    "Returning more than one result"
+  ]
+}

@@ -1,0 +1,627 @@
+{
+  "slug": "character-arrays",
+  "week": 4,
+  "title": "Character arrays: text as an array of char",
+  "defaultView": "visualize",
+  "order": 6,
+  "visuals": [
+    {
+      "kind": "array",
+      "title": "\"Hello\" is stored as ASCII codes. Look at the last box: 0 is the null character",
+      "mode": "access",
+      "values": [
+        72,
+        101,
+        108,
+        108,
+        111,
+        0
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match the tool with its job",
+      "pairs": [
+        {
+          "term": "'\\0'",
+          "meaning": "The null character (code 0). It marks the end of the text."
+        },
+        {
+          "term": "char name[6] = \"Ahmad\";",
+          "meaning": "5 letters + 1 box for '\\0' = size 6."
+        },
+        {
+          "term": "cin >> name;",
+          "meaning": "Reads one word. Stops at the first space."
+        },
+        {
+          "term": "cin.getline(name, 30);",
+          "meaning": "Reads a whole line, spaces included."
+        },
+        {
+          "term": "strlen(name)",
+          "meaning": "Number of characters before '\\0'."
+        },
+        {
+          "term": "strcmp(a, b) == 0",
+          "meaning": "The two texts are equal."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can store text in a char array, explain the null character, read a name with cin and cin.getline, find its length, and use strlen, strcpy, strcmp and strcat.",
+  "warmup": "A cricket scoreboard shows a player name in a row of small boxes, one letter per box. When the name is shorter than the board, the extra boxes stay blank. A character array works the same way: one letter in each box. Because the computer cannot see the empty boxes, we put a special mark right after the last letter that means 'the name ends here'. That mark is the null character.",
+  "definition": "A character array is an array of char that stores text. Every piece of text in this style (a C-string) ends with the null character, written '\\0', whose ASCII code is 0. The null character is not printed. It tells cout and the string functions where the text stops. Because of it, an array that stores n letters must have at least n + 1 boxes.",
+  "howItWorks": "Create: char name[6] = \"Ahmad\"; stores A, h, m, a, d and then '\\0' (5 letters + 1 = 6 boxes). If you write char name[] = \"Ahmad\"; the compiler counts the size for you. If the array is bigger than the text, for example char city[20] = \"Lahore\";, the rest of the boxes are filled with '\\0'. Display: cout << name; prints all letters until '\\0'. This works directly only for char arrays, not for int arrays. Read: cin >> name; reads ONE word and stops at the first space. cin.getline(name, 30); reads a whole line including spaces, and stops after at most 29 characters, so the last box is kept for '\\0'. Length by hand: start len = 0 and while (name[len] != '\\0') len++;. Library functions from <cstring>: strlen(s) gives the length, strcpy(dest, src) copies, strcat(dest, src) joins src to the end of dest, and strcmp(a, b) returns 0 if the texts are equal. You cannot copy with = or compare with ==, because an array name is not an ordinary variable. Each letter is really a number: 'A' is 65, 'a' is 97 and '\\0' is 0. Open the Visualize tab to see the codes of Hello, with the 0 at the end.",
+  "syntax": "#include <iostream>\n#include <cstring>            // strlen, strcpy, strcmp, strcat\nusing namespace std;\n\nchar name[6] = \"Ahmad\";      // 5 letters + '\\0' = 6 boxes\nchar city[] = \"Lahore\";      // size chosen by the compiler (7)\nchar word[6] = {'H', 'e', 'l', 'l', 'o', '\\0'};   // letter by letter\n\ncout << name;                // prints Ahmad (stops at '\\0')\ncin >> name;                 // reads ONE word (stops at a space)\ncin.getline(name, 30);       // reads a whole line (spaces allowed)\n\nint len = 0;\nwhile (name[len] != '\\0') len++;   // length by hand\n\nstrlen(name);                // length of the text\nstrcpy(dest, src);           // copy src into dest\nstrcat(dest, src);           // join src to the end of dest\nstrcmp(a, b) == 0            // true when the texts are equal",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Store the name Ali in a char array. Walk through it until the null character, printing each letter with its ASCII code, and print the length.",
+      "pseudocode": [
+        "START",
+        "name = \"Ali\" (3 letters + '\\0')",
+        "len = 0",
+        "WHILE name[len] is not '\\0': PRINT letter and its code, len = len + 1",
+        "PRINT len",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[name = Ali, len = 0]\n  B --> C{name len is not null?}\n  C -->|Yes| D[/Print letter and code/]\n  D --> E[len = len + 1]\n  E --> C\n  C -->|No| F[/Print len/]\n  F --> G([End])",
+      "sample": {
+        "id": "walk-to-null",
+        "title": "Walk through a char array until the null character",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    char name[4] = \"Ali\";\n    int len = 0;\n    while (name[len] != '\\0') {\n        cout << name[len] << \" = \" << (int)name[len] << endl;\n        len++;\n    }\n    cout << \"Length = \" << len << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "A = 65\nl = 108\ni = 105\nLength = 3\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Array size = number of letters + 1. The extra box is for '\\0'."
+          },
+          {
+            "line": 6,
+            "text": "Index and counter in one variable."
+          },
+          {
+            "line": 7,
+            "text": "Keep going until we meet the null character. We do not need to know the length in advance."
+          },
+          {
+            "line": 8,
+            "text": "Prints one character. (int) in front shows its ASCII code instead."
+          },
+          {
+            "line": 9,
+            "text": "Moves to the next character."
+          },
+          {
+            "line": 11,
+            "text": "When the loop ends, len equals the number of characters before '\\0'."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "name": "{'A', 'l', 'i', '\\0'}"
+              },
+              "note": "\"Ali\" has 3 letters, so we need 4 boxes. The compiler stores the null character '\\0' in the 4th box.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "len": "0"
+              },
+              "note": "len will count the characters. It starts at 0.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "name[0] is 'A' (not '\\0'), so the loop runs. Prints the letter and its ASCII code 65.",
+              "out": "A = 65\n"
+            },
+            {
+              "line": 9,
+              "vars": {
+                "len": "1"
+              },
+              "note": "Move to the next box.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "name[1] is 'l', ASCII code 108.",
+              "out": "l = 108\n"
+            },
+            {
+              "line": 9,
+              "vars": {
+                "len": "2"
+              },
+              "note": "Move to the next box.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "name[2] is 'i', ASCII code 105.",
+              "out": "i = 105\n"
+            },
+            {
+              "line": 9,
+              "vars": {
+                "len": "3"
+              },
+              "note": "len is 3 now.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "name[3] is '\\0', so the test name[len] != '\\0' is false. The loop stops. The null character is not counted.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "len = 3 is the length of the text.",
+              "out": "Length = 3\n"
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "name": "char[4]",
+            "len": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read a full name (with a space) from the user. Print a welcome message, the length of the name and the number of vowels in it.",
+      "pseudocode": [
+        "START",
+        "READ full name with getline",
+        "len = 0, vowels = 0",
+        "FOR each character until '\\0': len++, IF it is a vowel THEN vowels++",
+        "PRINT name, len, vowels",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read full name with getline/]\n  B --> C[i = 0, len = 0, vowels = 0]\n  C --> D{full i is not null?}\n  D -->|Yes| E[len++]\n  E --> F{vowel?}\n  F -->|Yes| G[vowels++]\n  F -->|No| H[i++]\n  G --> H\n  H --> D\n  D -->|No| I[/Print name, len, vowels/]\n  I --> J([End])",
+      "sample": {
+        "id": "getline-vowels",
+        "title": "Read a full name and count its vowels",
+        "code": "#include <iostream>\n#include <cctype>\nusing namespace std;\n\nint main() {\n    char full[30];\n    cout << \"Enter full name: \";\n    cin.getline(full, 30);\n    int len = 0;\n    int vowels = 0;\n    for (int i = 0; full[i] != '\\0'; i++) {\n        len++;\n        char ch = tolower(full[i]);\n        if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u') {\n            vowels++;\n        }\n    }\n    cout << \"Welcome, \" << full << endl;\n    cout << \"Length = \" << len << endl;\n    cout << \"Vowels = \" << vowels << endl;\n    return 0;\n}\n",
+        "stdin": "Ahmad Raza",
+        "expectedOutput": "Enter full name: Welcome, Ahmad Raza\nLength = 10\nVowels = 4\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Room for up to 29 characters plus the null character."
+          },
+          {
+            "line": 8,
+            "text": "Reads a whole line, including spaces, but never more than 29 characters (the last box is kept for '\\0')."
+          },
+          {
+            "line": 11,
+            "text": "Loop until the null character. Works for any name length."
+          },
+          {
+            "line": 12,
+            "text": "Counts every character, spaces included."
+          },
+          {
+            "line": 13,
+            "text": "tolower comes from <cctype>. It turns 'A' into 'a' so we only test small vowels."
+          },
+          {
+            "line": 15,
+            "text": "Ahmad has A and a. Raza has a and a. That is 4 vowels."
+          },
+          {
+            "line": 18,
+            "text": "A char array can be printed directly with cout. It prints characters until '\\0'."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Given first = \"Ali\" and last = \"Khan\", build the full name \"Ali Khan\" in a third array using library functions. Print the full name, its length, and whether first and last are equal.",
+      "pseudocode": [
+        "START",
+        "first = Ali, last = Khan",
+        "COPY first INTO full",
+        "JOIN a space TO full",
+        "JOIN last TO full",
+        "PRINT full",
+        "PRINT length of full",
+        "IF first equals last THEN PRINT Same ELSE PRINT Different",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[first = Ali, last = Khan]\n  B --> C[strcpy full from first]\n  C --> D[strcat space then last]\n  D --> E[/Print full and strlen/]\n  E --> F{strcmp first, last is 0?}\n  F -->|Yes| G[/Print Same/]\n  F -->|No| H[/Print Different/]\n  G --> I([End])\n  H --> I",
+      "sample": {
+        "id": "cstring-functions",
+        "title": "Join first and last name with strcpy, strcat, strlen, strcmp",
+        "code": "#include <iostream>\n#include <cstring>\nusing namespace std;\n\nint main() {\n    char first[20] = \"Ali\";\n    char last[20] = \"Khan\";\n    char full[40];\n    strcpy(full, first);\n    strcat(full, \" \");\n    strcat(full, last);\n    cout << full << endl;\n    cout << strlen(full) << endl;\n    if (strcmp(first, last) == 0) {\n        cout << \"Same\" << endl;\n    } else {\n        cout << \"Different\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Ali Khan\n8\nDifferent\n",
+        "explanation": [
+          {
+            "line": 2,
+            "text": "The string functions live in the <cstring> header."
+          },
+          {
+            "line": 8,
+            "text": "The destination must be big enough for the final text, or memory next to it is overwritten."
+          },
+          {
+            "line": 9,
+            "text": "Copies first into full. This is the char-array way of 'full = first'."
+          },
+          {
+            "line": 10,
+            "text": "Appends (joins at the end)."
+          },
+          {
+            "line": 11,
+            "text": "Appends the last name."
+          },
+          {
+            "line": 13,
+            "text": "Length without the null character."
+          },
+          {
+            "line": 14,
+            "text": "Compares the texts. 0 means equal. Never compare char arrays with ==."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 6,
+              "vars": {
+                "first": "\"Ali\""
+              },
+              "note": "first holds Ali. The compiler adds '\\0' after the i.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "last": "\"Khan\""
+              },
+              "note": "last holds Khan.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "full": "(empty, not set yet)"
+              },
+              "note": "full is a big empty array, large enough for the joined name.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "full": "\"Ali\""
+              },
+              "note": "strcpy(destination, source) copies Ali into full, including '\\0'. You must not write full = first.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "full": "\"Ali \""
+              },
+              "note": "strcat adds text at the end of full: now Ali and a space.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "full": "\"Ali Khan\""
+              },
+              "note": "Adds Khan after the space.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Prints the joined name.",
+              "out": "Ali Khan\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "strlen counts the characters before '\\0': A, l, i, space, K, h, a, n = 8.",
+              "out": "8\n"
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "strcmp returns 0 only when both texts are exactly equal. \"Ali\" and \"Khan\" differ, so the test is false.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "The else branch runs.",
+              "out": "Different\n"
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "first": "char[20]",
+            "last": "char[20]",
+            "full": "char[40]"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "char name[6] = \"Ahmad\";",
+      "when": "You know the text. Remember letters + 1",
+      "example": "char name[6] = \"Ahmad\";"
+    },
+    {
+      "way": "char name[] = \"Ahmad\";",
+      "when": "Let the compiler count the size",
+      "example": "char name[] = \"Ahmad\"; // size 6"
+    },
+    {
+      "way": "Letter by letter",
+      "when": "Rare. You must write '\\0' yourself",
+      "example": "char w[3] = {'H', 'i', '\\0'};"
+    },
+    {
+      "way": "cin >> name",
+      "when": "One word only (stops at a space)",
+      "example": "cin >> name;"
+    },
+    {
+      "way": "cin.getline",
+      "when": "A full line with spaces",
+      "example": "cin.getline(name, 30);"
+    },
+    {
+      "way": "Length by loop",
+      "when": "To practise, or when you cannot use <cstring>",
+      "example": "while (name[len] != '\\0') len++;"
+    },
+    {
+      "way": "strlen / strcpy / strcat / strcmp",
+      "when": "Length, copy, join, compare",
+      "example": "strcpy(dest, src); strcat(dest, src); strcmp(a, b) == 0"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "char name[3] = \"Ali\";",
+      "right": "char name[4] = \"Ali\";",
+      "error": "g++ reports: error: initializer-string for 'char [3]' is too long. The null character needs one extra box."
+    },
+    {
+      "wrong": "char a[10] = \"hi\";\nchar b[10] = \"hi\";\nif (a == b) cout << \"same\";",
+      "right": "if (strcmp(a, b) == 0) cout << \"same\";",
+      "error": "It compiles, but g++ -Wall warns: comparison between two arrays. The test compares memory addresses, so it is false even for equal text."
+    },
+    {
+      "wrong": "char c[5];\nc = \"abc\";",
+      "right": "char c[5];\nstrcpy(c, \"abc\");",
+      "error": "g++ reports: error: incompatible types in assignment of 'const char [4]' to 'char [5]'. Use strcpy to put text into a char array."
+    },
+    {
+      "wrong": "char name[30];\ncin >> name;   // user types: Sara Khan",
+      "right": "char name[30];\ncin.getline(name, 30);",
+      "error": "No compiler error. name holds only Sara, because cin >> stops at the space. Use cin.getline to read the whole line."
+    }
+  ],
+  "examTips": [
+    "Array size = number of characters + 1. Write this sentence in the exam answer when you declare a char array.",
+    "cin >> reads one word. cin.getline(name, size) reads the whole line. Examiners love this difference.",
+    "Never use == or = with char arrays. Use strcmp(a, b) == 0 and strcpy(dest, src).",
+    "To find the length by hand, loop while name[i] != '\\0'. The '\\0' itself is not counted.",
+    "Remember #include <cstring> for strlen, strcpy, strcat, strcmp, and #include <cctype> for tolower and toupper."
+  ],
+  "romanSummary": [
+    "Character array text store karta hai, har box mein ek letter, aur text ke end mein null character '\\0' hota hai.",
+    "Isi liye \"Ali\" ke liye kam az kam 4 boxes chahiye: letters + 1.",
+    "cin >> sirf ek word parhta hai (space par ruk jata hai). Poori line ke liye cin.getline(name, size) use karo.",
+    "Length nikalne ke liye while (name[len] != '\\0') len++; ya strlen(name) likho.",
+    "Char arrays ko = aur == se copy ya compare nahi karte. strcpy, strcat aur strcmp (<cstring> se) use karo."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What size of char array is needed to store the word \"Pakistan\"?",
+      "options": [
+        "9",
+        "8",
+        "7",
+        "10 is the minimum"
+      ],
+      "answer": "9",
+      "hint": "Count the letters, then add one.",
+      "explanation": "Pakistan has 8 letters. One more box is needed for '\\0', so the size is at least 9."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is '\\0' in a char array?",
+      "options": [
+        "The null character that marks the end of the text",
+        "The letter O",
+        "A space",
+        "The number of characters"
+      ],
+      "answer": "The null character that marks the end of the text",
+      "hint": "It is the last box of every C-string.",
+      "explanation": "'\\0' (ASCII code 0) tells cout and the string functions where the text ends."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    char s[10] = \"Hello\";\n    cout << s[1] << s[4] << endl;\n    cout << (int)s[5] << endl;\n    return 0;\n}",
+      "answer": "eo\n0",
+      "hint": "s[0] is H. What is in s[5], right after the last letter?",
+      "explanation": "s[1] is 'e' and s[4] is 'o', so eo is printed. s[5] is the null character, whose code is 0."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    char word[10] = \"banana\";\n    int count = 0;\n    for (int i = 0; word[i] != '\\0'; i++) {\n        if (word[i] == 'a') {\n            count++;\n        }\n    }\n    cout << count << endl;\n    return 0;\n}",
+      "answer": "3",
+      "hint": "Count the letter a in banana.",
+      "explanation": "b-a-n-a-n-a has three a letters, so count is 3. The loop stops at '\\0'."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This code does not compile. Fix it.\n\nchar name[5] = \"Ahmad\";",
+      "answer": "char name[6] = \"Ahmad\";",
+      "hint": "Ahmad has 5 letters. Where does the null character go?",
+      "explanation": "The text needs 5 + 1 = 6 boxes. With size 5 the null character has no room, and g++ reports that the initializer-string is too long."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "The program should print Equal when both words are the same, but == does not compare the text. Fix the condition.\n\nchar a[10] = \"hi\";\nchar b[10] = \"hi\";\nif (a == b) cout << \"Equal\";",
+      "answer": "if (strcmp(a, b) == 0) cout << \"Equal\";",
+      "hint": "Which function from <cstring> compares two texts?",
+      "explanation": "a == b compares where the two arrays sit in memory, not their letters, so it is false. strcmp returns 0 when the texts are equal. Remember #include <cstring>."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "hard",
+      "prompt": "Complete the code that finds the length of the char array s by hand.\n\nint len = 0;\nwhile (s[len] ____ '\\0') {\n    ____;\n}",
+      "answer": "int len = 0;\nwhile (s[len] != '\\0') {\n    len++;\n}",
+      "hint": "Keep going while the character is NOT the null character.",
+      "explanation": "The loop continues while s[len] is not '\\0', and len++ moves to the next box. When it stops, len is the length."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that reads one word using cin >> into a char array of size 30 and prints the word reversed. (Lahore should print erohaL.)",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    char w[30];\n    cin >> w;\n    int len = 0;\n    while (w[len] != '\\0') {\n        len++;\n    }\n    for (int i = len - 1; i >= 0; i--) {\n        cout << w[i];\n    }\n    cout << endl;\n    return 0;\n}",
+      "hint": "First find the length with a while loop, then print from index len - 1 down to 0.",
+      "explanation": "After the length is known, the for loop goes backwards from the last letter to the first and prints each one."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "char city[6] = \"Lahore\"; Is this correct?",
+      "options": [
+        "No. Lahore has 6 letters and needs 7 boxes",
+        "Yes, size 6 is enough",
+        "Yes, because arrays start at 0",
+        "No. char arrays cannot hold words"
+      ],
+      "answer": "No. Lahore has 6 letters and needs 7 boxes",
+      "hint": "Letters + 1.",
+      "explanation": "Six letters plus the null character need 7 boxes."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "The user types: Sara Khan. What does cin >> name; store?",
+      "options": [
+        "Sara",
+        "Sara Khan",
+        "Khan",
+        "Nothing"
+      ],
+      "answer": "Sara",
+      "hint": "cin >> stops at whitespace.",
+      "explanation": "cin >> reads one word and stops at the first space. Use cin.getline to read the whole line."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which statement reads a full line, with spaces, into char line[50]?",
+      "options": [
+        "cin.getline(line, 50);",
+        "cin >> line;",
+        "getline(line);",
+        "cin.read(line);"
+      ],
+      "answer": "cin.getline(line, 50);",
+      "hint": "Two arguments: the array and its size.",
+      "explanation": "cin.getline(array, size) reads up to size - 1 characters or until Enter."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What does strcmp(a, b) return when a and b contain the same text?",
+      "options": [
+        "0",
+        "1",
+        "-1",
+        "true"
+      ],
+      "answer": "0",
+      "hint": "Zero means no difference.",
+      "explanation": "strcmp returns 0 for equal texts, so we write if (strcmp(a, b) == 0)."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "char s[20] = \"Ali\"; What does strlen(s) return?",
+      "options": [
+        "3",
+        "4",
+        "20",
+        "19"
+      ],
+      "answer": "3",
+      "hint": "strlen does not count '\\0' and does not care about the array size.",
+      "explanation": "strlen counts the characters before the null character: A, l, i."
+    }
+  ],
+  "sources": [
+    "Character arrays",
+    "Null terminator",
+    "Reading strings with cin and getline",
+    "String functions strlen, strcpy, strcmp, strcat"
+  ]
+}

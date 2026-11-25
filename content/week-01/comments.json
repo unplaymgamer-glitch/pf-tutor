@@ -1,0 +1,474 @@
+{
+  "slug": "comments",
+  "week": 1,
+  "title": "Comments in C++",
+  "defaultView": "visualize",
+  "order": 7,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match each comment form to its use",
+      "pairs": [
+        {
+          "term": "// text",
+          "meaning": "Single-line comment: ends at the end of the line"
+        },
+        {
+          "term": "/* text */",
+          "meaning": "Multi-line comment: can cover many lines"
+        },
+        {
+          "term": "// cout << x;",
+          "meaning": "Commenting out code to switch it off for a while"
+        },
+        {
+          "term": "Good comment",
+          "meaning": "Explains WHY the code does something"
+        },
+        {
+          "term": "Bad comment",
+          "meaning": "Repeats the obvious, such as 'add 1 to x'"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can write single-line and multi-line comments, comment out code, and write comments that actually help the reader.",
+  "warmup": "When you borrow a friend's notebook, small notes in the margin like 'important for exam' or 'check this formula' make it easy to follow. The teacher does not mark those notes as part of the answer. Comments in code are margin notes for humans. The computer ignores them completely.",
+  "definition": "A comment is text inside the program that the compiler ignores. It is written for people who read the code (including you next month). C++ has two kinds: a single-line comment that starts with // and runs to the end of the line, and a multi-line comment that starts with /* and ends with */.",
+  "howItWorks": "Press Play to see that comment lines are skipped and do nothing. Only real statements run. Use comments to say what a block does and why. Do not comment every obvious line. You can also put // in front of a statement to switch it off for a while without deleting it. This is called commenting out code.",
+  "syntax": "// This is a single-line comment\nint marks = 85;   // a comment can also follow code\n\n/* This is a multi-line comment.\n   It can cover many lines. */\n\n// cout << \"hidden\";   // commented-out code does not run",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write a program with comments that stores marks and prints them.",
+      "pseudocode": [
+        "START",
+        "SET marks = 85",
+        "PRINT marks",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[marks = 85]\n  B --> C[/Print marks/]\n  C --> D([End])",
+      "sample": {
+        "id": "simple-comments",
+        "title": "Single-line comments",
+        "code": "#include <iostream>\nusing namespace std;\n\n// Program: prints the marks of a student\nint main() {\n    int marks = 85;   // marks of the student\n    cout << \"Marks: \" << marks << endl;   // show on screen\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Marks: 85\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "A comment line. The compiler ignores it."
+          },
+          {
+            "line": 5,
+            "text": "main() starts here."
+          },
+          {
+            "line": 6,
+            "text": "The comment after the code explains what marks means."
+          },
+          {
+            "line": 7,
+            "text": "A comment can follow a statement on the same line."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {},
+              "note": "Execution starts at main(). The comment on line 4 is skipped.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "marks": "85"
+              },
+              "note": "marks is set to 85. The comment at the end of the line is ignored.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Prints the marks. The trailing comment is ignored.",
+              "out": "Marks: 85\n"
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "marks": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Calculate the area of a rectangle with length 5 and width 3. Use a multi-line comment as a program header and a short comment before the calculation.",
+      "pseudocode": [
+        "START",
+        "SET length = 5, width = 3",
+        "area = length * width",
+        "PRINT area",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[length = 5, width = 3]\n  B --> C[area = length * width]\n  C --> D[/Print area/]\n  D --> E([End])",
+      "sample": {
+        "id": "rect-comments",
+        "title": "Multi-line comment header",
+        "code": "#include <iostream>\nusing namespace std;\n\n/*\n   Program: Rectangle area\n   Author : Ali\n   Date   : Week 1\n*/\nint main() {\n    int length = 5;\n    int width = 3;\n    /* area = length x width */\n    int area = length * width;\n    cout << \"Area = \" << area << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Area = 15\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "/* starts a multi-line comment."
+          },
+          {
+            "line": 5,
+            "text": "Text inside the comment: ignored."
+          },
+          {
+            "line": 8,
+            "text": "*/ ends the comment."
+          },
+          {
+            "line": 9,
+            "text": "The real program begins."
+          },
+          {
+            "line": 12,
+            "text": "A multi-line comment can also fit on one line."
+          },
+          {
+            "line": 13,
+            "text": "Calculates the area."
+          },
+          {
+            "line": 14,
+            "text": "Prints the area."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "What does this program print? Some lines are commented out. Show the output and explain.",
+      "pseudocode": [
+        "START",
+        "PRINT A",
+        "(skip B, it is commented out)",
+        "PRINT C",
+        "(skip D and E, inside a comment block)",
+        "PRINT F",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Print A/]\n  B --> C[/Print C/]\n  C --> D[/Print F/]\n  D --> E([End])",
+      "sample": {
+        "id": "comment-out",
+        "title": "Commenting out code",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << \"A\" << endl;\n    // cout << \"B\" << endl;\n    cout << \"C\" << endl;\n    /*\n    cout << \"D\" << endl;\n    cout << \"E\" << endl;\n    */\n    cout << \"F\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "A\nC\nF\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Runs: prints A."
+          },
+          {
+            "line": 6,
+            "text": "Commented out with //, so B is never printed."
+          },
+          {
+            "line": 7,
+            "text": "Runs: prints C."
+          },
+          {
+            "line": 8,
+            "text": "/* starts a comment block."
+          },
+          {
+            "line": 9,
+            "text": "Inside the block, so D is not printed."
+          },
+          {
+            "line": 10,
+            "text": "Also inside the block, so E is not printed."
+          },
+          {
+            "line": 11,
+            "text": "*/ ends the block."
+          },
+          {
+            "line": 12,
+            "text": "Runs: prints F."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {},
+              "note": "Prints A.",
+              "out": "A\n"
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "This line is a comment, so the computer skips it.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Prints C.",
+              "out": "C\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Lines 8 to 11 are one comment block. Nothing inside it runs.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Prints F.",
+              "out": "F\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {}
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "// comment",
+      "when": "One line, or the end of a line of code",
+      "example": "int x = 5;   // starting value"
+    },
+    {
+      "way": "/* comment */",
+      "when": "Many lines, or a small note in the middle of a line",
+      "example": "/* Program: area of a circle */"
+    },
+    {
+      "way": "Header comment",
+      "when": "Top of a program: purpose, author, date",
+      "example": "// Program: Grade calculator"
+    },
+    {
+      "way": "Commenting out code",
+      "when": "Temporarily switch off a statement to test the rest",
+      "example": "// cout << \"Debug\";"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "/* This comment never ends\ncout << \"Hi\";",
+      "right": "/* This comment ends */\ncout << \"Hi\";",
+      "error": "unterminated comment"
+    },
+    {
+      "wrong": "/* outer /* inner */ still outer */",
+      "right": "/* outer and inner */",
+      "error": "expected primary-expression before '/' token (comments cannot be nested)"
+    },
+    {
+      "wrong": "cout << \"Hi\"  // ;",
+      "right": "cout << \"Hi\";   // prints Hi",
+      "error": "expected ';' before 'return' (the // hides the semicolon)"
+    },
+    {
+      "wrong": "int x = 5;   // x is 6",
+      "right": "int x = 5;   // starting value",
+      "error": "no compiler error, but a wrong or old comment is worse than no comment"
+    }
+  ],
+  "examTips": [
+    "The compiler completely ignores comments; they never change the output.",
+    "// ends at the end of the line. /* ... */ can span many lines.",
+    "Multi-line comments cannot be nested: the first */ ends the whole comment.",
+    "Good comments explain why, not just what. Do not comment every obvious line.",
+    "To find which line causes a problem, comment out code and run the rest."
+  ],
+  "romanSummary": [
+    "Comment ek note hai jo compiler ignore karta hai, ye insaano ke parhne ke liye hota hai.",
+    "// single-line comment hai, ye line ke end tak chalta hai.",
+    "/* ... */ multi-line comment hai, ye kai lines tak ho sakta hai.",
+    "Code ko temporarily band karne ke liye us ke aage // laga do.",
+    "Acha comment batata hai ke kaam kyun kiya gaya, har aasan line par comment na likho."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which symbol starts a single-line comment?",
+      "options": [
+        "#",
+        "//",
+        "/*",
+        "--"
+      ],
+      "answer": "//",
+      "hint": "It is two slashes.",
+      "explanation": "// starts a comment that runs to the end of the line."
+    },
+    {
+      "id": "p2",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank to end the multi-line comment:\n\n/* This is a long comment ______",
+      "answer": "*/",
+      "hint": "It is the reverse of how it starts.",
+      "explanation": "A multi-line comment starts with /* and ends with */."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this print?\n\ncout << \"X\"; // cout << \"Y\";\ncout << \"Z\";",
+      "answer": "XZ",
+      "hint": "Everything after // on a line is ignored.",
+      "explanation": "The cout for Y is inside a comment, so only X and Z are printed, next to each other: XZ."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Fix the bug:\n\n/* print a greeting\ncout << \"Hello\";",
+      "answer": "/* print a greeting */\ncout << \"Hello\";",
+      "hint": "The comment is never closed.",
+      "explanation": "The comment must end with */. Otherwise the compiler reports an unterminated comment."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\nint x = 2;\n/* x = 10; */\ncout << x;",
+      "answer": "2",
+      "hint": "Is the assignment x = 10 really executed?",
+      "explanation": "x = 10 is inside a comment, so it never runs. x stays 2."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank to switch off this line without deleting it:\n\n______ cout << \"Debug\";",
+      "answer": "//",
+      "hint": "Use the single-line comment symbol.",
+      "explanation": "Putting // in front turns the line into a comment, so it does not run."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program with a header comment (program name and author) that prints Welcome to UMT, and a short comment before the cout.",
+      "answer": "#include <iostream>\nusing namespace std;\n\n/* Program: Welcome\n   Author : Ali */\nint main() {\n    // print the welcome message\n    cout << \"Welcome to UMT\" << endl;\n    return 0;\n}",
+      "hint": "Use /* */ for the header and // for the short note.",
+      "explanation": "Comments do not change the output; they only explain the code."
+    },
+    {
+      "id": "p8",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this print?\n\nint a = 1;\na = a + 1;   // a = a + 10;\n/* a = a + 100; */\ncout << a;",
+      "answer": "2",
+      "hint": "Only the first assignment is real code.",
+      "explanation": "Only a = a + 1 runs, so a becomes 2. The other two lines are comments."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does the compiler do with a comment?",
+      "options": [
+        "Runs it",
+        "Prints it",
+        "Ignores it",
+        "Reports an error"
+      ],
+      "answer": "Ignores it",
+      "hint": "Comments are for people.",
+      "explanation": "The compiler skips comments completely."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which is a valid multi-line comment?",
+      "options": [
+        "// text //",
+        "/* text */",
+        "<!-- text -->",
+        "# text #"
+      ],
+      "answer": "/* text */",
+      "hint": "It starts with a slash and a star.",
+      "explanation": "A multi-line comment is written /* ... */."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is a good comment?",
+      "options": [
+        "One that repeats every line in words",
+        "One that explains why the code does something",
+        "One that is very long",
+        "One with no meaning"
+      ],
+      "answer": "One that explains why the code does something",
+      "hint": "Think about the next reader.",
+      "explanation": "Good comments explain the reason, not the obvious."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What does // cout << \"Hi\"; do?",
+      "options": [
+        "Prints Hi",
+        "Does nothing, the line is commented out",
+        "Causes an error",
+        "Prints //"
+      ],
+      "answer": "Does nothing, the line is commented out",
+      "hint": "// turns the whole line into a comment.",
+      "explanation": "Commented-out code is ignored by the compiler."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Why does /* a /* b */ c */ cause an error?",
+      "options": [
+        "Comments must be one line",
+        "Multi-line comments cannot be nested",
+        "The word c is not allowed",
+        "It does not cause an error"
+      ],
+      "answer": "Multi-line comments cannot be nested",
+      "hint": "Which */ ends the comment first?",
+      "explanation": "The first */ closes the comment, so the remaining c */ is treated as code."
+    }
+  ],
+  "sources": [
+    "Comments"
+  ]
+}

@@ -1,0 +1,10 @@
+node_modules
+.next
+.env*
+content-extracted
+content-source/Read This First/Book/
+
+# Playwright output
+/test-results/
+/e2e-results/
+/playwright-report/

@@ -1,0 +1,630 @@
+{
+  "slug": "variables-data-types",
+  "week": 1,
+  "title": "Variables, identifiers, data types and constants",
+  "defaultView": "visualize",
+  "order": 5,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match each term to its meaning",
+      "pairs": [
+        {
+          "term": "Variable",
+          "meaning": "A named box in memory that stores a value"
+        },
+        {
+          "term": "Identifier",
+          "meaning": "The name you choose for a variable or function"
+        },
+        {
+          "term": "Data type",
+          "meaning": "Tells what kind of value the box can hold"
+        },
+        {
+          "term": "Initialisation",
+          "meaning": "Giving a variable its first value"
+        },
+        {
+          "term": "const",
+          "meaning": "Makes a value that can never be changed"
+        },
+        {
+          "term": "sizeof",
+          "meaning": "Tells how many bytes a type or variable uses"
+        }
+      ]
+    },
+    {
+      "kind": "pipeline",
+      "title": "Life of a variable",
+      "stages": [
+        {
+          "name": "Declare",
+          "detail": "Choose a type and a name: int marks; The computer reserves a box."
+        },
+        {
+          "name": "Initialise",
+          "detail": "Put the first value in the box: marks = 85;"
+        },
+        {
+          "name": "Use",
+          "detail": "Read the value, for example print it with cout << marks;"
+        },
+        {
+          "name": "Change",
+          "detail": "Store a new value: marks = 90; The old value is replaced."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can declare and initialise variables of the basic types, choose valid names, use const, and check sizes with sizeof.",
+  "warmup": "Think of the steel boxes (dabbay) in a canteen. One box has a label 'Samosa' and holds 5 pieces. Another is labelled 'Price' and holds 30 rupees. You can open a box, look inside, or replace what is in it. A variable is exactly this: a labelled box in the computer's memory. The label is the name, and what you put inside is the value.",
+  "definition": "A variable is a named place in memory that stores a value, and the value can change. Every variable has a data type, which says what kind of value it can hold (whole number, decimal number, one character, true or false, or text). The name you give it is called an identifier. A constant is like a variable, but its value can never change after you set it.",
+  "howItWorks": "Press Play and watch the Visualize tab. Each variable appears as a labelled box showing its type and value. Declaring a variable makes a new box. An assignment puts a value into the box. Reading a variable does not change it, but a new assignment replaces the old value. Remember: you must declare a variable (type + name) before you use it.",
+  "syntax": "// type name;                 -> declare (make the box)\nint marks;\n\n// type name = value;          -> declare and initialise\nint age = 20;\ndouble price = 99.5;\nchar grade = 'A';            // one character: single quotes\nbool passed = true;          // true or false\nstring name = \"Ali\";        // text: double quotes (#include <string>)\n\n// const type NAME = value;    -> constant, cannot change\nconst double PI = 3.14159;\n\n// sizeof tells the size in bytes\ncout << sizeof(int);         // prints 4\n\n// Identifier rules: letters, digits, _ only;\n// cannot start with a digit; cannot be a keyword.",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Declare variables of type int, double, char, bool and string, give them values, and print them.",
+      "pseudocode": [
+        "START",
+        "SET name = \"Ali\", marks = 85, price = 99.5, grade = 'A', passed = true",
+        "PRINT name, marks, grade",
+        "PRINT price, passed",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Declare and initialise variables]\n  B --> C[/Print name, marks, grade/]\n  C --> D[/Print price, passed/]\n  D --> E([End])",
+      "sample": {
+        "id": "types-demo",
+        "title": "The five basic types",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    int marks = 85;\n    double price = 99.5;\n    char grade = 'A';\n    bool passed = true;\n    string name = \"Ali\";\n    cout << name << \" \" << marks << \" \" << grade << endl;\n    cout << price << \" \" << passed << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Ali 85 A\n99.5 1\n",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "Brings in cout."
+          },
+          {
+            "line": 2,
+            "text": "Needed to use the string type."
+          },
+          {
+            "line": 6,
+            "text": "int stores a whole number. marks starts as 85."
+          },
+          {
+            "line": 7,
+            "text": "double stores a decimal number."
+          },
+          {
+            "line": 8,
+            "text": "char stores one character, written in single quotes."
+          },
+          {
+            "line": 9,
+            "text": "bool is true or false."
+          },
+          {
+            "line": 10,
+            "text": "string stores text, written in double quotes."
+          },
+          {
+            "line": 11,
+            "text": "Prints the name, marks and grade separated by spaces."
+          },
+          {
+            "line": 12,
+            "text": "A bool prints as 1 for true (0 for false)."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "marks": "85"
+              },
+              "note": "A new int box called marks is made and 85 is stored.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "price": "99.5"
+              },
+              "note": "A double box called price holds 99.5.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "grade": "'A'"
+              },
+              "note": "A char box holds the single character A.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "passed": "true"
+              },
+              "note": "A bool box holds true.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "name": "\"Ali\""
+              },
+              "note": "A string box holds the text Ali.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "cout prints the name, marks and grade, then a new line.",
+              "out": "Ali 85 A\n"
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "price prints as 99.5. A true bool prints as 1.",
+              "out": "99.5 1\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "marks": "int",
+            "price": "double",
+            "grade": "char",
+            "passed": "bool",
+            "name": "string"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "A shop adds 10% tax to a price of 500 rupees. Use a constant for the tax rate, show the total, then change the price to 800 and show it.",
+      "pseudocode": [
+        "START",
+        "SET TAX = 0.10 (constant)",
+        "SET price = 500",
+        "total = price + price * TAX",
+        "PRINT total",
+        "SET price = 800",
+        "PRINT price",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[TAX = 0.10, price = 500]\n  B --> C[total = price + price * TAX]\n  C --> D[/Print total/]\n  D --> E[price = 800]\n  E --> F[/Print price/]\n  F --> G([End])",
+      "sample": {
+        "id": "tax-const",
+        "title": "Constant tax rate and changing a variable",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const double TAX = 0.10;\n    double price = 500;\n    double total;\n    total = price + price * TAX;\n    cout << \"Total = \" << total << endl;\n    price = 800;\n    cout << \"New price = \" << price << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Total = 550\nNew price = 800\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "const means TAX can never be changed later. Constants are written in CAPITALS by habit."
+          },
+          {
+            "line": 6,
+            "text": "price starts as 500."
+          },
+          {
+            "line": 7,
+            "text": "total is declared but has no value yet."
+          },
+          {
+            "line": 8,
+            "text": "Calculates price plus 10% of price and stores it in total."
+          },
+          {
+            "line": 9,
+            "text": "Prints the total."
+          },
+          {
+            "line": 10,
+            "text": "A new assignment replaces the old value of price."
+          },
+          {
+            "line": 11,
+            "text": "Prints the new price."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "TAX": "0.1"
+              },
+              "note": "TAX is a constant box. It is locked after this line.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "price": "500"
+              },
+              "note": "price is set to 500.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "total": "?"
+              },
+              "note": "total is made but empty (garbage) until we assign it.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "total": "550"
+              },
+              "note": "500 + 500 * 0.1 = 550, stored in total.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Prints the total.",
+              "out": "Total = 550\n"
+            },
+            {
+              "line": 10,
+              "vars": {
+                "price": "800"
+              },
+              "note": "price gets a new value. The old 500 is gone.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Prints the new price.",
+              "out": "New price = 800\n"
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "TAX": "const double",
+            "price": "double",
+            "total": "double"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Store a student's name, age, CGPA and section in suitable variables and print them. Also print the size in bytes of int, double and char.",
+      "pseudocode": [
+        "START",
+        "DECLARE name (string), age (int), cgpa (double), section (char)",
+        "PRINT each value with a label",
+        "PRINT sizeof(int), sizeof(double), sizeof(char)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Declare name, age, cgpa, section]\n  B --> C[/Print the four values/]\n  C --> D[/Print sizes of int, double, char/]\n  D --> E([End])",
+      "sample": {
+        "id": "student-info",
+        "title": "Student details and sizeof",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string name = \"Sara\";\n    int age = 18;\n    double cgpa = 3.5;\n    char section = 'V';\n    cout << \"Name: \" << name << endl;\n    cout << \"Age: \" << age << endl;\n    cout << \"CGPA: \" << cgpa << endl;\n    cout << \"Section: \" << section << endl;\n    cout << \"int uses \" << sizeof(int) << \" bytes\" << endl;\n    cout << \"double uses \" << sizeof(double) << \" bytes\" << endl;\n    cout << \"char uses \" << sizeof(char) << \" bytes\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Name: Sara\nAge: 18\nCGPA: 3.5\nSection: V\nint uses 4 bytes\ndouble uses 8 bytes\nchar uses 1 bytes\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Text needs the string type."
+          },
+          {
+            "line": 7,
+            "text": "Age is a whole number, so int."
+          },
+          {
+            "line": 8,
+            "text": "CGPA has a decimal part, so double."
+          },
+          {
+            "line": 9,
+            "text": "Section is one letter, so char with single quotes."
+          },
+          {
+            "line": 10,
+            "text": "Prints the label and the value."
+          },
+          {
+            "line": 14,
+            "text": "sizeof(int) gives the number of bytes an int uses (4 on most computers)."
+          },
+          {
+            "line": 15,
+            "text": "A double uses 8 bytes."
+          },
+          {
+            "line": 16,
+            "text": "A char uses 1 byte."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "int",
+      "when": "Whole numbers (no decimal point), usually 4 bytes",
+      "example": "int marks = 85;"
+    },
+    {
+      "way": "float",
+      "when": "Decimal numbers, about 7 digits of precision, 4 bytes",
+      "example": "float price = 99.5f;"
+    },
+    {
+      "way": "double",
+      "when": "Decimal numbers, about 15 digits of precision, 8 bytes (the usual choice)",
+      "example": "double pi = 3.14159;"
+    },
+    {
+      "way": "char",
+      "when": "A single character in single quotes, 1 byte",
+      "example": "char grade = 'A';"
+    },
+    {
+      "way": "bool",
+      "when": "true or false only (prints as 1 or 0)",
+      "example": "bool passed = true;"
+    },
+    {
+      "way": "string",
+      "when": "Text in double quotes (needs #include <string>)",
+      "example": "string name = \"Ali\";"
+    },
+    {
+      "way": "int a, b, c;",
+      "when": "Declare several variables of the same type in one line",
+      "example": "int a = 1, b = 2, c;"
+    },
+    {
+      "way": "const",
+      "when": "A value that must never change",
+      "example": "const double PI = 3.14159;"
+    },
+    {
+      "way": "sizeof",
+      "when": "Find the size in bytes of a type or variable",
+      "example": "cout << sizeof(double);"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int 1num = 5;",
+      "right": "int num1 = 5;",
+      "error": "expected unqualified-id before numeric constant (a name cannot start with a digit)"
+    },
+    {
+      "wrong": "int x = 5;\ncout << y;",
+      "right": "int x = 5;\ncout << x;",
+      "error": "'y' was not declared in this scope"
+    },
+    {
+      "wrong": "const int MAX = 10;\nMAX = 20;",
+      "right": "const int MAX = 10;\n// do not change MAX",
+      "error": "assignment of read-only variable 'MAX'"
+    },
+    {
+      "wrong": "char grade = \"A\";",
+      "right": "char grade = 'A';",
+      "error": "invalid conversion from 'const char*' to 'char' (use single quotes for one character)"
+    },
+    {
+      "wrong": "int total marks = 5;",
+      "right": "int totalMarks = 5;",
+      "error": "expected initializer before 'marks' (names cannot contain spaces)"
+    }
+  ],
+  "examTips": [
+    "Identifier rules: letters, digits and underscore only; cannot start with a digit; no spaces; cannot be a keyword like int or return.",
+    "C++ is case-sensitive: marks, Marks and MARKS are three different variables.",
+    "Single quotes are for one char ('A'). Double quotes are for strings (\"Ali\").",
+    "int drops the decimal part: int n = 3.7; stores 3. Use double when you need decimals.",
+    "Know the sizes: char 1 byte, int 4, float 4, double 8. Declaration makes the box; initialisation fills it the first time."
+  ],
+  "romanSummary": [
+    "Variable memory mein ek naam wali jagah hai jis mein value store hoti hai, aur value badal sakti hai.",
+    "Data types: int (poore number), float/double (decimal), char (ek character), bool (true/false), string (text).",
+    "Variable ka naam (identifier) digit se shuru nahi ho sakta, us mein space nahi hoti aur wo keyword nahi ho sakta.",
+    "const wali value ek baar set hone ke baad kabhi change nahi hoti.",
+    "sizeof batata hai ke koi type kitne bytes leta hai, jaise int 4 bytes."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which one is a valid variable name in C++?",
+      "options": [
+        "2marks",
+        "total marks",
+        "total_marks",
+        "float"
+      ],
+      "answer": "total_marks",
+      "hint": "Names cannot start with a digit, contain spaces, or be keywords.",
+      "explanation": "total_marks uses only letters and an underscore and is not a keyword."
+    },
+    {
+      "id": "p2",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank so the variable can store a decimal number:\n\n______ price = 99.5;",
+      "answer": "double",
+      "hint": "It is the usual type for decimal numbers.",
+      "explanation": "double stores decimal numbers. (float also works, but double is the normal choice.)"
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this print?\n\nint x = 10;\nx = x + 5;\ncout << x;",
+      "answer": "15",
+      "hint": "x is changed before it is printed.",
+      "explanation": "x starts as 10. The assignment stores 10 + 5 = 15 in x, so 15 is printed."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Fix the bug:\n\nconst int MAX = 10;\nMAX = 20;\ncout << MAX;",
+      "answer": "const int MAX = 10;\ncout << MAX;",
+      "hint": "A constant cannot be assigned again.",
+      "explanation": "const values cannot change. Remove the assignment (or make MAX a normal int if it must change)."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print on a normal computer?\n\ncout << sizeof(char) + sizeof(int);",
+      "answer": "5",
+      "hint": "char is 1 byte and int is 4 bytes.",
+      "explanation": "1 + 4 = 5."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank so DAYS can never be changed:\n\n______ int DAYS = 7;",
+      "answer": "const",
+      "hint": "It is the keyword for constants.",
+      "explanation": "const makes the value read-only after it is set."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that stores a book's title (string), pages (int) and price (double) and prints all three on separate lines.",
+      "answer": "#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    string title = \"C++ Basics\";\n    int pages = 250;\n    double price = 899.5;\n    cout << title << endl;\n    cout << pages << endl;\n    cout << price << endl;\n    return 0;\n}",
+      "hint": "Use string, int and double, then three cout lines.",
+      "explanation": "Each value uses the type that fits it. #include <string> is needed for string."
+    },
+    {
+      "id": "p8",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this print?\n\ndouble d = 3.7;\nint n = d;\ncout << n << \" \" << d;",
+      "answer": "3 3.7",
+      "hint": "An int cannot keep the decimal part.",
+      "explanation": "Storing 3.7 in an int drops the decimal part and keeps 3. d is unchanged, so it still prints 3.7."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is a variable?",
+      "options": [
+        "A value that never changes",
+        "A named place in memory that stores a value",
+        "A type of loop",
+        "A kind of comment"
+      ],
+      "answer": "A named place in memory that stores a value",
+      "hint": "Think of a labelled box.",
+      "explanation": "A variable is a named memory location. Its value can change."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which data type stores a single character such as 'A'?",
+      "options": [
+        "int",
+        "bool",
+        "char",
+        "double"
+      ],
+      "answer": "char",
+      "hint": "It is short for character.",
+      "explanation": "char holds one character, written in single quotes."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which declaration is correct for the text \"Ali\"?",
+      "options": [
+        "char name = \"Ali\";",
+        "string name = \"Ali\";",
+        "int name = \"Ali\";",
+        "string name = 'Ali';"
+      ],
+      "answer": "string name = \"Ali\";",
+      "hint": "Text needs the string type and double quotes.",
+      "explanation": "A string holds text in double quotes. char holds only one character."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What happens if you try to change a const variable?",
+      "options": [
+        "It changes normally",
+        "The compiler gives an error",
+        "It becomes 0",
+        "The program runs slower"
+      ],
+      "answer": "The compiler gives an error",
+      "hint": "const means read-only.",
+      "explanation": "Assigning to a const variable is a compile error."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "What is stored in int n = 9.8; ?",
+      "options": [
+        "9.8",
+        "10",
+        "9",
+        "0"
+      ],
+      "answer": "9",
+      "hint": "int cannot store decimals.",
+      "explanation": "The decimal part is cut off (truncated), so n holds 9."
+    }
+  ],
+  "sources": [
+    "Variables",
+    "Identifiers",
+    "Data types",
+    "Constants",
+    "Declaration and initialisation"
+  ]
+}

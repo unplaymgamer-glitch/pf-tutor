@@ -1,0 +1,361 @@
+{
+  "slug": "hello-world",
+  "week": 1,
+  "title": "Structure of a C++ program: your first program",
+  "defaultView": "visualize",
+  "order": 4,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match each part of a C++ program to its job",
+      "pairs": [
+        {
+          "term": "#include <iostream>",
+          "meaning": "Brings in the tools for input and output"
+        },
+        {
+          "term": "int main()",
+          "meaning": "The place where the program starts"
+        },
+        {
+          "term": "cout",
+          "meaning": "Prints text on the screen"
+        },
+        {
+          "term": "return 0;",
+          "meaning": "Ends the program successfully"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can write, read and explain a complete C++ program that prints a message.",
+  "warmup": "Think of a rickshaw driver who only follows exact directions: 'Go straight, turn left, stop.' If you say the steps in the wrong order or skip one, he ends up somewhere else. A computer is the same: it follows your steps exactly, one by one, in the order you wrote them.",
+  "definition": "A program is a list of instructions that a computer follows one after another. In C++, every program has a special part called main(). The computer always starts running from main().",
+  "howItWorks": "Press Play to watch the computer move through the program. It starts at main(), runs each statement from top to bottom, prints text with cout, and stops at return 0.",
+  "syntax": "#include <iostream>      // 1. bring in the input/output tools\nusing namespace std;     // 2. lets us write cout instead of std::cout\n\nint main()               // 3. the program starts here\n{\n    cout << \"text\";      // 4. a statement: ends with a semicolon\n    return 0;            // 5. tells the computer: finished OK\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Print Hello UMT on the screen.",
+      "pseudocode": [
+        "START",
+        "PRINT \"Hello UMT\"",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Print Hello UMT/]\n  B --> C([End])",
+      "sample": {
+        "id": "hello-umt",
+        "title": "Hello UMT",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << \"Hello UMT\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Hello UMT\n",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "Brings in the input/output library so we can use cout."
+          },
+          {
+            "line": 2,
+            "text": "Lets us write cout instead of std::cout."
+          },
+          {
+            "line": 4,
+            "text": "main() is where the program starts."
+          },
+          {
+            "line": 5,
+            "text": "Prints the message. endl moves to a new line."
+          },
+          {
+            "line": 6,
+            "text": "Returns 0 to say the program finished without problems."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The computer finds main() and starts here.",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "cout sends the text Hello UMT to the screen, then endl moves to the next line.",
+              "out": "Hello UMT\n"
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "return 0 ends the program successfully.",
+              "out": ""
+            }
+          ],
+          "types": {}
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Print a small visiting card on three lines.",
+      "pseudocode": [
+        "START",
+        "PRINT name",
+        "PRINT department",
+        "PRINT course",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Print name/]\n  B --> C[/Print department/]\n  C --> D[/Print course/]\n  D --> E([End])",
+      "sample": {
+        "id": "visiting-card",
+        "title": "Visiting card",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << \"Name: Ali Khan\" << endl;\n    cout << \"Department: BSCS\\n\";\n    cout << \"Course: CC111\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Name: Ali Khan\nDepartment: BSCS\nCourse: CC111\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "endl ends this line."
+          },
+          {
+            "line": 6,
+            "text": "\\n also ends the line; it is a shorter way."
+          },
+          {
+            "line": 7,
+            "text": "The last line is printed the same way."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "Prints the name and moves to a new line.",
+              "out": "Name: Ali Khan\n"
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "Prints the department. The \\n at the end moves to a new line.",
+              "out": "Department: BSCS\n"
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Prints the course and moves to a new line.",
+              "out": "Course: CC111\n"
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {}
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a program that prints: Welcome to UMT, then on the same line the text CC111 after a tab, and then the word Done on a new line.",
+      "pseudocode": [
+        "START",
+        "PRINT \"Welcome to UMT\" without a new line",
+        "PRINT a tab, then CC111, then a new line",
+        "PRINT Done",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Print Welcome to UMT/]\n  B --> C[/Print tab and CC111/]\n  C --> D[/Print Done/]\n  D --> E([End])",
+      "sample": {
+        "id": "tab-and-lines",
+        "title": "Same line, tab and new line",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << \"Welcome to UMT\";\n    cout << \"\\tCC111\\n\";\n    cout << \"Done\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Welcome to UMT\tCC111\nDone\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "No endl or \\n here, so the next text continues on the same line."
+          },
+          {
+            "line": 6,
+            "text": "\\t inserts a tab; \\n ends the line."
+          },
+          {
+            "line": 7,
+            "text": "Prints Done on its own line."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "cout << \"text\";",
+      "when": "Print text and stay on the same line",
+      "example": "cout << \"Hi\";"
+    },
+    {
+      "way": "cout << \"text\" << endl;",
+      "when": "Print text and move to a new line",
+      "example": "cout << \"Hi\" << endl;"
+    },
+    {
+      "way": "cout << \"text\\n\";",
+      "when": "Another way to move to a new line",
+      "example": "cout << \"Hi\\n\";"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "cout << \"Hi\"",
+      "right": "cout << \"Hi\";",
+      "error": "expected ';' before 'return'"
+    },
+    {
+      "wrong": "Cout << \"Hi\";",
+      "right": "cout << \"Hi\";",
+      "error": "'Cout' was not declared in this scope (C++ is case-sensitive)"
+    },
+    {
+      "wrong": "int Main() { }",
+      "right": "int main() { }",
+      "error": "undefined reference to `main'"
+    }
+  ],
+  "examTips": [
+    "Every statement ends with a semicolon (;).",
+    "C++ is case-sensitive: main is not Main.",
+    "Execution always starts at main().",
+    "#include <iostream> is needed for cout and cin."
+  ],
+  "romanSummary": [
+    "Program computer ko steps batata hai, jo wo ek ek karke chalata hai.",
+    "Har C++ program main() se shuru hota hai.",
+    "cout screen par likhne ke liye use hota hai.",
+    "Har statement ke end par semicolon (;) lagana zaroori hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank: every C++ program starts running from the function called ______.",
+      "answer": "main",
+      "hint": "It is the function with int in front.",
+      "explanation": "The computer always starts at main()."
+    },
+    {
+      "id": "p2",
+      "type": "bug",
+      "difficulty": "easy",
+      "prompt": "Fix the bug:\n\ncout << \"Hello\"\nreturn 0;",
+      "answer": "cout << \"Hello\";\nreturn 0;",
+      "hint": "Look at the end of the first line.",
+      "explanation": "Every statement must end with a semicolon."
+    },
+    {
+      "id": "p3",
+      "type": "write",
+      "difficulty": "medium",
+      "prompt": "Write a program that prints your name on one line and your roll number on the next line.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"Ali\" << endl;\n    cout << \"F2026-001\" << endl;\n    return 0;\n}",
+      "hint": "Use two cout statements with endl.",
+      "explanation": "Each cout prints one line; endl ends the line."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this print?\n\ncout << \"A\";\ncout << \"B\" << endl;\ncout << \"C\";",
+      "answer": "AB\nC",
+      "hint": "Only endl or \\n starts a new line.",
+      "explanation": "A and B are on the same line because there is no newline between them. endl moves to the next line, so C is on line 2."
+    },
+    {
+      "id": "p5",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which header file is needed to use cout?",
+      "options": [
+        "<iostream>",
+        "<cmath>",
+        "<string>",
+        "<stdio>"
+      ],
+      "answer": "<iostream>",
+      "hint": "It has the word stream for input and output.",
+      "explanation": "cout and cin live in <iostream>."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Find the bug:\n\n#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"Hi\" << endl;\n    return 0;\n",
+      "answer": "The closing brace } of main() is missing at the end.",
+      "hint": "Count the opening and closing braces.",
+      "explanation": "Every { needs a matching }. The compiler reports that it expected a } at the end of the input."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Where does a C++ program start running?",
+      "options": [
+        "At the first line of the file",
+        "At main()",
+        "At return 0;",
+        "At #include"
+      ],
+      "answer": "At main()",
+      "hint": "One special function is the entry point.",
+      "explanation": "The computer always begins execution at main()."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which symbol ends a C++ statement?",
+      "options": [
+        ":",
+        ".",
+        ";",
+        ","
+      ],
+      "answer": ";",
+      "hint": "Think of the full stop of a C++ sentence.",
+      "explanation": "A semicolon ends each statement."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which line causes an error?",
+      "options": [
+        "cout << \"Hi\";",
+        "Cout << \"Hi\";",
+        "return 0;",
+        "using namespace std;"
+      ],
+      "answer": "Cout << \"Hi\";",
+      "hint": "C++ cares about capital letters.",
+      "explanation": "C++ is case-sensitive, so Cout is not the same as cout."
+    }
+  ],
+  "sources": [
+    "Structure of C++ Program",
+    "Input, Output Statements",
+    "Compilation and Program Execution"
+  ]
+}

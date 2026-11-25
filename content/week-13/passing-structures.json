@@ -1,0 +1,972 @@
+{
+  "slug": "passing-structures",
+  "week": 13,
+  "title": "Passing a structure to a function: copy, reference or pointer",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "memory",
+      "title": "Copy, same box, or address: three ways to pass a Student",
+      "cells": [
+        {
+          "name": "a",
+          "type": "Student",
+          "addr": "0x1000"
+        },
+        {
+          "name": "copy",
+          "type": "Student",
+          "addr": "0x2000"
+        },
+        {
+          "name": "p",
+          "type": "Student*",
+          "addr": "0x3000"
+        }
+      ],
+      "steps": [
+        {
+          "code": "Student a = {\"Ali\", 60};",
+          "note": "main has the variable a at address 0x1000.",
+          "values": {
+            "a": "{Ali, 60}"
+          },
+          "points": {}
+        },
+        {
+          "code": "bonusByValue(a);",
+          "note": "By value: a NEW Student box (0x2000) is made and the whole of a is copied into it.",
+          "values": {
+            "copy": "{Ali, 60}"
+          },
+          "points": {}
+        },
+        {
+          "code": "s.marks += 5;",
+          "note": "Only the copy changes. a is still {Ali, 60}.",
+          "values": {
+            "copy": "{Ali, 65}"
+          },
+          "points": {}
+        },
+        {
+          "code": "}",
+          "note": "The function ends. The copy is destroyed, so the bonus is lost.",
+          "values": {
+            "copy": "(destroyed)"
+          },
+          "points": {}
+        },
+        {
+          "code": "bonusByRef(a);",
+          "note": "By reference: no new box. The parameter s is just another name for a at 0x1000.",
+          "values": {},
+          "points": {}
+        },
+        {
+          "code": "s.marks += 5;",
+          "note": "This changes a itself, because s and a are the same box.",
+          "values": {
+            "a": "{Ali, 65}"
+          },
+          "points": {}
+        },
+        {
+          "code": "bonusPtr(&a);",
+          "note": "By pointer: p stores the ADDRESS of a (0x1000). Only 4 or 8 bytes are copied, not the whole Student.",
+          "values": {
+            "p": "0x1000"
+          },
+          "points": {
+            "p": "a"
+          }
+        },
+        {
+          "code": "p->marks += 5;",
+          "note": "The arrow follows the pointer to a and changes it.",
+          "values": {
+            "a": "{Ali, 70}"
+          },
+          "points": {
+            "p": "a"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each way of passing to what it does",
+      "pairs": [
+        {
+          "term": "void f(Student s)",
+          "meaning": "By value: a full copy is made; changes are lost"
+        },
+        {
+          "term": "void f(Student &s)",
+          "meaning": "By reference: the same box; changes stay in the caller's variable"
+        },
+        {
+          "term": "void f(const Student &s)",
+          "meaning": "By const reference: no copy and no changes allowed; best for read-only"
+        },
+        {
+          "term": "void f(Student *p)",
+          "meaning": "By pointer: the address is passed; use p->marks to reach members"
+        },
+        {
+          "term": "p->marks",
+          "meaning": "Same as (*p).marks: member of the structure that p points to"
+        },
+        {
+          "term": "f(a) with a Student &s parameter",
+          "meaning": "The caller passes the variable normally; the & appears only in the function header"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can pass a structure to a function by value, by reference, by const reference and by pointer, use the arrow operator, and choose the right way for each job.",
+  "warmup": "A student gives a form to the office. Option 1: the clerk makes a photocopy and writes remarks on the copy; the original stays clean. Option 2: the clerk gets the original form and writes on it. Option 3: the clerk may read the original but is not allowed to write anything. Option 4: the clerk is only told on which shelf the form is kept. A structure travelling into a function has exactly these four options.",
+  "definition": "A structure variable can be sent to a function like any other variable. By value (void f(Student s)): the function gets a full copy of every member, so changes are lost when it returns. By reference (void f(Student &s)): s is another name for the caller's variable, so changes stay. By const reference (void f(const Student &s)): like a reference, but the function promises not to change it, and no copy is made. By pointer (void f(Student *p)): the function receives the address of the variable. Through a pointer we reach members with the arrow operator: p->marks, which means the same as (*p).marks.",
+  "howItWorks": "Step through the first trace and watch the call stack. In bonusByValue the function gets a NEW box s filled with a copy of a. It adds 5 to the copy, and when the function ends the copy is thrown away, so main still has 60. In bonusByRef no new box is made. s is the same box as a, so the 5 marks are added to a. The function show uses a const reference: it does not copy the structure, and the compiler stops us if we try to change it. Why not always pass by value? A structure may hold many members, so copying it every time is slow and wasteful. The third trace shows the pointer way: the function receives the address, so only a small address is copied, and the arrow -> follows it to the real structure. A simple rule: read only, use const Type &. Must change it, use Type &. Small struct and you want a private copy, by value is fine. Pointer: use it when the notes or the exam ask for it, or when the address may be missing.",
+  "syntax": "struct Student { string name; int marks; };\n\nvoid f1(Student s)        { s.marks += 5; }    // by value: copy, change is lost\nvoid f2(Student &s)       { s.marks += 5; }    // by reference: changes the original\nvoid f3(const Student &s) { cout << s.marks; } // const reference: read only, no copy\nvoid f4(Student *p)       { p->marks += 5; }   // pointer: arrow reaches the member\n\nStudent a = {\"Ali\", 60};\nf1(a);      // a unchanged\nf2(a);      // a changed\nf3(a);      // just reads\nf4(&a);     // pass the ADDRESS of a",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "A Student has a name and marks. Write one function that adds 5 bonus marks BY VALUE and one BY REFERENCE, and a function that prints. Show which bonus is kept.",
+      "pseudocode": [
+        "START",
+        "SET a = Ali, 60",
+        "CALL bonusByValue(a): the function adds 5 to a copy",
+        "PRINT a: still 60",
+        "CALL bonusByRef(a): the function adds 5 to a itself",
+        "PRINT a: now 65",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[a = Ali, 60]\n  B --> C[bonusByValue: copy gets 5 more]\n  C --> D[/Print 60: bonus lost/]\n  D --> E[bonusByRef: a gets 5 more]\n  E --> F[/Print 65: bonus kept/]\n  F --> G([End])",
+      "sample": {
+        "id": "pass-value-ref",
+        "title": "Bonus marks: by value, by reference, by const reference",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    string name;\n    int marks;\n};\n\nvoid bonusByValue(Student s) {\n    s.marks += 5;\n}\n\nvoid bonusByRef(Student &s) {\n    s.marks += 5;\n}\n\nvoid show(const Student &s) {\n    cout << s.name << \": \" << s.marks << endl;\n}\n\nint main() {\n    Student a = {\"Ali\", 60};\n    bonusByValue(a);\n    show(a);\n    bonusByRef(a);\n    show(a);\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Ali: 60\nAli: 65\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A struct with a string and an int."
+          },
+          {
+            "line": 10,
+            "text": "By value: s is a copy of the argument. The whole struct is copied, every member."
+          },
+          {
+            "line": 11,
+            "text": "Changes the copy only. The caller's variable is untouched."
+          },
+          {
+            "line": 14,
+            "text": "By reference: s is another name for the caller's variable. No copy."
+          },
+          {
+            "line": 15,
+            "text": "Changes the original a, because s and a are the same box."
+          },
+          {
+            "line": 18,
+            "text": "By const reference: no copy and the function may only read s. Good for printing."
+          },
+          {
+            "line": 23,
+            "text": "One variable a lives in main."
+          },
+          {
+            "line": 24,
+            "text": "Marks stay 60."
+          },
+          {
+            "line": 26,
+            "text": "Marks become 65."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 22,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 23,
+              "vars": {
+                "a.name": "\"Ali\"",
+                "a.marks": "60"
+              },
+              "note": "main creates the structure variable a with name Ali and marks 60.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a.name": "\"Ali\"",
+                    "a.marks": "60"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 24,
+              "vars": {
+                "s.marks": "60"
+              },
+              "note": "The parameter is plain Student s, so a NEW Student box s is made and the whole of a is COPIED into it. s is a different box from a.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a.name": "\"Ali\"",
+                    "a.marks": "60"
+                  }
+                },
+                {
+                  "fn": "bonusByValue(s)",
+                  "vars": {
+                    "s.marks": "60 (a copy)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {
+                "s.marks": "65"
+              },
+              "note": "Only the copy changes: s.marks becomes 65. a.marks is still 60.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a.name": "\"Ali\"",
+                    "a.marks": "60"
+                  }
+                },
+                {
+                  "fn": "bonusByValue(s)",
+                  "vars": {
+                    "s.marks": "65 (a copy)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 25,
+              "vars": {},
+              "note": "The function returned and the copy was thrown away. The bonus is lost. show takes a const reference: no copy is made and it cannot change a.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a.name": "\"Ali\"",
+                    "a.marks": "60"
+                  }
+                },
+                {
+                  "fn": "show(s)",
+                  "vars": {
+                    "s": "is a (marks 60)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "show prints the ORIGINAL data: the bonus was lost.",
+              "out": "Ali: 60\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a.name": "\"Ali\"",
+                    "a.marks": "60"
+                  }
+                },
+                {
+                  "fn": "show(s)",
+                  "vars": {
+                    "s": "is a (marks 60)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 26,
+              "vars": {},
+              "note": "The parameter is Student &s. No new box is made: s becomes another name for a.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a.name": "\"Ali\"",
+                    "a.marks": "60"
+                  }
+                },
+                {
+                  "fn": "bonusByRef(s)",
+                  "vars": {
+                    "s": "is a (marks 60)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {
+                "a.marks": "65"
+              },
+              "note": "s.marks is a.marks, so the original a now has 65.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a.name": "\"Ali\"",
+                    "a.marks": "65"
+                  }
+                },
+                {
+                  "fn": "bonusByRef(s)",
+                  "vars": {
+                    "s": "is a (marks 65)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 27,
+              "vars": {},
+              "note": "show looks at a again (no copy).",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a.name": "\"Ali\"",
+                    "a.marks": "65"
+                  }
+                },
+                {
+                  "fn": "show(s)",
+                  "vars": {
+                    "s": "is a (marks 65)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "This time the bonus is kept.",
+              "out": "Ali: 65\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a.name": "\"Ali\"",
+                    "a.marks": "65"
+                  }
+                },
+                {
+                  "fn": "show(s)",
+                  "vars": {
+                    "s": "is a (marks 65)"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 28,
+              "vars": {},
+              "note": "The program ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a.name": "\"Ali\"",
+                    "a.marks": "65"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "a.name": "string",
+            "a.marks": "int",
+            "s.marks": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "A Point has x and y. Print it, move it to the right by 5, and find its squared distance from the origin, using the best way of passing for each job.",
+      "pseudocode": [
+        "START",
+        "SET a = (2, 3)",
+        "show(a): print a copy",
+        "moveRight(a, 5): change a itself",
+        "show(a)",
+        "distanceFromOrigin(a): only reads a",
+        "PRINT result",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[a = 2, 3]\n  B --> C[/show a/]\n  C --> D[moveRight a by 5]\n  D --> E[/show a/]\n  E --> F[Compute x*x + y*y]\n  F --> G[/Print squared distance/]\n  G --> H([End])",
+      "sample": {
+        "id": "pass-point",
+        "title": "Point: by value, by reference, by const reference",
+        "code": "#include <iostream>\nusing namespace std;\n\nstruct Point {\n    int x, y;\n};\n\nvoid show(Point p) {\n    cout << \"(\" << p.x << \", \" << p.y << \")\" << endl;\n}\n\nvoid moveRight(Point &p, int d) {\n    p.x += d;\n}\n\ndouble distanceFromOrigin(const Point &p) {\n    return p.x * p.x + p.y * p.y;\n}\n\nint main() {\n    Point a = {2, 3};\n    show(a);\n    moveRight(a, 5);\n    show(a);\n    cout << \"Squared distance: \" << distanceFromOrigin(a) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "(2, 3)\n(7, 3)\nSquared distance: 58\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "Two int members written in one line: x and y."
+          },
+          {
+            "line": 8,
+            "text": "By value: p is a copy. Fine here because we only read it and Point is small."
+          },
+          {
+            "line": 12,
+            "text": "By reference: the function must change the caller's point."
+          },
+          {
+            "line": 13,
+            "text": "Changes the original point's x."
+          },
+          {
+            "line": 16,
+            "text": "const reference: no copy and no change allowed. The best choice for read-only access."
+          },
+          {
+            "line": 17,
+            "text": "x squared plus y squared, the squared distance from (0, 0)."
+          },
+          {
+            "line": 21,
+            "text": "a starts at (2, 3)."
+          },
+          {
+            "line": 23,
+            "text": "a becomes (7, 3)."
+          },
+          {
+            "line": 25,
+            "text": "7*7 + 3*3 = 58."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Trace the program. Write the exact output and explain what -> does and why s changes even though bonus does not return anything.",
+      "pseudocode": [
+        "START",
+        "SET s = Sara, 70",
+        "SET ptr = address of s",
+        "CALL bonus(&s): p points to s, add 5 : 75",
+        "PRINT s",
+        "CALL bonus(ptr): add 5 : 80",
+        "PRINT through ptr",
+        "PRINT (*ptr).marks",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[s = Sara, 70]\n  B --> C[ptr points to s]\n  C --> D[bonus with address of s: marks 75]\n  D --> E[/Print Sara 75/]\n  E --> F[bonus with ptr: marks 80]\n  F --> G[/Print Sara 80 and 80/]\n  G --> H([End])",
+      "sample": {
+        "id": "pass-pointer",
+        "title": "Passing the address of a structure: the arrow operator",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    string name;\n    int marks;\n};\n\nvoid bonus(Student *p) {\n    p->marks += 5;\n}\n\nint main() {\n    Student s = {\"Sara\", 70};\n    Student *ptr = &s;\n    bonus(&s);\n    cout << s.name << \" \" << s.marks << endl;\n    bonus(ptr);\n    cout << ptr->name << \" \" << ptr->marks << endl;\n    cout << (*ptr).marks << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Sara 75\nSara 80\n80\n",
+        "explanation": [
+          {
+            "line": 10,
+            "text": "p is a pointer to a Student. Only an address is copied, not the whole struct."
+          },
+          {
+            "line": 11,
+            "text": "The arrow -> reaches a member through a pointer. p->marks is the same as (*p).marks."
+          },
+          {
+            "line": 15,
+            "text": "A normal structure variable."
+          },
+          {
+            "line": 16,
+            "text": "ptr stores the address of s."
+          },
+          {
+            "line": 17,
+            "text": "Pass the address of s with &. The function changes the original."
+          },
+          {
+            "line": 19,
+            "text": "Passing a pointer variable works the same way."
+          },
+          {
+            "line": 21,
+            "text": "The long form: dereference first, then use the dot. The arrow is a shortcut for this."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 14,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {
+                "s.name": "\"Sara\"",
+                "s.marks": "70"
+              },
+              "note": "main creates s: name Sara, marks 70.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s.name": "\"Sara\"",
+                    "s.marks": "70"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 16,
+              "vars": {
+                "ptr": "&s"
+              },
+              "note": "ptr is a pointer. It stores the address of s (written &s here), so it points to the whole structure.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s.name": "\"Sara\"",
+                    "s.marks": "70",
+                    "ptr": "&s"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 17,
+              "vars": {
+                "p": "&s"
+              },
+              "note": "&s is the address of s. The parameter p receives a COPY of that address, so p points to the same s. The struct itself is not copied.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s.name": "\"Sara\"",
+                    "s.marks": "70",
+                    "ptr": "&s"
+                  }
+                },
+                {
+                  "fn": "bonus(p)",
+                  "vars": {
+                    "p": "&s"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {
+                "s.marks": "75"
+              },
+              "note": "p->marks means: go to the structure p points to and use its marks. That is s.marks, so it becomes 75.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s.name": "\"Sara\"",
+                    "s.marks": "75",
+                    "ptr": "&s"
+                  }
+                },
+                {
+                  "fn": "bonus(p)",
+                  "vars": {
+                    "p": "&s"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "Back in main, s really changed.",
+              "out": "Sara 75\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s.name": "\"Sara\"",
+                    "s.marks": "75",
+                    "ptr": "&s"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 19,
+              "vars": {
+                "p": "&s"
+              },
+              "note": "We can also pass the pointer variable itself. p again points to s.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s.name": "\"Sara\"",
+                    "s.marks": "75",
+                    "ptr": "&s"
+                  }
+                },
+                {
+                  "fn": "bonus(p)",
+                  "vars": {
+                    "p": "&s"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {
+                "s.marks": "80"
+              },
+              "note": "s.marks becomes 80.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s.name": "\"Sara\"",
+                    "s.marks": "80",
+                    "ptr": "&s"
+                  }
+                },
+                {
+                  "fn": "bonus(p)",
+                  "vars": {
+                    "p": "&s"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "In main we use ptr->name and ptr->marks the same way.",
+              "out": "Sara 80\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s.name": "\"Sara\"",
+                    "s.marks": "80",
+                    "ptr": "&s"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 21,
+              "vars": {},
+              "note": "(*ptr) means the structure itself, so (*ptr).marks is the same as ptr->marks.",
+              "out": "80\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s.name": "\"Sara\"",
+                    "s.marks": "80",
+                    "ptr": "&s"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 22,
+              "vars": {},
+              "note": "The program ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s.name": "\"Sara\"",
+                    "s.marks": "80",
+                    "ptr": "&s"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "s.name": "string",
+            "s.marks": "int",
+            "ptr": "Student*",
+            "p": "Student*"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "By value: void f(Student s)",
+      "when": "The structure is small and you want to work on a private copy, or you only read it.",
+      "example": "void show(Point p) { cout << p.x; }  // show(a);"
+    },
+    {
+      "way": "By reference: void f(Student &s)",
+      "when": "The function must change the caller's structure.",
+      "example": "void moveRight(Point &p, int d) { p.x += d; }  // moveRight(a, 5);"
+    },
+    {
+      "way": "By const reference: void f(const Student &s)",
+      "when": "The function only reads and the structure may be big (best for printing and calculating).",
+      "example": "double dist(const Point &p) { return p.x * p.x + p.y * p.y; }"
+    },
+    {
+      "way": "By pointer: void f(Student *p)",
+      "when": "The notes or the question ask for an address, or you meet code written in the pointer style.",
+      "example": "void bonus(Student *p) { p->marks += 5; }  // bonus(&a);"
+    },
+    {
+      "way": "Arrow versus dot",
+      "when": "Dot after a variable, arrow after a pointer.",
+      "example": "a.marks   // a is a variable\nptr->marks   // ptr is a pointer, same as (*ptr).marks"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "void bonus(Student s) {\n    s.marks += 5;\n}\n// main: bonus(a); and a.marks does not change",
+      "right": "void bonus(Student &s) {\n    s.marks += 5;\n}",
+      "error": "No compiler error. The program runs but the bonus is lost because only a copy was changed. Forgetting & is the most common mistake here."
+    },
+    {
+      "wrong": "void reset(const Student &s) {\n    s.marks = 0;\n}",
+      "right": "void reset(Student &s) {\n    s.marks = 0;\n}",
+      "error": "error: assignment of member 'Student::marks' in read-only object"
+    },
+    {
+      "wrong": "void reset(Student *p) {\n    p.marks = 0;\n}",
+      "right": "void reset(Student *p) {\n    p->marks = 0;\n}",
+      "error": "error: request for member 'marks' in 'p', which is of pointer type 'Student*' (maybe you meant to use '->' ?)"
+    },
+    {
+      "wrong": "void reset(Student *p) { p->marks = 0; }\nStudent a = {\"Ali\", 60};\nreset(a);",
+      "right": "reset(&a);",
+      "error": "error: cannot convert 'Student' to 'Student*'"
+    }
+  ],
+  "examTips": [
+    "Write the three headers side by side in the exam: (Student s) copy, (Student &s) same box, (const Student &s) read only. Say what happens to the caller's variable in each case.",
+    "If the question says the function must change the structure, you need & (or a pointer). If it only prints or calculates, use const &.",
+    "The call looks the same for by value and by reference: f(a). The difference is only in the function header. For a pointer you write f(&a).",
+    "Dot with a variable, arrow with a pointer. p->x is exactly (*p).x.",
+    "A const reference parameter cannot be assigned to. If the question shows an assignment inside such a function, that is the compile error."
+  ],
+  "romanSummary": [
+    "Structure ko function mein teen-chaar tarah bhej sakte hain: by value (copy), by reference &, by const reference, aur pointer se.",
+    "By value mein function copy par kaam karta hai, is liye original nahi badalta.",
+    "By reference (Student &s) mein same box milta hai, is liye changes original mein reh jate hain.",
+    "Sirf parhna ho to const Student & best hai: copy bhi nahi banti aur change bhi nahi ho sakta.",
+    "Pointer ke saath member tak jane ke liye arrow use hota hai: p->marks, jo (*p).marks ke barabar hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "A function has the header void f(Student s). What happens when it changes s.marks?",
+      "options": [
+        "Only the copy changes; the caller's variable stays the same",
+        "The caller's variable changes too",
+        "The program does not compile",
+        "The structure is deleted"
+      ],
+      "answer": "Only the copy changes; the caller's variable stays the same",
+      "hint": "By value means a copy.",
+      "explanation": "With a plain Student s parameter the function works on a copy, so the caller's variable is unchanged."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nstruct P { int x; };\nvoid f(P p) { p.x = 99; }\nint main() {\n    P a = {1};\n    f(a);\n    cout << a.x;\n    return 0;\n}",
+      "answer": "1",
+      "hint": "Is p a copy or the same box as a?",
+      "explanation": "p is a copy. Setting it to 99 does not touch a, so a.x is still 1."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nstruct P { int x, y; };\nvoid swapXY(P &p) {\n    int t = p.x;\n    p.x = p.y;\n    p.y = t;\n}\nint main() {\n    P a = {3, 8};\n    swapXY(a);\n    cout << a.x << \" \" << a.y;\n    return 0;\n}",
+      "answer": "8 3",
+      "hint": "The parameter is a reference.",
+      "explanation": "p is the same box as a, so the swap changes a: x becomes 8 and y becomes 3."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This program does not compile. Fix the function so that it compiles and still sets the marks to 0.\n\nvoid reset(const Student &s) {\n    s.marks = 0;\n}",
+      "answer": "void reset(Student &s) {\n    s.marks = 0;\n}",
+      "hint": "A const reference cannot be changed.",
+      "explanation": "The function must change the structure, so the parameter must not be const."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank.\n\nvoid bonus(Student *p) {\n    p____marks += 5;\n}",
+      "answer": "->",
+      "hint": "p is a pointer, not a variable.",
+      "explanation": "With a pointer we use the arrow operator: p->marks (the same as (*p).marks)."
+    },
+    {
+      "id": "p6",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a struct Person with a string name and an int age, and a function birthday that adds 1 to the age of the person that main passes in.",
+      "answer": "struct Person {\n    string name;\n    int age;\n};\n\nvoid birthday(Person &p) {\n    p.age++;\n}",
+      "hint": "The function must change the original.",
+      "explanation": "A reference parameter makes p the same box as the caller's Person, so p.age++ changes it."
+    },
+    {
+      "id": "p7",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nstruct Box { int v; };\nvoid f1(Box b) { b.v += 1; }\nvoid f2(Box &b) { b.v += 10; }\nvoid f3(Box *b) { b->v += 100; }\nint main() {\n    Box x = {0};\n    f1(x);\n    f2(x);\n    f3(&x);\n    cout << x.v;\n    return 0;\n}",
+      "answer": "110",
+      "hint": "Only two of the three functions can change x.",
+      "explanation": "f1 works on a copy (lost). f2 adds 10 and f3 adds 100 to the real x, so x.v = 110."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which header lets the function change the caller's structure?",
+      "options": [
+        "void f(Student &s)",
+        "void f(Student s)",
+        "void f(const Student &s)",
+        "void f(Student s, int)"
+      ],
+      "answer": "void f(Student &s)",
+      "hint": "Look for & without const.",
+      "explanation": "A plain reference is the same box as the caller's variable."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does const Student &s promise?",
+      "options": [
+        "No copy is made and the function will not change s",
+        "The function must change s",
+        "s is copied twice",
+        "s is deleted at the end"
+      ],
+      "answer": "No copy is made and the function will not change s",
+      "hint": "Read-only access.",
+      "explanation": "A const reference avoids the copy and forbids changes."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "p is a pointer to a Student. How do you read its marks?",
+      "options": [
+        "p->marks",
+        "p.marks",
+        "p:marks",
+        "marks(p)"
+      ],
+      "answer": "p->marks",
+      "hint": "Pointer means arrow.",
+      "explanation": "With a pointer use ->, which equals (*p).marks."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Why is passing a big structure by value often a poor choice?",
+      "options": [
+        "The whole structure is copied every call",
+        "It is not allowed",
+        "It changes the original",
+        "It makes the program print twice"
+      ],
+      "answer": "The whole structure is copied every call",
+      "hint": "Think of the photocopy.",
+      "explanation": "Every member is copied each time, which wastes time and memory."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "How do you call void bonus(Student *p) for a variable a?",
+      "options": [
+        "bonus(&a);",
+        "bonus(a);",
+        "bonus(*a);",
+        "bonus(a->);"
+      ],
+      "answer": "bonus(&a);",
+      "hint": "You must give an address.",
+      "explanation": "The parameter is a pointer, so pass the address of a with &."
+    }
+  ],
+  "sources": [
+    "Passing a structure variable to a function",
+    "By value, by reference and by const reference",
+    "Pointer to a structure and the arrow operator"
+  ]
+}

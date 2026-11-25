@@ -1,0 +1,584 @@
+{
+  "slug": "strings-in-cpp",
+  "week": 11,
+  "title": "Strings in C++: std::string, cin and getline",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "array",
+      "title": "The word HELLO is a row of characters (shown as ASCII codes)",
+      "mode": "access",
+      "values": [
+        72,
+        69,
+        76,
+        76,
+        79
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each string tool to what it does",
+      "pairs": [
+        {
+          "term": "cin >> s",
+          "meaning": "Reads ONE word (stops at a space)"
+        },
+        {
+          "term": "getline(cin, s)",
+          "meaning": "Reads the whole line including spaces"
+        },
+        {
+          "term": "cin.ignore()",
+          "meaning": "Throws away the leftover Enter before getline"
+        },
+        {
+          "term": "s.length()",
+          "meaning": "Number of characters (same as s.size())"
+        },
+        {
+          "term": "s[0]",
+          "meaning": "The first character (index starts at 0)"
+        },
+        {
+          "term": "a + b",
+          "meaning": "Joins two strings into a new one"
+        },
+        {
+          "term": "char name[30]",
+          "meaning": "A C-style string: fixed size, needs room for the \\0 at the end"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can declare and fill a std::string, read a word or a whole line, avoid the leftover-newline trap, find the length, look at single characters and join strings with +.",
+  "warmup": "Your name, your roll number and your address are all text. On a hostel form you write them in boxes. Old-style C boxes (char arrays) have a fixed number of squares: if your name is longer than the boxes, there is trouble. C++ gives you a magic form where the line stretches to fit whatever you write. That is the string class.",
+  "definition": "A string is a sequence of characters, that is, text. C++ has two kinds. A C-string is a char array that ends with a hidden \\0 (null) character and has a fixed size. The std::string class (header <string>) is easier: it grows automatically, can be copied with =, joined with + and compared with ==. In this course we mainly use std::string. Every character has a number called its ASCII code (A is 65, a is 97, 0 is 48).",
+  "howItWorks": "DECLARE: string s; makes an empty string, string s = \"Hello\"; fills it. READ: cin >> s reads only ONE word, because it stops at the first space. To read a whole line such as a full name, use getline(cin, s). THE TRAP: after cin >> age; the Enter key you pressed is still waiting in the input. A getline right after it reads that empty rest of the line and seems to be skipped. The cure is cin.ignore(); between them, which throws that one Enter away. SIZE: s.length() (or s.size()) gives the number of characters. It does NOT count a hidden \\0 for std::string. CHARACTERS: s[0] is the first character and s[s.length() - 1] the last. s.at(i) does the same, but checks the index. Indexing outside the string with [] is a bug that the compiler does not catch. Caution: length() has an unsigned type (size_t), so use size_t i in loops and be careful with s.length() - 1 on an empty string. LOOPING: for (size_t i = 0; i < s.length(); i++) visits each character; the visual shows HELLO as a row of boxes, with each character stored as its ASCII code. JOINING: a + b makes a new string. You may write s + \"!\" or s += \"!\", but \"Hi\" + \" there\" (two plain quoted texts) is not allowed: one side must be a string. C-STRINGS FOR COMPARISON: char name[30] = \"Ali\"; needs strcpy to assign, strcat to join and strcmp to compare; a std::string just uses =, + and ==.",
+  "syntax": "#include <string>\n\nstring s;                       // empty string\nstring name = \"Ali\";           // with a value\nstring full = name + \" Khan\";  // + joins (concatenation)\n\ncin >> s;                       // reads ONE word\ngetline(cin, s);                // reads a whole line\ncin.ignore();                   // remove the leftover Enter (between cin >> and getline)\n\ns.length();  s.size();          // number of characters\ns[0];        s.at(0);           // first character\ns[s.length() - 1];              // last character\n\nfor (size_t i = 0; i < s.length(); i++) {\n    cout << s[i];               // visit each character\n}\n\nchar old[30] = \"Ali\";           // C-string: fixed size, ends with \\0",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Create two strings with a first and last name, join them with a space, then print the result, its length, the first letter and the second letter.",
+      "pseudocode": [
+        "START",
+        "first = \"Ali\", last = \"Khan\"",
+        "full = first + \" \" + last",
+        "PRINT full",
+        "PRINT length of full",
+        "PRINT full[0] and full.at(1)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Make strings first and last\"]\n  B --> C[\"full = first + space + last\"]\n  C --> D[/Print full/]\n  D --> E[/Print length and letters/]\n  E --> F([End])",
+      "sample": {
+        "id": "string-basics",
+        "title": "Declare, join and index a string",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string first = \"Ali\";\n    string last = \"Khan\";\n    string full = first + \" \" + last;\n    cout << full << endl;\n    cout << \"Length: \" << full.length() << endl;\n    cout << \"First letter: \" << full[0] << endl;\n    cout << \"Second letter: \" << full.at(1) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Ali Khan\nLength: 8\nFirst letter: A\nSecond letter: l\n",
+        "explanation": [
+          {
+            "line": 2,
+            "text": "The string class lives in the <string> header."
+          },
+          {
+            "line": 6,
+            "text": "Declare a string and give it a value in one line."
+          },
+          {
+            "line": 8,
+            "text": "+ joins (concatenates) strings. At least one side of + must be a string, not two plain quoted texts."
+          },
+          {
+            "line": 10,
+            "text": "length() gives the number of characters (size() does the same)."
+          },
+          {
+            "line": 11,
+            "text": "[] reads one character. The first index is 0."
+          },
+          {
+            "line": 12,
+            "text": "at(1) reads the character at index 1 and checks that the index is valid."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 6,
+              "vars": {
+                "first": "\"Ali\""
+              },
+              "note": "first is a string box holding the text Ali.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "last": "\"Khan\""
+              },
+              "note": "last holds Khan.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "full": "\"Ali Khan\""
+              },
+              "note": "+ joins strings: Ali, then a space, then Khan. A string grows to fit, nothing overflows.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Print the whole text.",
+              "out": "Ali Khan\n"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Ali Khan has 3 + 1 + 4 = 8 characters. The space counts too.",
+              "out": "Length: 8\n"
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Characters are numbered from 0, so full[0] is A.",
+              "out": "First letter: A\n"
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "full.at(1) is the second character, l. at() does the same as [] but checks the index.",
+              "out": "Second letter: l\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Done.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "first": "string",
+            "last": "string",
+            "full": "string"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read a first name (one word), an age and then a full name (with spaces) from the keyboard. Print them in one sentence. Use cin.ignore() so that getline works.",
+      "pseudocode": [
+        "START",
+        "READ first with cin",
+        "READ age with cin",
+        "cin.ignore() to remove the Enter",
+        "READ full with getline",
+        "PRINT the sentence",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read one word with cin/]\n  B --> C[/Read age with cin/]\n  C --> D[\"cin.ignore removes the Enter\"]\n  D --> E[/getline reads the full line/]\n  E --> F[/Print everything/]\n  F --> G([End])",
+      "sample": {
+        "id": "cin-and-getline",
+        "title": "cin reads a word, getline reads a line",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string first, full;\n    int age;\n    cin >> first;\n    cin >> age;\n    cin.ignore();\n    getline(cin, full);\n    cout << \"Hi \" << first << \" (\" << full << \"), age \" << age << endl;\n    return 0;\n}\n",
+        "stdin": "Hamza\n19\nHamza Ali Khan\n",
+        "graphics": false,
+        "expectedOutput": "Hi Hamza (Hamza Ali Khan), age 19\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Two empty strings."
+          },
+          {
+            "line": 8,
+            "text": "cin >> reads one word only (stops at a space)."
+          },
+          {
+            "line": 9,
+            "text": "Reading a number leaves the Enter key (a newline) in the input."
+          },
+          {
+            "line": 10,
+            "text": "Removes that leftover newline. Needed between cin >> and getline."
+          },
+          {
+            "line": 11,
+            "text": "Reads a whole line, spaces included."
+          },
+          {
+            "line": 12,
+            "text": "Shows all three values."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 6,
+              "vars": {
+                "first": "\"\"",
+                "full": "\"\""
+              },
+              "note": "Two empty strings and an int box are created.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "first": "\"Hamza\""
+              },
+              "note": "cin >> reads ONE word and stops at the space or Enter. It reads Hamza. The Enter key stays unread in the input.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "age": "19"
+              },
+              "note": "cin >> skips the leftover Enter and reads 19. The Enter AFTER 19 is still waiting in the input.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "ignore() throws away that one leftover newline, so the next getline starts on the real line.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "full": "\"Hamza Ali Khan\""
+              },
+              "note": "getline reads the WHOLE line including spaces, up to the Enter.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Print the greeting.",
+              "out": "Hi Hamza (Hamza Ali Khan), age 19\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Done. Without cin.ignore(), getline would have read the empty rest of the age line and full would be empty.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "first": "string",
+            "full": "string",
+            "age": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Read a word and print every character with its ASCII code. Also count how many times the letter a occurs.",
+      "pseudocode": [
+        "START",
+        "READ word w",
+        "count = 0",
+        "FOR i from 0 to length - 1: print w[i] and its ASCII code",
+        "IF w[i] is 'a' then count = count + 1",
+        "PRINT count",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read word w/]\n  B --> C[\"count = 0, i = 0\"]\n  C --> D{\"i < length?\"}\n  D -- Yes --> E[/Print w at i and its code/]\n  E --> F{\"w at i is a?\"}\n  F -- Yes --> G[\"count = count + 1\"]\n  F -- No --> H[\"i = i + 1\"]\n  G --> H\n  H --> D\n  D -- No --> I[/Print count/]\n  I --> J([End])",
+      "sample": {
+        "id": "loop-over-characters",
+        "title": "Loop over the characters of a word",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string w;\n    cin >> w;\n    int count = 0;\n    for (size_t i = 0; i < w.length(); i++) {\n        cout << w[i] << \" = \" << (int)w[i] << endl;\n        if (w[i] == 'a') {\n            count++;\n        }\n    }\n    cout << \"Letter a appears \" << count << \" times\" << endl;\n    return 0;\n}\n",
+        "stdin": "banana\n",
+        "graphics": false,
+        "expectedOutput": "b = 98\na = 97\nn = 110\na = 97\nn = 110\na = 97\nLetter a appears 3 times\n",
+        "explanation": [
+          {
+            "line": 7,
+            "text": "Reads one word. The input is banana."
+          },
+          {
+            "line": 9,
+            "text": "size_t is the type returned by length(); it cannot be negative. i walks over the indexes 0 .. length-1."
+          },
+          {
+            "line": 10,
+            "text": "Casting a char to int shows its ASCII code (a is 97, b is 98, n is 110)."
+          },
+          {
+            "line": 11,
+            "text": "A single character is compared with single quotes."
+          },
+          {
+            "line": 12,
+            "text": "Count each a."
+          },
+          {
+            "line": 15,
+            "text": "banana has three a letters."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "string s = \"text\";",
+      "when": "Declare with a value. The string grows automatically.",
+      "example": "string name = \"Ali\";"
+    },
+    {
+      "way": "char name[30] (C-string)",
+      "when": "Older style or when told to use char arrays. Fixed size, ends with \\0.",
+      "example": "char name[30] = \"Ali\";"
+    },
+    {
+      "way": "cin >> s",
+      "when": "A single word without spaces (a roll number, a first name).",
+      "example": "cin >> s;"
+    },
+    {
+      "way": "getline(cin, s)",
+      "when": "A whole line, for example a full name or an address.",
+      "example": "getline(cin, s);"
+    },
+    {
+      "way": "cin.ignore()",
+      "when": "Right after cin >> number and before getline.",
+      "example": "cin >> age;\ncin.ignore();\ngetline(cin, s);"
+    },
+    {
+      "way": "s.length() / s.size()",
+      "when": "Count of characters (both are the same).",
+      "example": "cout << s.length();"
+    },
+    {
+      "way": "s[i] / s.at(i)",
+      "when": "Read or change one character. at() checks the index.",
+      "example": "s[0] = 'M';"
+    },
+    {
+      "way": "a + b / a += b",
+      "when": "Join strings.",
+      "example": "string t = a + \" \" + b;\na += \"!\";"
+    },
+    {
+      "way": "C-string: strcpy, strcat, strcmp, strlen",
+      "when": "Only with char arrays (header <cstring>).",
+      "example": "strcpy(c, \"Ali\");   // instead of c = \"Ali\""
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int age;\nstring full;\ncin >> age;\ngetline(cin, full);   // seems to be skipped",
+      "right": "int age;\nstring full;\ncin >> age;\ncin.ignore();         // remove the leftover Enter\ngetline(cin, full);",
+      "error": "No compiler error. cin >> age leaves the Enter in the input, so getline reads an empty line at once and full stays empty."
+    },
+    {
+      "wrong": "string name;\ncin >> name;      // user types: Hamza Ali Khan",
+      "right": "string name;\ngetline(cin, name);",
+      "error": "No compiler error, but name holds only Hamza. cin >> stops at the first space; the rest stays in the input. Use getline for text with spaces."
+    },
+    {
+      "wrong": "string s = \"Hi\" + \" there\";",
+      "right": "string s = string(\"Hi\") + \" there\";",
+      "error": "g++ gives: error: invalid operands of types 'const char [3]' and 'const char [7]' to binary 'operator+'. Two plain quoted texts cannot be added; make at least one side a string."
+    },
+    {
+      "wrong": "string t = 'A';",
+      "right": "string t = \"A\";",
+      "error": "g++ gives: error: conversion from 'char' to non-scalar type 'std::string' requested. Single quotes make a char, double quotes make text."
+    },
+    {
+      "wrong": "string s = \"Ali\";\ncout << s[10];   // outside the string",
+      "right": "if (i < s.length()) cout << s[i];",
+      "error": "No compiler error. Reading past the end gives an unpredictable value or a crash. Always keep the index below s.length()."
+    }
+  ],
+  "examTips": [
+    "State the difference: cin >> reads one word, getline reads the whole line. Mention cin.ignore() whenever a getline follows a cin >> number.",
+    "Indexes start at 0, the last index is length() - 1. A string of 8 characters has indexes 0 to 7.",
+    "Know the table: C-string vs string: strcpy vs =, strcat vs +, strcmp vs ==, strlen vs length().",
+    "Single character = single quotes ('a'), text = double quotes (\"a\"). Characters have ASCII codes: A is 65, a is 97, 0 is 48."
+  ],
+  "romanSummary": [
+    "String text hota hai. C++ mein do tareeqe hain: C-string (char array, aakhir mein \\0, fixed size) aur string class (<string>, size khud barhta hai).",
+    "cin >> sirf ek word parhta hai; poori line parhne ke liye getline(cin, s) use karein.",
+    "cin >> number ke baad getline se pehle cin.ignore() lagana zaroori hai, warna getline skip hota nazar aata hai.",
+    "length() se lambai, s[i] ya s.at(i) se ek character, aur + se do strings jorte hain. Index 0 se shuru hota hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does cin >> s read when the user types: Ali Raza ?",
+      "options": [
+        "Ali Raza",
+        "Only Ali",
+        "Only Raza",
+        "Nothing"
+      ],
+      "answer": "Only Ali",
+      "hint": "cin >> stops at the first space.",
+      "explanation": "cin >> reads one word. Raza stays in the input. To read both words use getline(cin, s)."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    string a = \"Pak\";\n    string b = \"istan\";\n    string c = a + b;\n    cout << c << \" \" << c.length() << endl;\n    return 0;\n}",
+      "answer": "Pakistan 8",
+      "hint": "Join first, then count the letters.",
+      "explanation": "a + b is Pakistan, which has 8 characters."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    string s = \"CC111\";\n    cout << s[0] << s[s.length() - 1] << endl;\n    return 0;\n}",
+      "answer": "C1",
+      "hint": "The last index is length - 1.",
+      "explanation": "s[0] is C. The length is 5, so s[4] is the last character, 1."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "A student reads age and then a full name, but the full name is always empty.\n\nint age;\nstring name;\ncin >> age;\ngetline(cin, name);",
+      "answer": "Add cin.ignore(); between cin >> age; and getline(cin, name);",
+      "hint": "What does cin >> age leave in the input?",
+      "explanation": "The Enter key after the age stays in the input and getline reads it as an empty line. cin.ignore() removes it first."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank to read a whole line into text:\n\nstring text;\n______(cin, text);",
+      "answer": "getline",
+      "hint": "Which function reads spaces too?",
+      "explanation": "getline(cin, text) reads everything up to the Enter."
+    },
+    {
+      "id": "p6",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    string s = \"banana\";\n    int n = 0;\n    for (size_t i = 0; i < s.length(); i++) {\n        if (s[i] == 'n') n++;\n    }\n    cout << n << endl;\n    return 0;\n}",
+      "answer": "2",
+      "hint": "Count the letter n only.",
+      "explanation": "b-a-n-a-n-a contains n at indexes 2 and 4, so the count is 2."
+    },
+    {
+      "id": "p7",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which line is NOT allowed?",
+      "options": [
+        "string s = \"Hi\";",
+        "string s = string(\"Hi\") + \" there\";",
+        "string s = \"Hi\" + \" there\";",
+        "string a = \"Hi\"; string s = a + \" there\";"
+      ],
+      "answer": "string s = \"Hi\" + \" there\";",
+      "hint": "One side of + must be a string.",
+      "explanation": "Two plain quoted texts cannot be added. The others make a string first or use a string variable."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a loop that prints the characters of string s one per line.",
+      "answer": "for (size_t i = 0; i < s.length(); i++) {\n    cout << s[i] << endl;\n}",
+      "hint": "Use length() as the limit.",
+      "explanation": "The index runs from 0 up to length() - 1, printing s[i] each time."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which header is needed for std::string?",
+      "options": [
+        "<cstring>",
+        "<string>",
+        "<cmath>",
+        "<array>"
+      ],
+      "answer": "<string>",
+      "hint": "The name is in the header.",
+      "explanation": "The string class is declared in <string>."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does s.length() return for s = \"Ali Khan\"?",
+      "options": [
+        "7",
+        "8",
+        "9",
+        "2"
+      ],
+      "answer": "8",
+      "hint": "Count the space too.",
+      "explanation": "A-l-i, space, K-h-a-n makes 8 characters."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which statement reads a full name with spaces?",
+      "options": [
+        "cin >> name;",
+        "getline(cin, name);",
+        "cin.ignore(name);",
+        "cout >> name;"
+      ],
+      "answer": "getline(cin, name);",
+      "hint": "cin >> stops at spaces.",
+      "explanation": "getline reads a whole line, spaces included."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is cin.ignore() used for?",
+      "options": [
+        "Closing the input",
+        "Removing the leftover Enter before getline",
+        "Ignoring all spaces forever",
+        "Converting a string to a number"
+      ],
+      "answer": "Removing the leftover Enter before getline",
+      "hint": "Think of the newline in the input.",
+      "explanation": "After cin >> number the Enter stays in the input. ignore() discards it so getline reads the real line."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "For s = \"HELLO\", which index holds the last letter?",
+      "options": [
+        "5",
+        "4",
+        "3",
+        "1"
+      ],
+      "answer": "4",
+      "hint": "Indexes start at 0.",
+      "explanation": "H=0, E=1, L=2, L=3, O=4. The last index is length() - 1 = 4."
+    }
+  ],
+  "sources": [
+    "Strings in C++",
+    "C-string vs string class",
+    "Declaration, reading and displaying strings",
+    "The getline problem"
+  ]
+}

@@ -1,0 +1,610 @@
+{
+  "slug": "searching-in-files",
+  "week": 14,
+  "title": "Searching for a record in a file",
+  "defaultView": "visualize",
+  "order": 4,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "Searching a file: read, compare, remember",
+      "stages": [
+        {
+          "name": "1. Open and set found = false",
+          "detail": "Open the file, check it, and prepare the flag found = false (and matches = 0 if you count)."
+        },
+        {
+          "name": "2. Read one record",
+          "detail": "while (in >> roll >> name >> marks): one complete record is read each round."
+        },
+        {
+          "name": "3. Compare with the key",
+          "detail": "if (roll == key). For names use name == key. If equal: use the record, set found = true, (break if the id is unique)."
+        },
+        {
+          "name": "4. End of file",
+          "detail": "If the loop ends without a match, found is still false."
+        },
+        {
+          "name": "5. Report",
+          "detail": "if (!found) print \"Record not found\". Close the file."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each searching idea to its meaning",
+      "pairs": [
+        {
+          "term": "bool found = false;",
+          "meaning": "A flag that remembers if a match was seen"
+        },
+        {
+          "term": "if (roll == key)",
+          "meaning": "Compare the record just read with the wanted value"
+        },
+        {
+          "term": "break;",
+          "meaning": "Stop reading as soon as a unique record is found"
+        },
+        {
+          "term": "matches++;",
+          "meaning": "Count every record that matches (no break)"
+        },
+        {
+          "term": "if (!found)",
+          "meaning": "Runs AFTER the loop to print Record not found"
+        },
+        {
+          "term": "Load, change, save",
+          "meaning": "Update a record: read all into an array, change one, write all back"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can search a file for a record by id or name, count the matches, print \"not found\", and update a record by loading the file into an array and saving it again.",
+  "warmup": "You look for your friend's name on the exam result sheet pinned on the notice board. You read the list from the top, one name after another. When you see your friend's name you stop and read the marks. If you reach the end of the list and never saw the name, you say \"he is not on the list\". That is exactly a file search: read, compare, stop when found, report if not.",
+  "definition": "A text file has no index, so searching means reading the records from the start and comparing each one with the key (the value you look for). A Boolean flag found starts as false and becomes true when a record matches. After the loop, if found is still false, print \"Record not found\". If the key is unique (a roll number) you can break at the first match. If many records can match (a name) do not break: count them with a counter instead. To update or delete a record in a text file you cannot change one line in place. The simple method is: load all records into an array, change the array, and write the whole array back to the file with a plain ofstream.",
+  "howItWorks": "Follow the first trace: the loop reads record by record, compares roll with key and stops at 103. The check if (!found) comes after the loop, never inside it: inside the loop it would print \"not found\" for every record that does not match (see the first mistake). The second example searches by name and counts every match, so it must not break. The function returns the count, and main prints \"not found\" when it is 0. The third example is the standard way to save and load an array of structures: saveAll writes one line per record, loadAll reads them back with while (n < maxSize && in >> ...) so the array can never overflow. To update a record, loadAll, change the array element, then saveAll: the plain ofstream erases the old file and writes the new, correct content. (Another technique is to write the changed records to a temporary file and then delete the old file and rename the new one. Our notes do not use remove and rename, so we only mention it here.) Never open the same file with ofstream while you still want to read its old content: opening for writing erases it at once.",
+  "syntax": "// search by id (unique): stop at the first match\nbool found = false;\nwhile (in >> roll >> name >> marks) {\n    if (roll == key) {\n        cout << \"Found: \" << name << endl;\n        found = true;\n        break;\n    }\n}\nif (!found) cout << \"Record not found\" << endl;\n\n// count matches (name may repeat): no break\nint matches = 0;\nwhile (in >> roll >> name >> marks)\n    if (name == key) matches++;\n\n// save and load an array of structs\nfor (int i = 0; i < n; i++)\n    out << s[i].roll << \" \" << s[i].name << \" \" << s[i].marks << endl;\nwhile (n < maxSize && in >> s[n].roll >> s[n].name >> s[n].marks) n++;",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "The file students.txt has records in the form roll name marks. Ask the user for a roll number and show the student with that roll number, or Record not found.",
+      "pseudocode": [
+        "START",
+        "WRITE four records into students.txt (setup)",
+        "READ key from the user",
+        "OPEN students.txt, check",
+        "SET found = false",
+        "WHILE a record can be read: IF roll = key THEN PRINT name and marks, SET found = true, STOP the loop",
+        "CLOSE",
+        "IF found is false PRINT Record not found",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Input key/]\n  B --> C[Open students.txt]\n  C --> D[found = false]\n  D --> E{Can a record be read?}\n  E -- Yes --> F{roll equals key?}\n  F -- Yes --> G[/Print name and marks/]\n  G --> H[found = true]\n  H --> I[Close the file]\n  F -- No --> E\n  E -- No --> I\n  I --> J{found is false?}\n  J -- Yes --> K[/Print Record not found/]\n  J -- No --> L([End])\n  K --> L",
+      "sample": {
+        "id": "search-by-roll",
+        "title": "Search by roll number",
+        "code": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nint main() {\n    ofstream out(\"students.txt\");\n    out << \"101 Ali 78\" << endl;\n    out << \"102 Sana 91\" << endl;\n    out << \"103 Usman 66\" << endl;\n    out << \"104 Hira 88\" << endl;\n    out.close();\n\n    int key;\n    cout << \"Enter roll number to search: \";\n    cin >> key;\n\n    ifstream in(\"students.txt\");\n    if (!in) {\n        cout << \"File not found!\" << endl;\n        return 1;\n    }\n    int roll;\n    string name;\n    double marks;\n    bool found = false;\n    while (in >> roll >> name >> marks) {\n        if (roll == key) {\n            cout << \"Found: \" << name << \" with \" << marks << \" marks\" << endl;\n            found = true;\n            break;\n        }\n    }\n    in.close();\n    if (!found) cout << \"Record not found\" << endl;\n    return 0;\n}\n",
+        "stdin": "103\n",
+        "graphics": false,
+        "expectedOutput": "Enter roll number to search: Found: Usman with 66 marks\n",
+        "explanation": [
+          {
+            "line": 8,
+            "text": "Setup: the data file that we search."
+          },
+          {
+            "line": 16,
+            "text": "The roll number to look for (here the stdin is 103)."
+          },
+          {
+            "line": 18,
+            "text": "Opens the file for reading."
+          },
+          {
+            "line": 26,
+            "text": "The flag. It starts false."
+          },
+          {
+            "line": 27,
+            "text": "Reads one record per round until the end of the file."
+          },
+          {
+            "line": 28,
+            "text": "Compares the roll just read with the key."
+          },
+          {
+            "line": 30,
+            "text": "Remembers that the record was found."
+          },
+          {
+            "line": 31,
+            "text": "Roll numbers are unique, so we can stop reading."
+          },
+          {
+            "line": 35,
+            "text": "After the loop: if nothing matched, say so."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 7,
+              "vars": {
+                "file": "101 Ali 78 | 102 Sana 91 | 103 Usman 66 | 104 Hira 88"
+              },
+              "note": "Setup: the program writes the four records into students.txt. (We show the whole file in the file box.)",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "The program asks for the roll number to search.",
+              "out": "Enter roll number to search: "
+            },
+            {
+              "line": 16,
+              "vars": {
+                "key": "103"
+              },
+              "note": "The user types 103. This is the key we look for.",
+              "out": ""
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "The file is opened for reading.",
+              "out": ""
+            },
+            {
+              "line": 26,
+              "vars": {
+                "found": "false"
+              },
+              "note": "The flag found says \"not yet\". It is the memory of the search.",
+              "out": ""
+            },
+            {
+              "line": 27,
+              "vars": {
+                "roll": "101",
+                "name": "Ali",
+                "marks": "78"
+              },
+              "note": "First record read: 101 Ali 78.",
+              "out": ""
+            },
+            {
+              "line": 28,
+              "vars": {},
+              "note": "101 is not 103, so we do nothing and go to the next record.",
+              "out": ""
+            },
+            {
+              "line": 27,
+              "vars": {
+                "roll": "102",
+                "name": "Sana",
+                "marks": "91"
+              },
+              "note": "Second record: 102 Sana 91.",
+              "out": ""
+            },
+            {
+              "line": 28,
+              "vars": {},
+              "note": "102 is not 103. Next record.",
+              "out": ""
+            },
+            {
+              "line": 27,
+              "vars": {
+                "roll": "103",
+                "name": "Usman",
+                "marks": "66"
+              },
+              "note": "Third record: 103 Usman 66.",
+              "out": ""
+            },
+            {
+              "line": 28,
+              "vars": {},
+              "note": "103 == 103: a match!",
+              "out": ""
+            },
+            {
+              "line": 29,
+              "vars": {},
+              "note": "Prints the details of the matching record.",
+              "out": "Found: Usman with 66 marks\n"
+            },
+            {
+              "line": 30,
+              "vars": {
+                "found": "true"
+              },
+              "note": "The flag is set to true: the search succeeded.",
+              "out": ""
+            },
+            {
+              "line": 31,
+              "vars": {},
+              "note": "break leaves the loop at once. There is no need to read record 104.",
+              "out": ""
+            },
+            {
+              "line": 35,
+              "vars": {},
+              "note": "found is true, so \"Record not found\" is NOT printed. The file is closed before this check.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "file": "file",
+            "key": "int",
+            "roll": "int",
+            "name": "string",
+            "marks": "double",
+            "found": "bool"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Search the file by name. A name can appear more than once. Print every matching record, count the matches and print not found when the count is 0. Search for Sana and for Zara.",
+      "pseudocode": [
+        "START",
+        "WRITE four records (setup)",
+        "FOR each name to search:",
+        "  matches = 0, OPEN the file",
+        "  WHILE a record can be read: IF name = key THEN PRINT roll and marks, matches = matches + 1",
+        "  CLOSE",
+        "  IF matches = 0 PRINT not found ELSE PRINT the count",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Take the next name to search]\n  B --> C[matches = 0, open the file]\n  C --> D{Can a record be read?}\n  D -- Yes --> E{name equals key?}\n  E -- Yes --> F[/Print roll and marks/]\n  F --> G[matches = matches + 1]\n  G --> D\n  E -- No --> D\n  D -- No --> H{matches is 0?}\n  H -- Yes --> I[/Print not found/]\n  H -- No --> J[/Print matches/]\n  I --> K([End])\n  J --> K",
+      "sample": {
+        "id": "count-matches",
+        "title": "Search by name and count matches",
+        "code": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nint countName(string key) {\n    ifstream in(\"students.txt\");\n    if (!in) {\n        return -1;\n    }\n    int roll;\n    string name;\n    double marks;\n    int matches = 0;\n    while (in >> roll >> name >> marks) {\n        if (name == key) {\n            cout << \"  roll \" << roll << \": \" << marks << endl;\n            matches++;\n        }\n    }\n    in.close();\n    return matches;\n}\n\nint main() {\n    ofstream out(\"students.txt\");\n    out << \"101 Ali 78\" << endl;\n    out << \"102 Sana 91\" << endl;\n    out << \"103 Usman 66\" << endl;\n    out << \"104 Sana 55\" << endl;\n    out.close();\n\n    string names[2] = {\"Sana\", \"Zara\"};\n    for (int i = 0; i < 2; i++) {\n        cout << \"Searching \" << names[i] << \":\" << endl;\n        int n = countName(names[i]);\n        if (n == 0) {\n            cout << \"  \" << names[i] << \" not found\" << endl;\n        } else {\n            cout << \"  \" << names[i] << \" found \" << n << \" time(s)\" << endl;\n        }\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Searching Sana:\n  roll 102: 91\n  roll 104: 55\n  Sana found 2 time(s)\nSearching Zara:\n  Zara not found\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "A function that searches the file for the name key and returns how many records matched."
+          },
+          {
+            "line": 8,
+            "text": "If the file cannot be opened the function returns -1."
+          },
+          {
+            "line": 14,
+            "text": "The counter starts at 0."
+          },
+          {
+            "line": 16,
+            "text": "Strings are compared with ==. A name can repeat, so there is no break."
+          },
+          {
+            "line": 18,
+            "text": "One more match."
+          },
+          {
+            "line": 30,
+            "text": "Setup: Sana appears twice in the file."
+          },
+          {
+            "line": 37,
+            "text": "No match at all: print not found."
+          },
+          {
+            "line": 36,
+            "text": "The function does the search and gives back the number of matches."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Exam question: Save an array of 3 students into students.txt. Load the file into another array, change the marks of roll 102 to 95, save the array back to the file, load it again and display every record.",
+      "pseudocode": [
+        "START",
+        "SAVE the first array (3 records) to students.txt",
+        "LOAD the file into array list, n = number of records",
+        "FOR each record: IF roll = 102 THEN marks = 95, found = true",
+        "IF found THEN SAVE list back ELSE PRINT not found",
+        "LOAD the file again into array check",
+        "FOR each record in check: PRINT it",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Save 3 records to the file]\n  B --> C[Load the file into list]\n  C --> D[i = 0, found = false]\n  D --> E{i less than n?}\n  E -- Yes --> F{roll equals key?}\n  F -- Yes --> G[Change marks, found = true]\n  F -- No --> H[i = i + 1]\n  G --> H\n  H --> E\n  E -- No --> I{found?}\n  I -- Yes --> J[Save list back to the file]\n  I -- No --> K[/Print not found/]\n  J --> L[Load again and print all]\n  K --> L\n  L --> M([End])",
+      "sample": {
+        "id": "update-by-rewrite",
+        "title": "Load, change, save",
+        "code": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int roll;\n    string name;\n    double marks;\n};\n\nvoid saveAll(Student s[], int n) {\n    ofstream out(\"students.txt\");\n    for (int i = 0; i < n; i++) {\n        out << s[i].roll << \" \" << s[i].name << \" \" << s[i].marks << endl;\n    }\n    out.close();\n}\n\nint loadAll(Student s[], int maxSize) {\n    ifstream in(\"students.txt\");\n    int n = 0;\n    while (n < maxSize && in >> s[n].roll >> s[n].name >> s[n].marks) {\n        n++;\n    }\n    in.close();\n    return n;\n}\n\nint main() {\n    Student first[3] = { {101, \"Ali\", 78}, {102, \"Sana\", 91}, {103, \"Usman\", 66} };\n    saveAll(first, 3);\n\n    Student list[10];\n    int n = loadAll(list, 10);\n    cout << \"Loaded \" << n << \" records\" << endl;\n\n    int key = 102;\n    bool found = false;\n    for (int i = 0; i < n; i++) {\n        if (list[i].roll == key) {\n            list[i].marks = 95;\n            found = true;\n        }\n    }\n    if (found) {\n        saveAll(list, n);\n    } else {\n        cout << \"Roll \" << key << \" not found\" << endl;\n    }\n\n    Student check[10];\n    int m = loadAll(check, 10);\n    for (int i = 0; i < m; i++) {\n        cout << check[i].roll << \" \" << check[i].name << \" \" << check[i].marks << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Loaded 3 records\n101 Ali 78\n102 Sana 95\n103 Usman 66\n",
+        "explanation": [
+          {
+            "line": 12,
+            "text": "Writes the first n records of the array into students.txt, one per line. The plain ofstream erases the old file content first."
+          },
+          {
+            "line": 20,
+            "text": "Reads records into the array and returns how many were read."
+          },
+          {
+            "line": 23,
+            "text": "The n < maxSize test stops us before the array is full. Then a whole record is read into s[n]."
+          },
+          {
+            "line": 32,
+            "text": "Setup: creates the file."
+          },
+          {
+            "line": 35,
+            "text": "Loads the file into list (room for 10 records)."
+          },
+          {
+            "line": 41,
+            "text": "Search in the ARRAY now, not in the file."
+          },
+          {
+            "line": 42,
+            "text": "Change the marks in memory."
+          },
+          {
+            "line": 47,
+            "text": "Rewrites the whole file with the corrected record."
+          },
+          {
+            "line": 53,
+            "text": "Loads again to prove the file really changed."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Search with break (unique key)",
+      "when": "Roll number, id, CNIC. Stop at the first match.",
+      "example": "if (roll == key) { found = true; break; }"
+    },
+    {
+      "way": "Search without break, with counter",
+      "when": "Names, cities, grades that can repeat.",
+      "example": "if (name == key) matches++;"
+    },
+    {
+      "way": "found flag + if (!found)",
+      "when": "Print Record not found once, after the loop.",
+      "example": "if (!found) cout << \"Record not found\";"
+    },
+    {
+      "way": "Load into array (loadAll)",
+      "when": "Many searches, sorting or updates.",
+      "example": "while (n < max && in >> s[n].roll >> s[n].name >> s[n].marks) n++;"
+    },
+    {
+      "way": "Save array (saveAll)",
+      "when": "After any change, to update the file.",
+      "example": "for (int i = 0; i < n; i++) out << s[i].roll << \" \" << s[i].name << endl;"
+    },
+    {
+      "way": "ios::app",
+      "when": "ONLY to add a new record at the end, not to change an old one.",
+      "example": "ofstream out(\"students.txt\", ios::app);"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "while (in >> roll >> name >> marks) {\n    if (roll == key) cout << \"Found \" << name << endl;\n    else cout << \"Not found\" << endl;   // inside the loop!\n}",
+      "right": "bool found = false;\nwhile (in >> roll >> name >> marks) {\n    if (roll == key) { cout << \"Found \" << name << endl; found = true; }\n}\nif (!found) cout << \"Not found\" << endl;",
+      "error": "No compiler error. We ran it on the file 101 and 102 with key 102 and it printed: Not found\r / Found Sana\r /. The message Not found appears for every record that does not match. Use a flag and test it after the loop."
+    },
+    {
+      "wrong": "ofstream upd(\"s.txt\", ios::app);\nupd << \"101 Ali 90\" << endl;   // 'updating' marks",
+      "right": "// load all records into an array, change the array, saveAll() with a plain ofstream",
+      "error": "No compiler error. Appending does not change the old line: the file now has the old record and the new one. We counted: 2 lines for one student. To update, rewrite the whole file."
+    },
+    {
+      "wrong": "ofstream w(\"s.txt\");   // opened for writing first\nifstream in(\"s.txt\");   // then read it\nwhile (in >> roll >> name >> marks) n++;",
+      "right": "// first load the records, THEN open ofstream and save",
+      "error": "No compiler error. Opening an ofstream erases the file immediately, so the reader finds nothing. We ran it and got: 0 records. Read everything first, write after."
+    },
+    {
+      "wrong": "int matches;\nwhile (in >> roll >> name >> marks)\n    if (name == key) matches++;",
+      "right": "int matches = 0;\nwhile (in >> roll >> name >> marks)\n    if (name == key) matches++;",
+      "error": "No compiler error. matches was never given a start value, so the count begins from a garbage number. Always start counters and flags at 0 / false."
+    },
+    {
+      "wrong": "if (roll = key) {     // one = instead of ==\n    cout << name;\n}",
+      "right": "if (roll == key) {",
+      "error": "The program compiles but is wrong: a single = assigns key to roll, so the condition is true whenever key is not 0. Use == to compare."
+    }
+  ],
+  "examTips": [
+    "Draw the search pattern: found = false; loop reading records; if equal then print, found = true, break; after the loop if (!found) print not found.",
+    "Use break only when the key is unique. If the question says \"count\" or \"all students named...\", do not break.",
+    "Put \"Record not found\" AFTER the loop, never inside it.",
+    "To update a record in a text file: load into an array, change, write all back. Mention that ios::app only adds at the end.",
+    "Never open an ofstream on the file you still want to read: it erases the content."
+  ],
+  "romanSummary": [
+    "File mein search ke liye shuru se har record parho aur key se compare karo. Mil jaye to found = true karo aur (agar key unique hai) break karo.",
+    "Loop ke BAAD if (!found) likh kar \"Record not found\" print karein, loop ke andar nahi.",
+    "Agar naam kai baar aa sakta hai to break na karein, matches++ se ginti karein.",
+    "Record update karne ke liye saara data array mein load karein, array mein change karein, phir poori file dobara ofstream se likh dein.",
+    "ios::app sirf naya record aakhir mein jorne ke liye hai, purana record badalne ke liye nahi."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does the flag found tell you after the search loop?",
+      "options": [
+        "Whether a matching record was seen",
+        "How many records the file has",
+        "Whether the file is open",
+        "The marks of the student"
+      ],
+      "answer": "Whether a matching record was seen",
+      "hint": "It starts false.",
+      "explanation": "found becomes true when a record matches."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    ofstream out(\"d.txt\");\n    out << \"1 Ali 50\" << endl << \"2 Sana 70\" << endl << \"3 Usman 60\" << endl;\n    out.close();\n    ifstream in(\"d.txt\");\n    int id, key = 2;\n    string name;\n    double m;\n    bool found = false;\n    while (in >> id >> name >> m) {\n        if (id == key) {\n            cout << name << \" \" << m;\n            found = true;\n            break;\n        }\n    }\n    if (!found) cout << \"none\";\n    return 0;\n}",
+      "answer": "Sana 70",
+      "hint": "Which record has id 2?",
+      "explanation": "The second record matches, so its name and marks are printed."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    ofstream out(\"d.txt\");\n    out << \"1 Ali 50\" << endl << \"2 Sana 70\" << endl << \"3 Ali 60\" << endl;\n    out.close();\n    ifstream in(\"d.txt\");\n    int id, count = 0;\n    string name;\n    double m, total = 0;\n    while (in >> id >> name >> m) {\n        if (name == \"Ali\") {\n            count++;\n            total += m;\n        }\n    }\n    cout << count << \" \" << total;\n    return 0;\n}",
+      "answer": "2 110",
+      "hint": "Two records belong to Ali.",
+      "explanation": "Ali appears twice with 50 and 60: count 2, total 110."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    ofstream out(\"d.txt\");\n    out << \"7 Hira 80\" << endl;\n    out.close();\n    ifstream in(\"d.txt\");\n    int id;\n    string name;\n    double m;\n    bool found = false;\n    while (in >> id >> name >> m) {\n        if (id == 9) found = true;\n    }\n    if (found) cout << \"yes\";\n    else cout << \"Record not found\";\n    return 0;\n}",
+      "answer": "Record not found",
+      "hint": "Is there a record with id 9?",
+      "explanation": "Only id 7 exists, so found stays false."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    ofstream out(\"d.txt\");\n    out << \"1 A 10\" << endl << \"2 B 20\" << endl;\n    out.close();\n    ofstream more(\"d.txt\", ios::app);\n    more << \"3 C 30\" << endl;\n    more.close();\n    ifstream in(\"d.txt\");\n    int id, n = 0, sum = 0;\n    string name;\n    int m;\n    while (in >> id >> name >> m) {\n        n++;\n        sum += m;\n    }\n    cout << n << \" \" << sum;\n    return 0;\n}",
+      "answer": "3 60",
+      "hint": "ios::app keeps the first two records.",
+      "explanation": "Three records are in the file with marks 10, 20 and 30."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This program prints Not found for every record that does not match. Fix it so that Not found is printed once, and only when nothing matched.\n\nwhile (in >> roll >> name >> marks) {\n    if (roll == key) cout << name << endl;\n    else cout << \"Not found\" << endl;\n}",
+      "answer": "bool found = false;\nwhile (in >> roll >> name >> marks) {\n    if (roll == key) {\n        cout << name << endl;\n        found = true;\n    }\n}\nif (!found) cout << \"Not found\" << endl;",
+      "hint": "Use a flag and test it after the loop.",
+      "explanation": "The flag remembers a match. The test for not found must come after the loop."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Complete the search so that it stops as soon as the roll number is found.\n\nif (roll == key) {\n    found = true;\n    ____;\n}",
+      "answer": "break",
+      "hint": "Leaves the loop immediately.",
+      "explanation": "break exits the while loop, so no more records are read."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a complete program: create items.txt with the lines 1 Pen 20, 2 Book 150, 3 Pen 25 (id, name, price). Count how many times the name Pen appears and print the count, then print the total price of the Pen records.",
+      "answer": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    ofstream out(\"items.txt\");\n    out << \"1 Pen 20\" << endl << \"2 Book 150\" << endl << \"3 Pen 25\" << endl;\n    out.close();\n    ifstream in(\"items.txt\");\n    if (!in) { cout << \"File not found!\" << endl; return 1; }\n    int id, count = 0;\n    string name;\n    double price, total = 0;\n    while (in >> id >> name >> price) {\n        if (name == \"Pen\") {\n            count++;\n            total += price;\n        }\n    }\n    in.close();\n    cout << \"Pen: \" << count << \" time(s), total \" << total << endl;\n    return 0;\n}",
+      "hint": "No break: the name repeats. Use a counter and a total.",
+      "explanation": "Read each record, compare the name with ==, add to count and total."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Where should if (!found) cout << \"Record not found\"; be placed?",
+      "options": [
+        "After the loop",
+        "Inside the loop",
+        "Before opening the file",
+        "Inside the file"
+      ],
+      "answer": "After the loop",
+      "hint": "Decide only when all records were seen.",
+      "explanation": "Inside the loop it would print for every non-matching record."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "When can you use break in a file search?",
+      "options": [
+        "When the key is unique, such as a roll number",
+        "When counting all matches",
+        "Never",
+        "Only for numbers"
+      ],
+      "answer": "When the key is unique, such as a roll number",
+      "hint": "One match is enough.",
+      "explanation": "With a unique key there is nothing more to find."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "How do you update one student's marks in a text file?",
+      "options": [
+        "Load all records into an array, change it, write all back",
+        "Open with ios::app and write the new marks",
+        "Use cin",
+        "It is impossible"
+      ],
+      "answer": "Load all records into an array, change it, write all back",
+      "hint": "A text file cannot change one line in place.",
+      "explanation": "Appending only adds a second record; rewriting replaces the file."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What happens if you open ofstream on a file and then try to read its old content?",
+      "options": [
+        "The old content is already erased",
+        "The old content is kept",
+        "The program asks the user",
+        "The file is deleted from the disk only after the program ends"
+      ],
+      "answer": "The old content is already erased",
+      "hint": "Plain ofstream erases at open time.",
+      "explanation": "Read first, write after."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Searching a file for a name that can appear many times needs...",
+      "options": [
+        "a counter and no break",
+        "a break at the first match",
+        "two files",
+        "a goto"
+      ],
+      "answer": "a counter and no break",
+      "hint": "Every record must be checked.",
+      "explanation": "matches++ for each hit, and the loop runs to the end of the file."
+    }
+  ],
+  "sources": [
+    "Searching from a file",
+    "Search by roll number or name",
+    "Count matches and Record not found",
+    "Saving and loading an array of structures"
+  ]
+}

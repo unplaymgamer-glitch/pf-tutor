@@ -1,0 +1,677 @@
+{
+  "slug": "writing-files",
+  "week": 14,
+  "title": "Writing into a file with ofstream",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "Where the data goes: from your program into the file",
+      "stages": [
+        {
+          "name": "1. Your variables",
+          "detail": "Values such as roll, name and marks live in RAM while the program runs."
+        },
+        {
+          "name": "2. The stream out",
+          "detail": "ofstream out(\"students.txt\"); creates a pipe from your program to the file. out << value pushes data into the pipe, just like cout << value."
+        },
+        {
+          "name": "3. The file on disk",
+          "detail": "The text is stored in students.txt. A plain ofstream first erases the old content; ios::app keeps it and adds at the end."
+        },
+        {
+          "name": "4. close()",
+          "detail": "out.close() finishes the transfer. The file stays on the disk after the program ends."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each writing task to the code",
+      "pairs": [
+        {
+          "term": "ofstream out(\"a.txt\");",
+          "meaning": "Open for writing, old content is erased"
+        },
+        {
+          "term": "ofstream out(\"a.txt\", ios::app);",
+          "meaning": "Open for writing, add at the end"
+        },
+        {
+          "term": "if (!out)",
+          "meaning": "True when the file could not be opened"
+        },
+        {
+          "term": "out << x << \" \" << y << endl;",
+          "meaning": "Write two values with a space between and end the line"
+        },
+        {
+          "term": "out.close();",
+          "meaning": "Finish writing and save the file"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can write text, numbers and a whole table of records into a file, choose between overwriting and appending, and check that the file opened.",
+  "warmup": "Imagine the canteen owner writing each day's sales in a register. If he starts a fresh page every morning, yesterday's page is lost for his own records. If he continues below yesterday's last line, nothing is lost. Writing into a file is the same: a plain ofstream starts a fresh page (erases), while ios::app continues below the last line.",
+  "definition": "To write into a file you create an ofstream object with the file name: ofstream out(\"data.txt\");. If the file does not exist, it is created. If it exists, its old content is erased (this is the default mode ios::out). Then you use << on out exactly as you use << on cout: numbers, text, variables and endl all work. In a text file, everything is stored as characters, so the number 78 becomes the two characters 7 and 8. When you are finished you call out.close(). To keep the old content and add at the end, open the file with ios::app: ofstream out(\"data.txt\", ios::app);.",
+  "howItWorks": "Watch the first trace: each << adds characters to the file. Notice what the program does NOT do: it does not add spaces or new lines for you. If you write out << 12 << 34, the file contains 1234, one number glued together. So put a space (or endl) between values: out << 12 << \" \" << 34. Always check if (!out) after opening. The open fails for example when the folder is read-only or the name is invalid. To save a whole table, use a for loop over the array of structures and write one line per record: roll, a space, name, a space, marks, endl, as in the third example. A good habit is a one-line record with the fields separated by spaces, because the next lesson shows how easily >> can read such lines back. In every sample here we read the file back at the end only to display it, so you can see what was written.",
+  "syntax": "ofstream out(\"data.txt\");        // create/open, old content erased\nif (!out) {                      // always check\n    cout << \"Error opening file!\" << endl;\n    return 1;\n}\nout << \"Ali\" << endl;            // text and a new line\nout << 78 << \" \" << 91.5 << endl; // numbers with a space between\nout.close();                     // finish\n\nofstream more(\"data.txt\", ios::app);   // append: keep old content\nmore << \"one more line\" << endl;\nmore.close();\n\n// a table: one line per record\nfor (int i = 0; i < n; i++)\n    out << s[i].roll << \" \" << s[i].name << \" \" << s[i].marks << endl;",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write the name Ali, the mark 78 and the line Sana 91.5 into marks.txt, each on its own line. Then read the file back and print it.",
+      "pseudocode": [
+        "START",
+        "OPEN marks.txt for writing, check it opened",
+        "WRITE Ali, then 78, then Sana 91.5, each followed by a new line",
+        "CLOSE",
+        "OPEN marks.txt for reading",
+        "WHILE a line can be read: PRINT it",
+        "CLOSE",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Open marks.txt for writing]\n  B --> C{Opened?}\n  C -- No --> X[/Print error/]\n  C -- Yes --> D[Write three lines]\n  D --> E[Close]\n  E --> F[Open for reading]\n  F --> G{Can a line be read?}\n  G -- Yes --> H[/Print the line/]\n  H --> G\n  G -- No --> I([End])\n  X --> I",
+      "sample": {
+        "id": "write-lines",
+        "title": "Writing text and numbers",
+        "code": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nint main() {\n    ofstream out(\"marks.txt\");\n    if (!out) {\n        cout << \"Cannot open marks.txt\" << endl;\n        return 1;\n    }\n    out << \"Ali\" << endl;\n    out << 78 << endl;\n    out << \"Sana \" << 91.5 << endl;\n    out.close();\n\n    ifstream in(\"marks.txt\");\n    string line;\n    while (getline(in, line)) {\n        cout << line << endl;\n    }\n    in.close();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Ali\n78\nSana 91.5\n",
+        "explanation": [
+          {
+            "line": 7,
+            "text": "Opens marks.txt for writing. A new file is created if needed."
+          },
+          {
+            "line": 8,
+            "text": "Stops the program with a message if the file did not open."
+          },
+          {
+            "line": 12,
+            "text": "Writes the text Ali and ends the line."
+          },
+          {
+            "line": 13,
+            "text": "A number is written with the same << operator. It becomes characters in the file."
+          },
+          {
+            "line": 14,
+            "text": "Several items on one line. The space inside the quotes separates the name from the mark."
+          },
+          {
+            "line": 15,
+            "text": "Closes the file, so the three lines are saved."
+          },
+          {
+            "line": 17,
+            "text": "Opens the same file for reading, only to display it."
+          },
+          {
+            "line": 19,
+            "text": "Reads one line at a time until the file ends. You will study reading in the next lesson."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 7,
+              "vars": {
+                "file": "(empty)"
+              },
+              "note": "marks.txt is opened for writing. It is empty.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {
+                "file": "Ali"
+              },
+              "note": "A text line goes into the file.",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {
+                "file": "Ali | 78"
+              },
+              "note": "A number is written with << too. In a text file it is stored as the characters 7 and 8.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {
+                "file": "Ali | 78 | Sana 91.5"
+              },
+              "note": "Text and a double on one line. The space after Sana keeps the two apart.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "file": "Ali | 78 | Sana 91.5"
+              },
+              "note": "The file is closed. It now has three lines.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "The same file is opened for reading.",
+              "out": ""
+            },
+            {
+              "line": 19,
+              "vars": {
+                "line": "Ali"
+              },
+              "note": "getline reads line 1.",
+              "out": ""
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "Line 1 is printed.",
+              "out": "Ali\n"
+            },
+            {
+              "line": 19,
+              "vars": {
+                "line": "78"
+              },
+              "note": "line 2 is read.",
+              "out": ""
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "Line 2 is printed.",
+              "out": "78\n"
+            },
+            {
+              "line": 19,
+              "vars": {
+                "line": "Sana 91.5"
+              },
+              "note": "line 3 is read.",
+              "out": ""
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "Line 3 is printed.",
+              "out": "Sana 91.5\n"
+            },
+            {
+              "line": 22,
+              "vars": {},
+              "note": "No more lines: getline fails, the loop ends and the file is closed.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "file": "file",
+            "line": "string"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Show what happens to a file when you write to it twice with plain ofstream, and then once with ios::app. Print the file after each step.",
+      "pseudocode": [
+        "START",
+        "WRITE run 1 with ofstream, show the file",
+        "WRITE run 2 with ofstream (no append), show the file",
+        "WRITE run 3 with ios::app, show the file",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Write run 1]\n  B --> C[/Show file/]\n  C --> D[Write run 2 without ios::app]\n  D --> E[/Show file: run 1 is gone/]\n  E --> F[Write run 3 with ios::app]\n  F --> G[/Show file: run 2 and run 3/]\n  G --> H([End])",
+      "sample": {
+        "id": "overwrite-vs-append",
+        "title": "Overwrite or append?",
+        "code": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nvoid show(string name) {\n    ifstream in(name);\n    string line;\n    while (getline(in, line)) {\n        cout << \"  \" << line << endl;\n    }\n}\n\nint main() {\n    ofstream a(\"log.txt\");\n    a << \"run 1\" << endl;\n    a.close();\n    cout << \"After first write:\" << endl;\n    show(\"log.txt\");\n\n    ofstream b(\"log.txt\");\n    b << \"run 2\" << endl;\n    b.close();\n    cout << \"After writing again:\" << endl;\n    show(\"log.txt\");\n\n    ofstream c(\"log.txt\", ios::app);\n    c << \"run 3\" << endl;\n    c.close();\n    cout << \"After appending:\" << endl;\n    show(\"log.txt\");\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "After first write:\n  run 1\nAfter writing again:\n  run 2\nAfter appending:\n  run 2\n  run 3\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "A small helper: it opens the file with the given name, reads every line and prints it with two spaces in front. We use it to look inside the file."
+          },
+          {
+            "line": 15,
+            "text": "First write: creates log.txt."
+          },
+          {
+            "line": 21,
+            "text": "Plain ofstream again: the old content (run 1) is ERASED."
+          },
+          {
+            "line": 22,
+            "text": "Only run 2 is in the file now."
+          },
+          {
+            "line": 27,
+            "text": "ios::app: the old content (run 2) is kept."
+          },
+          {
+            "line": 28,
+            "text": "run 3 is added after run 2."
+          },
+          {
+            "line": 19,
+            "text": "Prints the whole file. Three times, so you can compare."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Exam question: An array of three Student structures holds roll, name and marks. Write the records into students.txt, one record per line, with a header line first. Then read the file and display it.",
+      "pseudocode": [
+        "START",
+        "DECLARE array s of 3 students",
+        "OPEN students.txt for writing, check",
+        "WRITE the header line",
+        "FOR i = 0 to 2: WRITE roll, name, marks of s[i] on one line",
+        "CLOSE",
+        "OPEN students.txt for reading",
+        "WHILE a line can be read: PRINT it",
+        "CLOSE",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Array of 3 students]\n  B --> C[Open students.txt for writing]\n  C --> D{Opened?}\n  D -- No --> X[/Print error/]\n  D -- Yes --> E[Write header line]\n  E --> F[i = 0]\n  F --> G{i less than 3?}\n  G -- Yes --> H[Write one record line]\n  H --> I[i = i + 1]\n  I --> G\n  G -- No --> J[Close]\n  J --> K[Open for reading and print all lines]\n  K --> L([End])\n  X --> L",
+      "sample": {
+        "id": "write-table",
+        "title": "An array of structures into a file",
+        "code": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int roll;\n    string name;\n    double marks;\n};\n\nint main() {\n    Student s[3] = { {101, \"Ali\", 78.5}, {102, \"Sana\", 91}, {103, \"Usman\", 66.25} };\n\n    ofstream out(\"students.txt\");\n    if (!out) {\n        cout << \"Cannot open students.txt\" << endl;\n        return 1;\n    }\n    out << \"Roll Name Marks\" << endl;\n    for (int i = 0; i < 3; i++) {\n        out << s[i].roll << \" \" << s[i].name << \" \" << s[i].marks << endl;\n    }\n    out.close();\n\n    ifstream in(\"students.txt\");\n    string line;\n    while (getline(in, line)) {\n        cout << line << endl;\n    }\n    in.close();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Roll Name Marks\n101 Ali 78.5\n102 Sana 91\n103 Usman 66.25\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "A student record with three fields."
+          },
+          {
+            "line": 13,
+            "text": "An array of three students, filled with an initialiser list."
+          },
+          {
+            "line": 15,
+            "text": "Opens the output file."
+          },
+          {
+            "line": 20,
+            "text": "The header line. Later, a reader can skip it or use it to understand the columns."
+          },
+          {
+            "line": 21,
+            "text": "Visits each student once."
+          },
+          {
+            "line": 22,
+            "text": "One line per record: roll, space, name, space, marks, end of line. The spaces keep the fields apart."
+          },
+          {
+            "line": 24,
+            "text": "Closes the file after the last record."
+          },
+          {
+            "line": 28,
+            "text": "Reads the file back line by line so we can print it."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 15,
+              "vars": {
+                "file": "(empty)"
+              },
+              "note": "students.txt is created (or erased if it existed). It is empty for now.",
+              "out": ""
+            },
+            {
+              "line": 20,
+              "vars": {
+                "file": "Roll Name Marks"
+              },
+              "note": "A header line is written first so the file is easy to read.",
+              "out": ""
+            },
+            {
+              "line": 21,
+              "vars": {
+                "i": "0"
+              },
+              "note": "The loop starts with i = 0: the first student, Ali.",
+              "out": ""
+            },
+            {
+              "line": 22,
+              "vars": {
+                "file": "Roll Name Marks | 101 Ali 78.5"
+              },
+              "note": "roll, a space, name, a space, marks and a new line go into the file. The spaces are important, they separate the values.",
+              "out": ""
+            },
+            {
+              "line": 21,
+              "vars": {
+                "i": "1"
+              },
+              "note": "i = 1: Sana.",
+              "out": ""
+            },
+            {
+              "line": 22,
+              "vars": {
+                "file": "Roll Name Marks | 101 Ali 78.5 | 102 Sana 91"
+              },
+              "note": "Sana's record is added. The double 91 is written as 91.",
+              "out": ""
+            },
+            {
+              "line": 21,
+              "vars": {
+                "i": "2"
+              },
+              "note": "i = 2: Usman.",
+              "out": ""
+            },
+            {
+              "line": 22,
+              "vars": {
+                "file": "Roll Name Marks | 101 Ali 78.5 | 102 Sana 91 | 103 Usman 66.25"
+              },
+              "note": "The third record is written.",
+              "out": ""
+            },
+            {
+              "line": 24,
+              "vars": {
+                "i": "3"
+              },
+              "note": "i became 3, the condition i < 3 is false, so the loop ended. The file is closed and saved.",
+              "out": ""
+            },
+            {
+              "line": 26,
+              "vars": {},
+              "note": "Now we open the same file for reading to prove what was saved.",
+              "out": ""
+            },
+            {
+              "line": 29,
+              "vars": {
+                "line": "Roll Name Marks"
+              },
+              "note": "The first line of the file is printed.",
+              "out": "Roll Name Marks\n"
+            },
+            {
+              "line": 28,
+              "vars": {
+                "line": "103 Usman 66.25"
+              },
+              "note": "The loop repeats for the three records (101, 102 and 103). Each time getline fills line and it is printed.",
+              "out": "101 Ali 78.5\n102 Sana 91\n103 Usman 66.25\n"
+            },
+            {
+              "line": 31,
+              "vars": {},
+              "note": "getline fails at the end of the file, the loop stops, and the file is closed.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "file": "file",
+            "i": "int",
+            "line": "string"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "ofstream out(\"f.txt\");",
+      "when": "Start a fresh file (or replace the old one).",
+      "example": "ofstream out(\"report.txt\");"
+    },
+    {
+      "way": "ofstream out(\"f.txt\", ios::app);",
+      "when": "Add records to an existing file.",
+      "example": "ofstream out(\"report.txt\", ios::app);"
+    },
+    {
+      "way": "out << x << \" \" << y << endl;",
+      "when": "Several values on one line, separated by a space.",
+      "example": "out << roll << \" \" << name << \" \" << marks << endl;"
+    },
+    {
+      "way": "out << x << endl; (one value per line)",
+      "when": "Simple lists such as marks.",
+      "example": "for (int i = 0; i < n; i++) out << a[i] << endl;"
+    },
+    {
+      "way": "for loop over an array of structs",
+      "when": "Save a whole table.",
+      "example": "for (int i = 0; i < n; i++) out << s[i].roll << \" \" << s[i].name << endl;"
+    },
+    {
+      "way": "out.close();",
+      "when": "After the last write.",
+      "example": "out.close();"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "ofstream out(\"scores.txt\");\nout << 55 << endl;   // second run of the program",
+      "right": "ofstream out(\"scores.txt\", ios::app);\nout << 55 << endl;",
+      "error": "No compiler error. A plain ofstream erases what was there, so only the newest score survives. Use ios::app when old data must stay."
+    },
+    {
+      "wrong": "out << 12 << 34 << endl;",
+      "right": "out << 12 << \" \" << 34 << endl;",
+      "error": "No compiler error. The file contains 1234 (we checked it by running it): the two numbers are glued into one. Put a space between the values."
+    },
+    {
+      "wrong": "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main() {\n    ofstream out = \"data.txt\";\n    return 0;\n}",
+      "right": "ofstream out(\"data.txt\");",
+      "error": "The compiler reports error: conversion from 'const char [9]' to non-scalar type 'std::ofstream' {aka 'std::basic_ofstream<char>'} requested. The file name goes inside parentheses when you create the stream."
+    },
+    {
+      "wrong": "ofstream out(\"data.txt\");\ncout << \"Ali\" << endl;   // wrong stream!",
+      "right": "ofstream out(\"data.txt\");\nout << \"Ali\" << endl;",
+      "error": "No compiler error. The text appears on the screen and the file stays empty, because cout writes to the screen. Use the name of your file stream."
+    },
+    {
+      "wrong": "ofstream out(\"data.txt\");\nout << \"Ali\" << endl;\n// the program ends without close()",
+      "right": "out << \"Ali\" << endl;\nout.close();",
+      "error": "No compiler error. A stream also closes itself at the end of its scope, but closing it yourself shows you finished and makes sure the data is saved before you open the file again."
+    }
+  ],
+  "examTips": [
+    "State the default: ofstream erases old content. ios::app appends. This is asked almost every time.",
+    "Put a space or endl between values. Output stuck together (1234) loses marks and is unreadable.",
+    "For a table of records, use a for loop over the array and write one line per record.",
+    "Write the check if (!out) after opening, and out.close() at the end.",
+    "A file name is a string in double quotes: \"students.txt\". Do not use a full path."
+  ],
+  "romanSummary": [
+    "ofstream out(\"data.txt\"); file ko likhne ke liye kholta hai, aur out << ... bilkul cout ki tarah kaam karta hai.",
+    "Purani file ka data mit jata hai, jab tak aap ios::app na likhein. ios::app data ko aakhir mein jorta hai.",
+    "Values ke darmiyan space ya endl zaroor likhein, warna 12 aur 34 mil kar 1234 ban jate hain.",
+    "Array of structures ko file mein likhne ke liye for loop use karein, har record ek line mein.",
+    "Kholne ke baad if (!out) se check karein aur aakhir mein out.close() karein."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does ofstream out(\"data.txt\"); do if data.txt already has text in it?",
+      "options": [
+        "Erases the old text",
+        "Keeps the old text and adds at the end",
+        "Prints the text on the screen",
+        "Gives a compile error"
+      ],
+      "answer": "Erases the old text",
+      "hint": "No ios::app was written.",
+      "explanation": "The default mode is ios::out, which erases existing content."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    ofstream out(\"n.txt\");\n    out << 5 << \" \" << 7 << endl;\n    out.close();\n    ifstream in(\"n.txt\");\n    string line;\n    getline(in, line);\n    cout << line;\n    return 0;\n}",
+      "answer": "5 7",
+      "hint": "The file holds exactly what was written.",
+      "explanation": "The numbers are written with a space between, so the line is 5 7."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    ofstream out(\"n.txt\");\n    out << 5 << 7 << endl;\n    out.close();\n    ifstream in(\"n.txt\");\n    string line;\n    getline(in, line);\n    cout << line.length() << \" \" << line;\n    return 0;\n}",
+      "answer": "2 57",
+      "hint": "There is no space between the two numbers.",
+      "explanation": "Without a separator the file contains 57, which is 2 characters."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    ofstream a(\"m.txt\");\n    a << \"x\" << endl;\n    a.close();\n    ofstream b(\"m.txt\", ios::app);\n    b << \"y\" << endl;\n    b << \"z\" << endl;\n    b.close();\n    ifstream in(\"m.txt\");\n    string line;\n    int n = 0;\n    while (getline(in, line)) n++;\n    cout << n;\n    return 0;\n}",
+      "answer": "3",
+      "hint": "ios::app keeps x.",
+      "explanation": "x was kept, y and z were added: 3 lines."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    int a[4] = {3, 6, 9, 12};\n    ofstream out(\"sq.txt\");\n    for (int i = 0; i < 4; i++)\n        out << a[i] * a[i] << endl;\n    out.close();\n    ifstream in(\"sq.txt\");\n    string line;\n    while (getline(in, line))\n        cout << line << \";\";\n    return 0;\n}",
+      "answer": "9;36;81;144;",
+      "hint": "Each square goes on its own line.",
+      "explanation": "The squares 9, 36, 81, 144 are written one per line, then printed with a semicolon after each."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "The program should save the name Ali into names.txt, but the file stays empty and Ali appears on the screen. Fix it.\n\nofstream out(\"names.txt\");\ncout << \"Ali\" << endl;\nout.close();",
+      "answer": "ofstream out(\"names.txt\");\nout << \"Ali\" << endl;\nout.close();",
+      "hint": "Which stream goes to the file?",
+      "explanation": "cout writes to the screen. Use the file stream out."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Complete the loop that writes the n marks of the array marks[] into marks.txt, one per line.\n\nfor (int i = 0; i < n; i++)\n    out ____ marks[i] << endl;",
+      "answer": "<<",
+      "hint": "Same operator as cout.",
+      "explanation": "The insertion operator << sends data to the stream."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a complete program: an array of 3 doubles 12.5, 40, 7.75 is written into prices.txt, one value per line, and then the file is read back and printed line by line.",
+      "answer": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\nint main() {\n    double p[3] = {12.5, 40, 7.75};\n    ofstream out(\"prices.txt\");\n    if (!out) { cout << \"Cannot open prices.txt\" << endl; return 1; }\n    for (int i = 0; i < 3; i++)\n        out << p[i] << endl;\n    out.close();\n    ifstream in(\"prices.txt\");\n    string line;\n    while (getline(in, line))\n        cout << line << endl;\n    in.close();\n    return 0;\n}",
+      "hint": "for loop with out << p[i] << endl; then ifstream and getline.",
+      "explanation": "Write with a for loop, close, reopen with ifstream and print with getline."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which line writes the number 42 into the file stream out?",
+      "options": [
+        "out << 42;",
+        "cout << 42;",
+        "in >> 42;",
+        "out >> 42;"
+      ],
+      "answer": "out << 42;",
+      "hint": "The file stream name, and the << operator.",
+      "explanation": "<< sends data into a stream."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is stored in the file after: out << 3 << 4 << endl;",
+      "options": [
+        "34",
+        "3 4",
+        "3\\n4",
+        "7"
+      ],
+      "answer": "34",
+      "hint": "No separator was written.",
+      "explanation": "The characters are put one after another without a space."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which open mode keeps the old content of a file?",
+      "options": [
+        "ios::app",
+        "ios::out",
+        "the default of ofstream",
+        "ios::trunc"
+      ],
+      "answer": "ios::app",
+      "hint": "Append.",
+      "explanation": "ios::app adds at the end."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What does if (!out) mean right after opening an ofstream?",
+      "options": [
+        "The file failed to open",
+        "The file is empty",
+        "The file already exists",
+        "The file is closed"
+      ],
+      "answer": "The file failed to open",
+      "hint": "! means not.",
+      "explanation": "!out is true when the stream is in a failed state."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "To save an array of 50 student records you should use...",
+      "options": [
+        "a for loop writing one line per record",
+        "50 different files",
+        "cin",
+        "the main function only"
+      ],
+      "answer": "a for loop writing one line per record",
+      "hint": "One structure at a time.",
+      "explanation": "A loop visits each element and writes its fields on one line."
+    }
+  ],
+  "sources": [
+    "Writing into a file",
+    "ofstream and the << operator",
+    "Overwriting and appending (ios::app)",
+    "Writing a table of records"
+  ]
+}

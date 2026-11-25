@@ -1,0 +1,577 @@
+{
+  "slug": "pdlc",
+  "week": 1,
+  "title": "Program Development Life Cycle (PDLC)",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "The six stages of the PDLC",
+      "stages": [
+        {
+          "name": "1. Problem Analysis",
+          "detail": "Understand the problem. Write down the input, the output, the processing and any limits."
+        },
+        {
+          "name": "2. Algorithm Design",
+          "detail": "Plan the steps in plain words (pseudocode) and as a diagram (flowchart). No C++ yet."
+        },
+        {
+          "name": "3. Coding",
+          "detail": "Write the steps in C++. The file you type is called source code (.cpp)."
+        },
+        {
+          "name": "4. Translation & Debugging",
+          "detail": "The compiler translates the code and reports errors. You find and fix the bugs."
+        },
+        {
+          "name": "5. Execution & Testing",
+          "detail": "Run the program with normal, boundary and wrong inputs. Check every answer."
+        },
+        {
+          "name": "6. Implementation & Maintenance",
+          "detail": "Give the program to real users. Update it later when needs change."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each PDLC stage to its job",
+      "pairs": [
+        {
+          "term": "Problem Analysis",
+          "meaning": "Find the input, output and limits"
+        },
+        {
+          "term": "Algorithm Design",
+          "meaning": "Write pseudocode and draw a flowchart"
+        },
+        {
+          "term": "Coding",
+          "meaning": "Write the steps in C++"
+        },
+        {
+          "term": "Translation & Debugging",
+          "meaning": "Compile and fix the errors"
+        },
+        {
+          "term": "Execution & Testing",
+          "meaning": "Run with many inputs and check the output"
+        },
+        {
+          "term": "Implementation & Maintenance",
+          "meaning": "Use the program and update it later"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can name the stages of the Program Development Life Cycle, say what each stage produces, and carry a small problem from analysis to a working C++ program.",
+  "warmup": "Your friend asks you to cook biryani for 20 guests. Do you jump into the kitchen and start frying? No. First you ask: how many guests, what do they like, what do I have? Then you plan the steps. Then you cook. Then you taste it. Then you serve, and next time you fix the salt. Good programmers work the same way: think first, type later.",
+  "definition": "The Program Development Life Cycle (PDLC) is the set of stages a programmer follows to turn a problem into a working program. The stages are: Problem Analysis, Algorithm Design, Coding, Translation and Debugging, Execution and Testing, and Implementation and Maintenance. An algorithm is a finite, ordered list of clear steps that solves a problem. Pseudocode is an algorithm written in simple English-like lines. A flowchart is a diagram of the algorithm made with standard symbols and arrows.",
+  "howItWorks": "Start with the problem, not the code. In Problem Analysis you list the Input (data given), the Output (result needed), the Processing (calculation or decision in between) and the Constraints (limits, like marks must be 0 to 100). In Algorithm Design you write those steps as pseudocode and draw a flowchart: oval = Start/End, parallelogram = Input/Output, rectangle = Process, diamond = Decision. Only then do you write C++ (Coding). The compiler translates your code and reports mistakes (Translation and Debugging). You run and test the program with different inputs (Execution and Testing). Finally users start using it, and you update it when needed (Implementation and Maintenance). If a stage shows a problem, you can go back to an earlier stage.",
+  "syntax": "// PDLC checklist for any problem\n// 1. Analysis  : Input = ?   Output = ?   Processing = ?   Limits = ?\n// 2. Design    : pseudocode (START, INPUT, calculate, OUTPUT, END) + flowchart\n// 3. Coding    : #include <iostream>, int main() { ... }   -> file.cpp\n// 4. Translate : compile file.cpp, read errors, fix bugs, compile again\n// 5. Execute   : run with normal, boundary and invalid inputs\n// 6. Implement : deliver to users, then maintain (fix and improve)\n//\n// Flowchart symbols: oval = Start/End, parallelogram = Input/Output,\n//                    rectangle = Process, diamond = Decision",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Find the average of two marks, 70 and 80, and show it. Walk the problem through the stages.",
+      "pseudocode": [
+        "ANALYSIS: Input = two marks (70, 80). Processing = add them and divide by 2. Output = average.",
+        "START",
+        "SET m1 = 70, m2 = 80",
+        "average = (m1 + m2) / 2",
+        "DISPLAY average",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Set m1 = 70, m2 = 80/]\n  B --> C[average = m1 + m2 divided by 2]\n  C --> D[/Display average/]\n  D --> E([End])",
+      "sample": {
+        "id": "pdlc-average-two",
+        "title": "Average of two marks",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    double m1 = 70;\n    double m2 = 80;\n    double average = (m1 + m2) / 2;\n    cout << \"Average = \" << average << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Average = 75\n",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "Coding stage: bring in the tools for printing."
+          },
+          {
+            "line": 4,
+            "text": "The program starts at main()."
+          },
+          {
+            "line": 5,
+            "text": "Input: the first mark is stored in m1. double can hold decimal numbers."
+          },
+          {
+            "line": 6,
+            "text": "Input: the second mark is stored in m2."
+          },
+          {
+            "line": 7,
+            "text": "Processing: the brackets make the addition happen first, then divide by 2. Without brackets the answer would be wrong."
+          },
+          {
+            "line": 8,
+            "text": "Output: print the label and the result."
+          },
+          {
+            "line": 9,
+            "text": "Finish successfully."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "Execution starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "m1": "70"
+              },
+              "note": "m1 gets the value 70.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "m2": "80"
+              },
+              "note": "m2 gets the value 80.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "average": "75"
+              },
+              "note": "(70 + 80) / 2 = 150 / 2 = 75.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Print the label and the average.",
+              "out": "Average = 75\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "m1": "double",
+            "m2": "double",
+            "average": "double"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "A rickshaw charges Rs 50 as base fare plus Rs 20 for every km. Read the distance and print the fare. (Test with 6 km.)",
+      "pseudocode": [
+        "ANALYSIS: Input = km. Processing = fare = 50 + 20 x km. Output = fare. Limit = km is not negative.",
+        "START",
+        "INPUT km",
+        "fare = 50 + 20 * km",
+        "DISPLAY fare",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Input km/]\n  B --> C[fare = 50 + 20 * km]\n  C --> D[/Display fare/]\n  D --> E([End])",
+      "sample": {
+        "id": "pdlc-rickshaw-fare",
+        "title": "Rickshaw fare",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int km;\n    int fare;\n    cout << \"Enter distance in km: \";\n    cin >> km;\n    fare = 50 + 20 * km;\n    cout << \"Fare = Rs \" << fare << endl;\n    return 0;\n}\n",
+        "stdin": "6\n",
+        "expectedOutput": "Enter distance in km: Fare = Rs 170\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A box named km for the distance (whole number)."
+          },
+          {
+            "line": 6,
+            "text": "A box named fare for the answer."
+          },
+          {
+            "line": 7,
+            "text": "Ask the user for the input."
+          },
+          {
+            "line": 8,
+            "text": "cin reads the number the user types into km."
+          },
+          {
+            "line": 9,
+            "text": "Processing: multiplication happens before addition, so this is 50 + (20 * km)."
+          },
+          {
+            "line": 10,
+            "text": "Output: show the fare."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "Start of main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "km": "?"
+              },
+              "note": "km is created; it has no useful value yet.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "fare": "?"
+              },
+              "note": "fare is created; no useful value yet.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "The prompt is printed.",
+              "out": "Enter distance in km: "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "km": "6"
+              },
+              "note": "The user typed 6, so km becomes 6.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "fare": "170"
+              },
+              "note": "20 * 6 = 120, then 50 + 120 = 170.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Print the fare.",
+              "out": "Fare = Rs 170\n"
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "km": "int",
+            "fare": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "A student enters the marks of three subjects. Calculate and display the total and the average. Show the analysis, pseudocode, flowchart and C++ program. (Test with 70 80 90.)",
+      "pseudocode": [
+        "ANALYSIS: Input = marks1, marks2, marks3. Processing = total = sum, average = total / 3. Output = total, average.",
+        "START",
+        "INPUT marks1, marks2, marks3",
+        "total = marks1 + marks2 + marks3",
+        "average = total / 3",
+        "DISPLAY total, average",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Input marks1, marks2, marks3/]\n  B --> C[total = marks1 + marks2 + marks3]\n  C --> D[average = total / 3]\n  D --> E[/Display total, average/]\n  E --> F([End])",
+      "sample": {
+        "id": "pdlc-three-marks",
+        "title": "Total and average of three marks",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int m1, m2, m3;\n    cout << \"Enter three marks: \";\n    cin >> m1 >> m2 >> m3;\n    int total = m1 + m2 + m3;\n    double average = total / 3.0;\n    cout << \"Total = \" << total << endl;\n    cout << \"Average = \" << average << endl;\n    return 0;\n}\n",
+        "stdin": "70 80 90\n",
+        "expectedOutput": "Enter three marks: Total = 240\nAverage = 80\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Three boxes for the three marks."
+          },
+          {
+            "line": 7,
+            "text": "cin reads three numbers in order: 70 into m1, 80 into m2, 90 into m3."
+          },
+          {
+            "line": 8,
+            "text": "Processing: the total is 240."
+          },
+          {
+            "line": 9,
+            "text": "Dividing by 3.0 (a decimal) keeps the decimal part. total / 3 with two whole numbers would throw the decimal part away."
+          },
+          {
+            "line": 10,
+            "text": "Output: the total."
+          },
+          {
+            "line": 11,
+            "text": "Output: the average."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Algorithm (numbered steps)",
+      "when": "First plan in plain sentences",
+      "example": "1. Read two marks  2. Add them  3. Divide by 2  4. Show the result"
+    },
+    {
+      "way": "Pseudocode",
+      "when": "Plan with English-like lines that are close to code",
+      "example": "INPUT m1, m2\naverage = (m1 + m2) / 2\nDISPLAY average"
+    },
+    {
+      "way": "Flowchart",
+      "when": "Show the logic as a picture",
+      "example": "([Start]) -> [/Input/] -> [Process] -> [/Output/] -> ([End])"
+    },
+    {
+      "way": "C++ source code",
+      "when": "After the design is clear",
+      "example": "double average = (m1 + m2) / 2;"
+    },
+    {
+      "way": "Syntax error",
+      "when": "Found by the compiler during translation",
+      "example": "cout << \"Hi\"   (missing ;)"
+    },
+    {
+      "way": "Logical error",
+      "when": "Program runs but the answer is wrong; found by testing",
+      "example": "avg = a + b / 2;   (should be (a + b) / 2)"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "cout << \"Hi\"\nreturn 0;",
+      "right": "cout << \"Hi\";\nreturn 0;",
+      "error": "expected ';' before 'return'"
+    },
+    {
+      "wrong": "double avg = a + b / 2;",
+      "right": "double avg = (a + b) / 2;",
+      "error": "No compiler message. It compiles but gives a wrong answer (a logical error found only by testing)."
+    },
+    {
+      "wrong": "x = 5;",
+      "right": "int x = 5;",
+      "error": "'x' was not declared in this scope"
+    },
+    {
+      "wrong": "Start typing C++ before understanding the problem",
+      "right": "Do Problem Analysis and Algorithm Design first",
+      "error": "Not a compiler error. Unclear logic usually leads to many bugs later."
+    }
+  ],
+  "examTips": [
+    "Learn the 6 stages in order: Problem Analysis, Algorithm Design, Coding, Translation and Debugging, Execution and Testing, Implementation and Maintenance.",
+    "Know what each stage produces: input/output list, pseudocode and flowchart, source code, error-free program, tested program, program in use.",
+    "Flowchart symbols: oval = Start/End, parallelogram = Input/Output, rectangle = Process, diamond = Decision, arrow = flow.",
+    "Three error types: syntax (at compile), runtime (while running), logical (wrong answer, no crash).",
+    "In a design question, always write Input, Processing and Output first."
+  ],
+  "romanSummary": [
+    "PDLC ke 6 stages hain: Problem Analysis, Algorithm Design, Coding, Translation and Debugging, Execution and Testing, Implementation and Maintenance.",
+    "Pehle problem samjho (input, output, processing), phir pseudocode aur flowchart banao, phir C++ likho.",
+    "Compiler syntax errors batata hai, aur testing se logical errors milte hain.",
+    "Flowchart mein oval start/end, parallelogram input/output, rectangle process aur diamond decision ke liye hota hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which PDLC stage comes first?",
+      "options": [
+        "Coding",
+        "Problem Analysis",
+        "Testing",
+        "Debugging"
+      ],
+      "answer": "Problem Analysis",
+      "hint": "Think before you type.",
+      "explanation": "You must understand the problem and list input, output and processing before anything else."
+    },
+    {
+      "id": "p2",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank: a finite, ordered list of clear steps that solves a problem is called an ______.",
+      "answer": "algorithm",
+      "hint": "It comes before pseudocode and flowchart.",
+      "explanation": "An algorithm is the plan. Pseudocode and flowcharts are two ways to write it down."
+    },
+    {
+      "id": "p3",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which flowchart symbol is used for a Yes/No question?",
+      "options": [
+        "Oval",
+        "Parallelogram",
+        "Rectangle",
+        "Diamond"
+      ],
+      "answer": "Diamond",
+      "hint": "Think of the decision shape.",
+      "explanation": "A diamond holds a question like 'Is marks >= 50?' with Yes and No paths."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    int a = 10, b = 20;\n    cout << a + b / 2;\n    return 0;\n}",
+      "answer": "20",
+      "hint": "Division is done before addition.",
+      "explanation": "b / 2 = 10 first, then 10 + 10 = 20. The programmer probably wanted 15, so this is a logical error: use (a + b) / 2."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    cout << 7 / 2 << \" \" << 7 / 2.0;\n    return 0;\n}",
+      "answer": "3 3.5",
+      "hint": "One division uses whole numbers, the other uses a decimal.",
+      "explanation": "7 / 2 with two whole numbers gives 3 (decimal part dropped). 7 / 2.0 uses a decimal, so it gives 3.5."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Fix the bug so the program shows the average of a and b (a = 10, b = 20 should give 15):\n\nint average = a + b / 2;",
+      "answer": "int average = (a + b) / 2;",
+      "hint": "Which operation happens first without brackets?",
+      "explanation": "Brackets force the addition first. Without them, b / 2 is done first and the answer is wrong."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a C++ program that reads the price of one item and the quantity, then prints the total bill. (Design first: Input = price, quantity; Processing = price * quantity; Output = total.)",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int price, qty;\n    cout << \"Enter price and quantity: \";\n    cin >> price >> qty;\n    int total = price * qty;\n    cout << \"Total bill = \" << total << endl;\n    return 0;\n}",
+      "hint": "Follow Input, Processing, Output in order.",
+      "explanation": "The code follows the analysis exactly: read two inputs, multiply, print the output."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "In which stage do you write pseudocode and draw a flowchart?",
+      "options": [
+        "Algorithm Design",
+        "Coding",
+        "Execution and Testing",
+        "Maintenance"
+      ],
+      "answer": "Algorithm Design",
+      "hint": "It is the 'how' stage, before any C++.",
+      "explanation": "Design means planning the steps. Both pseudocode and flowchart are design tools."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is a bug?",
+      "options": [
+        "A mistake in a program",
+        "A type of compiler",
+        "A flowchart symbol",
+        "A C++ keyword"
+      ],
+      "answer": "A mistake in a program",
+      "hint": "Finding it is called debugging.",
+      "explanation": "A bug is any mistake in a program; debugging means finding and fixing it."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which stage produces the .cpp source file?",
+      "options": [
+        "Problem Analysis",
+        "Algorithm Design",
+        "Coding",
+        "Implementation"
+      ],
+      "answer": "Coding",
+      "hint": "The file contains C++ text.",
+      "explanation": "Coding turns the design into C++ source code saved as .cpp."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "A program runs but shows the wrong average. Which error type is this?",
+      "options": [
+        "Syntax error",
+        "Logical error",
+        "Linker error",
+        "Typing error"
+      ],
+      "answer": "Logical error",
+      "hint": "No crash, no compiler message, just a wrong answer.",
+      "explanation": "When the program runs but the answer is wrong, the logic is wrong: a logical error."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is a parallelogram used for in a flowchart?",
+      "options": [
+        "Start and End",
+        "Input and Output",
+        "Calculations",
+        "Decisions"
+      ],
+      "answer": "Input and Output",
+      "hint": "Think of reading and displaying.",
+      "explanation": "Parallelogram = Input/Output. Rectangle = Process. Diamond = Decision. Oval = Start/End."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Which order is correct?",
+      "options": [
+        "Coding, Analysis, Design, Testing",
+        "Analysis, Design, Coding, Translation and Debugging, Testing, Implementation",
+        "Design, Analysis, Testing, Coding",
+        "Testing, Coding, Design, Analysis"
+      ],
+      "answer": "Analysis, Design, Coding, Translation and Debugging, Testing, Implementation",
+      "hint": "Understand, plan, write, fix, check, deliver.",
+      "explanation": "That is the official PDLC order, starting with the problem and ending with real use."
+    }
+  ],
+  "sources": [
+    "What is Programming?",
+    "Stages of the Program Development Life Cycle",
+    "Problem Analysis",
+    "Algorithm Design: pseudocode and flowchart",
+    "Debugging and error types"
+  ]
+}

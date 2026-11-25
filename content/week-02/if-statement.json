@@ -1,0 +1,545 @@
+{
+  "slug": "if-statement",
+  "week": 2,
+  "title": "The if statement: do something only when true",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "decision",
+      "title": "if (marks >= 50): is the body run?",
+      "vars": [
+        {
+          "name": "marks",
+          "label": "marks",
+          "min": 0,
+          "max": 100,
+          "value": 72
+        }
+      ],
+      "branches": [
+        {
+          "expr": "marks >= 50",
+          "label": "Condition is TRUE: the body runs and prints \"Congratulations, you passed!\". Then the program continues."
+        }
+      ],
+      "elseLabel": "Condition is FALSE: the body is skipped. Nothing is printed for this if. The program continues after it."
+    },
+    {
+      "kind": "decision",
+      "title": "if (temperature > 35): hot day message",
+      "vars": [
+        {
+          "name": "temperature",
+          "label": "temperature",
+          "min": 10,
+          "max": 50,
+          "value": 38
+        }
+      ],
+      "branches": [
+        {
+          "expr": "temperature > 35",
+          "label": "TRUE: prints \"It's a hot day!\""
+        }
+      ],
+      "elseLabel": "FALSE: the body is skipped, nothing extra is printed."
+    }
+  ],
+  "goal": "After this you can write a one-way if statement, explain when its body runs, and avoid the brace and semicolon mistakes.",
+  "warmup": "Think about the weather. IF it is raining, you take an umbrella. If it is not raining, you do nothing special and just walk out. Another one: IF your mobile balance is below Rs. 50, you buy a load. Otherwise you do nothing. There is one condition and one action that happens only when the condition is true.",
+  "definition": "The if statement runs a block of code only when its condition is true. If the condition is false, the block is skipped and the program carries on with the next statement after it. The condition is an expression that gives true or false, usually made with a relational operator such as marks >= 50.",
+  "howItWorks": "Slide the value and watch the decision. The computer first checks the condition inside the brackets. If it is true, it runs the statements inside the braces { }. If it is false, it jumps over them. Either way, the next line after the if block is always run.",
+  "syntax": "if (condition)          // condition goes inside brackets, NO semicolon here\n{\n    statement1;         // runs only when the condition is true\n    statement2;\n}\nnextStatement;          // always runs, true or false\n\n// With one statement the braces are optional:\nif (condition)\n    statement;          // only THIS line belongs to the if",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "If the temperature is above 35, print \"It's a hot day!\". Then always print \"Program finished.\" (temperature is 38).",
+      "pseudocode": [
+        "START",
+        "SET temperature = 38",
+        "IF temperature > 35 THEN PRINT \"It's a hot day!\"",
+        "PRINT \"Program finished.\"",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[temperature = 38]\n  B --> C{temperature > 35?}\n  C -- True --> D[/Print It's a hot day/]\n  C -- False --> E[/Print Program finished/]\n  D --> E\n  E --> F([End])",
+      "sample": {
+        "id": "if-hot-day",
+        "title": "Hot day message",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int temperature = 38;\n    if (temperature > 35) {\n        cout << \"It's a hot day!\" << endl;\n    }\n    cout << \"Program finished.\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "It's a hot day!\nProgram finished.\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "temperature holds 38."
+          },
+          {
+            "line": 6,
+            "text": "Checks the condition. 38 > 35 is true, so the body runs."
+          },
+          {
+            "line": 7,
+            "text": "Inside the braces: this runs only when the condition is true."
+          },
+          {
+            "line": 9,
+            "text": "Outside the if block: this always runs."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts.",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "temperature": "38"
+              },
+              "note": "temperature is created and holds 38.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "Is 38 > 35? Yes, the condition is true, so we enter the body.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "The body runs and prints the message.",
+              "out": "It's a hot day!\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "The if is over. This line runs in every case.",
+              "out": "Program finished.\n"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "temperature": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read the marks of a student. If marks are 50 or more, print \"Congratulations, you passed!\". Then print \"Program finished.\" (input: 72).",
+      "pseudocode": [
+        "START",
+        "READ marks",
+        "IF marks >= 50 THEN",
+        "    PRINT \"Congratulations, you passed!\"",
+        "PRINT \"Program finished.\"",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read marks/]\n  B --> C{marks >= 50?}\n  C -- True --> D[/Print Congratulations/]\n  C -- False --> E[/Print Program finished/]\n  D --> E\n  E --> F([End])",
+      "sample": {
+        "id": "if-pass",
+        "title": "Did the student pass?",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int marks;\n    cout << \"Enter marks: \";\n    cin >> marks;\n    if (marks >= 50) {\n        cout << \"Congratulations, you passed!\" << endl;\n    }\n    cout << \"Program finished.\" << endl;\n    return 0;\n}\n",
+        "stdin": "72\n",
+        "expectedOutput": "Enter marks: Congratulations, you passed!\nProgram finished.\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A variable for the marks."
+          },
+          {
+            "line": 6,
+            "text": "Asks for the input."
+          },
+          {
+            "line": 7,
+            "text": "Reads the marks typed by the user."
+          },
+          {
+            "line": 8,
+            "text": "True when marks is 50 or more. The braces hold the code to run in that case."
+          },
+          {
+            "line": 9,
+            "text": "Runs only if the condition is true."
+          },
+          {
+            "line": 11,
+            "text": "Runs always."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts.",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "marks is created.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "The prompt is shown.",
+              "out": "Enter marks: "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "marks": "72"
+              },
+              "note": "The user types 72, so marks = 72.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Is 72 >= 50? Yes: true.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "The body runs.",
+              "out": "Congratulations, you passed!\n"
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "This runs after the if block.",
+              "out": "Program finished.\n"
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "marks": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "A shop gives 10% discount when the total bill is Rs. 5000 or more. Read the total, apply the discount if it applies, then print the amount to pay (input: 6000).",
+      "pseudocode": [
+        "START",
+        "READ total",
+        "IF total >= 5000 THEN",
+        "    SET discount = total / 10",
+        "    SET total = total - discount",
+        "PRINT total",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read total/]\n  B --> C{total >= 5000?}\n  C -- True --> D[discount = total / 10]\n  D --> E[total = total - discount]\n  C -- False --> F[/Print total/]\n  E --> F\n  F --> G([End])",
+      "sample": {
+        "id": "if-discount",
+        "title": "Discount at Rs. 5000",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int total;\n    cout << \"Enter total: \";\n    cin >> total;\n    if (total >= 5000) {\n        int discount = total / 10;\n        total = total - discount;\n    }\n    cout << \"Amount to pay: \" << total << endl;\n    return 0;\n}\n",
+        "stdin": "6000\n",
+        "expectedOutput": "Enter total: Amount to pay: 5400\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "The bill amount."
+          },
+          {
+            "line": 7,
+            "text": "Reads the bill."
+          },
+          {
+            "line": 8,
+            "text": "Only bills of Rs. 5000 or more get the discount."
+          },
+          {
+            "line": 9,
+            "text": "10% of the total (integer division). Two statements need braces."
+          },
+          {
+            "line": 10,
+            "text": "Reduces the total by the discount."
+          },
+          {
+            "line": 12,
+            "text": "Always runs: prints the final amount."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts.",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "total is created.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "The prompt is shown.",
+              "out": "Enter total: "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "total": "6000"
+              },
+              "note": "The user types 6000.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Is 6000 >= 5000? Yes: enter the body.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "discount": "600"
+              },
+              "note": "discount = 6000 / 10 = 600.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "total": "5400"
+              },
+              "note": "total = 6000 - 600 = 5400.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Prints the amount to pay.",
+              "out": "Amount to pay: 5400\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "total": "int",
+            "discount": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "if (cond) { ... }",
+      "when": "Normal form: braces around the body (best habit)",
+      "example": "if (marks >= 50) {\n    cout << \"Pass\";\n}"
+    },
+    {
+      "way": "if (cond) statement;",
+      "when": "Body is exactly one statement; braces can be left out",
+      "example": "if (temperature > 35)\n    cout << \"Hot\";"
+    },
+    {
+      "way": "Several if statements one after another",
+      "when": "Each if is checked on its own, independent of the others",
+      "example": "if (a > 0) cout << \"Positive \";\nif (a % 2 == 0) cout << \"Even\";"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "if (x > 5);\n    cout << \"Big\";",
+      "right": "if (x > 5)\n    cout << \"Big\";",
+      "error": "compiles with no error, but the ; ends the if with an empty body, so \"Big\" is printed always"
+    },
+    {
+      "wrong": "if marks >= 50\n    cout << \"Pass\";",
+      "right": "if (marks >= 50)\n    cout << \"Pass\";",
+      "error": "expected '(' before 'marks'"
+    },
+    {
+      "wrong": "if (n > 5)\n    cout << \"A\";\n    cout << \"B\";",
+      "right": "if (n > 5) {\n    cout << \"A\";\n    cout << \"B\";\n}",
+      "error": "compiles, but without braces only the first cout belongs to the if; B is printed always"
+    },
+    {
+      "wrong": "if (x = 5)",
+      "right": "if (x == 5)",
+      "error": "usually compiles with no error: it stores 5 in x and is always true"
+    }
+  ],
+  "examTips": [
+    "Never put a semicolon right after if (condition). It ends the if with an empty body.",
+    "The condition must be inside brackets: if (x > 5), not if x > 5.",
+    "Without braces only ONE statement belongs to the if. Use braces when you have two or more.",
+    "Show the flowchart with one diamond: True goes through the body, False skips it.",
+    "In an exam trace, write the condition's value (true/false) at each if."
+  ],
+  "romanSummary": [
+    "if statement ka block sirf tab chalta hai jab condition true ho.",
+    "Agar condition false ho to block skip ho jata hai aur program agli line se chalta hai.",
+    "Condition hamesha brackets ( ) ke andar likhte hain, aur if ke foran baad semicolon nahi lagate.",
+    "Do ya zyada statements ho to braces { } zaroor lagayen."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "When does the body of an if statement run?",
+      "options": [
+        "Always",
+        "Only when the condition is true",
+        "Only when the condition is false",
+        "Never"
+      ],
+      "answer": "Only when the condition is true",
+      "hint": "Think of 'if it rains, take an umbrella'.",
+      "explanation": "The body runs only for a true condition; for false it is skipped."
+    },
+    {
+      "id": "p2",
+      "type": "bug",
+      "difficulty": "easy",
+      "prompt": "Fix the bug:\n\nif marks >= 50\n    cout << \"Pass\";",
+      "answer": "if (marks >= 50)\n    cout << \"Pass\";",
+      "hint": "Look at the condition: it needs something around it.",
+      "explanation": "The condition of an if must be inside brackets."
+    },
+    {
+      "id": "p3",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank so it prints Adult when age is 18 or more:\n\nif (age ___ 18)\n    cout << \"Adult\";",
+      "answer": ">=",
+      "hint": "18 should count as adult too.",
+      "explanation": ">= includes 18; > would leave 18 out."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\nint a = 10;\nif (a == 10) cout << \"Ten\";\nif (a != 10) cout << \"Not ten\";\ncout << \"Done\";",
+      "answer": "TenDone",
+      "hint": "Each if is checked on its own. No endl is used.",
+      "explanation": "The first condition is true, so Ten is printed. The second is false, so it is skipped. Done always prints."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this print?\n\nint n = 2;\nif (n > 5)\n    cout << \"A\";\n    cout << \"B\";\ncout << \"C\";",
+      "answer": "BC",
+      "hint": "Without braces, only the first statement after the if belongs to it.",
+      "explanation": "n > 5 is false, so cout << \"A\" is skipped. cout << \"B\" is NOT part of the if, so B prints, then C."
+    },
+    {
+      "id": "p6",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this print?\n\nint x = 3;\nif (x > 5);\n    cout << \"Big\";",
+      "answer": "Big",
+      "hint": "Look carefully at the end of the if line.",
+      "explanation": "The semicolon is an empty body for the if. The cout line is a separate statement that always runs."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "medium",
+      "prompt": "Write a program that reads an integer and prints \"Positive\" only if it is greater than 0.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int n;\n    cin >> n;\n    if (n > 0) {\n        cout << \"Positive\" << endl;\n    }\n    return 0;\n}",
+      "hint": "Read n, then use if (n > 0).",
+      "explanation": "One condition, one action: a one-way if."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What happens when the if condition is false?",
+      "options": [
+        "The program stops",
+        "The body is skipped",
+        "The body runs twice",
+        "A compile error occurs"
+      ],
+      "answer": "The body is skipped",
+      "hint": "Think of the umbrella when it is not raining.",
+      "explanation": "The program jumps over the body and continues after it."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which is the correct way to write an if?",
+      "options": [
+        "if x > 5",
+        "if (x > 5);",
+        "if (x > 5)",
+        "if [x > 5]"
+      ],
+      "answer": "if (x > 5)",
+      "hint": "Brackets are needed, a semicolon is not.",
+      "explanation": "The condition goes in brackets and there is no semicolon after it."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "int n = 2; if (n > 5) cout << \"A\"; cout << \"B\"; What is printed?",
+      "options": [
+        "A",
+        "B",
+        "AB",
+        "Nothing"
+      ],
+      "answer": "B",
+      "hint": "Only the first statement belongs to the if.",
+      "explanation": "The if body is skipped; cout << \"B\" is a separate statement and always runs."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What does the semicolon in if (x > 5); do?",
+      "options": [
+        "Nothing, it is required",
+        "Gives the if an empty body",
+        "Makes the condition true",
+        "Causes a compile error"
+      ],
+      "answer": "Gives the if an empty body",
+      "hint": "The semicolon is a complete (empty) statement.",
+      "explanation": "The if controls only the empty statement, so the next line always runs."
+    }
+  ],
+  "sources": [
+    "The if statement",
+    "Conditional structures: selection (decision) structures"
+  ]
+}

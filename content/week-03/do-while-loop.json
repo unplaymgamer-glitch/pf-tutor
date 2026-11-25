@@ -1,0 +1,602 @@
+{
+  "slug": "do-while-loop",
+  "week": 3,
+  "title": "The do-while loop: run first, check after",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Which loop fits which situation?",
+      "pairs": [
+        {
+          "term": "Print a table of 7 (1 to 10)",
+          "meaning": "for loop: the count is known."
+        },
+        {
+          "term": "Read marks until the user types -1",
+          "meaning": "while loop: the count is unknown and the body may run zero times."
+        },
+        {
+          "term": "Show a menu at least once",
+          "meaning": "do-while loop: the menu must appear before any choice exists."
+        },
+        {
+          "term": "Ask for age again until it is between 1 and 120",
+          "meaning": "do-while loop: ask first, then check the answer."
+        },
+        {
+          "term": "Sum of digits of a number",
+          "meaning": "while loop: continue while digits are left."
+        }
+      ]
+    },
+    {
+      "kind": "pipeline",
+      "title": "How do { ... } while (condition); runs",
+      "stages": [
+        {
+          "name": "1. Run the body",
+          "detail": "The body runs FIRST, with no check at all. So it always runs at least once."
+        },
+        {
+          "name": "2. Check the condition",
+          "detail": "Only now does the computer test the condition, using the values left by the body."
+        },
+        {
+          "name": "3. True: go back",
+          "detail": "If the condition is true, jump back to step 1 and run the body again."
+        },
+        {
+          "name": "4. False: leave",
+          "detail": "If it is false, the loop ends. Do not forget the semicolon after while (condition)."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can write a do-while loop for menus and input validation, explain why it always runs at least once, and choose between for, while and do-while.",
+  "warmup": "At a restaurant the waiter must bring you the menu before you can decide anything. He cannot first ask 'Have you decided?' because you have not seen the dishes yet. First he does the action (shows the menu), and after that he checks whether you want to order. An ATM works the same way: it asks for your PIN, and only after you type it can it check whether it is right. If it is wrong it asks again. 'Do first, check after' is a do-while loop.",
+  "definition": "A do-while loop runs its body first and checks the condition after each round. Because of this the body always runs at least once. It is called a post-test (exit-controlled) loop. It is the only C++ loop that ends with a semicolon: do { ... } while (condition);",
+  "howItWorks": "Compare it with while. In while the check is at the top, in do-while it is at the bottom. Run the pipeline: body, then condition. If the condition is true the loop goes around again, otherwise it ends. The classic proof: int i = 10; do { cout << i; } while (i < 5); prints 10 even though 10 < 5 is false, because the body ran once before the test. A while loop with the same condition would print nothing. Where do we use it? (1) Menus: show the menu, read the choice, repeat until the user selects Exit. (2) Input validation: ask for a value, and repeat the question while the value is invalid. Remember the semicolon after the final while (...). The bottom of the table below compares all three loops.",
+  "syntax": "do {\n    // body: always runs at least once\n} while (condition);   // <-- semicolon is required\n\n// input validation pattern:\n// do {\n//     cout << \"Enter age (1-120): \";\n//     cin >> age;\n// } while (age < 1 || age > 120);",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Show that a do-while body runs once even when the condition is false from the start.",
+      "pseudocode": [
+        "START",
+        "i = 10",
+        "DO:",
+        "    PRINT i",
+        "    i = i + 1",
+        "WHILE i <= 5",
+        "PRINT i",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[i = 10]\n  B --> C[/Print i/]\n  C --> D[i = i + 1]\n  D --> E{i <= 5?}\n  E -->|Yes| C\n  E -->|No| F[/Print final i/]\n  F --> G([End])",
+      "sample": {
+        "id": "runs-once",
+        "title": "The body runs at least once",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int i = 10;\n    do {\n        cout << \"Body ran with i = \" << i << endl;\n        i++;\n    } while (i <= 5);\n    cout << \"Finished, i = \" << i << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Body ran with i = 10\nFinished, i = 11\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "i starts at 10, which already breaks the condition i <= 5."
+          },
+          {
+            "line": 6,
+            "text": "do: the body starts with no check."
+          },
+          {
+            "line": 7,
+            "text": "Prints once. A while loop would have printed nothing."
+          },
+          {
+            "line": 8,
+            "text": "i becomes 11."
+          },
+          {
+            "line": 9,
+            "text": "Now the condition is tested: 11 <= 5 is false, so the loop ends. Note the semicolon."
+          },
+          {
+            "line": 10,
+            "text": "Shows the final value of i."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "i": "10"
+              },
+              "note": "i is set to 10.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "Enter the do block. No condition is checked yet.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "The body runs once. Prints i = 10.",
+              "out": "Body ran with i = 10\n"
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "11"
+              },
+              "note": "i++ makes i = 11.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Now check: is 11 <= 5? False, so the loop ends after just one round.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Prints the final value.",
+              "out": "Finished, i = 11\n"
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "i": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Ask the user for an age between 1 and 120. Keep asking until the age is valid, then print it.",
+      "pseudocode": [
+        "START",
+        "DO:",
+        "    PRINT prompt",
+        "    READ age",
+        "WHILE age < 1 OR age > 120",
+        "PRINT age accepted",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Print prompt/]\n  B --> C[/Read age/]\n  C --> D{age < 1 or age > 120?}\n  D -->|Yes, invalid| B\n  D -->|No, valid| E[/Print age accepted/]\n  E --> F([End])",
+      "sample": {
+        "id": "validate-age",
+        "title": "Input validation",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int age;\n    do {\n        cout << \"Enter age (1-120): \";\n        cin >> age;\n    } while (age < 1 || age > 120);\n    cout << \"Age accepted: \" << age << endl;\n    return 0;\n}\n",
+        "stdin": "150 0 21",
+        "expectedOutput": "Enter age (1-120): Enter age (1-120): Enter age (1-120): Age accepted: 21\n",
+        "explanation": [
+          {
+            "line": 7,
+            "text": "The question is asked at least once, because no age exists yet to check."
+          },
+          {
+            "line": 8,
+            "text": "Reads the answer."
+          },
+          {
+            "line": 9,
+            "text": "Repeat while the age is invalid: below 1 OR above 120. With the typed values 150 and 0 the loop repeats, and 21 ends it."
+          },
+          {
+            "line": 10,
+            "text": "Reached only with a valid age."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Menu program: show 1. Say Hello, 2. Say Bye, 3. Exit. Keep repeating until the user chooses 3. For any other number print Invalid choice. Trace it for the inputs 1, 5, 2, 3.",
+      "pseudocode": [
+        "START",
+        "DO:",
+        "    PRINT menu",
+        "    READ choice",
+        "    IF choice = 1 PRINT Hello",
+        "    ELSE IF choice = 2 PRINT Bye",
+        "    ELSE IF choice != 3 PRINT Invalid",
+        "WHILE choice != 3",
+        "PRINT Program ended",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Show menu/]\n  B --> C[/Read choice/]\n  C --> D{choice = 1?}\n  D -->|Yes| E[/Print Hello/]\n  D -->|No| F{choice = 2?}\n  F -->|Yes| G[/Print Bye/]\n  F -->|No| H{choice != 3?}\n  H -->|Yes| I[/Print Invalid/]\n  E --> J{choice != 3?}\n  G --> J\n  I --> J\n  H -->|No| J\n  J -->|Yes| B\n  J -->|No| K[/Print Program ended/]\n  K --> L([End])",
+      "sample": {
+        "id": "menu-loop",
+        "title": "Menu until Exit",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int choice;\n    do {\n        cout << \"1. Say Hello  2. Say Bye  3. Exit: \";\n        cin >> choice;\n        if (choice == 1) {\n            cout << \"Hello!\" << endl;\n        } else if (choice == 2) {\n            cout << \"Bye!\" << endl;\n        } else if (choice != 3) {\n            cout << \"Invalid choice\" << endl;\n        }\n    } while (choice != 3);\n    cout << \"Program ended.\" << endl;\n    return 0;\n}\n",
+        "stdin": "1 5 2 3",
+        "expectedOutput": "1. Say Hello  2. Say Bye  3. Exit: Hello!\n1. Say Hello  2. Say Bye  3. Exit: Invalid choice\n1. Say Hello  2. Say Bye  3. Exit: Bye!\n1. Say Hello  2. Say Bye  3. Exit: Program ended.\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "The menu is printed before the user can choose, so we need do-while."
+          },
+          {
+            "line": 7,
+            "text": "Reads the choice."
+          },
+          {
+            "line": 8,
+            "text": "Choice 1: say Hello."
+          },
+          {
+            "line": 10,
+            "text": "Choice 2: say Bye."
+          },
+          {
+            "line": 12,
+            "text": "Any other number except 3 is invalid. Choice 3 prints nothing here."
+          },
+          {
+            "line": 16,
+            "text": "The loop repeats until the choice is 3. Remember the semicolon."
+          },
+          {
+            "line": 17,
+            "text": "Runs once, after the user has exited."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "choice": "?"
+              },
+              "note": "choice is created.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "First round: the menu is shown.",
+              "out": "1. Say Hello  2. Say Bye  3. Exit: "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "choice": "1"
+              },
+              "note": "cin reads 1.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "choice == 1 is true. Prints Hello!",
+              "out": "Hello!\n"
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Check choice != 3: 1 != 3 is true, so go around again. Menu is shown.",
+              "out": "1. Say Hello  2. Say Bye  3. Exit: "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "choice": "5"
+              },
+              "note": "cin reads 5.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "5 is not 1, not 2, but it is not 3 either: Invalid choice.",
+              "out": "Invalid choice\n"
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Check 5 != 3: true, repeat. Menu is shown.",
+              "out": "1. Say Hello  2. Say Bye  3. Exit: "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "choice": "2"
+              },
+              "note": "cin reads 2.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "choice == 2 is true. Prints Bye!",
+              "out": "Bye!\n"
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Check 2 != 3: true, repeat. Menu is shown.",
+              "out": "1. Say Hello  2. Say Bye  3. Exit: "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "choice": "3"
+              },
+              "note": "cin reads 3.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "No branch prints for 3. The check 3 != 3 is false, so the loop ends.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "Prints the goodbye line.",
+              "out": "Program ended.\n"
+            }
+          ],
+          "types": {
+            "choice": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "for loop",
+      "when": "Count is known. Checks BEFORE the body. Minimum runs: 0",
+      "example": "for (int i = 1; i <= 5; i++) { ... }"
+    },
+    {
+      "way": "while loop",
+      "when": "Count unknown (sentinel, digits). Checks BEFORE the body. Minimum runs: 0",
+      "example": "while (x != -1) { ...; cin >> x; }"
+    },
+    {
+      "way": "do-while loop",
+      "when": "Must run at least once (menu, validation). Checks AFTER the body. Minimum runs: 1",
+      "example": "do { ... } while (choice != 3);"
+    },
+    {
+      "way": "Semicolon rule",
+      "when": "for and while have no semicolon after the header; do-while has one after while(...)",
+      "example": "} while (age < 1 || age > 120);"
+    },
+    {
+      "way": "Input validation pattern",
+      "when": "Repeat the question while the answer is invalid",
+      "example": "do { cin >> n; } while (n <= 0);"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int i = 1;\ndo {\n    cout << i;\n    i++;\n} while (i <= 3)\ncout << \"Done\";",
+      "right": "int i = 1;\ndo {\n    cout << i;\n    i++;\n} while (i <= 3);\ncout << \"Done\";",
+      "error": "expected ';' before 'cout'"
+    },
+    {
+      "wrong": "do {\n    cin >> age;\n} while (age >= 1 && age <= 120);",
+      "right": "do {\n    cin >> age;\n} while (age < 1 || age > 120);",
+      "error": "No compiler error. The condition is reversed: it repeats while the age is VALID. The condition must describe the bad input."
+    },
+    {
+      "wrong": "int i = 1;\ndo {\n    cout << i;\n} while (i <= 3);",
+      "right": "int i = 1;\ndo {\n    cout << i;\n    i++;\n} while (i <= 3);",
+      "error": "No compiler error. i is never updated, so the loop is infinite."
+    },
+    {
+      "wrong": "int choice = 3;\nwhile (choice != 3) {\n    // menu\n}",
+      "right": "int choice;\ndo {\n    // menu\n} while (choice != 3);",
+      "error": "No compiler error. A while loop checks first, so the menu never appears. Use do-while when the body must run once."
+    },
+    {
+      "wrong": "int n = 5;\ndo {\n    n--;\n} while (n > 0);;",
+      "right": "int n = 5;\ndo {\n    n--;\n} while (n > 0);",
+      "error": "No compiler error. The extra second semicolon is just an empty statement. Harmless here, but it shows semicolon habits matter."
+    }
+  ],
+  "examTips": [
+    "do-while always runs the body at least once. This is the number one exam point.",
+    "Write the semicolon after while (condition); at the end.",
+    "For validation the condition describes the INVALID input: while (age < 1 || age > 120).",
+    "Know the table: for/while check before, do-while checks after; minimum runs 0, 0, 1.",
+    "In a trace question write what is printed in every round, including the first round when the condition is already false."
+  ],
+  "romanSummary": [
+    "do-while pehle body chalata hai phir condition check karta hai, is liye body kam az kam ek dafa zaroor chalti hai.",
+    "Menu aur input validation ke liye do-while best hai.",
+    "Aakhri while (condition) ke baad semicolon zaroor lagayein.",
+    "for aur while pehle check karte hain (minimum 0 runs), do-while baad mein check karta hai (minimum 1 run).",
+    "Validation mein condition ghalat input ko describe karti hai, jaise age < 1 || age > 120."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is the minimum number of times a do-while body runs?",
+      "options": [
+        "1",
+        "0",
+        "2",
+        "It depends on the condition"
+      ],
+      "answer": "1",
+      "hint": "The check is at the bottom.",
+      "explanation": "The body runs first and the condition is tested afterwards, so there is always at least one run."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this print?\n\nint i = 5;\ndo {\n    cout << i << \" \";\n    i--;\n} while (i > 5);",
+      "answer": "5",
+      "hint": "The body runs once before any check.",
+      "explanation": "It prints 5, then i is 4 and 4 > 5 is false. The loop ends after one round."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\nint x = 1;\ndo {\n    x *= 2;\n} while (x < 50);\ncout << x;",
+      "answer": "64",
+      "hint": "Double x each round and stop when x is 50 or more.",
+      "explanation": "x is 2, 4, 8, 16, 32, 64. 32 < 50 is true so it doubles again to 64, and 64 < 50 is false."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this print?\n\nint a = 1, b = 0;\ndo {\n    b += a;\n    a++;\n} while (a <= 4);\ncout << b << \" \" << a;",
+      "answer": "10 5",
+      "hint": "b adds a = 1, 2, 3, 4.",
+      "explanation": "b = 1 + 2 + 3 + 4 = 10. The loop stops when a becomes 5."
+    },
+    {
+      "id": "p5",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which loop is the best fit for a menu that must be shown at least once?",
+      "options": [
+        "do-while",
+        "for",
+        "while with a false condition",
+        "none of them"
+      ],
+      "answer": "do-while",
+      "hint": "The menu must appear before the user can choose.",
+      "explanation": "do-while runs the body once before checking, so the menu always appears."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This code does not compile. Fix it.\n\nint i = 1;\ndo {\n    cout << i;\n    i++;\n} while (i <= 3)",
+      "answer": "int i = 1;\ndo {\n    cout << i;\n    i++;\n} while (i <= 3);",
+      "hint": "Look at the very end of the loop.",
+      "explanation": "A do-while must end with a semicolon after while (condition)."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Complete the menu loop so that it stops when the user enters 0.\n\ndo {\n    cin >> choice;\n} while (choice ___ 0);",
+      "answer": "!=",
+      "hint": "Keep repeating while the choice is not 0.",
+      "explanation": "The loop continues while choice != 0 and stops when the user types 0."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that keeps asking for a number until the user enters a positive number (greater than 0), then prints it.",
+      "answer": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    do {\n        cout << \"Enter a positive number: \";\n        cin >> n;\n    } while (n <= 0);\n    cout << \"You entered \" << n << endl;\n    return 0;\n}",
+      "hint": "The condition describes the bad input.",
+      "explanation": "The prompt appears at least once and repeats while n <= 0."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "When does a do-while loop check its condition?",
+      "options": [
+        "After the body",
+        "Before the body",
+        "Never",
+        "Only the first time"
+      ],
+      "answer": "After the body",
+      "hint": "It is a post-test loop.",
+      "explanation": "The body runs first and the condition is tested at the end of each round."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What must follow while (condition) in a do-while loop?",
+      "options": [
+        "A semicolon",
+        "A colon",
+        "Nothing",
+        "A comma"
+      ],
+      "answer": "A semicolon",
+      "hint": "Look at the end of the syntax.",
+      "explanation": "do { ... } while (condition); needs a semicolon."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which statement about the loops is correct?",
+      "options": [
+        "Only do-while is guaranteed to run its body once",
+        "for always runs at least once",
+        "while always runs at least once",
+        "All three run at least once"
+      ],
+      "answer": "Only do-while is guaranteed to run its body once",
+      "hint": "for and while test first.",
+      "explanation": "for and while can run zero times. do-while runs at least once."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which loop fits 'ask for a PIN again until it is correct'?",
+      "options": [
+        "do-while",
+        "for",
+        "None",
+        "while that never runs"
+      ],
+      "answer": "do-while",
+      "hint": "You must ask at least once.",
+      "explanation": "The PIN must be entered once before it can be checked, so do-while fits."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "What is printed by int i = 7; do { cout << i; } while (i < 3);",
+      "options": [
+        "7",
+        "Nothing",
+        "73",
+        "It loops forever"
+      ],
+      "answer": "7",
+      "hint": "The body runs once before the check.",
+      "explanation": "The body prints 7. The check 7 < 3 is false, so the loop ends."
+    }
+  ],
+  "sources": [
+    "The do-while loop",
+    "Post-test (exit-controlled) loops",
+    "Menu and input validation loops",
+    "Comparison of for, while and do-while"
+  ]
+}

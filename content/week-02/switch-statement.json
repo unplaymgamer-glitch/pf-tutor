@@ -1,0 +1,592 @@
+{
+  "slug": "switch-statement",
+  "week": 2,
+  "title": "The switch statement: menus and fixed choices",
+  "defaultView": "visualize",
+  "order": 6,
+  "visuals": [
+    {
+      "kind": "switch",
+      "title": "Day of the week: every case has a break",
+      "min": 1,
+      "max": 8,
+      "value": 3,
+      "cases": [
+        {
+          "value": 1,
+          "text": "Monday",
+          "breaks": true
+        },
+        {
+          "value": 2,
+          "text": "Tuesday",
+          "breaks": true
+        },
+        {
+          "value": 3,
+          "text": "Wednesday",
+          "breaks": true
+        }
+      ],
+      "defaultText": "Invalid day number"
+    },
+    {
+      "kind": "switch",
+      "title": "Membership perks: no break means fall-through",
+      "min": 0,
+      "max": 4,
+      "value": 3,
+      "cases": [
+        {
+          "value": 3,
+          "text": "Gold perk",
+          "breaks": false
+        },
+        {
+          "value": 2,
+          "text": "Silver perk",
+          "breaks": false
+        },
+        {
+          "value": 1,
+          "text": "Bronze perk",
+          "breaks": true
+        }
+      ],
+      "defaultText": "No perk"
+    }
+  ],
+  "goal": "After this you can write a switch menu with case, break and default, explain fall-through, and know when to use if-else-if instead.",
+  "warmup": "At the canteen counter there is a menu board: press 1 for biryani, 2 for karahi, 3 for tea. The cashier does not check ranges or do any maths. She just looks at your number and goes straight to that line of the menu. If your number is not on the board she says 'sorry, not available'. A switch works like this menu board: one value, direct jump to the matching choice.",
+  "definition": "A switch statement picks one block of code by comparing ONE expression with fixed values called cases. The expression must be an integer type or a char (not double, not string). Each case value must be a constant and different from the others. switch tests equality only, so it cannot test ranges like marks >= 50.",
+  "howItWorks": "Press Play, or change the value in the visualizer. The computer evaluates the expression once, finds the case with the same value, and jumps to it. It then runs every statement from there until it meets break or reaches the closing brace. That is why break is important: without it the computer keeps running into the next case. This is called fall-through. If no case matches, the default block runs. default is optional and is usually written last.",
+  "syntax": "switch (expression) {        // int or char only\n    case value1:             // value1 must be a constant\n        statements;\n        break;               // leave the switch\n    case value2:\n        statements;\n        break;\n    case value3:             // no break here: falls into the next case\n    case value4:             // value3 and value4 share these statements\n        statements;\n        break;\n    default:                 // runs when no case matches (optional)\n        statements;\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Read a day number (1 for Monday, 2 for Tuesday, 3 for Wednesday) and print the day name. Print Invalid day number for any other value.",
+      "pseudocode": [
+        "START",
+        "READ day",
+        "SWITCH day",
+        "    CASE 1: PRINT \"Monday\"",
+        "    CASE 2: PRINT \"Tuesday\"",
+        "    CASE 3: PRINT \"Wednesday\"",
+        "    DEFAULT: PRINT \"Invalid day number\"",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read day/]\n  B --> C{day is?}\n  C -->|1| D[/Print Monday/]\n  C -->|2| E[/Print Tuesday/]\n  C -->|3| F[/Print Wednesday/]\n  C -->|other| G[/Print Invalid day number/]\n  D --> H([End])\n  E --> H\n  F --> H\n  G --> H",
+      "sample": {
+        "id": "day-switch",
+        "title": "Day of the week",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int day;\n    cin >> day;\n    switch (day) {\n        case 1:\n            cout << \"Monday\" << endl;\n            break;\n        case 2:\n            cout << \"Tuesday\" << endl;\n            break;\n        case 3:\n            cout << \"Wednesday\" << endl;\n            break;\n        default:\n            cout << \"Invalid day number\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "3",
+        "expectedOutput": "Wednesday\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "day is an int, so it is allowed in a switch."
+          },
+          {
+            "line": 6,
+            "text": "Reads the day number."
+          },
+          {
+            "line": 7,
+            "text": "The switch looks at the value of day once and jumps to the matching case."
+          },
+          {
+            "line": 8,
+            "text": "The case label. day == 1 jumps here."
+          },
+          {
+            "line": 10,
+            "text": "break leaves the switch so the next case does not run."
+          },
+          {
+            "line": 14,
+            "text": "day == 3 jumps here."
+          },
+          {
+            "line": 17,
+            "text": "default runs when no case matches. It needs no break because it is last."
+          },
+          {
+            "line": 20,
+            "text": "After the switch the program continues here."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "day": "3"
+              },
+              "note": "cin reads 3 into day.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "switch looks at day, which is 3, and searches the case labels.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "case 3 matches. The computer jumps straight here and skips cases 1 and 2.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "Prints Wednesday.",
+              "out": "Wednesday\n"
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "break leaves the switch. default is skipped.",
+              "out": ""
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "day": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Make a simple calculator. Read a number, an operator (+, -, * or /) and another number, then print the result. Print Error: division by zero if you divide by 0, and Unknown operator for any other symbol.",
+      "pseudocode": [
+        "START",
+        "READ a, op, b",
+        "SWITCH op",
+        "    CASE '+': PRINT a + b",
+        "    CASE '-': PRINT a - b",
+        "    CASE '*': PRINT a * b",
+        "    CASE '/': IF b != 0 PRINT a / b ELSE PRINT error",
+        "    DEFAULT: PRINT \"Unknown operator\"",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read a, op, b/]\n  B --> C{op is?}\n  C -->|\"+\"| D[/Print a + b/]\n  C -->|\"-\"| E[/Print a - b/]\n  C -->|\"*\"| F[/Print a * b/]\n  C -->|\"/\"| G{b != 0?}\n  C -->|other| H[/Print Unknown operator/]\n  G -->|Yes| I[/Print a / b/]\n  G -->|No| J[/Print Error/]\n  D --> K([End])\n  E --> K\n  F --> K\n  H --> K\n  I --> K\n  J --> K",
+      "sample": {
+        "id": "calculator-switch",
+        "title": "Simple calculator",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    double a, b;\n    char op;\n    cin >> a >> op >> b;\n    switch (op) {\n        case '+': cout << \"Result = \" << a + b << endl; break;\n        case '-': cout << \"Result = \" << a - b << endl; break;\n        case '*': cout << \"Result = \" << a * b << endl; break;\n        case '/':\n            if (b != 0) {\n                cout << \"Result = \" << a / b << endl;\n            } else {\n                cout << \"Error: division by zero\" << endl;\n            }\n            break;\n        default:\n            cout << \"Unknown operator\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "8 * 3",
+        "expectedOutput": "Result = 24\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "The numbers are double so that 7 / 2 can give 3.5. The operator is a char."
+          },
+          {
+            "line": 7,
+            "text": "Reads number, operator, number in one go."
+          },
+          {
+            "line": 8,
+            "text": "switch on a char is allowed. Each case label uses single quotes."
+          },
+          {
+            "line": 9,
+            "text": "If op is '+', print the sum and break out of the switch."
+          },
+          {
+            "line": 11,
+            "text": "Multiplication case."
+          },
+          {
+            "line": 13,
+            "text": "Division needs an if inside the case, to avoid dividing by zero."
+          },
+          {
+            "line": 18,
+            "text": "break so that default does not run after division."
+          },
+          {
+            "line": 19,
+            "text": "Any other symbol ends up here."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "a": "8",
+                "op": "'*'",
+                "b": "3"
+              },
+              "note": "cin reads 8, then the symbol *, then 3.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "switch looks at op, which is '*'.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "case '*' matches. 8 * 3 = 24. Prints the result, then break leaves the switch.",
+              "out": "Result = 24\n"
+            },
+            {
+              "line": 22,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "a": "double",
+            "op": "char",
+            "b": "double"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Read one letter and use a switch to tell whether it is a vowel (a, e, i, o, u in lower or upper case) or a consonant. Use grouped cases.",
+      "pseudocode": [
+        "START",
+        "READ ch",
+        "SWITCH ch",
+        "    CASE a, A, e, E, i, I, o, O, u, U: PRINT \"Vowel\"",
+        "    DEFAULT: PRINT \"Consonant\"",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read ch/]\n  B --> C{ch is a vowel letter?}\n  C -->|Yes| D[/Print Vowel/]\n  C -->|No| E[/Print Consonant/]\n  D --> F([End])\n  E --> F",
+      "sample": {
+        "id": "vowel-switch",
+        "title": "Vowel or consonant (grouped cases)",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    char ch;\n    cin >> ch;\n    switch (ch) {\n        case 'a':\n        case 'A':\n        case 'e':\n        case 'E':\n        case 'i':\n        case 'I':\n        case 'o':\n        case 'O':\n        case 'u':\n        case 'U':\n            cout << \"Vowel\" << endl;\n            break;\n        default:\n            cout << \"Consonant\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "E",
+        "expectedOutput": "Vowel\n",
+        "explanation": [
+          {
+            "line": 7,
+            "text": "The ch value is compared with each case label."
+          },
+          {
+            "line": 9,
+            "text": "Capital and small letters are different characters, so both need a case."
+          },
+          {
+            "line": 8,
+            "text": "Cases with no statements and no break fall through to the next one. That is useful here: all ten labels share one action."
+          },
+          {
+            "line": 18,
+            "text": "The shared action for every vowel."
+          },
+          {
+            "line": 19,
+            "text": "break stops the computer from running default."
+          },
+          {
+            "line": 21,
+            "text": "Any other letter is a consonant (we assume the user types a letter)."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "ch": "'E'"
+              },
+              "note": "cin reads the letter E into ch.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "switch looks at ch, which is 'E'.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "case 'E' matches. It has no statements, so the computer falls through the following labels.",
+              "out": ""
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "It reaches the shared statement and prints Vowel.",
+              "out": "Vowel\n"
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "break leaves the switch. default is skipped.",
+              "out": ""
+            },
+            {
+              "line": 23,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "ch": "char"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "switch with a break in every case",
+      "when": "Normal menus: exactly one action per choice",
+      "example": "case 1: cout << \"One\"; break;"
+    },
+    {
+      "way": "Grouped cases (intentional fall-through)",
+      "when": "Several values share one action",
+      "example": "case 'a': case 'e': cout << \"Vowel\"; break;"
+    },
+    {
+      "way": "switch with default",
+      "when": "You want a message when no case matches",
+      "example": "default: cout << \"Invalid choice\";"
+    },
+    {
+      "way": "switch on a char",
+      "when": "Menu letters or operators",
+      "example": "switch (op) { case '+': ... }"
+    },
+    {
+      "way": "if-else-if ladder instead",
+      "when": "Ranges, decimals, strings, or complex conditions",
+      "example": "if (marks >= 50) ... else ..."
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "switch (n) { case 1: cout << \"A\"; case 2: cout << \"B\"; case 3: cout << \"C\"; }",
+      "right": "switch (n) { case 1: cout << \"A\"; break; case 2: cout << \"B\"; break; case 3: cout << \"C\"; }",
+      "error": "No compiler error. Without break the program falls through: with n = 2 it prints BC instead of B."
+    },
+    {
+      "wrong": "double q = 2;\nswitch (q) { case 1: cout << \"A\"; break; }",
+      "right": "int q = 2;\nswitch (q) { case 1: cout << \"A\"; break; }",
+      "error": "switch quantity not an integer"
+    },
+    {
+      "wrong": "switch (marks) { case marks >= 50: cout << \"Pass\"; break; }",
+      "right": "if (marks >= 50) cout << \"Pass\";",
+      "error": "the value of 'marks' is not usable in a constant expression (switch cannot test ranges; use if)"
+    },
+    {
+      "wrong": "switch (n) { case 1: cout << \"A\"; break; case 1: cout << \"B\"; break; }",
+      "right": "switch (n) { case 1: cout << \"A\"; break; case 2: cout << \"B\"; break; }",
+      "error": "duplicate case value"
+    }
+  ],
+  "examTips": [
+    "switch works only with int and char expressions. double, float and string are not allowed.",
+    "Always write break at the end of every case unless you want fall-through on purpose.",
+    "default runs when no case matches. It is optional but good practice.",
+    "case values must be constants and must be unique. 'a' and 'A' are different.",
+    "switch checks equality only. Use if-else-if for ranges such as marks >= 50."
+  ],
+  "romanSummary": [
+    "switch ek variable ki exact value dekh kar sahi case chunta hai.",
+    "switch mein sirf int ya char chalta hai, float ya string nahi.",
+    "Har case ke baad break lagana zaroori hai, warna agle case mein fall through ho jata hai.",
+    "Jab koi case match na kare to default chalta hai.",
+    "Ranges jaise marks >= 50 switch se check nahi hoti, un ke liye if-else-if use karo."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which type can NOT be used as the switch expression?",
+      "options": [
+        "double",
+        "int",
+        "char",
+        "short"
+      ],
+      "answer": "double",
+      "hint": "switch compares exact whole values.",
+      "explanation": "switch works with integer types and char. double values are not exact, so they are not allowed."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint n = 2;\nswitch (n) {\n    case 1: cout << \"A\";\n    case 2: cout << \"B\";\n    case 3: cout << \"C\"; break;\n    default: cout << \"D\";\n}",
+      "answer": "BC",
+      "hint": "There is no break after case 2.",
+      "explanation": "The computer jumps to case 2 and prints B. With no break it falls into case 3 and prints C, then break stops it. default is never reached."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nchar g = 'B';\nswitch (g) {\n    case 'A': cout << \"Top\"; break;\n    case 'B':\n    case 'C': cout << \"Pass\"; break;\n    default: cout << \"Fail\";\n}",
+      "answer": "Pass",
+      "hint": "case 'B' has no statements of its own.",
+      "explanation": "case 'B' matches and falls through to the statements of case 'C', which print Pass, then break ends the switch."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "With choice = 1 this menu prints both One and Two. Fix it.\n\nswitch (choice) {\n    case 1: cout << \"One\";\n    case 2: cout << \"Two\"; break;\n}",
+      "answer": "switch (choice) {\n    case 1: cout << \"One\"; break;\n    case 2: cout << \"Two\"; break;\n}",
+      "hint": "What stops the computer from running into the next case?",
+      "explanation": "Add break after case 1, otherwise execution falls through into case 2."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank: the block that runs when no case matches is called ______.",
+      "answer": "default",
+      "hint": "It is the last label of a switch.",
+      "explanation": "default handles every value that does not match any case."
+    },
+    {
+      "id": "p6",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Which problem is best solved with if-else-if instead of switch?",
+      "options": [
+        "Printing a grade from marks ranges",
+        "Printing a day name from 1 to 7",
+        "Choosing a menu option 1 to 3",
+        "Choosing an operator + - * /"
+      ],
+      "answer": "Printing a grade from marks ranges",
+      "hint": "switch cannot test ranges.",
+      "explanation": "Marks ranges like 85 to 100 need comparison operators, so an if-else-if ladder is the right tool."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Canteen menu: 1 = Biryani Rs 250, 2 = Karahi Rs 800, 3 = Tea Rs 50. Read the choice, print Price: Rs followed by the amount, and print Invalid choice for anything else. Use a switch.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int choice;\n    cin >> choice;\n    switch (choice) {\n        case 1:\n            cout << \"Price: Rs 250\" << endl;\n            break;\n        case 2:\n            cout << \"Price: Rs 800\" << endl;\n            break;\n        case 3:\n            cout << \"Price: Rs 50\" << endl;\n            break;\n        default:\n            cout << \"Invalid choice\" << endl;\n    }\n    return 0;\n}",
+      "hint": "One case per menu number, each ending with break.",
+      "explanation": "A switch on the integer choice with three cases and a default for invalid values."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does break do inside a switch?",
+      "options": [
+        "Leaves the switch",
+        "Restarts the switch",
+        "Stops the whole program",
+        "Skips only the next case"
+      ],
+      "answer": "Leaves the switch",
+      "hint": "It stops fall-through.",
+      "explanation": "break jumps to the first statement after the closing brace of the switch."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "When does the default block run?",
+      "options": [
+        "When no case matches",
+        "Always, first",
+        "When the last case matches",
+        "Only when there is a break"
+      ],
+      "answer": "When no case matches",
+      "hint": "It is the catch-all.",
+      "explanation": "default handles every value not listed as a case."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What happens if you forget break at the end of a case?",
+      "options": [
+        "Execution continues into the next case",
+        "The program does not compile",
+        "The switch ends normally",
+        "Only default runs"
+      ],
+      "answer": "Execution continues into the next case",
+      "hint": "This is called fall-through.",
+      "explanation": "Without break the computer runs the next case statements too, until it meets a break or the end."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which of these is a valid switch case label?",
+      "options": [
+        "case 'A':",
+        "case marks >= 50:",
+        "case 2.5:",
+        "case \"yes\":"
+      ],
+      "answer": "case 'A':",
+      "hint": "Cases are constant whole values or characters.",
+      "explanation": "A char constant is valid. Ranges, decimals and strings are not allowed."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "n = 1. What does switch (n) { case 1: cout << \"X\"; case 2: cout << \"Y\"; break; case 3: cout << \"Z\"; } print?",
+      "options": [
+        "XY",
+        "X",
+        "XYZ",
+        "Y"
+      ],
+      "answer": "XY",
+      "hint": "case 1 has no break.",
+      "explanation": "case 1 prints X, falls into case 2 which prints Y, and break stops there."
+    }
+  ],
+  "sources": [
+    "switch statement",
+    "Selection statements",
+    "Menu driven programs"
+  ]
+}

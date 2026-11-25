@@ -1,0 +1,617 @@
+{
+  "slug": "type-casting",
+  "week": 1,
+  "title": "Type casting: implicit and explicit",
+  "defaultView": "visualize",
+  "order": 10,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "Why (double) total / count gives 3.5",
+      "stages": [
+        {
+          "name": "1. The two values",
+          "detail": "total = 7 and count = 2. Both are int."
+        },
+        {
+          "name": "2. The cast",
+          "detail": "(double) total makes a temporary decimal copy: 7.0. The variable total itself does not change."
+        },
+        {
+          "name": "3. Mixed types",
+          "detail": "7.0 (double) divided by 2 (int). C++ automatically changes the 2 to 2.0."
+        },
+        {
+          "name": "4. Decimal division",
+          "detail": "7.0 / 2.0 = 3.5, stored in the double."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match the expression to its result",
+      "pairs": [
+        {
+          "term": "7 / 2",
+          "meaning": "3 (int / int: the decimal part is dropped)"
+        },
+        {
+          "term": "7 / 2.0",
+          "meaning": "3.5 (one decimal operand makes it a decimal division)"
+        },
+        {
+          "term": "(double) 7 / 2",
+          "meaning": "3.5 (cast first, then divide)"
+        },
+        {
+          "term": "(double)(7 / 2)",
+          "meaning": "3 (cast too late: the division was already done as int)"
+        },
+        {
+          "term": "(int) 9.87",
+          "meaning": "9 (decimal part cut off, no rounding)"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can predict when C++ changes a type by itself, and use (double)x or static_cast<double>(x) to get a decimal answer.",
+  "warmup": "Your exam marks are 78, 85 and 90. The total is 253. If you divide 253 by 3 on paper, you get 84.33. A basic calculator that only knows whole numbers would say 84. Type casting is how you tell C++ to use the decimal calculator.",
+  "definition": "Type casting means converting a value from one data type to another. Implicit conversion happens automatically, for example in 2 + 3.5 the int 2 becomes the double 2.0. Explicit casting is when you ask for the change yourself, with (double) x or static_cast<double>(x). A cast creates a converted copy; it does not change the original variable.",
+  "howItWorks": "Step through the trace and watch the types in the boxes. Remember the rule: when an int meets a double, the int is promoted to double and the answer is double. But if int meets int the answer stays int, even if you store it in a double afterwards. So cast BEFORE the division, not after.",
+  "syntax": "double d = (double) x;               // C-style cast\ndouble d = static_cast<double>(x);   // C++ style cast (preferred)\nint n = (int) 9.87;                  // 9: decimal part is cut off, not rounded\n\ndouble avg = (double) total / count; // cast total FIRST, then divide\ndouble bad = (double)(total / count);// too late: int division already done\n\nchar c = 'A';\nint code = c;                        // 65 (implicit: char to int)\nchar next = static_cast<char>(c + 1);// 'B'",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "total is 7 and count is 2. Compute total / count three ways (no cast, C-style cast, static_cast) and also cast 9.87 to int. Print all four values.",
+      "pseudocode": [
+        "START",
+        "SET total = 7, count = 2",
+        "avg1 = total / count (int division)",
+        "avg2 = (double) total / count",
+        "avg3 = static_cast<double>(total) / count",
+        "n = (int) 9.87",
+        "PRINT avg1, avg2, avg3, n",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[total = 7, count = 2]\n  B --> C[avg1 = total / count]\n  C --> D[\"avg2 = (double) total / count\"]\n  D --> E[\"avg3 = static_cast of total / count\"]\n  E --> F[\"n = (int) 9.87\"]\n  F --> G[/Print all four/]\n  G --> H([End])",
+      "sample": {
+        "id": "explicit-casts",
+        "title": "Integer division, then casts",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int total = 7, count = 2;\n    double avg1 = total / count;\n    double avg2 = (double) total / count;\n    double avg3 = static_cast<double>(total) / count;\n    int n = (int) 9.87;\n    cout << avg1 << \" \" << avg2 << \" \" << avg3 << \" \" << n << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "3 3.5 3.5 9\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Two int variables: 7 and 2."
+          },
+          {
+            "line": 6,
+            "text": "total / count is int / int, so the result is the int 3. Only then is 3 stored in the double (as 3.0). The decimal part is already lost."
+          },
+          {
+            "line": 7,
+            "text": "(double) total turns a copy of total into 7.0 first. Then 7.0 / 2 is a decimal division: 3.5."
+          },
+          {
+            "line": 8,
+            "text": "The same idea written the C++ way: static_cast<double>(total)."
+          },
+          {
+            "line": 9,
+            "text": "Casting a decimal to int cuts off the decimal part (no rounding): 9.87 becomes 9."
+          },
+          {
+            "line": 10,
+            "text": "A double with no decimal part prints as 3."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "total": "7",
+                "count": "2"
+              },
+              "note": "total = 7 and count = 2, both int.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "avg1": "3"
+              },
+              "note": "int / int = 3 (the .5 is lost). Then 3 is stored in a double, so avg1 holds 3.0.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "avg2": "3.5"
+              },
+              "note": "(double) total makes a temporary 7.0. A double divided by an int is done as double: 3.5.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "avg3": "3.5"
+              },
+              "note": "static_cast<double>(total) does the same as the C-style cast: 3.5.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "n": "9"
+              },
+              "note": "The cast (int) cuts off .87. No rounding happens, so n = 9.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "A double 3.0 is printed as 3; 3.5 stays 3.5.",
+              "out": "3 3.5 3.5 9\n"
+            }
+          ],
+          "types": {
+            "total": "int",
+            "count": "int",
+            "avg1": "double",
+            "avg2": "double",
+            "avg3": "double",
+            "n": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Show that a char is stored as a number. Print the code of A, the letter after A, the value of ch + 1, the letter two after A, and the code of the letter a.",
+      "pseudocode": [
+        "START",
+        "SET ch = 'A'",
+        "code = ch",
+        "next = ch + 1 (as a char)",
+        "PRINT code, next, ch + 1",
+        "PRINT (char)(ch + 2)",
+        "PRINT code of 'a'",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"ch = A\"]\n  B --> C[code = ch]\n  C --> D[next = ch + 1]\n  D --> E[/Print code, next, ch + 1/]\n  E --> F[/Print C and the code of a/]\n  F --> G([End])",
+      "sample": {
+        "id": "char-and-int",
+        "title": "char and int are friends",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    char ch = 'A';\n    int code = ch;\n    char next = ch + 1;\n    cout << code << endl;\n    cout << next << endl;\n    cout << ch + 1 << endl;\n    cout << (char)(ch + 2) << endl;\n    cout << static_cast<int>('a') << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "65\nB\n66\nC\n97\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A char stores a letter. Inside the computer, 'A' is the number 65."
+          },
+          {
+            "line": 6,
+            "text": "Storing a char in an int converts it automatically. code is 65."
+          },
+          {
+            "line": 7,
+            "text": "ch + 1 is 66. Storing it back into a char makes the letter 'B'."
+          },
+          {
+            "line": 8,
+            "text": "Prints the number 65."
+          },
+          {
+            "line": 9,
+            "text": "A char variable prints as a letter: B."
+          },
+          {
+            "line": 10,
+            "text": "ch + 1 is an int (66), so cout prints a number, not a letter."
+          },
+          {
+            "line": 11,
+            "text": "The cast turns 67 back into a char, so it prints C."
+          },
+          {
+            "line": 12,
+            "text": "Casting the letter 'a' to int shows its code: 97."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "ch": "'A'"
+              },
+              "note": "ch holds the letter A (code 65).",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "code": "65"
+              },
+              "note": "Implicit conversion: the char becomes the int 65.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "next": "'B'"
+              },
+              "note": "ch + 1 = 66, stored in a char, so it is the letter B.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "code is an int, so it prints 65.",
+              "out": "65\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "next is a char, so it prints the letter.",
+              "out": "B\n"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "ch + 1 is an int expression, so it prints 66.",
+              "out": "66\n"
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Cast 67 to char: the letter C.",
+              "out": "C\n"
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "The code of 'a' is 97.",
+              "out": "97\n"
+            }
+          ],
+          "types": {
+            "ch": "char",
+            "code": "int",
+            "next": "char"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "A student has marks 78, 85 and 90 (all int). Find the average correctly. Show what goes wrong if you do not cast.",
+      "pseudocode": [
+        "START",
+        "SET m1 = 78, m2 = 85, m3 = 90",
+        "sum = m1 + m2 + m3",
+        "wrong = sum / 3",
+        "right = (double) sum / 3",
+        "PRINT wrong",
+        "PRINT right",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[m1 = 78, m2 = 85, m3 = 90]\n  B --> C[sum = m1 + m2 + m3]\n  C --> D[wrong = sum / 3]\n  D --> E[\"right = (double) sum / 3\"]\n  E --> F[/Print wrong and right/]\n  F --> G([End])",
+      "sample": {
+        "id": "average-marks",
+        "title": "Average of three marks",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int m1 = 78, m2 = 85, m3 = 90;\n    int sum = m1 + m2 + m3;\n    double wrong = sum / 3;\n    double right = static_cast<double>(sum) / 3;\n    cout << \"wrong = \" << wrong << endl;\n    cout << \"right = \" << right << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "wrong = 84\nright = 84.3333\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Marks in three subjects."
+          },
+          {
+            "line": 6,
+            "text": "The sum of three ints is an int: 253."
+          },
+          {
+            "line": 7,
+            "text": "253 / 3 is int / int, so the answer is cut to 84 before it goes into the double."
+          },
+          {
+            "line": 8,
+            "text": "The cast makes a decimal copy of sum first, so the division is done in double: 84.3333."
+          },
+          {
+            "line": 9,
+            "text": "Prints the wrong (cut) average."
+          },
+          {
+            "line": 10,
+            "text": "Prints the correct average. cout shows 6 digits by default."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "m1": "78",
+                "m2": "85",
+                "m3": "90"
+              },
+              "note": "Three marks are stored.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "sum": "253"
+              },
+              "note": "78 + 85 + 90 = 253.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "wrong": "84"
+              },
+              "note": "253 / 3 as int division is 84. Stored in a double: 84.0.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "right": "84.3333"
+              },
+              "note": "static_cast<double>(sum) is 253.0, and 253.0 / 3 = 84.3333... (shown to 6 digits)",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Print the wrong average.",
+              "out": "wrong = 84\n"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Print the correct average (cout shows about 6 digits).",
+              "out": "right = 84.3333\n"
+            }
+          ],
+          "types": {
+            "m1": "int",
+            "m2": "int",
+            "m3": "int",
+            "sum": "int",
+            "wrong": "double",
+            "right": "double"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Implicit (automatic)",
+      "when": "C++ changes the type itself, usually int to double or char to int",
+      "example": "double d = 5;   // 5.0"
+    },
+    {
+      "way": "(double) x",
+      "when": "C-style explicit cast (old style, still common in notes)",
+      "example": "(double) total / count"
+    },
+    {
+      "way": "static_cast<double>(x)",
+      "when": "C++ style explicit cast (preferred, easy to search for)",
+      "example": "static_cast<double>(total) / count"
+    },
+    {
+      "way": "int n = 9.87;",
+      "when": "Decimal into int: the decimal part is cut off silently",
+      "example": "n becomes 9"
+    },
+    {
+      "way": "int code = ch;",
+      "when": "char to int: you get the character code",
+      "example": "'A' gives 65"
+    },
+    {
+      "way": "(char)(c + 1)",
+      "when": "Turn a number back into a letter",
+      "example": "(char)(65 + 1)   // 'B'"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "double avg = (double)(sum / 3);",
+      "right": "double avg = (double) sum / 3;",
+      "error": "No error, but the answer is wrong: sum / 3 is already int division, so the cast is too late."
+    },
+    {
+      "wrong": "double d = static_cast<double> x;",
+      "right": "double d = static_cast<double>(x);",
+      "error": "expected '(' before 'x' (static_cast needs brackets around the value)"
+    },
+    {
+      "wrong": "double avg = total / count;   // total = 7, count = 2",
+      "right": "double avg = static_cast<double>(total) / count;",
+      "error": "No error, but avg is 3, not 3.5. Storing in a double does not rescue int division."
+    },
+    {
+      "wrong": "int n = (int) 9.87;   // student expects 10",
+      "right": "int n = (int) (9.87 + 0.5);",
+      "error": "No error. Casting cuts the decimal part (9). It does not round."
+    }
+  ],
+  "examTips": [
+    "int / int is always int. Putting the answer in a double does not bring the decimals back.",
+    "Cast one operand BEFORE the division: (double) a / b, not (double)(a / b).",
+    "Casting to int cuts off the decimal part. It does not round: (int) 9.99 is 9.",
+    "A cast gives a converted copy. The original variable keeps its own type and value.",
+    "Know both styles: (double) x and static_cast<double>(x). Exams may use either."
+  ],
+  "romanSummary": [
+    "Type casting ka matlab ek data type ko doosre type mein badalna.",
+    "Implicit conversion automatic hoti hai, jaise 2 + 3.5 mein int 2 double ban jata hai.",
+    "Explicit casting khud likhni parti hai: (double) x ya static_cast<double>(x).",
+    "int / int ka jawab int hi hota hai, isliye division se PEHLE cast karo: (double) total / count.",
+    "(int) 9.87 ka jawab 9 hai, round nahi hota, decimal hissa kat jata hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is the value of 7 / 2.0?",
+      "options": [
+        "3",
+        "3.5",
+        "4",
+        "Error"
+      ],
+      "answer": "3.5",
+      "hint": "One operand is a decimal.",
+      "explanation": "int / double is done as double, so the answer is 3.5."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this print?\n\ncout << (int) 9.87;",
+      "answer": "9",
+      "hint": "Does the cast round?",
+      "explanation": "Casting to int cuts the decimal part, so 9.87 becomes 9."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\nint a = 7, b = 2;\ncout << a / b << \" \" << (double) a / b << \" \" << (double)(a / b);",
+      "answer": "3 3.5 3",
+      "hint": "Which cast happens before the division?",
+      "explanation": "Checked on a real run: int division is 3; casting a first gives 3.5; casting after the division gives 3 (shown as 3)."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\nchar ch = 'A';\ncout << ch + 1 << \" \" << (char)(ch + 2);",
+      "answer": "66 C",
+      "hint": "ch + 1 is an int expression.",
+      "explanation": "ch + 1 is the int 66. (char)(ch + 2) turns 67 back into the letter C."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "A student wants 3.5 but gets 3. Fix the code:\n\nint a = 7, b = 2;\ndouble r = (double)(a / b);",
+      "answer": "double r = (double) a / b;",
+      "hint": "Where is the cast placed relative to the division?",
+      "explanation": "The division happens inside the bracket as int / int. Move the cast to a so the division becomes a decimal division."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank so the result is a decimal: double avg = ______<double>(sum) / 3;",
+      "answer": "static_cast",
+      "hint": "It is the C++ style cast.",
+      "explanation": "static_cast<double>(sum) converts a copy of sum to double before dividing."
+    },
+    {
+      "id": "p7",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this print?\n\nint sum = 253;\ndouble wrong = sum / 3;\ndouble right = static_cast<double>(sum) / 3;\ncout << wrong << \" \" << right;",
+      "answer": "84 84.3333",
+      "hint": "cout shows about 6 digits in total for a double.",
+      "explanation": "wrong is 253 / 3 = 84 by int division. right is 253.0 / 3 = 84.3333 (six significant digits)."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does implicit conversion mean?",
+      "options": [
+        "The programmer writes a cast",
+        "C++ changes the type automatically",
+        "The compiler gives an error",
+        "The value is rounded"
+      ],
+      "answer": "C++ changes the type automatically",
+      "hint": "Implicit means it happens by itself.",
+      "explanation": "In 2 + 3.5 the int is promoted to double automatically."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is (int) 3.99?",
+      "options": [
+        "4",
+        "3",
+        "3.9",
+        "Error"
+      ],
+      "answer": "3",
+      "hint": "Does casting round?",
+      "explanation": "The decimal part is cut off, so it is 3."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which line gives avg = 3.5 when total = 7 and count = 2?",
+      "options": [
+        "double avg = total / count;",
+        "double avg = (double)(total / count);",
+        "double avg = (double) total / count;",
+        "int avg = total / count;"
+      ],
+      "answer": "double avg = (double) total / count;",
+      "hint": "Cast before dividing.",
+      "explanation": "Only this line makes a decimal division. The others divide two ints first."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is the correct C++ style cast of x to double?",
+      "options": [
+        "double(x)()",
+        "static_cast<double>(x)",
+        "cast<double> x",
+        "(x)double"
+      ],
+      "answer": "static_cast<double>(x)",
+      "hint": "It has a keyword, angle brackets and round brackets.",
+      "explanation": "static_cast<type>(value) is the C++ style cast."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "char c = 'A'; cout << c + 1; prints:",
+      "options": [
+        "B",
+        "66",
+        "A1",
+        "Error"
+      ],
+      "answer": "66",
+      "hint": "c + 1 is an int expression.",
+      "explanation": "'A' is 65, so c + 1 is the int 66, and cout prints it as a number."
+    }
+  ],
+  "sources": [
+    "Type casting",
+    "Implicit and explicit conversion",
+    "Operators"
+  ]
+}

@@ -1,0 +1,678 @@
+{
+  "slug": "what-is-a-pointer",
+  "week": 9,
+  "title": "What is a pointer? A variable that holds an address",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "memory",
+      "title": "Two pointers and two variables (made-up addresses)",
+      "cells": [
+        {
+          "name": "a",
+          "type": "int",
+          "addr": "0x1000"
+        },
+        {
+          "name": "b",
+          "type": "int",
+          "addr": "0x1004"
+        },
+        {
+          "name": "p",
+          "type": "int*",
+          "addr": "0x1008"
+        },
+        {
+          "name": "q",
+          "type": "int*",
+          "addr": "0x1010"
+        }
+      ],
+      "steps": [
+        {
+          "code": "int a = 10, b = 20;",
+          "note": "a and b are ordinary boxes holding numbers.",
+          "values": {
+            "a": "10",
+            "b": "20"
+          },
+          "points": {}
+        },
+        {
+          "code": "int *p = &a;",
+          "note": "p is a pointer. It stores the ADDRESS of a (0x1000), shown here as an arrow.",
+          "values": {
+            "p": "0x1000"
+          },
+          "points": {
+            "p": "a"
+          }
+        },
+        {
+          "code": "int *q = p;",
+          "note": "q copies the address inside p. Both arrows point to a.",
+          "values": {
+            "q": "0x1000"
+          },
+          "points": {
+            "p": "a",
+            "q": "a"
+          }
+        },
+        {
+          "code": "*q = *q + 5;",
+          "note": "*q means the box q points to, which is a. a becomes 15.",
+          "values": {
+            "a": "15"
+          },
+          "points": {
+            "p": "a",
+            "q": "a"
+          }
+        },
+        {
+          "code": "p = &b;",
+          "note": "p now stores the address of b. Its arrow moves. q is not affected.",
+          "values": {
+            "p": "0x1004"
+          },
+          "points": {
+            "p": "b",
+            "q": "a"
+          }
+        },
+        {
+          "code": "*p = *p * 2;",
+          "note": "*p is b, so b becomes 40.",
+          "values": {
+            "b": "40"
+          },
+          "points": {
+            "p": "b",
+            "q": "a"
+          }
+        },
+        {
+          "code": "cout << a << \" \" << b << \" \" << *p << \" \" << *q;",
+          "note": "Prints 15 40 40 15.",
+          "values": {},
+          "points": {
+            "p": "b",
+            "q": "a"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "The * and & symbols",
+      "pairs": [
+        {
+          "term": "int *p;",
+          "meaning": "Declaration: p is a pointer to an int"
+        },
+        {
+          "term": "p = &x;",
+          "meaning": "& gives the address of x, so p now points to x"
+        },
+        {
+          "term": "cout << *p;",
+          "meaning": "Dereference: read the value p points to"
+        },
+        {
+          "term": "*p = 75;",
+          "meaning": "Dereference on the left: write 75 into the box p points to"
+        },
+        {
+          "term": "int *p = nullptr;",
+          "meaning": "A pointer that points to nothing (safe start)"
+        },
+        {
+          "term": "int *a, b;",
+          "meaning": "Only a is a pointer; b is an ordinary int"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can declare a pointer, make it point to a variable with &, read and change that variable through the pointer with *, and avoid uninitialised and null pointer mistakes.",
+  "warmup": "In your phone, a contact does not contain the person. It contains a phone number. When you tap it, you reach the person. A pointer is the same idea: the pointer does not contain the data, it contains the address where the data lives. Following the address to reach the data is called dereferencing. Think of a friend who gives you a slip of paper with his house number. The slip is the pointer, the house is the variable.",
+  "definition": "A pointer is a variable that stores the memory address of another variable. You declare it with a * and the type of thing it points to: int *p; means p can hold the address of an int. p = &x; stores the address of x in p, so p points to x. In an expression, *p means the value stored at the address inside p (dereferencing). You can read through it (cout << *p) and write through it (*p = 75;). Writing through the pointer changes the original variable.",
+  "howItWorks": "Follow the arrows in the memory picture. First the ordinary variables get values. Then a pointer is created and given an address with &. An arrow shows what it points to. Be careful with the star because it has TWO meanings. In a declaration, int *p; the * only says that p is a pointer. In an expression, *p means go to that address and use what is there. Every pointer has a type: int * points to an int, double * to a double, char * to a char, and the type must match the variable. An uninitialised pointer contains a random address, so using it can crash the program. So start a pointer with an address or with nullptr (this means no address). Before dereferencing a pointer that might be null, check it: if (p != nullptr). Also remember that int *a, b; makes only a a pointer. Write int *a, *b; for two pointers. Finally, a pointer is itself a variable with its own address, and you can point it somewhere else later: p = &b; moves the arrow but changes no variable.",
+  "syntax": "int num = 50;\nint *ptr;          // ptr can hold the address of an int\nptr = &num;        // ptr points to num\n\ncout << num;       // 50, the value\ncout << *ptr;      // 50, the value ptr points to (dereference)\n*ptr = 75;         // changes num to 75 through the pointer\n\nint *safe = nullptr;      // points to nothing\nif (safe != nullptr) {    // always check before using\n    cout << *safe;\n}\n\ndouble d = 2.5;\ndouble *pd = &d;   // the pointer type matches the variable type",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Create int num = 50 and a pointer ptr to it. Print num and *ptr, check that ptr holds the address of num, then change num to 75 through the pointer.",
+      "pseudocode": [
+        "START",
+        "CREATE num = 50",
+        "CREATE pointer ptr",
+        "SET ptr = address of num",
+        "PRINT num and *ptr",
+        "PRINT whether ptr equals &num",
+        "SET *ptr = 75",
+        "PRINT num",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"num = 50\"]\n  B --> C[\"int *ptr; ptr = &num\"]\n  C --> D[/\"Print num and *ptr\"/]\n  D --> E[/\"Print ptr == &num\"/]\n  E --> F[\"*ptr = 75\"]\n  F --> G[/\"Print num\"/]\n  G --> H([End])",
+      "sample": {
+        "id": "pointer-basic",
+        "title": "Declare a pointer, point it, read and write through it",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int num = 50;\n    int *ptr;\n    ptr = &num;\n    cout << \"num  = \" << num << endl;\n    cout << \"*ptr = \" << *ptr << endl;\n    cout << \"ptr holds the address of num? \" << (ptr == &num) << endl;\n    *ptr = 75;\n    cout << \"num after *ptr = 75: \" << num << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "num  = 50\n*ptr = 50\nptr holds the address of num? 1\nnum after *ptr = 75: 75\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "The * in a declaration means: ptr is a pointer to an int. It will hold an address."
+          },
+          {
+            "line": 7,
+            "text": "Store the address of num in ptr. Now ptr points to num."
+          },
+          {
+            "line": 9,
+            "text": "In an expression, *ptr means the value at the address in ptr (dereference). Here it reads 50."
+          },
+          {
+            "line": 10,
+            "text": "Comparing two addresses. The answer 1 means true."
+          },
+          {
+            "line": 11,
+            "text": "Writing through the pointer changes num itself."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "num": "50"
+              },
+              "note": "num is an ordinary int box holding 50.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "ptr": "? (not set yet)"
+              },
+              "note": "ptr is a pointer to int. Right now it holds no meaningful address, so we must not use it yet.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "ptr": "&num"
+              },
+              "note": "&num is the address of num. Now ptr holds that address, so we say ptr points to num.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Prints the value in num.",
+              "out": "num  = 50\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "*ptr means: go to the address stored in ptr and read the value there. That is num's value, 50.",
+              "out": "*ptr = 50\n"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "ptr contains exactly the address of num, so the comparison is true. true prints as 1.",
+              "out": "ptr holds the address of num? 1\n"
+            },
+            {
+              "line": 11,
+              "vars": {
+                "num": "75"
+              },
+              "note": "*ptr on the left side means: store 75 in the box ptr points to. That box is num, so num becomes 75.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "num was changed through the pointer.",
+              "out": "num after *ptr = 75: 75\n"
+            }
+          ],
+          "types": {
+            "num": "int",
+            "ptr": "int*"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Use a double pointer and a char pointer to change price and grade, then show how a null pointer is tested before use.",
+      "pseudocode": [
+        "START",
+        "price = 99.5, grade = 'B'",
+        "pp points to price, pg points to grade",
+        "*pp = *pp + 0.5",
+        "*pg = 'A'",
+        "PRINT price and grade",
+        "q = nullptr",
+        "IF q is nullptr PRINT message ELSE PRINT *q",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"price, grade, pp, pg\"]\n  B --> C[\"*pp = *pp + 0.5; *pg = A\"]\n  C --> D[/\"Print price and grade\"/]\n  D --> E[\"int *q = nullptr\"]\n  E --> F{\"q == nullptr ?\"}\n  F -->|Yes| G[/\"Print q points to nothing\"/]\n  F -->|No| H[/\"Print *q\"/]\n  G --> I([End])\n  H --> I",
+      "sample": {
+        "id": "pointer-types-null",
+        "title": "Pointers of other types and the null pointer",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    double price = 99.5;\n    char grade = 'B';\n    double *pp = &price;\n    char *pg = &grade;\n    *pp = *pp + 0.5;\n    *pg = 'A';\n    cout << \"price = \" << price << endl;\n    cout << \"grade = \" << grade << endl;\n    int *q = nullptr;\n    if (q == nullptr) {\n        cout << \"q points to nothing\" << endl;\n    } else {\n        cout << \"q points to \" << *q << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "price = 100\ngrade = A\nq points to nothing\n",
+        "explanation": [
+          {
+            "line": 7,
+            "text": "A pointer must match the type it points to: double * for a double."
+          },
+          {
+            "line": 8,
+            "text": "char * for a char."
+          },
+          {
+            "line": 9,
+            "text": "Read 99.5 through pp, add 0.5, write 100 back into price."
+          },
+          {
+            "line": 10,
+            "text": "Writes 'A' into grade through pg."
+          },
+          {
+            "line": 13,
+            "text": "nullptr means: this pointer points to nothing yet. It is a safe starting value."
+          },
+          {
+            "line": 14,
+            "text": "Always check before using a pointer that might be null."
+          },
+          {
+            "line": 17,
+            "text": "This line is skipped. Dereferencing a null pointer would crash the program."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Exam style: trace the program and write what it prints. Two pointers first point to the same variable, then one of them is moved.",
+      "pseudocode": [
+        "START",
+        "a = 10, b = 20",
+        "p = &a",
+        "q = p (q also points to a)",
+        "*q = *q + 5",
+        "p = &b",
+        "*p = *p * 2",
+        "PRINT a, b, *p, *q",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"a = 10, b = 20\"]\n  B --> C[\"p = &a; q = p\"]\n  C --> D[\"*q = *q + 5\"]\n  D --> E[\"p = &b\"]\n  E --> F[\"*p = *p * 2\"]\n  F --> G[/\"Print a, b, *p, *q\"/]\n  G --> H([End])",
+      "sample": {
+        "id": "two-pointers",
+        "title": "Two pointers, one variable",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a = 10, b = 20;\n    int *p = &a;\n    int *q = p;\n    *q = *q + 5;\n    p = &b;\n    *p = *p * 2;\n    cout << a << \" \" << b << \" \" << *p << \" \" << *q << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "15 40 40 15\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "p points to a."
+          },
+          {
+            "line": 7,
+            "text": "The address inside p is copied into q."
+          },
+          {
+            "line": 8,
+            "text": "Changes a (not q!) to 15."
+          },
+          {
+            "line": 9,
+            "text": "Moves p to b. Only p changes, a stays 15."
+          },
+          {
+            "line": 10,
+            "text": "Doubles b: 40."
+          },
+          {
+            "line": 11,
+            "text": "Values: a, b, then what p and q point to."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "a": "10",
+                "b": "20"
+              },
+              "note": "Two ordinary boxes: a = 10 and b = 20.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "p": "&a"
+              },
+              "note": "p points to a.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "q": "&a"
+              },
+              "note": "q receives a COPY of the address stored in p. Now both p and q point to a.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "a": "15"
+              },
+              "note": "*q is a. a was 10, so a becomes 15. p also sees this because it points to the same box.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "p": "&b"
+              },
+              "note": "p now points to b. q still points to a. Changing a pointer does not change any variable.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "b": "40"
+              },
+              "note": "*p is b. 20 x 2 = 40.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "a = 15, b = 40, *p is b = 40, *q is a = 15.",
+              "out": "15 40 40 15\n"
+            }
+          ],
+          "types": {
+            "a": "int",
+            "b": "int",
+            "p": "int*",
+            "q": "int*"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Declare: int *p;",
+      "when": "You need a pointer to an int. The * can touch the type or the name: int* p and int *p are the same.",
+      "example": "int *p;"
+    },
+    {
+      "way": "Declare and set: int *p = &x;",
+      "when": "You already know what it points to. The best habit.",
+      "example": "int x = 5;\nint *p = &x;"
+    },
+    {
+      "way": "Safe empty pointer: int *p = nullptr;",
+      "when": "You do not know the target yet. Check p != nullptr before use.",
+      "example": "int *p = nullptr;"
+    },
+    {
+      "way": "Read through pointer: *p",
+      "when": "You want the value that p points to.",
+      "example": "cout << *p;"
+    },
+    {
+      "way": "Write through pointer: *p = value;",
+      "when": "You want to change the original variable.",
+      "example": "*p = 75;"
+    },
+    {
+      "way": "Other types: double *, char *",
+      "when": "The pointer type must match the variable type.",
+      "example": "double d = 1.5;\ndouble *pd = &d;\nchar c = 'A';\nchar *pc = &c;"
+    },
+    {
+      "way": "Copy a pointer: q = p;",
+      "when": "Make q point to the same variable as p.",
+      "example": "int *q = p;"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int *p = 5;",
+      "right": "int x = 5;\nint *p = &x;",
+      "error": "error: invalid conversion from 'int' to 'int*' [-fpermissive]"
+    },
+    {
+      "wrong": "double d = 2.5;\nint *p = &d;",
+      "right": "double d = 2.5;\ndouble *p = &d;",
+      "error": "error: cannot convert 'double*' to 'int*' in initialization"
+    },
+    {
+      "wrong": "int x = 5;\nint *p;\np = x;",
+      "right": "p = &x;   // do not forget &",
+      "error": "error: invalid conversion from 'int' to 'int*' [-fpermissive]"
+    },
+    {
+      "wrong": "int x = 5;\nint *a, b;\nb = &x;",
+      "right": "int *a, *b;   // each pointer needs its own *\nint x = 5;\na = &x;",
+      "error": "error: invalid conversion from 'int*' to 'int' [-fpermissive]"
+    },
+    {
+      "wrong": "int *p;\n*p = 5;   // p holds a random address",
+      "right": "int x;\nint *p = &x;\n*p = 5;",
+      "error": "The compiler may only give a warning (or nothing). At run time the program can crash because p points to a random place. The fix is to point p at a real variable first."
+    },
+    {
+      "wrong": "int *p = nullptr;\ncout << *p;   // dereferencing null",
+      "right": "if (p != nullptr) {\n    cout << *p;\n}",
+      "error": "It compiles, but crashes when it runs. Never dereference a null pointer: test it first."
+    }
+  ],
+  "examTips": [
+    "Definition to write: a pointer is a variable that stores the address of another variable. Add a tiny example: int *p = &x;",
+    "Know the two meanings of *: in a declaration it means pointer type; in an expression it means the value at the address (dereference). & means address-of.",
+    "When tracing, keep a table of variables. For each pointer write which variable it points to, like p -> a. A change through *p changes the variable it points to.",
+    "Remember: p = &b moves the pointer, *p = 5 changes the value. They are different things.",
+    "Always initialise pointers (with an address or nullptr) and check for nullptr before dereferencing. Examiners like this sentence."
+  ],
+  "romanSummary": [
+    "Pointer aisa variable hai jo kisi doosre variable ka address store karta hai, jaise phone mein contact number store hota hai, banda nahi.",
+    "int *p = &x; likhne se p, x ko point karta hai. &x address deta hai.",
+    "*p (dereference) se us address par pari value milti hai aur *p = 75 likhne se original variable badal jata hai.",
+    "* ke do matlab hain: declaration mein pointer ki alamat, aur expression mein address par pari value.",
+    "Pointer ko hamesha initialize karo, ya nullptr do, aur use karne se pehle check karo ke woh nullptr to nahi."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does a pointer variable store?",
+      "options": [
+        "The address of another variable",
+        "A copy of another variable's value",
+        "The type of a variable",
+        "The size of a variable"
+      ],
+      "answer": "The address of another variable",
+      "hint": "A contact stores a number, not the person.",
+      "explanation": "A pointer holds an address, and following it (with *) reaches the variable."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    int x = 5;\n    int *p = &x;\n    *p = 9;\n    cout << x;\n    return 0;\n}",
+      "answer": "9",
+      "hint": "*p = 9 writes into the box p points to.",
+      "explanation": "p points to x, so *p = 9 changes x to 9."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    int a = 4;\n    int *p = &a;\n    int *q = &a;\n    *p = *p + 1;\n    *q = *q * 2;\n    cout << a;\n    return 0;\n}",
+      "answer": "10",
+      "hint": "Both pointers point to the same variable a.",
+      "explanation": "a starts at 4. Through p it becomes 5. Through q it becomes 5 x 2 = 10."
+    },
+    {
+      "id": "p4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "In int *a, b; which names are pointers?",
+      "options": [
+        "Only a",
+        "Both a and b",
+        "Only b",
+        "Neither"
+      ],
+      "answer": "Only a",
+      "hint": "The * belongs to the name that follows it.",
+      "explanation": "Only a is a pointer. b is a plain int. Write int *a, *b; for two pointers."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill the blank so p points to x:\n\nint x = 7;\nint *p = ____;",
+      "answer": "&x",
+      "hint": "A pointer needs an address.",
+      "explanation": "&x is the address of x."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This line gives a compiler error. Fix it:\n\nint n = 5;\nint *p = n;",
+      "answer": "int *p = &n;",
+      "hint": "p needs an address, not a value.",
+      "explanation": "n is an int value; a pointer needs the address of n, written &n."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "medium",
+      "prompt": "Write a program with int score = 40 and a pointer ptr to it. Add 10 to score only through ptr, then print score.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int score = 40;\n    int *ptr = &score;\n    *ptr = *ptr + 10;\n    cout << score << endl;\n    return 0;\n}",
+      "hint": "Use *ptr on both sides.",
+      "explanation": "*ptr = *ptr + 10 changes score to 50. It prints 50."
+    },
+    {
+      "id": "p8",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print? (four numbers)\n\n#include <iostream>\nusing namespace std;\nint main() {\n    int a = 3, b = 8;\n    int *p = &a;\n    int *q = &b;\n    int *t = p;\n    p = q;\n    q = t;\n    cout << *p << \" \" << *q << \" \" << a << \" \" << b;\n    return 0;\n}",
+      "answer": "8 3 3 8",
+      "hint": "p and q swap targets; a and b never change.",
+      "explanation": "After the swap of pointers p points to b (8) and q points to a (3). a and b are unchanged: 3 and 8."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which line makes ptr point to num?",
+      "options": [
+        "ptr = &num;",
+        "ptr = num;",
+        "*ptr = &num;",
+        "ptr = *num;"
+      ],
+      "answer": "ptr = &num;",
+      "hint": "ptr needs an address.",
+      "explanation": "&num is the address of num, so ptr = &num makes ptr point to it."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "If ptr points to num, what is *ptr?",
+      "options": [
+        "The value of num",
+        "The address of num",
+        "The address of ptr",
+        "Always 0"
+      ],
+      "answer": "The value of num",
+      "hint": "* follows the address.",
+      "explanation": "*ptr is the value stored at the address inside ptr, which is num."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is the safe way to create a pointer that points to nothing yet?",
+      "options": [
+        "int *p = nullptr;",
+        "int *p;",
+        "int *p = 0x1000;",
+        "int *p = -1;"
+      ],
+      "answer": "int *p = nullptr;",
+      "hint": "Choose a value that means no address.",
+      "explanation": "nullptr clearly means points to nothing and can be tested."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "int x = 5; int *p = &x; *p = 8; What is x?",
+      "options": [
+        "8",
+        "5",
+        "The address of x",
+        "13"
+      ],
+      "answer": "8",
+      "hint": "Writing through the pointer changes x.",
+      "explanation": "*p is x itself, so x becomes 8."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Why can using an uninitialised pointer crash the program?",
+      "options": [
+        "It holds a random address that may not belong to the program",
+        "It holds 0 which is a valid address",
+        "Pointers cannot be changed",
+        "It makes the variable 0"
+      ],
+      "answer": "It holds a random address that may not belong to the program",
+      "hint": "What address is inside it?",
+      "explanation": "An uninitialised pointer contains garbage. Dereferencing it touches memory the program may not own."
+    }
+  ],
+  "sources": [
+    "9.2 What is a Pointer?",
+    "Declaring and using a pointer",
+    "Pointer Safety Rules",
+    "Pointer to int, double, char",
+    "Null pointer nullptr"
+  ]
+}

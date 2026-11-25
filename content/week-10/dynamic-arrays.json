@@ -1,0 +1,651 @@
+{
+  "slug": "dynamic-arrays",
+  "week": 10,
+  "title": "Dynamic arrays: size decided at run time",
+  "defaultView": "visualize",
+  "order": 5,
+  "visuals": [
+    {
+      "kind": "array",
+      "title": "A dynamic array is used exactly like a normal array",
+      "mode": "access",
+      "values": [
+        80,
+        65,
+        92,
+        70
+      ]
+    },
+    {
+      "kind": "memory",
+      "title": "int *marks = new int[3]: one pointer, three boxes on the heap",
+      "cells": [
+        {
+          "name": "marks",
+          "type": "int*",
+          "addr": "0x1000"
+        },
+        {
+          "name": "marks[0]",
+          "type": "int",
+          "addr": "0x5000"
+        },
+        {
+          "name": "marks[1]",
+          "type": "int",
+          "addr": "0x5004"
+        },
+        {
+          "name": "marks[2]",
+          "type": "int",
+          "addr": "0x5008"
+        }
+      ],
+      "steps": [
+        {
+          "code": "int *marks = new int[3];",
+          "note": "Three int boxes in a row on the heap. marks stores the address of the first one. The values are not set yet.",
+          "values": {
+            "marks": "0x5000",
+            "marks[0]": "?",
+            "marks[1]": "?",
+            "marks[2]": "?"
+          },
+          "points": {
+            "marks": "marks[0]"
+          }
+        },
+        {
+          "code": "cin >> marks[0];",
+          "note": "The user types 80. marks[0] is the first box.",
+          "values": {
+            "marks[0]": "80"
+          },
+          "points": {
+            "marks": "marks[0]"
+          }
+        },
+        {
+          "code": "cin >> marks[1];",
+          "note": "65 goes to the next box, 4 bytes further.",
+          "values": {
+            "marks[1]": "65"
+          },
+          "points": {
+            "marks": "marks[0]"
+          }
+        },
+        {
+          "code": "cin >> marks[2];",
+          "note": "92 goes to the third box.",
+          "values": {
+            "marks[2]": "92"
+          },
+          "points": {
+            "marks": "marks[0]"
+          }
+        },
+        {
+          "code": "delete[] marks;",
+          "note": "delete[] gives back ALL three boxes at once.",
+          "values": {
+            "marks[0]": "freed",
+            "marks[1]": "freed",
+            "marks[2]": "freed"
+          },
+          "points": {
+            "marks": "marks[0]"
+          }
+        },
+        {
+          "code": "marks = nullptr;",
+          "note": "marks no longer points to the freed memory.",
+          "values": {
+            "marks": "nullptr"
+          },
+          "points": {
+            "marks": ""
+          }
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can create an array whose size the user types at run time, use it like a normal array, free it with delete[], and grow it by copying into a bigger array.",
+  "warmup": "A canteen owner does not know how many students will come to lunch today. A fixed list of 100 plates wastes space, and 20 plates may be too few. A smart owner counts the class first, then lays out exactly that many plates. A dynamic array does the same: it waits until the program knows the size, then allocates exactly that many boxes.",
+  "definition": "A normal array needs its size written in the code, for example int a[10]. A dynamic array gets its size while the program runs: int *a = new int[n]; where n can come from cin. new[] makes n boxes in a row on the heap and returns the address of the first box. You keep it in a pointer. You use a[i] exactly like a normal array. When you are finished you free the whole array with delete[] a; (the brackets are required for arrays).",
+  "howItWorks": "Read the size n first. Then write int *a = new int[n];. The pointer a is a small variable on the stack. The n boxes are on the heap, side by side, so a[0] is the first, a[1] the second, and a[i] means the same as *(a + i). Fill and print the array with ordinary for loops. Always stay inside the range 0 to n-1. At the end free it with delete[] a; and set a = nullptr;. Important pair: new goes with delete, new[] goes with delete[]. Mixing them is undefined behaviour. A heap array cannot grow in place. To make it bigger: (1) allocate a new bigger array, (2) copy the old values, (3) delete[] the old array, (4) make the pointer point to the new array. A two-dimensional dynamic array is only a variation: allocate an array of pointers (int **g = new int*[rows];), then give each row its own int array with new int[cols], and free every row first, then the array of pointers.",
+  "syntax": "int n;\ncin >> n;                    // size known only now\nint *a = new int[n];         // n boxes on the heap, values not set\n\nfor (int i = 0; i < n; i++)\n    cin >> a[i];             // use like a normal array\n\ndelete[] a;                  // free the whole array (brackets!)\na = nullptr;\n\nint *z = new int[n]();       // all elements start at 0\n\n// 2-D variation (array of pointers)\nint **g = new int*[rows];\nfor (int r = 0; r < rows; r++) g[r] = new int[cols];\n// free: delete[] g[r] for every row, then delete[] g;",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Read how many marks the user has, read that many marks into a dynamic array, print their sum, and free the array.",
+      "pseudocode": [
+        "START",
+        "READ n",
+        "marks = new int[n]",
+        "FOR i = 0 to n-1: READ marks[i]",
+        "sum = 0; FOR each i: sum = sum + marks[i]",
+        "PRINT sum",
+        "delete[] marks",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/\"Read n\"/]\n  B --> C[\"marks = new int[n]\"]\n  C --> D[\"i = 0\"]\n  D --> E{\"i < n?\"}\n  E -->|Yes| F[/\"Read marks[i]\"/]\n  F --> G[\"i = i + 1\"]\n  G --> E\n  E -->|No| H[\"sum = 0, add all marks\"]\n  H --> I[/\"Print sum\"/]\n  I --> J[\"delete[] marks\"]\n  J --> K([End])",
+      "sample": {
+        "id": "dyn-array-sum",
+        "title": "Size from the user, fill, sum, free",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cout << \"How many marks? \";\n    cin >> n;\n\n    int *marks = new int[n];\n    for (int i = 0; i < n; i++) {\n        cin >> marks[i];\n    }\n\n    int sum = 0;\n    for (int i = 0; i < n; i++) {\n        sum = sum + marks[i];\n    }\n    cout << \"Sum = \" << sum << endl;\n\n    delete[] marks;\n    marks = nullptr;\n    return 0;\n}\n",
+        "stdin": "3\n80 65 92\n",
+        "graphics": false,
+        "expectedOutput": "How many marks? Sum = 237\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "n will hold the size. We only learn its value when the program runs."
+          },
+          {
+            "line": 9,
+            "text": "new int[n] creates n int boxes in a row on the heap. A normal array int a[n] needs a size known at compile time. This does not."
+          },
+          {
+            "line": 11,
+            "text": "marks[i] works like a normal array element."
+          },
+          {
+            "line": 16,
+            "text": "Adding all elements, the same loop as for an ordinary array."
+          },
+          {
+            "line": 20,
+            "text": "Free the whole array with delete[] (note the brackets)."
+          },
+          {
+            "line": 21,
+            "text": "Avoid a dangling pointer."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {},
+              "note": "main starts. n has no value yet.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "Ask the user for the size.",
+              "out": "How many marks? "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "n": "3"
+              },
+              "note": "The user types 3. Now the program knows the size, but only at run time.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "marks": "-> heap array of 3 ints"
+              },
+              "note": "new int[3] takes 3 int boxes in a row from the heap. marks stores the address of the first one.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "0",
+                "marks[0]": "80"
+              },
+              "note": "First loop, i = 0: read 80 into marks[0]. Indexing works exactly like a normal array.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "1",
+                "marks[1]": "65"
+              },
+              "note": "i = 1: read 65.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "2",
+                "marks[2]": "92"
+              },
+              "note": "i = 2: read 92. The loop ends when i becomes 3.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {
+                "sum": "0"
+              },
+              "note": "A total must start at 0.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "i": "0",
+                "sum": "80"
+              },
+              "note": "Add marks[0]: 0 + 80.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "i": "1",
+                "sum": "145"
+              },
+              "note": "Add marks[1]: 80 + 65.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "i": "2",
+                "sum": "237"
+              },
+              "note": "Add marks[2]: 145 + 92.",
+              "out": ""
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "Print the total.",
+              "out": "Sum = 237\n"
+            },
+            {
+              "line": 20,
+              "vars": {
+                "marks": "freed"
+              },
+              "note": "delete[] gives back the WHOLE array, all 3 boxes. Brackets are required for arrays.",
+              "out": ""
+            },
+            {
+              "line": 21,
+              "vars": {
+                "marks": "nullptr"
+              },
+              "note": "Make the pointer safe.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "n": "int",
+            "marks": "int*",
+            "i": "int",
+            "sum": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read n. Make a dynamic array whose element i holds (i+1) squared. Print the elements on one line, then print the largest.",
+      "pseudocode": [
+        "START",
+        "READ n",
+        "sq = new int[n]",
+        "FOR each i: sq[i] = (i+1)*(i+1)",
+        "PRINT all elements with spaces",
+        "big = sq[0]; FOR i = 1 to n-1: IF sq[i] > big THEN big = sq[i]",
+        "PRINT big",
+        "delete[] sq",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/\"Read n\"/]\n  B --> C[\"sq = new int[n]\"]\n  C --> D[\"sq[i] = (i+1)*(i+1) for each i\"]\n  D --> E[/\"Print all elements\"/]\n  E --> F[\"big = sq[0]\"]\n  F --> G{\"Next sq[i] > big?\"}\n  G -->|Yes| H[\"big = sq[i]\"]\n  H --> G\n  G -->|No more| I[/\"Print big\"/]\n  I --> J[\"delete[] sq\"]\n  J --> K([End])",
+      "sample": {
+        "id": "dyn-array-squares",
+        "title": "Fill by a rule, print with pointer style, find the largest",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    int *sq = new int[n];\n    for (int i = 0; i < n; i++) {\n        sq[i] = (i + 1) * (i + 1);\n    }\n\n    for (int i = 0; i < n; i++) {\n        cout << *(sq + i);\n        if (i < n - 1) {\n            cout << \" \";\n        }\n    }\n    cout << endl;\n\n    int big = sq[0];\n    for (int i = 1; i < n; i++) {\n        if (sq[i] > big) {\n            big = sq[i];\n        }\n    }\n    cout << \"Largest = \" << big << endl;\n\n    delete[] sq;\n    sq = nullptr;\n    return 0;\n}\n",
+        "stdin": "5\n",
+        "graphics": false,
+        "expectedOutput": "1 4 9 16 25\nLargest = 25\n",
+        "explanation": [
+          {
+            "line": 8,
+            "text": "Five int boxes (when n is 5). Their values are not set yet."
+          },
+          {
+            "line": 10,
+            "text": "Element i gets (i+1) squared: 1, 4, 9, 16, 25."
+          },
+          {
+            "line": 14,
+            "text": "*(sq + i) means exactly the same as sq[i]. It is the pointer way to read element i."
+          },
+          {
+            "line": 15,
+            "text": "Print a space between numbers but not after the last one."
+          },
+          {
+            "line": 21,
+            "text": "Start with the first element as the largest so far."
+          },
+          {
+            "line": 23,
+            "text": "Same largest-element logic as for a normal array."
+          },
+          {
+            "line": 29,
+            "text": "One delete[] frees all n boxes."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "An array of 3 numbers (10, 20, 30) is full. Write code that makes it twice as big without losing the numbers, adds 40, 50, 60, prints everything, and frees the memory correctly.",
+      "pseudocode": [
+        "START",
+        "a = new int[3]; fill 10 20 30",
+        "bigger = new int[6]",
+        "copy a[0..2] into bigger",
+        "delete[] a",
+        "a = bigger; size = 6",
+        "a[3..5] = 40 50 60",
+        "PRINT size and all elements",
+        "delete[] a",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"a = new int[3], fill 10 20 30\"]\n  B --> C[\"bigger = new int[6]\"]\n  C --> D[\"Copy a[0..2] into bigger\"]\n  D --> E[\"delete[] a\"]\n  E --> F[\"a = bigger, size = 6\"]\n  F --> G[\"Fill a[3..5] with 40 50 60\"]\n  G --> H[/\"Print size and elements\"/]\n  H --> I[\"delete[] a\"]\n  I --> J([End])",
+      "sample": {
+        "id": "dyn-array-resize",
+        "title": "Growing an array: new bigger array, copy, delete the old one",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int size = 3;\n    int *a = new int[size];\n    for (int i = 0; i < size; i++) {\n        a[i] = (i + 1) * 10;\n    }\n\n    int *bigger = new int[size * 2];\n    for (int i = 0; i < size; i++) {\n        bigger[i] = a[i];\n    }\n    delete[] a;\n    a = bigger;\n    bigger = nullptr;\n    size = size * 2;\n\n    for (int i = 3; i < size; i++) {\n        a[i] = (i + 1) * 10;\n    }\n\n    cout << \"Size = \" << size << endl;\n    for (int i = 0; i < size; i++) {\n        cout << \"a[\" << i << \"] = \" << a[i] << endl;\n    }\n\n    delete[] a;\n    a = nullptr;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Size = 6\na[0] = 10\na[1] = 20\na[2] = 30\na[3] = 40\na[4] = 50\na[5] = 60\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "The array starts with room for 3 numbers."
+          },
+          {
+            "line": 11,
+            "text": "A heap array cannot grow in place. So we make a NEW array twice as big."
+          },
+          {
+            "line": 13,
+            "text": "Copy every old value into the new array."
+          },
+          {
+            "line": 15,
+            "text": "The old array is no longer needed: free it."
+          },
+          {
+            "line": 16,
+            "text": "a now points to the big array. bigger and a hold the same address."
+          },
+          {
+            "line": 17,
+            "text": "Only a should own the array now."
+          },
+          {
+            "line": 18,
+            "text": "Keep the size variable in step with the real size, 6."
+          },
+          {
+            "line": 20,
+            "text": "Fill only the new slots, indexes 3, 4 and 5."
+          },
+          {
+            "line": 29,
+            "text": "Finally free the array that a points to. There is exactly one delete[] for each new[]."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "new int[n];",
+      "when": "The usual form. Values are NOT set (garbage).",
+      "example": "int *a = new int[n];"
+    },
+    {
+      "way": "new int[n]();",
+      "when": "You want every element to start at 0.",
+      "example": "int *a = new int[n]();"
+    },
+    {
+      "way": "new int[3]{1, 2, 3}; (C++11)",
+      "when": "A fixed small size with starting values.",
+      "example": "int *a = new int[3]{1, 2, 3};"
+    },
+    {
+      "way": "a[i] or *(a + i)",
+      "when": "Both read element i. Use whichever is clearer.",
+      "example": "cout << a[2] << *(a + 2);"
+    },
+    {
+      "way": "Resize: new bigger array + copy + delete[] old",
+      "when": "The array is full and more room is needed.",
+      "example": "int *b = new int[2 * n];\nfor (int i = 0; i < n; i++) b[i] = a[i];\ndelete[] a;\na = b;"
+    },
+    {
+      "way": "2-D dynamic array (array of pointers)",
+      "when": "A table whose rows and columns are known only at run time. Only a brief variation.",
+      "example": "int **g = new int*[rows];\nfor (int r = 0; r < rows; r++) g[r] = new int[cols];\n// use g[r][c]; free each g[r] with delete[], then delete[] g"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int *a = new int[5];\ndelete a;      // missing []",
+      "right": "int *a = new int[5];\ndelete[] a;",
+      "error": "No compiler message in most cases. new[] must be paired with delete[]. Plain delete on an array is undefined behaviour: it may leak, corrupt memory or crash."
+    },
+    {
+      "wrong": "int *a = new int[5];\n// ... use a ...\n// forgot delete[] a;",
+      "right": "int *a = new int[5];\n// ... use a ...\ndelete[] a;\na = nullptr;",
+      "error": "No compiler message. All 5 boxes stay allocated until the program ends: a memory leak."
+    },
+    {
+      "wrong": "int *a = new int[3];\nfor (int i = 0; i <= 3; i++) a[i] = i;",
+      "right": "int *a = new int[3];\nfor (int i = 0; i < 3; i++) a[i] = i;",
+      "error": "No compiler message. a[3] is outside the array (valid indexes are 0 to 2). The write damages other memory: undefined behaviour, maybe a crash later."
+    },
+    {
+      "wrong": "int n;\ncin >> n;\nint a[n];   // size from user on the stack",
+      "right": "int n;\ncin >> n;\nint *a = new int[n];\n// ... delete[] a;",
+      "error": "Standard C++ needs a compile-time size for a normal array. Some compilers accept this as an extension but others reject it, so for exams and portable code use new int[n]."
+    },
+    {
+      "wrong": "int *bigger = new int[6];\ndelete[] a;\na = bigger;\n// forgot to copy the old values first",
+      "right": "int *bigger = new int[6];\nfor (int i = 0; i < 3; i++) bigger[i] = a[i];\ndelete[] a;\na = bigger;",
+      "error": "No compiler message. The new array holds garbage and the old values are gone. Always copy BEFORE you delete[] the old array."
+    }
+  ],
+  "examTips": [
+    "The key pair: new[] with delete[]. Write delete[] a; with brackets and say why.",
+    "A dynamic array is used exactly like a normal array: a[i], loops from 0 to n-1.",
+    "To resize: allocate bigger, copy, delete[] old, repoint. Write the four steps in this order.",
+    "Say why we use it: the size is known only at run time (the user types n).",
+    "Never run past the end: the last valid index is n-1."
+  ],
+  "romanSummary": [
+    "Dynamic array ka size program chalte waqt tay hota hai: int *a = new int[n]; jahan n user se cin se aata hai.",
+    "Use bilkul normal array ki tarah karte hain: a[i], aur loop 0 se n-1 tak chalta hai.",
+    "Kaam khatam hone par delete[] a; likhna zaroori hai (brackets ke saath), phir a = nullptr;",
+    "new[] ke saath delete[] aur new ke saath delete use hota hai. Dono mix karna ghalat hai.",
+    "Array bara karna ho to naya bara array banao, purani values copy karo, purana delete[] karo aur pointer naye ki taraf kar do."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which statement frees the dynamic array int *a = new int[10];?",
+      "options": [
+        "delete[] a;",
+        "delete a;",
+        "free(a[]);",
+        "a = nullptr;"
+      ],
+      "answer": "delete[] a;",
+      "hint": "Arrays need brackets.",
+      "explanation": "new[] is always paired with delete[]."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "When is the size in new int[n] decided?",
+      "options": [
+        "At run time",
+        "At compile time only",
+        "Never",
+        "When the program is installed"
+      ],
+      "answer": "At run time",
+      "hint": "n can come from cin.",
+      "explanation": "That is the whole point of a dynamic array: n may be typed by the user."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int n = 4;\n    int *a = new int[n];\n    for (int i = 0; i < n; i++) {\n        a[i] = i * 2;\n    }\n    cout << a[3] << endl;\n    delete[] a;\n    return 0;\n}\n",
+      "answer": "6",
+      "hint": "a[3] = 3 * 2.",
+      "explanation": "The loop stores 0, 2, 4, 6. a[3] is the fourth element, 6."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int n = 5;\n    int *a = new int[n];\n    for (int i = 0; i < n; i++) {\n        a[i] = i + 1;\n    }\n    cout << *(a + 2) + a[4] << endl;\n    delete[] a;\n    return 0;\n}\n",
+      "answer": "8",
+      "hint": "*(a + 2) is the same as a[2].",
+      "explanation": "The array is 1 2 3 4 5. *(a + 2) is 3 and a[4] is 5, so the sum is 8."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Find the bug:\n\nint *a = new int[5];\na[0] = 1;\ndelete a;",
+      "answer": "delete a; must be delete[] a; because a was created with new[].",
+      "hint": "Look at how the memory was allocated.",
+      "explanation": "new int[5] needs delete[]. Plain delete is for a single new int."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill the blank to free the array:\n\nint *a = new int[n];\n______ a;",
+      "answer": "delete[]",
+      "hint": "Brackets are part of the answer.",
+      "explanation": "delete[] a; gives back all n boxes."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that reads n, reads n integers into a dynamic array, prints the largest one, and frees the array.",
+      "answer": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    int *a = new int[n];\n    for (int i = 0; i < n; i++) {\n        cin >> a[i];\n    }\n    int big = a[0];\n    for (int i = 1; i < n; i++) {\n        if (a[i] > big) {\n            big = a[i];\n        }\n    }\n    cout << big << endl;\n    delete[] a;\n    a = nullptr;\n    return 0;\n}",
+      "hint": "Read n, new int[n], loop to read, loop to find the largest, delete[].",
+      "explanation": "Same steps as with a normal array, plus new int[n] at the start and delete[] at the end."
+    },
+    {
+      "id": "p8",
+      "type": "bug",
+      "difficulty": "hard",
+      "prompt": "This loop is meant to fill all 3 elements but it has an off-by-one error:\n\nint *a = new int[3];\nfor (int i = 0; i <= 3; i++) a[i] = i;",
+      "answer": "Use i < 3. a[3] does not exist; valid indexes are 0, 1, 2.",
+      "hint": "How many elements does the loop visit?",
+      "explanation": "<= 3 visits indexes 0, 1, 2, 3 which is four elements. The last write is outside the array."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is the main advantage of a dynamic array?",
+      "options": [
+        "Its size can be decided while the program runs",
+        "It uses no memory",
+        "It never needs delete",
+        "It is always faster"
+      ],
+      "answer": "Its size can be decided while the program runs",
+      "hint": "Think of cin >> n.",
+      "explanation": "A normal array needs a compile-time size. A dynamic array does not."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which pair is correct?",
+      "options": [
+        "new int[n] with delete[]",
+        "new int[n] with delete",
+        "new int with delete[]",
+        "new with free"
+      ],
+      "answer": "new int[n] with delete[]",
+      "hint": "Brackets match brackets.",
+      "explanation": "Arrays use new[] and delete[]. Single boxes use new and delete."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "p points to a dynamic array of n ints. What is the last valid index?",
+      "options": [
+        "n - 1",
+        "n",
+        "n + 1",
+        "0"
+      ],
+      "answer": "n - 1",
+      "hint": "Indexes start at 0.",
+      "explanation": "Valid indexes are 0 to n-1."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "To grow a heap array from 3 to 6 elements you should:",
+      "options": [
+        "Allocate a bigger array, copy, delete[] the old one, repoint",
+        "Just write a[5]",
+        "Call delete and keep using it",
+        "Change n only"
+      ],
+      "answer": "Allocate a bigger array, copy, delete[] the old one, repoint",
+      "hint": "Heap arrays cannot stretch.",
+      "explanation": "Changing n does not add memory. You need a new bigger block."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "What does *(a + 2) mean when a is a dynamic int array?",
+      "options": [
+        "The same as a[2]",
+        "The address of a[2]",
+        "a plus 2 added to every element",
+        "The size of the array"
+      ],
+      "answer": "The same as a[2]",
+      "hint": "Pointer arithmetic from Week 9.",
+      "explanation": "a + 2 is the address of the third element, and * reads it."
+    }
+  ],
+  "sources": [
+    "Dynamic arrays",
+    "new[] and delete[]",
+    "Dynamic array of user-chosen size",
+    "Resizing by copying",
+    "Dynamic 2-D array (brief)"
+  ]
+}

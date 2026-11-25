@@ -1,0 +1,1086 @@
+{
+  "slug": "function-types",
+  "week": 7,
+  "title": "Types of functions: built-in, user-defined, with and without return value",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Which kind of function is it?",
+      "pairs": [
+        {
+          "term": "sqrt(81)",
+          "meaning": "Built-in (library) function from <cmath>. Returns 9."
+        },
+        {
+          "term": "toupper('a')",
+          "meaning": "Built-in function from <cctype>. Returns the capital letter."
+        },
+        {
+          "term": "void printLine()",
+          "meaning": "User-defined, no parameters, returns nothing."
+        },
+        {
+          "term": "void showSquare(int n)",
+          "meaning": "User-defined, has a parameter, returns nothing."
+        },
+        {
+          "term": "int readMarks()",
+          "meaning": "User-defined, no parameters, returns an int."
+        },
+        {
+          "term": "double average(int a, int b, int c)",
+          "meaning": "User-defined, has parameters, returns a double."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Built-in functions and their headers",
+      "pairs": [
+        {
+          "term": "pow(2, 3) in <cmath>",
+          "meaning": "2 raised to the power 3 = 8"
+        },
+        {
+          "term": "abs(-7) in <cstdlib>",
+          "meaning": "The positive value of -7 = 7"
+        },
+        {
+          "term": "rand() in <cstdlib>",
+          "meaning": "A random whole number"
+        },
+        {
+          "term": "ceil(4.2) in <cmath>",
+          "meaning": "Rounds up to 5"
+        },
+        {
+          "term": "floor(4.8) in <cmath>",
+          "meaning": "Rounds down to 4"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can separate built-in (library) functions from user-defined ones, write all four combinations (with or without parameters, with or without a return value), and explain what the return statement does and where it ends a function.",
+  "warmup": "At a mobile shop you can buy a ready-made SIM, or ask the shopkeeper to make a custom package for you. Ready-made things are quick to use: you just ask for them. Custom things you must set up yourself. Functions are the same. Some are ready-made and shipped with C++ (built-in). Others you write yourself (user-defined). Also, some workers give you something back (a receipt: return value) and some only do a job (sweeping the floor: no return value).",
+  "definition": "Built-in (library) functions are already written by C++. You add the right header with #include and call them. Examples: sqrt, pow, ceil, floor from <cmath>; abs and rand from <cstdlib>; toupper from <cctype>. User-defined functions are written by you for your own program, such as printLine() or average(). A function may return a value (its return type is int, double, char...) or return nothing (its return type is void). A function may also take parameters (inputs) or none. So there are four combinations: no parameters and no return value, parameters and no return value, no parameters and a return value, parameters and a return value. The return statement ends the function immediately and sends the value back.",
+  "howItWorks": "A built-in function works exactly like a user-defined one: you call it, it runs, it returns a value. The only difference is who wrote it. Look at the trace and its call stack: while sqrt(81) runs, it sits on top of main(), then it disappears when it returns 9. For your own functions, decide two questions. 1) Does the function need information from the caller? Then give it parameters. 2) Does the caller need an answer back? Then give it a return type and use return. If the function only prints something or does a job, use void. Important rule: return ends the function at once. Any statement after a reached return in that path is never run. A function with a return type other than void must return a value on every path. A void function does not use return with a value (it may use a plain return; to leave early).",
+  "syntax": "// Built-in: include the header, then just call\n#include <cmath>\ndouble r = sqrt(25);            // r = 5\n\n// User-defined, four combinations\nvoid printLine()            { /* no input, no answer */ }\nvoid showSquare(int n)      { /* input, no answer */ }\nint  readMarks()            { /* no input */ return 0; }   // answer\ndouble average(int a, int b) { return (a + b) / 2.0; }    // input and answer",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Use the built-in functions sqrt, pow, abs, ceil, floor and toupper to print 9, 1024, 15, 5 4 and the capital letter A.",
+      "pseudocode": [
+        "START",
+        "PRINT sqrt(81)",
+        "PRINT pow(2, 10)",
+        "PRINT abs(-15)",
+        "PRINT ceil(4.2) and floor(4.8)",
+        "letter = toupper('a')",
+        "PRINT letter",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Call sqrt(81)\"]\n  B --> C[/Print 9/]\n  C --> D[\"Call pow(2, 10)\"]\n  D --> E[/Print 1024/]\n  E --> F[\"Call abs(-15), ceil, floor\"]\n  F --> G[/Print 15 and 5 4/]\n  G --> H[\"letter = toupper('a')\"]\n  H --> I[/Print A/]\n  I --> J([End])",
+      "sample": {
+        "id": "builtin-functions",
+        "title": "Using built-in library functions",
+        "code": "#include <iostream>\n#include <cmath>\n#include <cstdlib>\n#include <cctype>\nusing namespace std;\n\nint main() {\n    cout << sqrt(81) << endl;\n    cout << pow(2, 10) << endl;\n    cout << abs(-15) << endl;\n    cout << ceil(4.2) << \" \" << floor(4.8) << endl;\n    char letter = toupper('a');\n    cout << letter << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "9\n1024\n15\n5 4\nA\n",
+        "explanation": [
+          {
+            "line": 2,
+            "text": "<cmath> holds the maths functions: sqrt, pow, ceil, floor."
+          },
+          {
+            "line": 3,
+            "text": "<cstdlib> holds abs for integers and rand."
+          },
+          {
+            "line": 4,
+            "text": "<cctype> holds the character functions such as toupper."
+          },
+          {
+            "line": 8,
+            "text": "sqrt returns the square root. Nobody wrote it for us here: it is already inside the library."
+          },
+          {
+            "line": 9,
+            "text": "pow(base, power) returns 2 to the power 10 = 1024."
+          },
+          {
+            "line": 10,
+            "text": "abs removes the minus sign of an integer."
+          },
+          {
+            "line": 11,
+            "text": "ceil rounds UP to 5. floor rounds DOWN to 4."
+          },
+          {
+            "line": 12,
+            "text": "toupper receives a character and returns its capital letter. We keep the answer in a char so it prints as a letter."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Program starts. We call functions that other programmers already wrote.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "sqrt(81) is a call to a library function. It returns 9, and cout prints it.",
+              "out": "9\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sqrt(81)",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "pow(2, 10) returns 1024.",
+              "out": "1024\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "pow(2, 10)",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "abs(-15) returns 15.",
+              "out": "15\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "abs(-15)",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "ceil(4.2) returns 5 and floor(4.8) returns 4.",
+              "out": "5 4\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "ceil(4.2)",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {
+                "letter": "A"
+              },
+              "note": "toupper('a') returns 'A', which is stored in letter.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "letter": "A"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Prints the letter.",
+              "out": "A\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "letter": "A"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "End of main.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "letter": "A"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "letter": "char"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Write four user-defined functions: one with no parameters and no return value, one with a parameter and no return value, one with no parameters that returns a value (reads the marks), and one with parameters that returns a value (average of three marks). Call all of them from main. Input: 72.",
+      "pseudocode": [
+        "START",
+        "CALL printLine",
+        "CALL showSquare(6)",
+        "marks = readMarks()",
+        "PRINT marks",
+        "PRINT average(70, 85, 90)",
+        "CALL printLine",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Call printLine]\n  B --> C[Call showSquare 6]\n  C --> D[\"marks = readMarks()\"]\n  D --> E[/Print Marks/]\n  E --> F[\"Call average(70, 85, 90)\"]\n  F --> G[/Print Average/]\n  G --> H[Call printLine]\n  H --> I([End])",
+      "sample": {
+        "id": "four-combinations",
+        "title": "The four combinations of functions",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid printLine() {\n    cout << \"--------\" << endl;\n}\n\nvoid showSquare(int n) {\n    cout << n << \" squared is \" << n * n << endl;\n}\n\nint readMarks() {\n    int m;\n    cin >> m;\n    return m;\n}\n\ndouble average(int a, int b, int c) {\n    return (a + b + c) / 3.0;\n}\n\nint main() {\n    printLine();\n    showSquare(6);\n    int marks = readMarks();\n    cout << \"Marks = \" << marks << endl;\n    cout << \"Average = \" << average(70, 85, 90) << endl;\n    printLine();\n    return 0;\n}\n",
+        "stdin": "72",
+        "expectedOutput": "--------\n6 squared is 36\nMarks = 72\nAverage = 81.6667\n--------\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "Type 1: no parameters, no return value (void). It just does a job."
+          },
+          {
+            "line": 8,
+            "text": "Type 2: has a parameter, returns nothing. It receives n and prints."
+          },
+          {
+            "line": 12,
+            "text": "Type 3: no parameters, but returns a value. It reads input and hands the number back."
+          },
+          {
+            "line": 15,
+            "text": "This sends the value of m back to whoever called readMarks."
+          },
+          {
+            "line": 18,
+            "text": "Type 4: has parameters AND returns a value. It returns a double because an average can have decimals."
+          },
+          {
+            "line": 19,
+            "text": "3.0 (not 3) forces decimal division, so the answer keeps its fraction."
+          },
+          {
+            "line": 23,
+            "text": "A void function is called as a complete statement."
+          },
+          {
+            "line": 25,
+            "text": "A value-returning function is usually used where its answer is needed: here the answer is stored in marks."
+          },
+          {
+            "line": 27,
+            "text": "The returned 81.6667 is printed. cout shows 6 digits by default."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 22,
+              "vars": {},
+              "note": "Program starts.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 23,
+              "vars": {},
+              "note": "Call printLine(). No input, no answer.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "printLine()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "printLine prints a line, then ends.",
+              "out": "--------\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "printLine()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 24,
+              "vars": {
+                "n": "6"
+              },
+              "note": "Call showSquare(6). The value 6 is copied into n.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "showSquare(n)",
+                  "vars": {
+                    "n": "6"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Prints 6 squared is 36. It returns nothing.",
+              "out": "6 squared is 36\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "showSquare(n)",
+                  "vars": {
+                    "n": "6"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 25,
+              "vars": {
+                "m": "?"
+              },
+              "note": "Call readMarks(). A local box m is created inside the function.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "readMarks()",
+                  "vars": {
+                    "m": "?"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {
+                "m": "72"
+              },
+              "note": "cin reads 72 into m (the function's own variable).",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "readMarks()",
+                  "vars": {
+                    "m": "72"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "return sends 72 back to main and readMarks ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "readMarks()",
+                  "vars": {
+                    "m": "72"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 25,
+              "vars": {
+                "marks": "72"
+              },
+              "note": "The call is replaced by 72, which is stored in marks.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "72"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 26,
+              "vars": {},
+              "note": "Prints the marks.",
+              "out": "Marks = 72\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "72"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 27,
+              "vars": {
+                "a": "70",
+                "b": "85",
+                "c": "90"
+              },
+              "note": "Call average(70, 85, 90). Three values are copied into a, b and c.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "72"
+                  }
+                },
+                {
+                  "fn": "average(a, b, c)",
+                  "vars": {
+                    "a": "70",
+                    "b": "85",
+                    "c": "90"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "(70 + 85 + 90) / 3.0 = 81.6667. It is returned to main.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "72"
+                  }
+                },
+                {
+                  "fn": "average(a, b, c)",
+                  "vars": {
+                    "a": "70",
+                    "b": "85",
+                    "c": "90"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 27,
+              "vars": {},
+              "note": "The call is replaced by 81.6667 and cout prints it.",
+              "out": "Average = 81.6667\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "72"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 28,
+              "vars": {},
+              "note": "Call printLine() once more: the same function, used again.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "72"
+                  }
+                },
+                {
+                  "fn": "printLine()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "Prints the line again.",
+              "out": "--------\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "72"
+                  }
+                },
+                {
+                  "fn": "printLine()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 29,
+              "vars": {},
+              "note": "main ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "72"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "n": "int",
+            "m": "int",
+            "marks": "int",
+            "a": "int",
+            "b": "int",
+            "c": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "What is the output of this program? Explain why \"not positive\" is not printed for test(5) and why it appears BEFORE the 0.",
+      "pseudocode": [
+        "START",
+        "CALL test(5): n > 0, return 1 (function ends)",
+        "PRINT 1",
+        "CALL test(-2): n > 0 is false",
+        "  PRINT not positive",
+        "  return 0",
+        "PRINT 0",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Call test(n)\"]\n  B --> C{n > 0?}\n  C -->|Yes| D[return 1]\n  C -->|No| E[/Print not positive/]\n  E --> F[return 0]\n  D --> G[/Print returned value/]\n  F --> G\n  G --> H([End])",
+      "sample": {
+        "id": "return-ends-function",
+        "title": "Where does return stop the function?",
+        "code": "#include <iostream>\nusing namespace std;\n\nint test(int n) {\n    if (n > 0) {\n        return 1;\n    }\n    cout << \"not positive\" << endl;\n    return 0;\n}\n\nint main() {\n    cout << test(5) << endl;\n    cout << test(-2) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "1\nnot positive\n0\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "test returns an int: 1 for positive numbers, 0 otherwise."
+          },
+          {
+            "line": 5,
+            "text": "Is the number positive?"
+          },
+          {
+            "line": 6,
+            "text": "If yes, return 1 at once. The function ENDS here: the two lines below never run for positive n."
+          },
+          {
+            "line": 8,
+            "text": "Reached only when n is not positive, because the return above already ended the function otherwise."
+          },
+          {
+            "line": 9,
+            "text": "Returned for zero and negative numbers."
+          },
+          {
+            "line": 13,
+            "text": "First call: the answer 1 is printed."
+          },
+          {
+            "line": 14,
+            "text": "Second call: the function prints its own message first, then 0 is returned and printed by main."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Program starts.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {
+                "n": "5"
+              },
+              "note": "main must know the value of test(5) before printing. It calls test with n = 5.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "test(n)",
+                  "vars": {
+                    "n": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "Is 5 > 0? Yes.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "test(n)",
+                  "vars": {
+                    "n": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "return 1 ends the function right now. The cout inside test is skipped.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "test(n)",
+                  "vars": {
+                    "n": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "The call is replaced by 1. main prints it.",
+              "out": "1\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {
+                "n": "-2"
+              },
+              "note": "Second call with n = -2.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "test(n)",
+                  "vars": {
+                    "n": "-2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "Is -2 > 0? No. Skip the block.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "test(n)",
+                  "vars": {
+                    "n": "-2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "The function prints its own message. This happens BEFORE main prints anything.",
+              "out": "not positive\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "test(n)",
+                  "vars": {
+                    "n": "-2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "return 0 ends the function.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "test(n)",
+                  "vars": {
+                    "n": "-2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "The call is replaced by 0 and main prints it.",
+              "out": "0\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "main ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            }
+          ],
+          "types": {
+            "n": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "No parameters, no return value",
+      "when": "A fixed job such as printing a line or a menu",
+      "example": "void printLine() { cout << \"-----\" << endl; }"
+    },
+    {
+      "way": "Parameters, no return value",
+      "when": "A job that needs input but gives nothing back",
+      "example": "void showSquare(int n) { cout << n * n << endl; }"
+    },
+    {
+      "way": "No parameters, returns a value",
+      "when": "The function gets its data itself (for example from the keyboard)",
+      "example": "int readMarks() { int m; cin >> m; return m; }"
+    },
+    {
+      "way": "Parameters and returns a value",
+      "when": "Calculation: input goes in, answer comes out",
+      "example": "double average(int a, int b, int c) { return (a + b + c) / 3.0; }"
+    },
+    {
+      "way": "Built-in maths (<cmath>)",
+      "when": "Roots, powers and rounding",
+      "example": "sqrt(81), pow(2, 10), ceil(4.2), floor(4.8)"
+    },
+    {
+      "way": "Built-in integer and random (<cstdlib>)",
+      "when": "Absolute value and random numbers",
+      "example": "abs(-15), rand() % 6 + 1   // a dice roll 1 to 6"
+    },
+    {
+      "way": "Built-in characters (<cctype>)",
+      "when": "Testing or changing one character",
+      "example": "toupper('a'), tolower('B'), isdigit('7')"
+    },
+    {
+      "way": "void function with early exit",
+      "when": "Leave a void function before its end",
+      "example": "void check(int n) { if (n < 0) return; cout << n; }"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "void printLine() { cout << \"--\"; }\nint main() {\n    int x = printLine();\n    return 0;\n}",
+      "right": "void printLine() { cout << \"--\"; }\nint main() {\n    printLine();\n    return 0;\n}",
+      "error": "void value not ignored as it ought to be"
+    },
+    {
+      "wrong": "void show() { return 5; }",
+      "right": "int show() { return 5; }   // or keep void and remove the value",
+      "error": "return-statement with a value, in function returning 'void'"
+    },
+    {
+      "wrong": "int twice(int n) { cout << n * 2; }",
+      "right": "int twice(int n) { return n * 2; }",
+      "error": "warning: no return statement in function returning non-void (the function gives the caller no answer, so the result is unpredictable)"
+    },
+    {
+      "wrong": "int test(int n) {\n    return n;\n    cout << \"done\";\n}",
+      "right": "int test(int n) {\n    cout << \"done\";\n    return n;\n}",
+      "error": "No compiler error. The line after return can never run, so done is never printed."
+    }
+  ],
+  "examTips": [
+    "Built-in = already written (sqrt, pow, abs, toupper). User-defined = written by you.",
+    "Name the header for each built-in: <cmath> for sqrt/pow/ceil/floor, <cstdlib> for abs/rand, <cctype> for toupper.",
+    "A void function returns nothing, so you cannot print it or store it in a variable.",
+    "Code after return in the same path never runs. A function can print something and still return a value: they are different.",
+    "In output questions, remember that the function prints its own text when it runs, which may come BEFORE the line that called it prints its result.",
+    "A non-void function must return a value on every path."
+  ],
+  "romanSummary": [
+    "Built-in functions C++ library mein pehle se bane hote hain: sqrt, pow, abs (cmath/cstdlib) aur toupper (cctype). Bas header include karo aur call karo.",
+    "User-defined functions hum khud likhte hain, jaise printLine() ya average().",
+    "Function value return kar sakta hai (int, double...) ya void hota hai jo kuch return nahi karta.",
+    "Parameters ho bhi sakte hain aur nahi bhi, is tarah 4 combinations banti hain.",
+    "return function ko foran khatam kar deta hai, uske baad wali lines nahi chalti."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which of these is a built-in function?",
+      "options": [
+        "sqrt()",
+        "printLine()",
+        "readMarks()",
+        "average()"
+      ],
+      "answer": "sqrt()",
+      "hint": "Which one did we write ourselves?",
+      "explanation": "sqrt comes from <cmath>. The other three were written by us in this lesson, so they are user-defined."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does the return type void mean?",
+      "options": [
+        "The function returns nothing",
+        "The function returns zero",
+        "The function has no name",
+        "The function has no body"
+      ],
+      "answer": "The function returns nothing",
+      "hint": "Think of the worker who only sweeps the floor.",
+      "explanation": "void means no value is sent back to the caller."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <cmath>\nusing namespace std;\nint main() {\n    cout << pow(3, 2) << \" \" << sqrt(49) << \" \" << abs(-8) << endl;\n    return 0;\n}",
+      "answer": "9 7 8",
+      "hint": "pow(3, 2) means 3 to the power 2.",
+      "explanation": "pow(3, 2) = 9, sqrt(49) = 7 and abs(-8) = 8."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint check(int n) {\n    if (n % 2 == 0) {\n        return 10;\n    }\n    return 20;\n    cout << \"end\";\n}\nint main() {\n    cout << check(4) << \" \" << check(7) << endl;\n    return 0;\n}",
+      "answer": "10 20",
+      "hint": "The line cout << \"end\" comes after a return. Can it ever run?",
+      "explanation": "check(4) returns 10 at once (even). check(7) skips the if and returns 20. The cout after return 20 is never reached."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print? Think about the ORDER of the output.\n\n#include <iostream>\nusing namespace std;\nint show(int n) {\n    cout << \"[\" << n << \"]\";\n    return n + 1;\n}\nint main() {\n    int r = show(5);\n    cout << r << endl;\n    return 0;\n}",
+      "answer": "[5]6",
+      "hint": "The function prints its own text when it runs.",
+      "explanation": "show(5) runs first and prints [5], then returns 6. main stores 6 in r and prints it: [5]6."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This function must return the square of n but it only prints it, so main cannot use the answer. Rewrite the whole program so that square returns the value and main prints Result = 36.\n\n#include <iostream>\nusing namespace std;\nvoid square(int n) {\n    cout << n * n;\n}\nint main() {\n    int r = square(6);\n    cout << \"Result = \" << r << endl;\n    return 0;\n}",
+      "answer": "#include <iostream>\nusing namespace std;\nint square(int n) {\n    return n * n;\n}\nint main() {\n    int r = square(6);\n    cout << \"Result = \" << r << endl;\n    return 0;\n}",
+      "hint": "A void function cannot give a value to r.",
+      "explanation": "Change the return type to int and use return n * n; instead of cout."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a function double half(int n) that returns n divided by 2 with decimals, and a main that reads n and prints it. Input 7 gives 3.5.",
+      "answer": "#include <iostream>\nusing namespace std;\ndouble half(int n) {\n    return n / 2.0;\n}\nint main() {\n    int n;\n    cin >> n;\n    cout << half(n) << endl;\n    return 0;\n}",
+      "hint": "Use 2.0, not 2, to keep the decimals.",
+      "explanation": "n / 2 would be integer division (3). n / 2.0 is decimal division (3.5), so the return type is double."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which header is needed for sqrt() and pow()?",
+      "options": [
+        "<cmath>",
+        "<cctype>",
+        "<string>",
+        "<iomanip>"
+      ],
+      "answer": "<cmath>",
+      "hint": "m for maths.",
+      "explanation": "The maths functions are declared in <cmath>."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How many combinations of parameters and return value are there?",
+      "options": [
+        "4",
+        "2",
+        "3",
+        "6"
+      ],
+      "answer": "4",
+      "hint": "With or without parameters, with or without a return value.",
+      "explanation": "2 choices for parameters times 2 choices for return value gives 4."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What does return do?",
+      "options": [
+        "Ends the function at once and sends a value back",
+        "Prints the value on the screen",
+        "Starts the function",
+        "Ends the whole program always"
+      ],
+      "answer": "Ends the function at once and sends a value back",
+      "hint": "It leaves the function, not the program.",
+      "explanation": "return stops the function and hands the value to the caller. The program continues in the caller."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which function CANNOT be used inside cout << ... ?",
+      "options": [
+        "A void function",
+        "An int function",
+        "A double function",
+        "A char function"
+      ],
+      "answer": "A void function",
+      "hint": "It gives no value to print.",
+      "explanation": "A void function produces no value, so there is nothing to print."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "In int f(int n) { return n; cout << \"x\"; }, how many times is x printed when f(3) is called?",
+      "options": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "answer": "0",
+      "hint": "Look at what comes after return.",
+      "explanation": "return ends the function before the cout runs, so x is never printed."
+    }
+  ],
+  "sources": [
+    "Built-in (library) functions",
+    "User-defined functions",
+    "Functions returning a value vs returning no value",
+    "Functions with and without parameters",
+    "return statement"
+  ]
+}

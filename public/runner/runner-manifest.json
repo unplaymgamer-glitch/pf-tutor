@@ -1,0 +1,12 @@
+{
+  "name": "binji/wasm-clang (clang 8.0.1 + lld + libc++ for wasm32-wasi)",
+  "license": "Apache-2.0 with LLVM exceptions (see https://github.com/binji/wasm-clang/blob/648c4a89997a351eef75cdaec3ef5b89d4937dec/LICENSE)",
+  "pinnedCommit": "648c4a89997a351eef75cdaec3ef5b89d4937dec",
+  "cacheName": "cc111-runner-v1",
+  "files": {
+    "clang":   { "bytes": 31214472, "sha256": "2a466f0e990329d3230b869d04fc20803eae96a7feb3a3f6c93e25a77b8aed1d", "urls": ["https://raw.githubusercontent.com/binji/wasm-clang/648c4a89997a351eef75cdaec3ef5b89d4937dec/clang", "https://binji.github.io/wasm-clang/clang"] },
+    "lld":     { "bytes": 19490094, "sha256": "36419ed202011765222098d7701218378b67f634d50f0a4625059ae2c9860f48", "urls": ["https://cdn.jsdelivr.net/gh/binji/wasm-clang@648c4a89997a351eef75cdaec3ef5b89d4937dec/lld", "https://raw.githubusercontent.com/binji/wasm-clang/648c4a89997a351eef75cdaec3ef5b89d4937dec/lld", "https://binji.github.io/wasm-clang/lld"] },
+    "memfs":   { "bytes": 345442,   "sha256": "2c72ee42bd9430029dda8c6bafc9f37143f6fe88d5f1ea950a70259ab748bcfe", "urls": ["https://cdn.jsdelivr.net/gh/binji/wasm-clang@648c4a89997a351eef75cdaec3ef5b89d4937dec/memfs", "https://raw.githubusercontent.com/binji/wasm-clang/648c4a89997a351eef75cdaec3ef5b89d4937dec/memfs", "https://binji.github.io/wasm-clang/memfs"] },
+    "sysroot": { "bytes": 9297920,  "sha256": "2435a7b549af30c2be7ec249c405bc2e911ab0c6003012f0909ec3c131bff867", "urls": ["https://cdn.jsdelivr.net/gh/binji/wasm-clang@648c4a89997a351eef75cdaec3ef5b89d4937dec/sysroot.tar", "https://raw.githubusercontent.com/binji/wasm-clang/648c4a89997a351eef75cdaec3ef5b89d4937dec/sysroot.tar", "https://binji.github.io/wasm-clang/sysroot.tar"] }
+  }
+}

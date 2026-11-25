@@ -1,0 +1,573 @@
+{
+  "slug": "choosing-a-project",
+  "week": 16,
+  "title": "Choosing a project and planning it",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match the project idea to the concepts it practises",
+      "pairs": [
+        {
+          "term": "Student Result Management System",
+          "meaning": "Array of structures, functions, grade calculation, file save/load, search, sort"
+        },
+        {
+          "term": "Library Management System",
+          "meaning": "Structures, issue/return books, search by title, file storage"
+        },
+        {
+          "term": "Bank Account System",
+          "meaning": "Structure with member functions, deposit/withdraw validation, transaction file"
+        },
+        {
+          "term": "Quiz Game",
+          "meaning": "Arrays of questions, scoring, strings, high-score file"
+        },
+        {
+          "term": "Inventory / Shop Billing",
+          "meaning": "Array of products, bill calculation, stock update, receipts in a file"
+        },
+        {
+          "term": "Tic-Tac-Toe",
+          "meaning": "2-D arrays, functions, win checking, loops"
+        }
+      ]
+    },
+    {
+      "kind": "pipeline",
+      "title": "From idea to working project",
+      "stages": [
+        {
+          "name": "1. Pick a small idea",
+          "detail": "Choose something you can finish. A small project that works beats a big one that crashes."
+        },
+        {
+          "name": "2. Write the features",
+          "detail": "List 3 to 5 things the user can do: add, show, search, save. These become your menu options."
+        },
+        {
+          "name": "3. Choose the data",
+          "detail": "Decide the struct (one record) and the array that holds many records."
+        },
+        {
+          "name": "4. One function per feature",
+          "detail": "Each menu option calls one function. main stays short."
+        },
+        {
+          "name": "5. Test and add file save/load",
+          "detail": "Get it working with the keyboard first, then add the file, then test wrong input."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can pick a project idea that fits the course, say which concepts it uses, keep its scope small, and break it into a menu, a struct, functions and a file.",
+  "warmup": "Before a cricket match the team does not start by buying a trophy. First they choose the team, then decide who bats and who bowls, then they play. A project is the same. Choose a small idea you can finish, split the work into small jobs, and give each job to one function. The project is worth 15% of the grade, so planning early pays off.",
+  "definition": "A good PF project uses as many course concepts as possible: menus (loops and switch), arrays or structures, functions, file handling, and clean input validation. Scope means how big the project is. Controlling scope means keeping the project small enough that you can finish it, test it and explain every line. Breaking down means splitting the project into pieces: one struct for one record, one function for each menu feature, and one file for saving data.",
+  "howItWorks": "Start from the idea table. Each idea mixes the same course concepts in a different story. Pick the one you find interesting, because you will explain it in front of the class. Next, write the feature list in plain words: for a Library, that is add a book, show all books, search by title, issue a book, return a book, save and load. Each feature becomes one case in a menu and one function. The data becomes a struct (for example Book) and an array of that struct. Finally add a file so the data stays after the program closes. How to control scope: finish a small working version first (menu with add and show only), then add one feature at a time and test after each. Do not start with ten features. Teams should make sure that each member can explain any part. How to break into files: a single .cpp file is enough for this course, but keep the order tidy: includes, struct, constants, function prototypes, main, then the function definitions.",
+  "syntax": "// The plan for ANY project idea, written as comments\n// 1. struct   : one record  (Student, Book, Account, Item ...)\n// 2. array    : many records (Student list[MAX];)\n// 3. menu     : do { ... switch (choice) ... } while (choice != 0);\n// 4. functions: addRecord, showAll, searchRecord, saveToFile, loadFromFile\n// 5. validate : never trust cin; check ranges and wrong input\n\nstruct Student { int id; string name; double marks; };\nconst int MAX = 100;\nStudent list[MAX];",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write the smallest menu-driven program that could become the front of any project: show a menu, print a hello line for option 1, print Invalid choice for a wrong number, and stop on option 2.",
+      "pseudocode": [
+        "START",
+        "REPEAT",
+        "  SHOW menu",
+        "  READ choice",
+        "  CASE 1: print hello",
+        "  CASE 2: print Bye",
+        "  OTHER: print Invalid choice",
+        "UNTIL choice is 2",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/\"Show menu\"/]\n  B --> C[/\"Read choice\"/]\n  C --> D{\"choice?\"}\n  D -->|1| E[/\"Print hello\"/]\n  D -->|2| F[/\"Print Bye\"/]\n  D -->|other| G[/\"Print Invalid choice\"/]\n  E --> H{\"choice is 2?\"}\n  G --> H\n  F --> H\n  H -->|No| B\n  H -->|Yes| I([End])",
+      "sample": {
+        "id": "project-menu",
+        "title": "The smallest menu program: loop + switch",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int choice;\n    do {\n        cout << \"1. Say hello\" << endl;\n        cout << \"2. Quit\" << endl;\n        cout << \"Choice: \";\n        cin >> choice;\n        switch (choice) {\n            case 1: cout << \"Hello from my project!\" << endl; break;\n            case 2: cout << \"Bye!\" << endl; break;\n            default: cout << \"Invalid choice\" << endl;\n        }\n    } while (choice != 2);\n    return 0;\n}\n",
+        "stdin": "1\n7\n2\n",
+        "graphics": false,
+        "expectedOutput": "1. Say hello\n2. Quit\nChoice: Hello from my project!\n1. Say hello\n2. Quit\nChoice: Invalid choice\n1. Say hello\n2. Quit\nChoice: Bye!\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "One variable remembers the user's menu choice."
+          },
+          {
+            "line": 6,
+            "text": "do-while: the menu is always shown at least once."
+          },
+          {
+            "line": 9,
+            "text": "The prompt. Most projects print the menu inside the loop."
+          },
+          {
+            "line": 11,
+            "text": "switch picks the action. Each feature of your project becomes one case."
+          },
+          {
+            "line": 14,
+            "text": "Handles every wrong number, so the program never does something silly."
+          },
+          {
+            "line": 16,
+            "text": "Keep looping until the user picks Quit."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {},
+              "note": "The program starts. choice has no value yet.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Round 1: print the first menu line.",
+              "out": "1. Say hello\n"
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Second menu line.",
+              "out": "2. Quit\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Ask for the choice. No endl, so the cursor waits on the same line.",
+              "out": "Choice: "
+            },
+            {
+              "line": 10,
+              "vars": {
+                "choice": "1"
+              },
+              "note": "The user types 1.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "switch jumps to case 1. It prints the hello line and break leaves the switch.",
+              "out": "Hello from my project!\n"
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "choice is 1, not 2, so the loop goes round again.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Round 2: the menu is printed again.",
+              "out": "1. Say hello\n2. Quit\nChoice: "
+            },
+            {
+              "line": 10,
+              "vars": {
+                "choice": "7"
+              },
+              "note": "The user types 7, which is not a menu option.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "No case matches, so default runs. A good menu always handles wrong choices.",
+              "out": "Invalid choice\n"
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "7 is not 2, so the loop repeats.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Round 3: the menu is printed once more.",
+              "out": "1. Say hello\n2. Quit\nChoice: "
+            },
+            {
+              "line": 10,
+              "vars": {
+                "choice": "2"
+              },
+              "note": "The user types 2.",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "case 2 prints Bye!",
+              "out": "Bye!\n"
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "choice is 2, so the condition is false and the loop ends.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "choice": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "For the Student Result Management System, define a struct for one student (id, name, marks), create one record and print it with a Pass or Fail line.",
+      "pseudocode": [
+        "START",
+        "DEFINE struct Student (id, name, marks)",
+        "MAKE s = 101, Ayesha, 88.5",
+        "PRINT id, name, marks",
+        "IF marks >= 50 THEN PRINT Pass ELSE PRINT Fail",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Make Student s: 101, Ayesha, 88.5\"]\n  B --> C[/\"Print id, name, marks\"/]\n  C --> D{\"marks >= 50?\"}\n  D -->|Yes| E[/\"Print Pass\"/]\n  D -->|No| F[/\"Print Fail\"/]\n  E --> G([End])\n  F --> G",
+      "sample": {
+        "id": "project-record",
+        "title": "One record: a struct for a Student Result System",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int id;\n    string name;\n    double marks;\n};\n\nint main() {\n    Student s = {101, \"Ayesha\", 88.5};\n    cout << \"ID: \" << s.id << endl;\n    cout << \"Name: \" << s.name << endl;\n    cout << \"Marks: \" << s.marks << endl;\n    if (s.marks >= 50) {\n        cout << \"Result: Pass\" << endl;\n    } else {\n        cout << \"Result: Fail\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "ID: 101\nName: Ayesha\nMarks: 88.5\nResult: Pass\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A struct groups the facts about ONE student in a single variable. This is the heart of the Result System and Library ideas."
+          },
+          {
+            "line": 6,
+            "text": "Three members: a number, a name and marks."
+          },
+          {
+            "line": 12,
+            "text": "Create one record and fill it in order: id, name, marks."
+          },
+          {
+            "line": 13,
+            "text": "The dot reaches one member of the record."
+          },
+          {
+            "line": 16,
+            "text": "A rule of the project (pass or fail) is just an if on a member. Later you will keep many records in an array of structs."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "For a Tic-Tac-Toe project, store the board in a 3 by 3 char array, write a function that prints it with separators, and a function that tells whether a given player has a complete row.",
+      "pseudocode": [
+        "START",
+        "MAKE board 3x3",
+        "CALL printBoard",
+        "CALL rowWins(board, 0, X)",
+        "IF true THEN PRINT X wins on row 0",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Make 3x3 board\"]\n  B --> C[/\"printBoard(board)\"/]\n  C --> D{\"rowWins(board, 0, X)?\"}\n  D -->|Yes| E[/\"Print X wins on row 0\"/]\n  D -->|No| F([End])\n  E --> F",
+      "sample": {
+        "id": "project-tictactoe",
+        "title": "Tic-Tac-Toe board: 2-D array and two small functions",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid printBoard(char b[3][3]) {\n    for (int r = 0; r < 3; r++) {\n        for (int c = 0; c < 3; c++) {\n            cout << b[r][c];\n            if (c < 2) {\n                cout << \" | \";\n            }\n        }\n        cout << endl;\n        if (r < 2) {\n            cout << \"---------\" << endl;\n        }\n    }\n}\n\nbool rowWins(char b[3][3], int r, char p) {\n    return b[r][0] == p && b[r][1] == p && b[r][2] == p;\n}\n\nint main() {\n    char board[3][3] = {\n        {'X', 'X', 'X'},\n        {'O', 'O', '.'},\n        {'.', '.', '.'}\n    };\n    printBoard(board);\n    if (rowWins(board, 0, 'X')) {\n        cout << \"X wins on row 0\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "X | X | X\n---------\nO | O | .\n---------\n. | . | .\nX wins on row 0\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "One function for one job: drawing the board. The column size 3 must be written in the parameter."
+          },
+          {
+            "line": 5,
+            "text": "Nested loops walk over every row and column of the 2-D array."
+          },
+          {
+            "line": 9,
+            "text": "Draw the separators between cells but not after the last cell."
+          },
+          {
+            "line": 19,
+            "text": "Win checking is another small function that returns true or false."
+          },
+          {
+            "line": 20,
+            "text": "A row wins when all three cells hold the same player's mark."
+          },
+          {
+            "line": 24,
+            "text": "The whole game state is just this 3 by 3 table. A dot means an empty cell."
+          },
+          {
+            "line": 30,
+            "text": "main only calls the helpers. Short main, small functions: the style your project should have."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Student Result Management System",
+      "when": "Array of structures, functions, grade calculation, file save/load, search, sort",
+      "example": "struct Student { int id; string name; double marks; };  // list of students"
+    },
+    {
+      "way": "Library Management System",
+      "when": "Structures, issue/return books, search by title, file storage",
+      "example": "struct Book { int id; string title; bool issued; };"
+    },
+    {
+      "way": "Bank Account System",
+      "when": "Structure with member functions, deposit/withdraw validation, transaction file",
+      "example": "struct Account { int no; double balance; };  // deposit() / withdraw()"
+    },
+    {
+      "way": "Quiz Game",
+      "when": "Arrays of questions, scoring, strings, high-score file",
+      "example": "string questions[5];  int score = 0;"
+    },
+    {
+      "way": "Inventory / Shop Billing",
+      "when": "Array of products, bill calculation, stock update, receipts in a file",
+      "example": "struct Item { string name; double price; int stock; };"
+    },
+    {
+      "way": "Tic-Tac-Toe",
+      "when": "2-D arrays, functions, win checking, loops",
+      "example": "char board[3][3];  bool rowWins(char b[3][3], int r, char p);"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "// Plan: 15 features, 4 screens, graphics, sound...\n// Result: nothing works the night before the demo",
+      "right": "// Plan: menu + add + show + search + save/load\n// Finish this, test it, then add extras",
+      "error": "Not a compiler error. Too big a scope is the most common reason projects fail. Make a small version that works first."
+    },
+    {
+      "wrong": "int main() {\n    // 400 lines of code, all inside main\n}",
+      "right": "int main() {\n    // menu loop only\n    // each case calls addRecord(), showAll(), searchRecord()\n}",
+      "error": "It compiles, but nobody can read or explain it. Break the work into one function per feature."
+    },
+    {
+      "wrong": "// Three team members copy different code,\n// nobody understands the other parts",
+      "right": "// Every member can explain any part of the code",
+      "error": "Not a compiler error. Instructors may ask any member to explain or change any part of the code, so everyone must understand all of it."
+    },
+    {
+      "wrong": "char board[3][3] = {{'X','O','X'}};\nprintBoard(board[3][3]);",
+      "right": "char board[3][3] = {{'X','O','X'},{'.','.','.'},{'.','.','.'}};\nprintBoard(board);",
+      "error": "Passing board[3][3] is one element outside the array, not the board. Pass only the name: printBoard(board);"
+    }
+  ],
+  "examTips": [
+    "If asked what a project demonstrates, name the concepts: loops and switch for the menu, structs or arrays for the data, functions, files, validation.",
+    "For a Tic-Tac-Toe style question remember: 2-D array for the board, functions for printing and win checking.",
+    "Answer 'why a struct?' with: it keeps all facts about one record (id, name, marks) together.",
+    "A menu program is a do-while loop with a switch inside it. Write that skeleton first in any exam question about a menu.",
+    "The project is 15% of the grade (as given in the course notes)."
+  ],
+  "romanSummary": [
+    "Acha project woh hai jis mein zyada se zyada course concepts hon: menu (loop aur switch), array ya struct, functions, file aur input validation.",
+    "Idea chunein jo chhota ho aur aap use khatam kar saken. Pehle chhota working version banayein, phir ek ek feature barhayein.",
+    "Har menu option ke liye ek function banayein aur main ko chhota rakhein. Ek record ke liye struct aur bohat se records ke liye array use karein.",
+    "Project grade ka 15% hai, is liye pehle se plan karein. Har member ko poora code samajh aana chahiye."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which project idea mainly practises 2-D arrays and win checking?",
+      "options": [
+        "Tic-Tac-Toe",
+        "Bank Account System",
+        "Library Management System",
+        "Quiz Game"
+      ],
+      "answer": "Tic-Tac-Toe",
+      "hint": "The board is a table.",
+      "explanation": "A 3 by 3 board is a 2-D array and checking rows, columns and diagonals is win checking."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "A menu in a project is usually built from:",
+      "options": [
+        "A loop and a switch",
+        "Only an if",
+        "Only arrays",
+        "A graphics library"
+      ],
+      "answer": "A loop and a switch",
+      "hint": "Repeat, then choose.",
+      "explanation": "The loop repeats until Quit and the switch runs the chosen feature."
+    },
+    {
+      "id": "p3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which feature fits a Bank Account System best?",
+      "options": [
+        "Deposit and withdraw with validation",
+        "Drawing a 3 by 3 board",
+        "Counting vowels only",
+        "Sorting colours"
+      ],
+      "answer": "Deposit and withdraw with validation",
+      "hint": "Money goes in and out.",
+      "explanation": "Validation stops a withdrawal larger than the balance."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nstruct Item {\n    int qty;\n    double price;\n};\n\nint main() {\n    Item it = {3, 150.5};\n    cout << it.qty * it.price << endl;\n    return 0;\n}\n",
+      "answer": "451.5",
+      "hint": "Multiply the two members.",
+      "explanation": "3 times 150.5 is 451.5. This is the idea of a bill line in a Shop Billing project."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill the blank in the menu skeleton:\n\ndo {\n    cin >> choice;\n    ______ (choice) {\n        case 1: addRecord(); break;\n        case 2: showAll(); break;\n    }\n} while (choice != 3);",
+      "answer": "switch",
+      "hint": "It picks a case by value.",
+      "explanation": "switch (choice) chooses which case runs."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Find the bug:\n\nint board[3][3];\nboard[3][3] = 1;",
+      "answer": "The valid indexes are 0 to 2. The last cell is board[2][2].",
+      "hint": "Count from 0.",
+      "explanation": "Index 3 is outside a size-3 array. The last row and column are number 2."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a struct Book with an int id and a string title, make one Book with id 7 and title \"Algorithms\", and print both members. (Write the full program.)",
+      "answer": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Book {\n    int id;\n    string title;\n};\n\nint main() {\n    Book b = {7, \"Algorithms\"};\n    cout << b.id << \" \" << b.title << endl;\n    return 0;\n}",
+      "hint": "struct, then one variable, then the dot.",
+      "explanation": "A struct keeps the id and title of one book together, which is the start of a Library project."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "You have two weeks. What is the best plan?",
+      "options": [
+        "Build a small working version first, then add features one by one",
+        "Start all features at once",
+        "Write everything in one night",
+        "Skip testing"
+      ],
+      "answer": "Build a small working version first, then add features one by one",
+      "hint": "A small project that works wins.",
+      "explanation": "Controlling scope and testing after each feature keeps the project working."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which concept does a Library project feature 'search by title' mainly show?",
+      "options": [
+        "Searching through an array of structures",
+        "Graphics",
+        "Recursion only",
+        "Typedef"
+      ],
+      "answer": "Searching through an array of structures",
+      "hint": "Books are stored as records.",
+      "explanation": "You loop over the array and compare the title of each record."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which concept does a Quiz Game feature 'keep a score' show?",
+      "options": [
+        "A counter variable updated by a rule",
+        "A 2-D array",
+        "Pointers only",
+        "A struct member function"
+      ],
+      "answer": "A counter variable updated by a rule",
+      "hint": "Add 1 for every right answer.",
+      "explanation": "The score is a simple variable that changes with if or switch logic."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which concept does a Tic-Tac-Toe 'draw the board' feature show?",
+      "options": [
+        "Nested loops over a 2-D array",
+        "Recursion",
+        "Dynamic memory only",
+        "File reading"
+      ],
+      "answer": "Nested loops over a 2-D array",
+      "hint": "Rows and columns.",
+      "explanation": "One loop for rows and one for columns walks over the table."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which concept does a Shop Billing 'save the receipt' feature show?",
+      "options": [
+        "File handling",
+        "Pass by value only",
+        "Switch fall-through",
+        "Function overloading"
+      ],
+      "answer": "File handling",
+      "hint": "It must stay after the program ends.",
+      "explanation": "Writing the receipt to a file with ofstream keeps it on disk."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Your project is worth what share of the grade, according to the course notes?",
+      "options": [
+        "15%",
+        "5%",
+        "50%",
+        "100%"
+      ],
+      "answer": "15%",
+      "hint": "The Week 16 notes say it at the top.",
+      "explanation": "The notes describe it as the semester project (15% of the grade)."
+    }
+  ],
+  "sources": [
+    "Choosing a project",
+    "Project ideas and the concepts they use",
+    "Scope control",
+    "Breaking a project into functions, structs and files"
+  ]
+}

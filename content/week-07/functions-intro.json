@@ -1,0 +1,859 @@
+{
+  "slug": "functions-intro",
+  "week": 7,
+  "title": "Functions: what they are and why we use them",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "What happens when a function is called",
+      "stages": [
+        {
+          "name": "1. main reaches the call",
+          "detail": "The statement add(a, b) is met. main pauses at exactly this spot and remembers where to come back."
+        },
+        {
+          "name": "2. Arguments are copied",
+          "detail": "The value of each argument is copied into the matching parameter. x gets the value of a, y gets the value of b."
+        },
+        {
+          "name": "3. The function body runs",
+          "detail": "The statements between { and } run one by one. The function has its own variables, hidden from main."
+        },
+        {
+          "name": "4. return sends the answer back",
+          "detail": "return ends the function. Its value travels back to the place of the call. A void function sends nothing."
+        },
+        {
+          "name": "5. main continues",
+          "detail": "The call is replaced by the returned value, and main carries on with the very next step."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each part of a function with its meaning",
+      "pairs": [
+        {
+          "term": "Return type (int)",
+          "meaning": "The kind of value the function sends back. void means nothing."
+        },
+        {
+          "term": "Function name (add)",
+          "meaning": "The word you write to call the function."
+        },
+        {
+          "term": "Parameter list (int x, int y)",
+          "meaning": "The boxes that receive the values given by the caller."
+        },
+        {
+          "term": "Function header",
+          "meaning": "The first line: return type, name and parameter list."
+        },
+        {
+          "term": "Function body { ... }",
+          "meaning": "The statements that do the work."
+        },
+        {
+          "term": "Function call add(7, 5);",
+          "meaning": "The statement that makes the function run."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can explain what a function is and why it is useful, name the parts of a function (header, body, call), write a simple function above main(), and follow how control jumps into a function and comes back.",
+  "warmup": "Think of a busy canteen. The manager does not cook, wash plates and take payment himself. He calls the cook for food, the cashier for payment and the helper for cleaning. Each worker does one job and can be called again and again. In a C++ program, main() is the manager and each function is a worker. A big program becomes a team of small, easy jobs.",
+  "definition": "A function is a named block of code that does one specific job. It runs only when you call it. Dividing a big program into small functions is called modular programming (a module is one small part). A function has a header (return type, name, parameter list) and a body (the statements inside { }). Why use functions? 1) Reusability: write once, call many times. 2) Readability: main() becomes short and easy to read. 3) Easier testing and debugging: test each worker alone. 4) Teamwork: different people can write different functions. 5) No copy-paste: no repeated code in many places.",
+  "howItWorks": "Press Play on the pipeline and watch a call. main is running. It meets a call such as add(a, b) and PAUSES. The values of the arguments are copied into the function's parameters. The function body runs from the top. When it reaches return, the function ends and the answer goes back to the place of the call. main then continues with the next step. Look at the trace's call stack: it is a pile of 'who is waiting for whom'. main sits at the bottom. When main calls a function, that function is placed on top. When the function ends, it is removed and main is on top again. In this lesson the functions are written ABOVE main(), so the compiler has already met them when main calls them. (Writing them below main needs a prototype, which comes next week.)",
+  "syntax": "returnType functionName(parameterList)   // function header\n{\n    // function body: statements that do the job\n    return value;   // sends a value back (not needed in a void function)\n}\n\nint main()\n{\n    functionName(arguments);   // function call: runs the function\n    return 0;\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write a function sayHello() that prints a greeting, and call it from main() between two other messages.",
+      "pseudocode": [
+        "START",
+        "PRINT Start",
+        "CALL sayHello (main waits)",
+        "  sayHello prints: Hello from a function!",
+        "  sayHello finishes, control returns to main",
+        "PRINT End",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Print Start/]\n  B --> C[Call sayHello]\n  C --> D[/Print Hello from a function!/]\n  D --> E[Return to main]\n  E --> F[/Print End/]\n  F --> G([End])",
+      "sample": {
+        "id": "say-hello",
+        "title": "A function with no parameters and no return value",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid sayHello() {\n    cout << \"Hello from a function!\" << endl;\n}\n\nint main() {\n    cout << \"Start\" << endl;\n    sayHello();\n    cout << \"End\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Start\nHello from a function!\nEnd\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "The function header. void means it sends nothing back. sayHello is the name. The empty () means it needs no input."
+          },
+          {
+            "line": 5,
+            "text": "The function body. This line runs only when somebody calls sayHello."
+          },
+          {
+            "line": 8,
+            "text": "Every program starts at main(). It is the manager."
+          },
+          {
+            "line": 9,
+            "text": "Runs first. The function has NOT run yet, even though it is written above main."
+          },
+          {
+            "line": 10,
+            "text": "The function call. main pauses here, sayHello runs, then main continues on the next line."
+          },
+          {
+            "line": 11,
+            "text": "Runs after the function has finished."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 8,
+              "vars": {},
+              "note": "The program starts at main(). Functions written above main do not run by themselves.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "main prints Start.",
+              "out": "Start\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "main reaches the call sayHello(). main PAUSES and control jumps into the function.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sayHello()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "Inside the function body. It prints its message.",
+              "out": "Hello from a function!\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sayHello()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "The function is finished, so it leaves the stack. main continues from the line AFTER the call and prints End.",
+              "out": "End\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "main returns 0 and the program ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            }
+          ],
+          "types": {}
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Write a function add(x, y) that returns the sum of two numbers. Call it with variables and with fixed numbers, and print the answers.",
+      "pseudocode": [
+        "START",
+        "a = 7, b = 5",
+        "s = add(a, b)   (x = 7, y = 5 inside add)",
+        "  add returns x + y = 12",
+        "PRINT s",
+        "PRINT add(100, 250)   (returns 350)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[a = 7, b = 5]\n  B --> C[\"s = add(a, b)\"]\n  C --> D[\"x = 7, y = 5 copied\"]\n  D --> E[\"return x + y = 12\"]\n  E --> F[/Print Sum = 12/]\n  F --> G[\"call add(100, 250) returns 350\"]\n  G --> H[/Print Another sum = 350/]\n  H --> I([End])",
+      "sample": {
+        "id": "add-function",
+        "title": "add(): a function that returns a value",
+        "code": "#include <iostream>\nusing namespace std;\n\nint add(int x, int y) {\n    return x + y;\n}\n\nint main() {\n    int a = 7, b = 5;\n    int s = add(a, b);\n    cout << \"Sum = \" << s << endl;\n    cout << \"Another sum = \" << add(100, 250) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Sum = 12\nAnother sum = 350\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "Header: return type int, name add, parameter list (int x, int y). The function receives two whole numbers and sends one whole number back."
+          },
+          {
+            "line": 5,
+            "text": "Calculates x + y and sends the answer back to the place that called add."
+          },
+          {
+            "line": 9,
+            "text": "Two ordinary variables of main. x and y of add are different boxes."
+          },
+          {
+            "line": 10,
+            "text": "The call. The values of a and b (7 and 5) are copied into x and y. The returned 12 is stored in s."
+          },
+          {
+            "line": 11,
+            "text": "Prints the value stored in s."
+          },
+          {
+            "line": 12,
+            "text": "A call can sit inside another statement. The call is replaced by its return value, 350, before cout prints it."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Program starts in main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {
+                "a": "7",
+                "b": "5"
+              },
+              "note": "main creates a and b.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "7",
+                    "b": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {
+                "x": "7",
+                "y": "5"
+              },
+              "note": "main calls add(a, b). It pauses. The values 7 and 5 are COPIED into x and y.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "7",
+                    "b": "5"
+                  }
+                },
+                {
+                  "fn": "add(x, y)",
+                  "vars": {
+                    "x": "7",
+                    "y": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "x + y = 12. return sends 12 back and ends add.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "7",
+                    "b": "5"
+                  }
+                },
+                {
+                  "fn": "add(x, y)",
+                  "vars": {
+                    "x": "7",
+                    "y": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {
+                "s": "12"
+              },
+              "note": "Back in main, the call is replaced by 12 and stored in s. x and y are gone.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "7",
+                    "b": "5",
+                    "s": "12"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "main prints s.",
+              "out": "Sum = 12\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "7",
+                    "b": "5",
+                    "s": "12"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {
+                "x": "100",
+                "y": "250"
+              },
+              "note": "A second call, add(100, 250). Now x is 100 and y is 250.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "7",
+                    "b": "5",
+                    "s": "12"
+                  }
+                },
+                {
+                  "fn": "add(x, y)",
+                  "vars": {
+                    "x": "100",
+                    "y": "250"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "350 is sent back.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "7",
+                    "b": "5",
+                    "s": "12"
+                  }
+                },
+                {
+                  "fn": "add(x, y)",
+                  "vars": {
+                    "x": "100",
+                    "y": "250"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "The call became 350, and cout prints it.",
+              "out": "Another sum = 350\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "7",
+                    "b": "5",
+                    "s": "12"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "main ends the program.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "7",
+                    "b": "5",
+                    "s": "12"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "a": "int",
+            "b": "int",
+            "s": "int",
+            "x": "int",
+            "y": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a program with a function larger(a, b) that returns the larger of two integers. main must read two integers and print the larger one. Input: 17 42.",
+      "pseudocode": [
+        "START",
+        "READ p, q",
+        "CALL larger(p, q)",
+        "  IF a > b THEN RETURN a",
+        "  ELSE RETURN b",
+        "PRINT the returned value",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read p and q/]\n  B --> C[\"Call larger(p, q)\"]\n  C --> D{a > b?}\n  D -->|Yes| E[return a]\n  D -->|No| F[return b]\n  E --> G[/Print Larger/]\n  F --> G\n  G --> H([End])",
+      "sample": {
+        "id": "larger-of-two",
+        "title": "Larger of two numbers using a function",
+        "code": "#include <iostream>\nusing namespace std;\n\nint larger(int a, int b) {\n    if (a > b) {\n        return a;\n    }\n    return b;\n}\n\nint main() {\n    int p, q;\n    cin >> p >> q;\n    cout << \"Larger = \" << larger(p, q) << endl;\n    return 0;\n}\n",
+        "stdin": "17 42",
+        "expectedOutput": "Larger = 42\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "Header: returns an int, called larger, takes two ints."
+          },
+          {
+            "line": 5,
+            "text": "Compare the two numbers that were copied in."
+          },
+          {
+            "line": 6,
+            "text": "If a is bigger, send a back. The function ends here."
+          },
+          {
+            "line": 8,
+            "text": "Reached only if a was NOT bigger. Then b is the larger (or equal) one."
+          },
+          {
+            "line": 13,
+            "text": "main reads two numbers. Reading is done in main, calculating is done in larger: each function does one job."
+          },
+          {
+            "line": 14,
+            "text": "The call. The returned value is printed by cout."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 12,
+              "vars": {
+                "p": "?",
+                "q": "?"
+              },
+              "note": "main creates p and q.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "?",
+                    "q": "?"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {
+                "p": "17",
+                "q": "42"
+              },
+              "note": "cin reads 17 and 42.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "17",
+                    "q": "42"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {
+                "a": "17",
+                "b": "42"
+              },
+              "note": "main calls larger(p, q). 17 and 42 are copied into a and b.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "17",
+                    "q": "42"
+                  }
+                },
+                {
+                  "fn": "larger(a, b)",
+                  "vars": {
+                    "a": "17",
+                    "b": "42"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "Is 17 > 42? No. Skip the return a.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "17",
+                    "q": "42"
+                  }
+                },
+                {
+                  "fn": "larger(a, b)",
+                  "vars": {
+                    "a": "17",
+                    "b": "42"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "return b sends 42 back and ends the function.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "17",
+                    "q": "42"
+                  }
+                },
+                {
+                  "fn": "larger(a, b)",
+                  "vars": {
+                    "a": "17",
+                    "b": "42"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "The call is replaced by 42 and printed.",
+              "out": "Larger = 42\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "p": "17",
+                    "q": "42"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "p": "int",
+            "q": "int",
+            "a": "int",
+            "b": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "void function, no parameters",
+      "when": "A fixed job that needs no input and gives no answer",
+      "example": "void printLine() { cout << \"------\" << endl; }   // call: printLine();"
+    },
+    {
+      "way": "Function that returns a value",
+      "when": "You need an answer from the function",
+      "example": "int add(int x, int y) { return x + y; }"
+    },
+    {
+      "way": "Call as a statement",
+      "when": "You only want the job done (the returned value, if any, is ignored)",
+      "example": "printLine();"
+    },
+    {
+      "way": "Call inside an expression",
+      "when": "You want to use the returned value straight away",
+      "example": "int s = add(a, b) * 2;"
+    },
+    {
+      "way": "Call inside cout",
+      "when": "You only want to print the answer",
+      "example": "cout << add(100, 250) << endl;"
+    },
+    {
+      "way": "Call the same function many times",
+      "when": "The same job is needed again (the whole point of a function)",
+      "example": "printLine(); ... printLine(); ... printLine();"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int main() {\n    sayHello();\n    return 0;\n}\nvoid sayHello() { cout << \"Hi\"; }",
+      "right": "void sayHello() { cout << \"Hi\"; }\nint main() {\n    sayHello();\n    return 0;\n}",
+      "error": "'sayHello' was not declared in this scope"
+    },
+    {
+      "wrong": "int main() {\n    sayHello()\n    return 0;\n}",
+      "right": "int main() {\n    sayHello();\n    return 0;\n}",
+      "error": "expected ';' before 'return'"
+    },
+    {
+      "wrong": "int main() {\n    void sayHello() { cout << \"Hi\"; }\n    sayHello();\n    return 0;\n}",
+      "right": "void sayHello() { cout << \"Hi\"; }\nint main() {\n    sayHello();\n    return 0;\n}",
+      "error": "a function-definition is not allowed here before '{' token"
+    },
+    {
+      "wrong": "void sayHello() { cout << \"Hi\"; }\nint main() {\n    sayHello;\n    return 0;\n}",
+      "right": "void sayHello() { cout << \"Hi\"; }\nint main() {\n    sayHello();\n    return 0;\n}",
+      "error": "No compiler error (at most a warning that the statement has no effect). Without the brackets () the function is never called, so nothing is printed."
+    }
+  ],
+  "examTips": [
+    "Learn the parts by heart: header = return type + name + parameter list; body = the statements in { }; call = name(arguments);.",
+    "A function does NOT run when it is defined. It runs only when it is called.",
+    "Program execution always starts at main(), even if other functions are written above it.",
+    "Tracing: when main calls a function, main waits. After the function ends, main continues from the line after the call.",
+    "Advantages list for exams: reusability, readability, easier debugging, teamwork, less repetition."
+  ],
+  "romanSummary": [
+    "Function code ka ek naam wala block hai jo ek specific kaam karta hai aur sirf tab chalta hai jab usay call kiya jaye.",
+    "Faide: code dobara use hota hai, main() chhota aur saaf hota hai, debugging asaan hoti hai.",
+    "Function ke parts: header (return type, naam, parameter list), body { } aur call.",
+    "Call par main ruk jata hai, function chalta hai, return ke baad main agli line se aage chalta hai.",
+    "Is hafte functions main() se upar likhte hain taake compiler unhe pehle dekh le."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is a function?",
+      "options": [
+        "A named block of code that does one job and runs when it is called",
+        "A variable that stores a whole number",
+        "A loop that repeats forever",
+        "A comment that explains the code"
+      ],
+      "answer": "A named block of code that does one job and runs when it is called",
+      "hint": "Think of the cook in the canteen.",
+      "explanation": "A function is a named block of code for one specific job. It runs only when it is called."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In int add(int x, int y) { return x + y; }, what is the first line 'int add(int x, int y)' called?",
+      "options": [
+        "The function header",
+        "The function call",
+        "The function body",
+        "The return statement"
+      ],
+      "answer": "The function header",
+      "hint": "It is the first line of the function.",
+      "explanation": "The header holds the return type, the name and the parameter list. The body is the part inside { }."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nvoid hi() { cout << \"B\"; }\nint main() {\n    cout << \"A\";\n    hi();\n    cout << \"C\";\n    return 0;\n}",
+      "answer": "ABC",
+      "hint": "main prints A, then waits while hi() runs.",
+      "explanation": "A is printed, then the call hi() prints B, then control returns to main which prints C."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint twice(int n) { return n * 2; }\nint main() {\n    int x = 4;\n    cout << twice(x) << \" \" << twice(x + 1) << endl;\n    return 0;\n}",
+      "answer": "8 10",
+      "hint": "Work out each call one by one.",
+      "explanation": "twice(4) returns 8. twice(x + 1) is twice(5), which returns 10. So 8 and 10 are printed."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This program does not compile. Find the problem and write the correct program.\n\n#include <iostream>\nusing namespace std;\nint main() {\n    greet();\n    return 0;\n}\nvoid greet() { cout << \"Hello\" << endl; }",
+      "answer": "#include <iostream>\nusing namespace std;\nvoid greet() { cout << \"Hello\" << endl; }\nint main() {\n    greet();\n    return 0;\n}",
+      "hint": "The compiler reads from top to bottom.",
+      "explanation": "greet is called before the compiler has seen it. Move the function above main (or use a prototype, next week)."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blanks so the program prints Total = 9.\n\n#include <iostream>\nusing namespace std;\n___ sum(int a, int b) {\n    ___ a + b;\n}\nint main() {\n    cout << \"Total = \" << ___(4, 5) << endl;\n    return 0;\n}",
+      "answer": "#include <iostream>\nusing namespace std;\nint sum(int a, int b) {\n    return a + b;\n}\nint main() {\n    cout << \"Total = \" << sum(4, 5) << endl;\n    return 0;\n}",
+      "hint": "The function sends an int back.",
+      "explanation": "The return type is int, the statement is return, and the call uses the function name sum."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a function area(l, w) that returns the area of a rectangle (both int). In main, read l and w and print the area. Example input: 6 4 gives Area = 24.",
+      "answer": "#include <iostream>\nusing namespace std;\nint area(int l, int w) {\n    return l * w;\n}\nint main() {\n    int l, w;\n    cin >> l >> w;\n    cout << \"Area = \" << area(l, w) << endl;\n    return 0;\n}",
+      "hint": "Header: int area(int l, int w). Body: return l * w;",
+      "explanation": "The function calculates and returns. main reads input and prints. Each function does one job."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which statement is TRUE about a function?",
+      "options": [
+        "It runs only when it is called",
+        "It runs automatically before main()",
+        "It can be called only once",
+        "It must be written below main()"
+      ],
+      "answer": "It runs only when it is called",
+      "hint": "Who starts the worker?",
+      "explanation": "A function is a block of code waiting to be called. It can be called many times."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which is NOT an advantage of functions?",
+      "options": [
+        "The program always runs faster",
+        "Code can be reused",
+        "main() becomes easier to read",
+        "Each part can be tested separately"
+      ],
+      "answer": "The program always runs faster",
+      "hint": "Think about why programmers write functions.",
+      "explanation": "Functions give reuse, readability and easier debugging. They do not promise more speed."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Where does the program start running?",
+      "options": [
+        "At main()",
+        "At the first function written in the file",
+        "At the function with the shortest name",
+        "At the last line of the file"
+      ],
+      "answer": "At main()",
+      "hint": "Even with functions above it.",
+      "explanation": "Execution always starts at main()."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "After a called function ends, where does main continue?",
+      "options": [
+        "From the line after the call",
+        "From the first line of main",
+        "From the end of main",
+        "It stops"
+      ],
+      "answer": "From the line after the call",
+      "hint": "main was paused, not restarted.",
+      "explanation": "Control returns to the point where the function was called, and the program carries on."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Which part of a function holds the statements that do the work?",
+      "options": [
+        "The body",
+        "The header",
+        "The call",
+        "The parameter list"
+      ],
+      "answer": "The body",
+      "hint": "It is inside the curly brackets.",
+      "explanation": "The body is the set of statements inside { }. The header only describes the function."
+    }
+  ],
+  "sources": [
+    "Functions: definition and purpose",
+    "Modular programming",
+    "Parts of a function (header, body, call)",
+    "Function call and flow of control"
+  ]
+}

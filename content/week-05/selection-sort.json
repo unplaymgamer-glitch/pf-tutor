@@ -1,0 +1,638 @@
+{
+  "slug": "selection-sort",
+  "week": 5,
+  "title": "Selection sort: pick the smallest, swap once",
+  "defaultView": "visualize",
+  "order": 5,
+  "visuals": [
+    {
+      "kind": "sort",
+      "title": "Selection sort: watch minIdx hunt for the smallest, then one swap per pass",
+      "algo": "selection",
+      "values": [
+        64,
+        25,
+        12,
+        22,
+        11
+      ],
+      "compare": false
+    },
+    {
+      "kind": "sort",
+      "title": "Bubble vs selection on the same numbers: compare swaps and comparisons",
+      "algo": "bubble",
+      "values": [
+        64,
+        25,
+        12,
+        22,
+        11
+      ],
+      "compare": true
+    }
+  ],
+  "goal": "After this you can sort an array with selection sort, trace it pass by pass, and explain how it differs from bubble sort (one swap per pass, N - 1 passes).",
+  "warmup": "Imagine a teacher arranging 5 students in a line from the shortest to the tallest for the morning assembly. She does not swap neighbours again and again. She looks at ALL the students who are not yet placed, picks out the shortest one, and moves that student to the front of the line. Then she looks at the rest, picks the shortest again, and puts that one in the second place. She selects, then moves. That is selection sort.",
+  "definition": "Selection sort is a way to arrange the elements of an array in order (sorting). In every pass it finds the smallest element of the part that is still unsorted and swaps it with the first element of that part. After pass 1 the smallest value is at index 0. After pass 2 the second smallest is at index 1, and so on. Ascending means small to large; descending means large to small.",
+  "howItWorks": "The array is split in two parts: a sorted part at the front (empty at the start) and an unsorted part (the rest). In each pass: (1) assume the first unsorted element is the smallest and write its INDEX in a variable called minIdx; (2) scan the rest of the unsorted part, and whenever you meet a smaller value, update minIdx; you do NOT swap while scanning; (3) when the scan is finished, swap a[i] with a[minIdx]. That is ONE swap per pass. The sorted part grows by one element. For N elements you need N - 1 passes, because the last element is automatically in the right place. The number of comparisons is 4 + 3 + 2 + 1 = 10 for N = 5, in general N(N-1)/2, and it does not change even if the data is already sorted. The number of swaps is at most N - 1, which is far fewer than bubble sort usually makes. For descending order, look for the largest value instead: change < to >.",
+  "syntax": "for (int i = 0; i < N - 1; i++) {          // one pass for each position i\n    int minIdx = i;                         // assume a[i] is the smallest\n    for (int j = i + 1; j < N; j++) {       // scan the unsorted part after i\n        if (a[j] < a[minIdx]) {             // use > for descending order\n            minIdx = j;                     // only remember the position\n        }\n    }\n    int temp = a[i];                        // ONE swap per pass\n    a[i] = a[minIdx];\n    a[minIdx] = temp;\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Sort the array {64, 25, 12, 22, 11} in ascending order with selection sort. Print the array after every pass.",
+      "pseudocode": [
+        "START",
+        "SET array = 64 25 12 22 11",
+        "FOR i = 0 TO N - 2",
+        "    SET minIdx = i",
+        "    FOR j = i + 1 TO N - 1",
+        "        IF a[j] < a[minIdx] THEN minIdx = j",
+        "    SWAP a[i] and a[minIdx]  (one swap per pass)",
+        "    PRINT the array",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[i = 0]\n  B --> C{\"i < N - 1?\"}\n  C -->|Yes| D[minIdx = i]\n  D --> E[\"Scan j = i+1 to N-1: if a[j] < a[minIdx] then minIdx = j\"]\n  E --> F[\"Swap a[i] and a[minIdx]\"]\n  F --> G[/Print the array/]\n  G --> H[i = i + 1]\n  H --> C\n  C -->|No| I([End])",
+      "sample": {
+        "id": "selection-trace",
+        "title": "Selection sort, pass by pass (ascending)",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int N = 5;\n    int a[N] = {64, 25, 12, 22, 11};\n    for (int i = 0; i < N - 1; i++) {\n        int minIdx = i;\n        for (int j = i + 1; j < N; j++) {\n            if (a[j] < a[minIdx]) {\n                minIdx = j;\n            }\n        }\n        int temp = a[i];\n        a[i] = a[minIdx];\n        a[minIdx] = temp;\n        cout << \"Pass \" << i + 1 << \":\";\n        for (int k = 0; k < N; k++) {\n            cout << \" \" << a[k];\n        }\n        cout << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Pass 1: 11 25 12 22 64\nPass 2: 11 12 25 22 64\nPass 3: 11 12 22 25 64\nPass 4: 11 12 22 25 64\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "N is the number of elements. A named constant keeps the loop limits easy to change."
+          },
+          {
+            "line": 6,
+            "text": "The unsorted array."
+          },
+          {
+            "line": 7,
+            "text": "Outer loop: one pass for each position i. It runs N - 1 times, because when only one element is left it is already in place."
+          },
+          {
+            "line": 8,
+            "text": "Start by assuming that the first unsorted element is the smallest. minIdx stores its index."
+          },
+          {
+            "line": 9,
+            "text": "Inner loop: look at every element AFTER position i. Elements before i are already sorted."
+          },
+          {
+            "line": 10,
+            "text": "Is this element smaller than the smallest we know? Use > here for descending order."
+          },
+          {
+            "line": 11,
+            "text": "Remember the new position. We only remember it; we do NOT swap here."
+          },
+          {
+            "line": 14,
+            "text": "The pass is over, so now we swap. temp holds a[i] safely."
+          },
+          {
+            "line": 15,
+            "text": "The smallest value moves to the front of the unsorted part."
+          },
+          {
+            "line": 16,
+            "text": "The old front value goes to the place where the smallest was."
+          },
+          {
+            "line": 19,
+            "text": "Prints the whole array after the pass, one number at a time."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 6,
+              "vars": {
+                "a": "{64, 25, 12, 22, 11}"
+              },
+              "note": "The array is created. Nothing is sorted yet.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "0"
+              },
+              "note": "Pass 1 starts with i = 0. The whole array (index 0 to 4) is the unsorted part.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "minIdx": "0"
+              },
+              "note": "Guess: the smallest value is at index 0 (that is 64). minIdx remembers the INDEX of the smallest value seen so far.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "minIdx": "4"
+              },
+              "note": "The inner loop looks at 25, 12, 22 and 11. Each time it meets a smaller value, minIdx moves (to 1, then 2, then 4). The smallest is 11 at index 4. Nothing was swapped yet.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "a": "{11, 25, 12, 22, 64}",
+                "temp": "64"
+              },
+              "note": "Now ONE swap: 64 and 11 trade places. 11 is in its final place.",
+              "out": ""
+            },
+            {
+              "line": 21,
+              "vars": {},
+              "note": "Print the array after pass 1.",
+              "out": "Pass 1: 11 25 12 22 64\n"
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "1"
+              },
+              "note": "Pass 2 starts with i = 1. Index 0 is sorted. Only index 1 to 4 is unsorted.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "minIdx": "1"
+              },
+              "note": "Guess: the smallest of the unsorted part is at index 1 (25).",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "minIdx": "2"
+              },
+              "note": "12 is smaller than 25, so minIdx = 2. Then 22 and 64 are not smaller than 12. The smallest is 12.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "a": "{11, 12, 25, 22, 64}",
+                "temp": "25"
+              },
+              "note": "One swap: 25 and 12 trade places.",
+              "out": ""
+            },
+            {
+              "line": 21,
+              "vars": {},
+              "note": "Print the array after pass 2.",
+              "out": "Pass 2: 11 12 25 22 64\n"
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "2"
+              },
+              "note": "Pass 3 starts with i = 2. Unsorted part: 25, 22, 64.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "minIdx": "2"
+              },
+              "note": "Guess: smallest is at index 2 (25).",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "minIdx": "3"
+              },
+              "note": "22 is smaller than 25, so minIdx = 3. 64 is not smaller.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "a": "{11, 12, 22, 25, 64}",
+                "temp": "25"
+              },
+              "note": "One swap: 25 and 22 trade places.",
+              "out": ""
+            },
+            {
+              "line": 21,
+              "vars": {},
+              "note": "Print the array after pass 3.",
+              "out": "Pass 3: 11 12 22 25 64\n"
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "3"
+              },
+              "note": "Pass 4 starts with i = 3. Unsorted part: 25 and 64.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "minIdx": "3"
+              },
+              "note": "Guess: smallest is at index 3 (25).",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "minIdx": "3"
+              },
+              "note": "Is 64 < 25? No. minIdx stays 3, so the smallest is already in place.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "a": "{11, 12, 22, 25, 64}",
+                "temp": "25"
+              },
+              "note": "The code still swaps, but a[3] swaps with itself, so nothing changes.",
+              "out": ""
+            },
+            {
+              "line": 21,
+              "vars": {},
+              "note": "Print the array after pass 4. Four passes (N - 1) are enough: the last element is automatically in place.",
+              "out": "Pass 4: 11 12 22 25 64\n"
+            },
+            {
+              "line": 23,
+              "vars": {},
+              "note": "The program ends. The array is sorted in ascending order.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "a": "int[5]",
+            "i": "int",
+            "minIdx": "int",
+            "temp": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read 5 exam scores and sort them from highest to lowest with selection sort. Print the array after each pass, then the highest score.",
+      "pseudocode": [
+        "START",
+        "READ 5 scores into a",
+        "FOR i = 0 TO N - 2",
+        "    SET maxIdx = i",
+        "    FOR j = i + 1 TO N - 1",
+        "        IF a[j] > a[maxIdx] THEN maxIdx = j",
+        "    SWAP a[i] and a[maxIdx]",
+        "    PRINT the array",
+        "PRINT a[0]",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read 5 scores/]\n  B --> C[i = 0]\n  C --> D{\"i < N - 1?\"}\n  D -->|Yes| E[maxIdx = i]\n  E --> F[\"Scan j = i+1 to N-1: if a[j] > a[maxIdx] then maxIdx = j\"]\n  F --> G[\"Swap a[i] and a[maxIdx]\"]\n  G --> H[/Print the array/]\n  H --> I[i = i + 1]\n  I --> D\n  D -->|No| J[/\"Print a[0]\"/]\n  J --> K([End])",
+      "sample": {
+        "id": "selection-descending",
+        "title": "Selection sort in descending order",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int N = 5;\n    int a[N];\n    for (int i = 0; i < N; i++) {\n        cin >> a[i];\n    }\n    for (int i = 0; i < N - 1; i++) {\n        int maxIdx = i;\n        for (int j = i + 1; j < N; j++) {\n            if (a[j] > a[maxIdx]) {\n                maxIdx = j;\n            }\n        }\n        int temp = a[i];\n        a[i] = a[maxIdx];\n        a[maxIdx] = temp;\n        cout << \"Pass \" << i + 1 << \":\";\n        for (int k = 0; k < N; k++) {\n            cout << \" \" << a[k];\n        }\n        cout << endl;\n    }\n    cout << \"Highest score: \" << a[0] << endl;\n    return 0;\n}\n",
+        "stdin": "40 90 65 80 55",
+        "expectedOutput": "Pass 1: 90 40 65 80 55\nPass 2: 90 80 65 40 55\nPass 3: 90 80 65 40 55\nPass 4: 90 80 65 55 40\nHighest score: 90\n",
+        "explanation": [
+          {
+            "line": 8,
+            "text": "Reads the five scores into the array, one by one."
+          },
+          {
+            "line": 11,
+            "text": "For descending order we look for the LARGEST value, so the variable is called maxIdx."
+          },
+          {
+            "line": 13,
+            "text": "The only change from ascending order: the sign is > instead of <."
+          },
+          {
+            "line": 17,
+            "text": "Swap the largest value into position i, exactly like before: one swap per pass."
+          },
+          {
+            "line": 22,
+            "text": "Print the array after each pass."
+          },
+          {
+            "line": 26,
+            "text": "After sorting in descending order the largest score is at index 0."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a program that sorts {29, 10, 14, 37, 13} in ascending order using selection sort. Swap only when needed. Print the sorted array, the number of comparisons and the number of swaps.",
+      "pseudocode": [
+        "START",
+        "SET comparisons = 0, swaps = 0",
+        "FOR i = 0 TO N - 2",
+        "    SET minIdx = i",
+        "    FOR j = i + 1 TO N - 1",
+        "        ADD 1 to comparisons",
+        "        IF a[j] < a[minIdx] THEN minIdx = j",
+        "    IF minIdx != i THEN swap a[i], a[minIdx] and ADD 1 to swaps",
+        "PRINT sorted array, comparisons, swaps",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[comparisons = 0, swaps = 0]\n  B --> C[i = 0]\n  C --> D{\"i < N - 1?\"}\n  D -->|Yes| E[minIdx = i]\n  E --> F[\"Scan j: comparisons++, if a[j] < a[minIdx] then minIdx = j\"]\n  F --> G{\"minIdx != i?\"}\n  G -->|Yes| H[\"Swap a[i], a[minIdx]; swaps++\"]\n  G -->|No| I[i = i + 1]\n  H --> I\n  I --> D\n  D -->|No| J[/Print array, comparisons, swaps/]\n  J --> K([End])",
+      "sample": {
+        "id": "selection-count",
+        "title": "Count comparisons and swaps",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int N = 5;\n    int a[N] = {29, 10, 14, 37, 13};\n    int comparisons = 0;\n    int swaps = 0;\n    for (int i = 0; i < N - 1; i++) {\n        int minIdx = i;\n        for (int j = i + 1; j < N; j++) {\n            comparisons++;\n            if (a[j] < a[minIdx]) {\n                minIdx = j;\n            }\n        }\n        if (minIdx != i) {\n            int temp = a[i];\n            a[i] = a[minIdx];\n            a[minIdx] = temp;\n            swaps++;\n        }\n    }\n    cout << \"Sorted:\";\n    for (int k = 0; k < N; k++) {\n        cout << \" \" << a[k];\n    }\n    cout << endl;\n    cout << \"Comparisons: \" << comparisons << endl;\n    cout << \"Swaps: \" << swaps << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Sorted: 10 13 14 29 37\nComparisons: 10\nSwaps: 3\n",
+        "explanation": [
+          {
+            "line": 7,
+            "text": "Two counters let us measure the work done by the algorithm."
+          },
+          {
+            "line": 12,
+            "text": "Runs once for every pair examined: 4 + 3 + 2 + 1 = 10 times for N = 5."
+          },
+          {
+            "line": 17,
+            "text": "Swap only when the smallest is NOT already in place. This skips useless swaps."
+          },
+          {
+            "line": 21,
+            "text": "Counts real swaps. It can never be more than N - 1."
+          },
+          {
+            "line": 29,
+            "text": "10 comparisons: always N(N-1)/2, whatever the order of the data."
+          },
+          {
+            "line": 30,
+            "text": "3 swaps. Passes 1, 2 and 4 needed one swap each; pass 3 found 14 already in place."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Selection sort",
+      "when": "Finds the smallest (or largest) of the unsorted part, then swaps once per pass. Passes: N - 1. Swaps: at most N - 1.",
+      "example": "for (j = i + 1; j < N; j++) if (a[j] < a[minIdx]) minIdx = j;  then swap a[i], a[minIdx]"
+    },
+    {
+      "way": "Bubble sort",
+      "when": "Compares neighbours and swaps them straight away. Passes: up to N - 1. Swaps: can be about N(N-1)/2 in the worst case.",
+      "example": "for (j = 0; j < N - 1 - pass; j++) if (a[j] > a[j + 1]) swap a[j] and a[j + 1];"
+    },
+    {
+      "way": "Comparisons: bubble vs selection",
+      "when": "Both make about N(N-1)/2 comparisons in the worst case. Selection sort ALWAYS makes N(N-1)/2, even for sorted data.",
+      "example": "N = 5 gives 10 comparisons"
+    },
+    {
+      "way": "Already sorted data",
+      "when": "Bubble sort with a swapped flag stops after one pass. Selection sort still does every comparison.",
+      "example": "{1, 2, 3, 4, 5}: bubble = 4 comparisons, selection = 10"
+    },
+    {
+      "way": "Ascending order",
+      "when": "Look for the smallest value.",
+      "example": "if (a[j] < a[minIdx]) minIdx = j;"
+    },
+    {
+      "way": "Descending order",
+      "when": "Look for the largest value. Only the sign changes.",
+      "example": "if (a[j] > a[maxIdx]) maxIdx = j;"
+    },
+    {
+      "way": "Skip a useless swap",
+      "when": "When the smallest is already at position i, swapping does nothing, so you may test first.",
+      "example": "if (minIdx != i) { /* swap */ }"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "for (int i = 0; i < N - 1; i++) {\n    int minIdx = i;\n    for (int j = i + 1; j < N; j++) {\n        if (a[j] < a[minIdx]) minIdx = j;\n    }\n}\nint temp = a[0];\na[0] = a[minIdx];\na[minIdx] = temp;",
+      "right": "for (int i = 0; i < N - 1; i++) {\n    int minIdx = i;\n    for (int j = i + 1; j < N; j++) {\n        if (a[j] < a[minIdx]) minIdx = j;\n    }\n    int temp = a[i];\n    a[i] = a[minIdx];\n    a[minIdx] = temp;\n}",
+      "error": "error: 'minIdx' was not declared in this scope (the swap is outside the loop where minIdx lives)"
+    },
+    {
+      "wrong": "a[i] = a[minIdx];\na[minIdx] = a[i];",
+      "right": "int temp = a[i];\na[i] = a[minIdx];\na[minIdx] = temp;",
+      "error": "No compiler error. The first line overwrites a[i], the old value is lost, and both places end up with the same number."
+    },
+    {
+      "wrong": "if (a[j] < minIdx) minIdx = j;",
+      "right": "if (a[j] < a[minIdx]) minIdx = j;",
+      "error": "No compiler error. It compares a VALUE with an INDEX, so the array is sorted wrongly."
+    },
+    {
+      "wrong": "for (int j = 0; j < N; j++) {\n    if (a[j] < a[minIdx]) minIdx = j;\n}",
+      "right": "for (int j = i + 1; j < N; j++) {\n    if (a[j] < a[minIdx]) minIdx = j;\n}",
+      "error": "No compiler error. Starting j at 0 searches the sorted part again, so the result is wrong (for {5, 1, 4, 2, 8} the program prints 5 4 2 1 8)."
+    }
+  ],
+  "examTips": [
+    "Write the array after EVERY pass, as in the notes. Examiners give marks for each pass.",
+    "Say it clearly: one swap per pass, N - 1 passes, N(N-1)/2 comparisons.",
+    "Remember minIdx stores an index, not a value. Compare a[j] with a[minIdx].",
+    "For descending order only change < to >. Do not rewrite the whole program.",
+    "If asked to compare with bubble sort, mention: selection sort has fewer swaps, but no early exit when the data is already sorted."
+  ],
+  "romanSummary": [
+    "Selection sort mein har pass mein unsorted hisse ka sab se chhota element dhoondte hain aur usay pehli jagah se swap karte hain.",
+    "minIdx variable chhote element ki jagah (index) yaad rakhta hai. Swap sirf ek dafa, inner loop khatam hone ke baad hota hai.",
+    "N elements ke liye N - 1 passes lagte hain aur comparisons hamesha N(N-1)/2 hote hain.",
+    "Bubble sort mein swaps bohat hote hain, selection sort mein ziyada se ziyada N - 1.",
+    "Descending ke liye sirf comparison ka sign ulta karein: a[j] > a[maxIdx]."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In selection sort, how many swaps does ONE pass make (at most)?",
+      "options": [
+        "One",
+        "As many as there are elements",
+        "N - 1",
+        "Zero, selection sort never swaps"
+      ],
+      "answer": "One",
+      "hint": "Selection sort first finds, then swaps.",
+      "explanation": "A pass scans the unsorted part to find the smallest value and then makes a single swap to put it in front. That is why the whole sort needs at most N - 1 swaps."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does the variable minIdx store?",
+      "options": [
+        "The index of the smallest value found so far",
+        "The smallest value itself",
+        "The number of swaps",
+        "The index of the last element"
+      ],
+      "answer": "The index of the smallest value found so far",
+      "hint": "Idx is short for index.",
+      "explanation": "We store the position, not the value, because we need the position to do the swap later."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this code print?\n\nint a[5] = {6, 8, 2, 9, 1};\nfor (int i = 0; i < 2; i++) {\n    int minIdx = i;\n    for (int j = i + 1; j < 5; j++) {\n        if (a[j] < a[minIdx]) minIdx = j;\n    }\n    int t = a[i]; a[i] = a[minIdx]; a[minIdx] = t;\n}\nfor (int k = 0; k < 5; k++) cout << a[k] << \" \";",
+      "answer": "1 2 8 9 6",
+      "hint": "Do exactly 2 passes only, not the full sort.",
+      "explanation": "Pass 1: the smallest is 1 (index 4); it swaps with 6, giving 1 8 2 9 6. Pass 2: the smallest of 8 2 9 6 is 2 (index 2); it swaps with 8, giving 1 2 8 9 6. The loop stops after two passes, so the array is only partly sorted."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this code print?\n\nint n = 6;\nint count = 0;\nfor (int i = 0; i < n - 1; i++) {\n    for (int j = i + 1; j < n; j++) {\n        count++;\n    }\n}\ncout << count;",
+      "answer": "15",
+      "hint": "Add the inner loop run counts: 5 + 4 + ...",
+      "explanation": "The inner loop runs 5, 4, 3, 2, 1 times: 15 in total. This is n(n-1)/2 = 6 x 5 / 2, the number of comparisons selection sort always makes for 6 elements."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This swap is meant to exchange a[i] and a[minIdx], but afterwards both places hold the same number. Fix it.\n\na[i] = a[minIdx];\na[minIdx] = a[i];",
+      "answer": "int temp = a[i];\na[i] = a[minIdx];\na[minIdx] = temp;",
+      "hint": "Where does the old value of a[i] go?",
+      "explanation": "The first line destroys the old a[i]. Save it in temp first, then copy, then put temp into a[minIdx]."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank so the code finds the largest element (descending selection sort).\n\nint maxIdx = i;\nfor (int j = i + 1; j < N; j++) {\n    if (a[j] ____ a[maxIdx]) maxIdx = j;\n}",
+      "answer": ">",
+      "hint": "Largest means we look for a bigger value.",
+      "explanation": "For descending order we remember the position of a LARGER value, so the sign is >."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write the sorting loops of a selection sort for int a[5] = {9, 4, 7, 1, 3} that sorts it in ascending order. Use a minIdx variable and only one swap per pass.",
+      "answer": "for (int i = 0; i < 4; i++) {\n    int minIdx = i;\n    for (int j = i + 1; j < 5; j++) {\n        if (a[j] < a[minIdx]) minIdx = j;\n    }\n    int temp = a[i];\n    a[i] = a[minIdx];\n    a[minIdx] = temp;\n}",
+      "hint": "Outer loop to N - 2, inner loop from i + 1, swap after the inner loop.",
+      "explanation": "The outer loop runs N - 1 = 4 times. The inner loop finds minIdx. The swap sits after the inner loop, so there is exactly one swap per pass."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "How many comparisons does selection sort make for 5 elements that are ALREADY sorted?",
+      "options": [
+        "10",
+        "4",
+        "0",
+        "5"
+      ],
+      "answer": "10",
+      "hint": "Selection sort has no early exit.",
+      "explanation": "It always compares 4 + 3 + 2 + 1 = 10 pairs, whatever the order of the data. Bubble sort with an early-exit flag could stop after one pass of 4 comparisons."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In ascending selection sort, each pass selects the ____ element of the unsorted part and moves it to the front.",
+      "options": [
+        "smallest",
+        "middle",
+        "last",
+        "random"
+      ],
+      "answer": "smallest",
+      "hint": "Think about the first position of the unsorted part.",
+      "explanation": "For ascending order each pass picks the smallest value of the unsorted part."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "For N elements, how many passes does selection sort need?",
+      "options": [
+        "N - 1",
+        "N",
+        "N * N",
+        "2"
+      ],
+      "answer": "N - 1",
+      "hint": "The last element is automatically in place.",
+      "explanation": "After N - 1 elements are placed, the last one has nowhere else to go."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is the main difference from bubble sort?",
+      "options": [
+        "Selection sort makes at most one swap per pass",
+        "Selection sort never compares elements",
+        "Selection sort needs two arrays",
+        "Selection sort only works for ascending order"
+      ],
+      "answer": "Selection sort makes at most one swap per pass",
+      "hint": "Compare the number of swaps.",
+      "explanation": "Bubble sort swaps neighbours many times in a pass. Selection sort finds the smallest first and swaps once."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which change turns the ascending selection sort into a descending one?",
+      "options": [
+        "Change a[j] < a[minIdx] to a[j] > a[minIdx]",
+        "Change N - 1 to N - 2",
+        "Remove the temp variable",
+        "Start j at 0"
+      ],
+      "answer": "Change a[j] < a[minIdx] to a[j] > a[minIdx]",
+      "hint": "Only the comparison sign changes.",
+      "explanation": "Looking for the largest instead of the smallest reverses the order. Everything else stays the same."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Selection sort on an already sorted array of N elements makes how many comparisons?",
+      "options": [
+        "N(N-1)/2, the same as for any other order",
+        "N - 1",
+        "0",
+        "N"
+      ],
+      "answer": "N(N-1)/2, the same as for any other order",
+      "hint": "There is no early exit in the basic version.",
+      "explanation": "The inner loop always scans the whole unsorted part, so the comparison count does not depend on the data."
+    }
+  ],
+  "sources": [
+    "Sorting a one-dimensional array",
+    "Selection sort",
+    "Comparison of bubble and selection sort"
+  ]
+}

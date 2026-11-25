@@ -1,0 +1,675 @@
+{
+  "slug": "pointer-arithmetic",
+  "week": 9,
+  "title": "Pointer arithmetic: moving a pointer through memory",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "array",
+      "title": "Element i is *(p + i)",
+      "mode": "access",
+      "values": [
+        10,
+        20,
+        30,
+        40,
+        50
+      ]
+    },
+    {
+      "kind": "memory",
+      "title": "p + 1 moves one whole int (made-up addresses)",
+      "cells": [
+        {
+          "name": "arr[0]",
+          "type": "int",
+          "addr": "0x1000"
+        },
+        {
+          "name": "arr[1]",
+          "type": "int",
+          "addr": "0x1004"
+        },
+        {
+          "name": "arr[2]",
+          "type": "int",
+          "addr": "0x1008"
+        },
+        {
+          "name": "arr[3]",
+          "type": "int",
+          "addr": "0x100C"
+        },
+        {
+          "name": "arr[4]",
+          "type": "int",
+          "addr": "0x1010"
+        },
+        {
+          "name": "p",
+          "type": "int*",
+          "addr": "0x1018"
+        }
+      ],
+      "steps": [
+        {
+          "code": "int arr[5] = {10, 20, 30, 40, 50};",
+          "note": "Five ints, each 4 bytes after the one before: 0x1000, 0x1004, 0x1008, 0x100C, 0x1010.",
+          "values": {
+            "arr[0]": "10",
+            "arr[1]": "20",
+            "arr[2]": "30",
+            "arr[3]": "40",
+            "arr[4]": "50"
+          },
+          "points": {}
+        },
+        {
+          "code": "int *p = arr;",
+          "note": "arr means the address of its first element. p stores 0x1000 and points to arr[0].",
+          "values": {
+            "p": "0x1000"
+          },
+          "points": {
+            "p": "arr[0]"
+          }
+        },
+        {
+          "code": "cout << *(p + i);   // i = 2",
+          "note": "p + 2 is the address 0x1000 + 2 x 4 = 0x1008, which is arr[2]. The pointer p itself does not move. *(p + 2) is 30, the same as arr[2].",
+          "values": {},
+          "points": {
+            "p": "arr[0]"
+          }
+        },
+        {
+          "code": "p++;",
+          "note": "p++ moves p to the next int: 0x1004, not 0x1001. Now p points to arr[1].",
+          "values": {
+            "p": "0x1004"
+          },
+          "points": {
+            "p": "arr[1]"
+          }
+        },
+        {
+          "code": "p += 2;",
+          "note": "p moves two ints (8 bytes) ahead to 0x100C and points to arr[3], value 40.",
+          "values": {
+            "p": "0x100C"
+          },
+          "points": {
+            "p": "arr[3]"
+          }
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can say where p + 1, p++ and p - q end up, use *(p + i) instead of arr[i], compare pointers, and name the arithmetic that is NOT allowed.",
+  "warmup": "Imagine a row of seats in a cinema, each seat the same width. If you are on seat 5 and you move 3 seats to the right, you do not measure in centimetres. You just count seats: you are now on seat 8. A pointer does the same. p + 3 means move three ELEMENTS forward, and the computer works out the bytes for you: 3 ints = 12 bytes.",
+  "definition": "Pointer arithmetic means adding or subtracting whole numbers to a pointer. Adding 1 does not add 1 byte. It moves the pointer to the next element of its own type, which means it adds sizeof(type) bytes. For an int * on our computers, p + 1 is 4 bytes ahead. The array name is the address of the first element, so for int *p = arr; the expression *(p + i) is the same as arr[i].",
+  "howItWorks": "Run the memory picture. The array elements are 4 bytes apart, so the addresses go 0x1000, 0x1004, 0x1008 and so on. Here is the rule: p + n has the address p + n x sizeof(type). If p is an int * at 1000, then p + 1 is 1004, p + 3 is 1012, p++ makes p itself become 1004, and p-- moves it back. Notice the difference between p + 1 (gives a new address, p stays) and p++ (changes p). Two pointers into the same array can be subtracted: q - p gives the number of elements between them (not bytes). They can also be compared with == != < > <= >=. What is NOT allowed: adding two pointers, multiplying or dividing a pointer, and subtracting pointers of different types or different arrays. Last, a trap: *p++ means take the value, then move the pointer (the ++ belongs to p). (*p)++ means increase the value p points to, and p stays. And stay inside the array: moving a pointer beyond the last element and using * there reads memory that is not yours.",
+  "syntax": "int arr[5] = {10, 20, 30, 40, 50};\nint *p = arr;          // p points to arr[0]\n\n*(p + 2)    // 30, same as arr[2]; p does not move\np++;        // p now points to arr[1]\np--;        // back to arr[0]\np += 2;     // p now points to arr[2]\n\nint *q = &arr[4];\ncout << q - p;     // number of ELEMENTS between them\ncout << (p < q);   // comparison: 1 (true)\n\n*p++       // use the value, then move p\n(*p)++     // increase the value, p stays",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Create an array of 5 numbers and a pointer p to its start. Print every element using *(p + i). Then move p with p++ and p += 2 and print what it points to.",
+      "pseudocode": [
+        "START",
+        "arr = {10, 20, 30, 40, 50}",
+        "p = address of arr[0]",
+        "FOR i = 0 TO 4: PRINT *(p + i)",
+        "p = p + 1, PRINT *p",
+        "p = p + 2, PRINT *p",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"arr = 10 20 30 40 50; p = arr\"]\n  B --> C{\"i < 5 ?\"}\n  C -->|Yes| D[/\"Print *(p + i)\"/]\n  D --> E[\"i++\"]\n  E --> C\n  C -->|No| F[\"p++\"]\n  F --> G[/\"Print *p\"/]\n  G --> H[\"p += 2\"]\n  H --> I[/\"Print *p\"/]\n  I --> J([End])",
+      "sample": {
+        "id": "walk-array",
+        "title": "Walking through an array with a pointer",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int arr[5] = {10, 20, 30, 40, 50};\n    int *p = arr;\n    for (int i = 0; i < 5; i++) {\n        cout << \"*(p + \" << i << \") = \" << *(p + i) << endl;\n    }\n    p++;\n    cout << \"After p++: *p = \" << *p << endl;\n    p += 2;\n    cout << \"After p += 2: *p = \" << *p << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "*(p + 0) = 10\n*(p + 1) = 20\n*(p + 2) = 30\n*(p + 3) = 40\n*(p + 4) = 50\nAfter p++: *p = 20\nAfter p += 2: *p = 40\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "arr is the address of the first element, so p points to arr[0]."
+          },
+          {
+            "line": 8,
+            "text": "p + i is the address of element i. The * reads the value there. It is the same as arr[i]."
+          },
+          {
+            "line": 10,
+            "text": "Moves p to the next int (4 bytes ahead)."
+          },
+          {
+            "line": 12,
+            "text": "Moves p two elements forward, to arr[3]."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "arr": "{10, 20, 30, 40, 50}"
+              },
+              "note": "Five ints side by side in memory, 4 bytes each.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "p": "&arr[0]"
+              },
+              "note": "An array name stands for the address of its first element. So p points to arr[0].",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "0"
+              },
+              "note": "The loop starts with i = 0.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "0"
+              },
+              "note": "p + 0 is p itself, so *(p + 0) is arr[0] = 10. p does not move.",
+              "out": "*(p + 0) = 10\n"
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "1"
+              },
+              "note": "p + 1 is the address 1 elements after p. *(p + 1) reads arr[1] = 20. p itself does NOT move.",
+              "out": "*(p + 1) = 20\n"
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "2"
+              },
+              "note": "p + 2 is the address 2 elements after p. *(p + 2) reads arr[2] = 30. p itself does NOT move.",
+              "out": "*(p + 2) = 30\n"
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "3"
+              },
+              "note": "p + 3 is the address 3 elements after p. *(p + 3) reads arr[3] = 40. p itself does NOT move.",
+              "out": "*(p + 3) = 40\n"
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "4"
+              },
+              "note": "p + 4 is the address 4 elements after p. *(p + 4) reads arr[4] = 50. p itself does NOT move.",
+              "out": "*(p + 4) = 50\n"
+            },
+            {
+              "line": 10,
+              "vars": {
+                "p": "&arr[1]"
+              },
+              "note": "p++ moves p to the NEXT int: 4 bytes ahead, not 1. Now p points to arr[1].",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "*p is arr[1] = 20.",
+              "out": "After p++: *p = 20\n"
+            },
+            {
+              "line": 12,
+              "vars": {
+                "p": "&arr[3]"
+              },
+              "note": "p += 2 moves p two ints (8 bytes) ahead. Now p points to arr[3].",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "*p is arr[3] = 40.",
+              "out": "After p += 2: *p = 40\n"
+            }
+          ],
+          "types": {
+            "arr": "int[5]",
+            "p": "int*",
+            "i": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "For an array of 6 ints, find how many elements and how many bytes lie between a pointer to the first and a pointer to the last element, compare them, and move a third pointer 3 elements ahead.",
+      "pseudocode": [
+        "START",
+        "arr has 6 ints",
+        "first = &arr[0], last = &arr[5]",
+        "PRINT last - first",
+        "PRINT bytes between",
+        "PRINT first < last",
+        "mid = first + 3, PRINT *mid and mid - first",
+        "PRINT first + 5 == last",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"first = &arr[0]; last = &arr[5]\"]\n  B --> C[/\"Print last - first\"/]\n  C --> D[/\"Print bytes between\"/]\n  D --> E[/\"Print first < last\"/]\n  E --> F[\"mid = first + 3\"]\n  F --> G[/\"Print *mid, mid - first\"/]\n  G --> H[/\"Print first + 5 == last\"/]\n  H --> I([End])",
+      "sample": {
+        "id": "pointer-difference",
+        "title": "Difference and comparison of pointers",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int arr[6] = {5, 10, 15, 20, 25, 30};\n    int *first = &arr[0];\n    int *last = &arr[5];\n    cout << \"Elements between: \" << last - first << endl;\n    cout << \"Bytes between: \" << (long long)last - (long long)first << endl;\n    cout << \"first < last? \" << (first < last) << endl;\n    int *mid = first + 3;\n    cout << \"*mid = \" << *mid << endl;\n    cout << \"mid - first = \" << mid - first << endl;\n    cout << \"first + 5 == last? \" << (first + 5 == last) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Elements between: 5\nBytes between: 20\nfirst < last? 1\n*mid = 20\nmid - first = 3\nfirst + 5 == last? 1\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "first points to the first element."
+          },
+          {
+            "line": 7,
+            "text": "last points to the last element, 5 elements later."
+          },
+          {
+            "line": 8,
+            "text": "Subtracting two pointers into the same array gives the number of ELEMENTS between them: 5."
+          },
+          {
+            "line": 9,
+            "text": "As plain numbers the addresses are 5 x 4 = 20 bytes apart. The pointer difference already divided by 4 for us."
+          },
+          {
+            "line": 10,
+            "text": "Pointers into the same array can be compared. first comes earlier, so this is true (1)."
+          },
+          {
+            "line": 11,
+            "text": "first + 3 is the address of arr[3]."
+          },
+          {
+            "line": 14,
+            "text": "Moving first forward by 5 elements lands exactly on last: true."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Exam style: trace the program and write its output. It tests the difference between *p++ and (*p)++.",
+      "pseudocode": [
+        "START",
+        "a = {3, 6, 9, 12}, p = a",
+        "PRINT *p then move p forward (*p++)",
+        "PRINT *p",
+        "INCREASE the value p points to ((*p)++)",
+        "PRINT a[1] and *p",
+        "p = p + 2",
+        "PRINT *p and p - a",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"a = 3 6 9 12; p = a\"]\n  B --> C[/\"Print *p++ : 3\"/]\n  C --> D[/\"Print *p : 6\"/]\n  D --> E[\"(*p)++ makes a[1] = 7\"]\n  E --> F[/\"Print a[1] and *p\"/]\n  F --> G[\"p = p + 2\"]\n  G --> H[/\"Print *p and p - a\"/]\n  H --> I([End])",
+      "sample": {
+        "id": "star-p-plus-plus",
+        "title": "The *p++ versus (*p)++ trap",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[4] = {3, 6, 9, 12};\n    int *p = a;\n    cout << *p++ << endl;\n    cout << *p << endl;\n    (*p)++;\n    cout << a[1] << \" \" << *p << endl;\n    p = p + 2;\n    cout << *p << \" \" << p - a << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "3\n6\n7 7\n12 3\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "p points to a[0]."
+          },
+          {
+            "line": 7,
+            "text": "Use the value, then move the pointer."
+          },
+          {
+            "line": 9,
+            "text": "The brackets make ++ act on the value, not on the pointer."
+          },
+          {
+            "line": 11,
+            "text": "Moves p two elements forward."
+          },
+          {
+            "line": 12,
+            "text": "Pointer minus array start gives the element index: 3."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "a": "{3, 6, 9, 12}"
+              },
+              "note": "An array of 4 ints.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "p": "&a[0]"
+              },
+              "note": "p points to a[0].",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "p": "&a[1]"
+              },
+              "note": "*p++ reads the value p points to (3) and THEN moves p to the next element. The ++ belongs to the pointer.",
+              "out": "3\n"
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "p now points to a[1], so *p is 6.",
+              "out": "6\n"
+            },
+            {
+              "line": 9,
+              "vars": {
+                "a": "{3, 7, 9, 12}"
+              },
+              "note": "(*p)++ increases the VALUE p points to. a[1] goes from 6 to 7. p does not move.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "a[1] is 7 and *p is the same box, 7.",
+              "out": "7 7\n"
+            },
+            {
+              "line": 11,
+              "vars": {
+                "p": "&a[3]"
+              },
+              "note": "p moves two elements forward from a[1] to a[3].",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "*p is a[3] = 12. p - a counts the elements between a[0] and a[3]: 3.",
+              "out": "12 3\n"
+            }
+          ],
+          "types": {
+            "a": "int[4]",
+            "p": "int*"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "p + n",
+      "when": "You want the address n elements ahead without moving p.",
+      "example": "int *r = p + 2;"
+    },
+    {
+      "way": "p - n",
+      "when": "You want the address n elements behind.",
+      "example": "int *r = p - 1;"
+    },
+    {
+      "way": "p++ / p--",
+      "when": "You want to move the pointer itself one element forward or back.",
+      "example": "p++;"
+    },
+    {
+      "way": "p += n / p -= n",
+      "when": "Move the pointer n elements at once.",
+      "example": "p += 2;"
+    },
+    {
+      "way": "q - p",
+      "when": "Number of elements between two pointers in the same array.",
+      "example": "int count = q - p;"
+    },
+    {
+      "way": "Comparing: ==, !=, <, >",
+      "when": "Test whether two pointers are the same place, or which comes first in an array.",
+      "example": "if (p < q) { ... }"
+    },
+    {
+      "way": "*(p + i)",
+      "when": "Read element i using a pointer. Same as arr[i].",
+      "example": "cout << *(p + i);"
+    },
+    {
+      "way": "*p++ and (*p)++",
+      "when": "*p++ uses the value then moves p. (*p)++ increases the value.",
+      "example": "int x = *p++;\n(*p)++;"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int *r = p + q;   // adding two pointers",
+      "right": "int n = q - p;   // subtract to get the distance",
+      "error": "error: invalid operands of types 'int*' and 'int*' to binary 'operator+'"
+    },
+    {
+      "wrong": "int *r = p * 2;",
+      "right": "int *r = p + 2;",
+      "error": "error: invalid operands of types 'int*' and 'int' to binary 'operator*'"
+    },
+    {
+      "wrong": "cout << dp - p;   // double* minus int*",
+      "right": "cout << q - p;   // both are int* in the same array",
+      "error": "error: invalid operands of types 'double*' and 'int*' to binary 'operator-'"
+    },
+    {
+      "wrong": "int arr[5] = {1, 2, 3, 4, 5};\nint *p = arr;\ncout << *(p + 5);   // one past the last element",
+      "right": "cout << *(p + 4);   // the last element",
+      "error": "No compiler error. The program reads memory beyond the array, which gives a garbage value or can crash. Valid elements are *(p + 0) to *(p + 4)."
+    },
+    {
+      "wrong": "int x = *p++;   // student wants x = value and then value + 1",
+      "right": "int x = *p;\n(*p)++;   // increase the value, not the pointer",
+      "error": "No compiler error. *p++ moves the POINTER, so p now points to the next element and the value is not increased."
+    }
+  ],
+  "examTips": [
+    "Learn the rule: p + n moves n x sizeof(type) bytes. For int * one step is 4 bytes, so p + 3 from 1000 is 1012.",
+    "*(p + i) is identical to arr[i]. Write both when an exam asks you to rewrite array code with pointers.",
+    "Pointer minus pointer gives ELEMENTS, not bytes. If the question wants bytes, multiply by the size of the type.",
+    "Allowed: pointer + integer, pointer - integer, ++, --, pointer - pointer, comparisons. NOT allowed: pointer + pointer, pointer * integer, pointer / integer.",
+    "Trace *p++ and (*p)++ carefully: first one moves p, second one changes the value. Draw an arrow and move it."
+  ],
+  "romanSummary": [
+    "Pointer mein 1 jama karne se 1 byte nahi, balke poora ek element aage jata hai. int * ke liye yeh 4 bytes hain.",
+    "p + i array ke i-th element ka address deta hai, aur *(p + i) bilkul arr[i] jaisa hai.",
+    "p++ pointer ko agle element par le jata hai aur p-- pichle par.",
+    "Ek hi array ke do pointers ka farq (q - p) elements ki ginti deta hai. Do pointers jama ya multiply nahi kar sakte.",
+    "*p++ pehle value use karta hai phir pointer aage karta hai, jab ke (*p)++ value ko barhata hai aur pointer wahin rehta hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "int *p holds the address 1000. What address is p + 1?",
+      "options": [
+        "1004",
+        "1001",
+        "1002",
+        "1010"
+      ],
+      "answer": "1004",
+      "hint": "Add the size of one int.",
+      "explanation": "p + 1 moves one int ahead: 1000 + 4 = 1004."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    int arr[4] = {2, 4, 6, 8};\n    int *p = arr;\n    cout << *(p + 3);\n    return 0;\n}",
+      "answer": "8",
+      "hint": "*(p + 3) is arr[3].",
+      "explanation": "p + 3 points to the fourth element, 8."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print? (two numbers)\n\n#include <iostream>\nusing namespace std;\nint main() {\n    int arr[4] = {5, 6, 7, 8};\n    int *p = arr;\n    p++;\n    p++;\n    cout << *p;\n    p--;\n    cout << \" \" << *p;\n    return 0;\n}",
+      "answer": "7 6",
+      "hint": "p moves forward twice, then back once.",
+      "explanation": "After two p++, p points to arr[2] = 7. After p-- it points to arr[1] = 6."
+    },
+    {
+      "id": "p4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "int *p is at 1000 and int *q is at 1012 (same array). What is q - p?",
+      "options": [
+        "3",
+        "12",
+        "1012",
+        "4"
+      ],
+      "answer": "3",
+      "hint": "The result counts elements, not bytes.",
+      "explanation": "12 bytes is 3 ints, so q - p is 3."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill the blank to print arr[3] using the pointer p (p points to arr[0]):\n\ncout << *(p + ____);",
+      "answer": "3",
+      "hint": "Element 3 is three elements after the start.",
+      "explanation": "*(p + 3) is arr[3]."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Sara wants the number of elements between p and q (both point into the same array) but this does not compile. Fix it:\n\nint n = p + q;",
+      "answer": "int n = q - p;",
+      "hint": "You cannot add two pointers.",
+      "explanation": "Subtracting two pointers into the same array gives how many elements lie between them."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "medium",
+      "prompt": "Write a program with int arr[5] = {1, 2, 3, 4, 5}; and a pointer p to it. Use *(p + i) in a loop to add all elements and print the sum.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int arr[5] = {1, 2, 3, 4, 5};\n    int *p = arr;\n    int sum = 0;\n    for (int i = 0; i < 5; i++) {\n        sum = sum + *(p + i);\n    }\n    cout << sum << endl;\n    return 0;\n}",
+      "hint": "Loop i from 0 to 4.",
+      "explanation": "The sum is 1+2+3+4+5 = 15."
+    },
+    {
+      "id": "p8",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print? (four numbers)\n\n#include <iostream>\nusing namespace std;\nint main() {\n    int a[3] = {10, 20, 30};\n    int *p = a;\n    int x = *p++;\n    int y = *p;\n    (*p)++;\n    cout << x << \" \" << y << \" \" << a[1] << \" \" << *p;\n    return 0;\n}",
+      "answer": "10 20 21 21",
+      "hint": "x takes the value then p moves. Then (*p)++ increases a value.",
+      "explanation": "x = 10 and p moves to a[1]. y = 20. (*p)++ makes a[1] 21, and *p is also 21."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "For an int pointer p, what does p + 1 do?",
+      "options": [
+        "Gives the address of the next int",
+        "Adds 1 byte to the address",
+        "Adds 1 to the value",
+        "Makes p null"
+      ],
+      "answer": "Gives the address of the next int",
+      "hint": "It moves by the size of the type.",
+      "explanation": "p + 1 adds sizeof(int) bytes, moving to the next element."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which expression is the same as arr[i] when int *p = arr;?",
+      "options": [
+        "*(p + i)",
+        "p + i",
+        "*p + i",
+        "&(p + i)"
+      ],
+      "answer": "*(p + i)",
+      "hint": "Move first, then read.",
+      "explanation": "*(p + i) reads the value at the address p + i, exactly arr[i]."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which operation on two pointers is NOT allowed?",
+      "options": [
+        "Adding them",
+        "Subtracting them (same array)",
+        "Comparing them",
+        "Checking if they are equal"
+      ],
+      "answer": "Adding them",
+      "hint": "It makes no sense to add two addresses.",
+      "explanation": "Pointer + pointer is not allowed. Subtraction and comparison are."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "int a[3] = {5, 6, 7}; int *p = a; What does *p++ evaluate to?",
+      "options": [
+        "5",
+        "6",
+        "7",
+        "The address of a[1]"
+      ],
+      "answer": "5",
+      "hint": "The value is read before p moves.",
+      "explanation": "*p++ uses the value at p (5) and then moves p to the next element."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "What does (*p)++ do?",
+      "options": [
+        "Increases the value p points to; p stays",
+        "Moves p to the next element",
+        "Does both",
+        "Does nothing"
+      ],
+      "answer": "Increases the value p points to; p stays",
+      "hint": "The brackets protect *p.",
+      "explanation": "The brackets make ++ act on the value, not the pointer."
+    }
+  ],
+  "sources": [
+    "9.3 Pointer Arithmetic",
+    "Walking through an array using pointer arithmetic",
+    "Precedence trap *p++ vs (*p)++",
+    "Allowed operations on pointers"
+  ]
+}

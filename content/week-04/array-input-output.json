@@ -1,0 +1,694 @@
+{
+  "slug": "array-input-output",
+  "week": 4,
+  "title": "Array input and output: filling and showing an array with a loop",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "array",
+      "title": "Array boxes: pick an index and read or change a value",
+      "mode": "access",
+      "values": [
+        70,
+        85,
+        62,
+        90,
+        78
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match the array idea with its meaning",
+      "pairs": [
+        {
+          "term": "marks[0]",
+          "meaning": "The FIRST element (index 0)"
+        },
+        {
+          "term": "marks[n - 1]",
+          "meaning": "The LAST element when the array holds n values"
+        },
+        {
+          "term": "for (i = 0; i < n; i++)",
+          "meaning": "The standard loop that visits every element once"
+        },
+        {
+          "term": "const int MAX = 100;",
+          "meaning": "The biggest size the array can ever need"
+        },
+        {
+          "term": "for (i = n - 1; i >= 0; i--)",
+          "meaning": "A loop that visits the elements in reverse order"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can read values into an array with a for loop and cin, display all elements, read the size first (up to a maximum), and print the array in reverse.",
+  "warmup": "Your teacher announces the marks of 5 students one by one. You write them in 5 boxes on a page: box 0, box 1, box 2, box 3, box 4. Later she says 'read them out again'. You start at the first box and go box by box to the last. An array in C++ works the same way. One loop fills the boxes, another loop reads them out. The loop counter is the box number.",
+  "definition": "An array is a row of boxes of the same type. Each box has a number called its index, and the first index is 0. To read a value into box i you write cin >> a[i]. To show it you write cout << a[i]. Because the boxes are numbered 0, 1, 2 and so on, a for loop with a counter i is the natural tool: the counter runs through the indexes and a[i] is the box for the current index.",
+  "howItWorks": "Step through the trace. The loop counter i starts at 0. Each time the loop runs, cin >> a[i] puts the next typed number into box i, then i grows by 1. When i reaches the size of the array the condition i < size becomes false and the loop stops. A second loop does the same walk, but with cout. Two rules to remember: (1) the valid indexes are 0 to size - 1, never size; (2) the array size must be known when you declare it, so when the user decides how many values to enter, you first declare a big array (const int MAX = 100;), then read n (how many values), check that n is not above MAX, and loop only up to n. To print in reverse, start the counter at n - 1 and count down to 0.",
+  "syntax": "const int MAX = 100;      // biggest size we allow\nint a[MAX];               // MAX boxes, indexes 0 .. MAX-1\nint n;                    // how many boxes we really use\ncin >> n;                 // read the size first (n must be <= MAX)\n\nfor (int i = 0; i < n; i++) {   // fill: i = 0, 1, ... n-1\n    cin >> a[i];                // read into box i\n}\n\nfor (int i = 0; i < n; i++) {   // show in order\n    cout << a[i] << \" \";\n}\n\nfor (int i = n - 1; i >= 0; i--) {  // show in reverse\n    cout << a[i] << \" \";\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Read 3 numbers into an array and print each one with its index.",
+      "pseudocode": [
+        "START",
+        "DECLARE array a of 3 integers",
+        "FOR i = 0 TO 2: READ a[i]",
+        "FOR i = 0 TO 2: PRINT i and a[i]",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"i = 0\"]\n  B --> C{i < 3?}\n  C -->|Yes| D[/\"Read a[i]\"/]\n  D --> E[\"i = i + 1\"]\n  E --> C\n  C -->|No| F[\"i = 0\"]\n  F --> G{i < 3?}\n  G -->|Yes| H[/\"Print a[i]\"/]\n  H --> I[\"i = i + 1\"]\n  I --> G\n  G -->|No| J([End])",
+      "sample": {
+        "id": "fill-and-show",
+        "title": "Fill an array and show it",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[3];\n    for (int i = 0; i < 3; i++) {\n        cin >> a[i];\n    }\n    for (int i = 0; i < 3; i++) {\n        cout << \"a[\" << i << \"] = \" << a[i] << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "10 20 30",
+        "expectedOutput": "a[0] = 10\na[1] = 20\na[2] = 30\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Creates 3 boxes of type int. Their indexes are 0, 1 and 2. They contain garbage for now."
+          },
+          {
+            "line": 6,
+            "text": "The counter i goes 0, 1, 2. It stops when i becomes 3."
+          },
+          {
+            "line": 7,
+            "text": "Reads the next typed number into the box with index i. So the first number goes to a[0]."
+          },
+          {
+            "line": 9,
+            "text": "A second loop walks over the same indexes, this time to show the values."
+          },
+          {
+            "line": 10,
+            "text": "Prints the index and the value stored in that box."
+          },
+          {
+            "line": 12,
+            "text": "Ends the program."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "a": "{?, ?, ?}"
+              },
+              "note": "Three empty boxes a[0], a[1], a[2] are created.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "i": "0"
+              },
+              "note": "The first loop starts with i = 0. Is 0 < 3? Yes.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "a": "{10, ?, ?}"
+              },
+              "note": "cin reads 10 into a[0].",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "i": "1"
+              },
+              "note": "i becomes 1. Is 1 < 3? Yes.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "a": "{10, 20, ?}"
+              },
+              "note": "cin reads 20 into a[1].",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "i": "2"
+              },
+              "note": "i becomes 2. Is 2 < 3? Yes.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "a": "{10, 20, 30}"
+              },
+              "note": "cin reads 30 into a[2]. Then i becomes 3 and 3 < 3 is false, so the first loop ends.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "0"
+              },
+              "note": "The second loop starts. i is 0 again.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Prints a[0] with its index.",
+              "out": "a[0] = 10\n"
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "1"
+              },
+              "note": "i becomes 1.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Prints a[1].",
+              "out": "a[1] = 20\n"
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "2"
+              },
+              "note": "i becomes 2.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Prints a[2]. Then i becomes 3 and the loop ends.",
+              "out": "a[2] = 30\n"
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "a": "int[3]",
+            "i": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "The user first types n, how many numbers there will be (at most 100). Then read the n numbers and print them in reverse order.",
+      "pseudocode": [
+        "START",
+        "SET MAX = 100",
+        "READ n",
+        "FOR i = 0 TO n - 1: READ a[i]",
+        "PRINT \"Reverse:\"",
+        "FOR i = n - 1 DOWN TO 0: PRINT a[i]",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read n/]\n  B --> C[\"i = 0\"]\n  C --> D{i < n?}\n  D -->|Yes| E[/\"Read a[i]\"/]\n  E --> F[\"i = i + 1\"]\n  F --> D\n  D -->|No| G[\"i = n - 1\"]\n  G --> H{i >= 0?}\n  H -->|Yes| I[/\"Print a[i]\"/]\n  I --> J[\"i = i - 1\"]\n  J --> H\n  H -->|No| K([End])",
+      "sample": {
+        "id": "reverse-print",
+        "title": "Read n numbers, print in reverse",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int MAX = 100;\n    int a[MAX];\n    int n;\n    cin >> n;\n    for (int i = 0; i < n; i++) {\n        cin >> a[i];\n    }\n    cout << \"Reverse: \";\n    for (int i = n - 1; i >= 0; i--) {\n        cout << a[i] << \" \";\n    }\n    cout << endl;\n    return 0;\n}\n",
+        "stdin": "3 5 7 9",
+        "expectedOutput": "Reverse: 9 7 5 \n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "MAX is the largest size we will ever need. It is a constant, so it cannot change."
+          },
+          {
+            "line": 6,
+            "text": "We reserve MAX boxes. We may use only the first n of them."
+          },
+          {
+            "line": 7,
+            "text": "n holds how many values the user will really enter."
+          },
+          {
+            "line": 8,
+            "text": "Reads the size first, before the values."
+          },
+          {
+            "line": 9,
+            "text": "Fills only boxes 0 to n - 1."
+          },
+          {
+            "line": 13,
+            "text": "Starts at the LAST used index, n - 1, and counts down to 0."
+          },
+          {
+            "line": 14,
+            "text": "Prints the current box followed by a space."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "MAX": "100"
+              },
+              "note": "MAX is set to 100.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "a": "{?, ?, ?, ...}"
+              },
+              "note": "100 empty boxes are reserved. We will use only a few.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "n": "?"
+              },
+              "note": "n is created.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "n": "3"
+              },
+              "note": "The user types 3: three values will follow.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "0"
+              },
+              "note": "Fill loop starts with i = 0.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "a": "{5, ?, ?, ...}"
+              },
+              "note": "5 goes into a[0].",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "1"
+              },
+              "note": "i = 1. Is 1 < n (3)? Yes.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "a": "{5, 7, ?, ...}"
+              },
+              "note": "7 goes into a[1].",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "2"
+              },
+              "note": "i = 2. Is 2 < 3? Yes.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "a": "{5, 7, 9, ...}"
+              },
+              "note": "9 goes into a[2]. i becomes 3 and the fill loop ends.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Prints the label.",
+              "out": "Reverse: "
+            },
+            {
+              "line": 13,
+              "vars": {
+                "i": "2"
+              },
+              "note": "The reverse loop starts at n - 1 = 2.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Prints a[2].",
+              "out": "9 "
+            },
+            {
+              "line": 13,
+              "vars": {
+                "i": "1"
+              },
+              "note": "i counts down to 1.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Prints a[1].",
+              "out": "7 "
+            },
+            {
+              "line": 13,
+              "vars": {
+                "i": "0"
+              },
+              "note": "i counts down to 0. Is 0 >= 0? Yes.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Prints a[0]. Then i becomes -1 and the loop ends.",
+              "out": "5 "
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "Moves to a new line.",
+              "out": "\n"
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "MAX": "const int",
+            "a": "int[100]",
+            "n": "int",
+            "i": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Read n (the number of students, 1 to 10) and then their marks. If n is outside this range print Invalid size and stop. Otherwise print each student's marks (numbered from 1), then the first and the last mark.",
+      "pseudocode": [
+        "START",
+        "SET MAX = 10",
+        "READ n",
+        "IF n < 1 OR n > MAX THEN PRINT \"Invalid size\" and STOP",
+        "FOR i = 0 TO n - 1: READ marks[i]",
+        "FOR i = 0 TO n - 1: PRINT i + 1 and marks[i]",
+        "PRINT marks[0] and marks[n - 1]",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read n/]\n  B --> C{n < 1 or n > 10?}\n  C -->|Yes| D[/Print Invalid size/]\n  C -->|No| E[/Read n marks with a loop/]\n  E --> F[/Print every mark with its number/]\n  F --> G[/Print first and last/]\n  D --> H([End])\n  G --> H",
+      "sample": {
+        "id": "class-marks",
+        "title": "Class marks with size check",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int MAX = 10;\n    int marks[MAX];\n    int n;\n    cin >> n;\n    if (n < 1 || n > MAX) {\n        cout << \"Invalid size\" << endl;\n        return 0;\n    }\n    for (int i = 0; i < n; i++) {\n        cin >> marks[i];\n    }\n    for (int i = 0; i < n; i++) {\n        cout << \"Student \" << i + 1 << \": \" << marks[i] << endl;\n    }\n    cout << \"First = \" << marks[0] << \", Last = \" << marks[n - 1] << endl;\n    return 0;\n}\n",
+        "stdin": "4 55 80 67 91",
+        "expectedOutput": "Student 1: 55\nStudent 2: 80\nStudent 3: 67\nStudent 4: 91\nFirst = 55, Last = 91\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "The array can never hold more than 10 marks."
+          },
+          {
+            "line": 8,
+            "text": "The size is read first."
+          },
+          {
+            "line": 9,
+            "text": "Protects the array: a size of 0, a negative size, or more than 10 is rejected before any box is used."
+          },
+          {
+            "line": 11,
+            "text": "return 0 here ends the program early. We do not read any marks."
+          },
+          {
+            "line": 14,
+            "text": "Fills boxes 0 to n - 1."
+          },
+          {
+            "line": 16,
+            "text": "Visits the same boxes again to display them."
+          },
+          {
+            "line": 17,
+            "text": "The index starts at 0, but students are numbered from 1, so we print i + 1."
+          },
+          {
+            "line": 19,
+            "text": "The first box is marks[0]. The last used box is marks[n - 1], not marks[MAX - 1]."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Fixed size, values typed one by one",
+      "when": "You know the size while writing the program",
+      "example": "int a[5]; for (int i = 0; i < 5; i++) cin >> a[i];"
+    },
+    {
+      "way": "Size read first (n <= MAX)",
+      "when": "The user decides how many values",
+      "example": "const int MAX = 100; int a[MAX]; int n; cin >> n;"
+    },
+    {
+      "way": "Size from a constant in both loops",
+      "when": "You want to change the size in one place only",
+      "example": "const int N = 5; int a[N]; for (int i = 0; i < N; i++) cin >> a[i];"
+    },
+    {
+      "way": "Print in order",
+      "when": "Show the elements from first to last",
+      "example": "for (int i = 0; i < n; i++) cout << a[i] << \" \";"
+    },
+    {
+      "way": "Print in reverse",
+      "when": "Show the elements from last to first",
+      "example": "for (int i = n - 1; i >= 0; i--) cout << a[i] << \" \";"
+    },
+    {
+      "way": "Access one element directly",
+      "when": "You know which index you need",
+      "example": "cout << a[0]; a[2] = 100; cout << a[n - 1];"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int a[5];\nfor (int i = 0; i <= 5; i++) {\n    cin >> a[i];\n}",
+      "right": "int a[5];\nfor (int i = 0; i < 5; i++) {\n    cin >> a[i];\n}",
+      "error": "No compiler error, but the loop writes into a[5], which does not exist. The behaviour is undefined: it may crash or silently damage other variables. Use < size, not <= size."
+    },
+    {
+      "wrong": "int a[5];\ncin >> a;",
+      "right": "int a[5];\nfor (int i = 0; i < 5; i++) cin >> a[i];",
+      "error": "no match for 'operator>>' (operand types are 'std::istream' and 'int [5]')"
+    },
+    {
+      "wrong": "int a[5];\nfor (i = 0; i < 5; i++) cin >> a[i];",
+      "right": "int a[5];\nfor (int i = 0; i < 5; i++) cin >> a[i];",
+      "error": "'i' was not declared in this scope"
+    },
+    {
+      "wrong": "const int MAX = 100;\nint a[MAX];\nint n;\ncin >> n;\nfor (int i = 0; i < MAX; i++) cin >> a[i];",
+      "right": "const int MAX = 100;\nint a[MAX];\nint n;\ncin >> n;\nfor (int i = 0; i < n; i++) cin >> a[i];",
+      "error": "No compiler error. The program waits for 100 numbers instead of n, because the loop uses MAX where it should use n."
+    },
+    {
+      "wrong": "for (int i = n; i >= 0; i--)\n    cout << a[i] << \" \";",
+      "right": "for (int i = n - 1; i >= 0; i--)\n    cout << a[i] << \" \";",
+      "error": "No compiler error. The first value printed is a[n], a box we never filled, so a garbage number appears. The last used index is n - 1."
+    }
+  ],
+  "examTips": [
+    "Valid indexes are 0 to size - 1. An array of 5 has no a[5].",
+    "Fill loop and print loop usually look the same: for (int i = 0; i < n; i++).",
+    "When the user gives the size, declare the array with a constant MAX and loop to n, not to MAX.",
+    "Reverse printing starts at n - 1 and ends at 0 with i--.",
+    "You cannot read or print a whole array with one cin or cout. Use a loop and one element at a time."
+  ],
+  "romanSummary": [
+    "Array mein values daalne ke liye for loop chalate hain: for (int i = 0; i < n; i++) cin >> a[i];",
+    "Array ka pehla element a[0] hota hai aur aakhri a[n - 1], is liye i hamesha size se chota rehta hai.",
+    "Agar user size batata hai to pehle MAX size ka array banao, phir n read karo aur loop sirf n tak chalao.",
+    "Reverse print karna ho to i = n - 1 se shuru karo aur i-- karte hue 0 tak jao."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "An array has 10 elements. What is the index of its last element?",
+      "options": [
+        "9",
+        "10",
+        "11",
+        "0"
+      ],
+      "answer": "9",
+      "hint": "The first index is 0.",
+      "explanation": "Indexes run from 0 to size - 1, so the last of 10 elements is a[9]."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\nint a[5] = {10, 20, 30, 40, 50};\ncout << a[1] + a[3];",
+      "answer": "60",
+      "hint": "a[1] is the SECOND element.",
+      "explanation": "a[1] is 20 and a[3] is 40. The sum 20 + 40 is 60."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint a[4] = {1, 2, 3, 4};\nfor (int i = 3; i >= 0; i--)\n    cout << a[i];",
+      "answer": "4321",
+      "hint": "The loop counts down from 3 to 0.",
+      "explanation": "i takes the values 3, 2, 1, 0, so the elements are printed from last to first with no spaces between them."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint a[5] = {2, 4, 6};\ncout << a[2] << a[4];",
+      "answer": "60",
+      "hint": "If you give fewer values than the size, what do the remaining boxes hold?",
+      "explanation": "a[2] is 6. The two missing values a[3] and a[4] are filled with 0, so a[4] is 0. The output is 6 followed by 0, written together as 60."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This code should read 5 numbers into marks, but it crashes or gives wrong results. Fix it.\n\nint marks[5];\nfor (int i = 1; i <= 5; i++)\n    cin >> marks[i];",
+      "answer": "int marks[5];\nfor (int i = 0; i < 5; i++)\n    cin >> marks[i];",
+      "hint": "What is the first index? What is the last?",
+      "explanation": "The loop must visit indexes 0 to 4. Starting at 1 skips marks[0], and i <= 5 writes into marks[5], which is outside the array."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blanks to print the n elements of a in reverse order.\n\nfor (int i = ____; i ____ 0; i--)\n    cout << a[i] << \" \";",
+      "answer": "for (int i = n - 1; i >= 0; i--)\n    cout << a[i] << \" \";",
+      "hint": "Start at the last used index. Stop after index 0.",
+      "explanation": "The last used index is n - 1. The loop must keep going while i >= 0, so that index 0 is also printed."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that reads exactly 5 integers into an array and then prints them in reverse order, separated by spaces.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int a[5];\n    for (int i = 0; i < 5; i++) {\n        cin >> a[i];\n    }\n    for (int i = 4; i >= 0; i--) {\n        cout << a[i] << \" \";\n    }\n    cout << endl;\n    return 0;\n}",
+      "hint": "Use two loops: one counting up to read, one counting down to print.",
+      "explanation": "The first loop fills the boxes 0 to 4. The second loop starts at index 4 (the last box) and counts down to 0."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which loop visits every element of an array of size n exactly once, in order?",
+      "options": [
+        "for (int i = 0; i < n; i++)",
+        "for (int i = 1; i <= n; i++)",
+        "for (int i = 0; i <= n; i++)",
+        "for (int i = n; i > 0; i--)"
+      ],
+      "answer": "for (int i = 0; i < n; i++)",
+      "hint": "Start at the first index and stop before n.",
+      "explanation": "Indexes 0 to n - 1 are valid, so i must start at 0 and stay below n."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How do you read a value into the third element of array a?",
+      "options": [
+        "cin >> a[2];",
+        "cin >> a[3];",
+        "cin >> a;",
+        "cin >> a(3);"
+      ],
+      "answer": "cin >> a[2];",
+      "hint": "The third element has index 2.",
+      "explanation": "Counting starts from 0, so the third element is a[2]."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "The user types n and then n values. Why do we declare the array with a constant MAX?",
+      "options": [
+        "The size must be known when the array is declared",
+        "So that cin can read faster",
+        "Because n must be negative",
+        "To avoid using a loop"
+      ],
+      "answer": "The size must be known when the array is declared",
+      "hint": "Can the array size grow while the program runs?",
+      "explanation": "A normal array has a fixed size. So we reserve MAX boxes and use only n of them."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which loop prints an array of n elements in reverse?",
+      "options": [
+        "for (int i = n - 1; i >= 0; i--)",
+        "for (int i = n; i >= 0; i--)",
+        "for (int i = 0; i < n; i--)",
+        "for (int i = n - 1; i > 0; i--)"
+      ],
+      "answer": "for (int i = n - 1; i >= 0; i--)",
+      "hint": "Start from the last index.",
+      "explanation": "The last used index is n - 1. Counting down to 0 prints from last to first."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "int a[4] = {5, 6, 7, 8}; What is a[4]?",
+      "options": [
+        "Not valid: index 4 is outside the array",
+        "8",
+        "0",
+        "5"
+      ],
+      "answer": "Not valid: index 4 is outside the array",
+      "hint": "How many boxes are there and what is the largest index?",
+      "explanation": "The array has indexes 0 to 3. a[4] is outside it, and using it is undefined behaviour."
+    }
+  ],
+  "sources": [
+    "Reading, accessing and displaying array elements",
+    "Array input and output with loops",
+    "Reading the array size from the user",
+    "Printing an array in reverse"
+  ]
+}

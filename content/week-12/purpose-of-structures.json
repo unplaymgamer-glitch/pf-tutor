@@ -1,0 +1,659 @@
+{
+  "slug": "purpose-of-structures",
+  "week": 12,
+  "title": "Purpose of structures: one record for one thing",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match the idea to its meaning",
+      "pairs": [
+        {
+          "term": "Record",
+          "meaning": "All the facts about ONE thing, like one row of a table"
+        },
+        {
+          "term": "struct",
+          "meaning": "A way to make your own data type that groups related variables"
+        },
+        {
+          "term": "Data member",
+          "meaning": "One variable inside a struct (for example id or name)"
+        },
+        {
+          "term": "Array",
+          "meaning": "Many values, all of the SAME type"
+        },
+        {
+          "term": "Structure",
+          "meaning": "Several values, each can have a DIFFERENT type"
+        },
+        {
+          "term": "Parallel arrays",
+          "meaning": "Separate arrays kept in step by the index: easy to break"
+        }
+      ]
+    },
+    {
+      "kind": "memory",
+      "title": "One struct variable in memory: id, name, cgpa side by side",
+      "cells": [
+        {
+          "name": "s1.id",
+          "type": "int",
+          "addr": "0x1000"
+        },
+        {
+          "name": "s1.name",
+          "type": "string",
+          "addr": "0x1008"
+        },
+        {
+          "name": "s1.cgpa",
+          "type": "double",
+          "addr": "0x1028"
+        }
+      ],
+      "steps": [
+        {
+          "code": "Student s1;",
+          "note": "Declaring the variable reserves one block for ALL members. The addresses here are made up; a real string takes more room than an int. Nothing is stored yet.",
+          "values": {
+            "s1.id": "?",
+            "s1.name": "?",
+            "s1.cgpa": "?"
+          },
+          "points": {}
+        },
+        {
+          "code": "s1.id = 1;",
+          "note": "The first member sits at the start of the block.",
+          "values": {
+            "s1.id": "1"
+          },
+          "points": {}
+        },
+        {
+          "code": "s1.name = \"Ali\";",
+          "note": "The next member sits right after it. Members are stored in the order you declared them.",
+          "values": {
+            "s1.name": "Ali"
+          },
+          "points": {}
+        },
+        {
+          "code": "s1.cgpa = 3.5;",
+          "note": "The block is now a complete record: one student, three facts, one place.",
+          "values": {
+            "s1.cgpa": "3.5"
+          },
+          "points": {}
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can explain why related data should be grouped, say what a struct is, and tell the difference between a struct and an array.",
+  "warmup": "Think of your CNIC card. It carries your name, your CNIC number, your date of birth and your address. Four facts, but ONE card. Nobody keeps your name in one drawer, your number in another and your address in a third. Now think of a canteen register where each row is one student: roll number, name, marks. A row is one record. A struct lets C++ keep a whole row as one thing.",
+  "definition": "An array stores many values of the SAME type. But real things have several facts of DIFFERENT types: a student has an id (int), a name (string) and a CGPA (double). A structure, written struct, groups such related variables under one name. It is a user-defined data type: you design the type, then make variables of it. The variables inside it are called data members. One struct variable is one record, like one row of a table.",
+  "howItWorks": "Look at the first trace. We store three students in three parallel arrays: ids, names, CGPAs. It works until we need to move a student. To swap two students we must swap in every array, with three temporary variables. If we forget one line, Ali's name ends up with Usman's marks and the program still compiles: a silent bug. Sorting, deleting or inserting students has the same problem. Now look at the second trace. With a struct called Student, one variable holds id, name and CGPA together. Swapping two students is the usual three lines, not nine, and the facts can never be separated. A struct is not an array. An array: many items, same type, reached by index (marks[2]). A struct: a few items, any types, reached by name (s1.cgpa). You can combine them: an ARRAY of structs is a whole class register (Week 12, lesson 4). Declaring the struct type only draws the blueprint, like the design of the CNIC card. Memory is reserved when you make a variable of that type. The memory visual shows the members of one struct variable laid out next to each other.",
+  "syntax": "// the blueprint: a new data type named Student\nstruct Student {\n    int id;          // data member 1\n    string name;     // data member 2\n    double cgpa;     // data member 3\n};                   // <- semicolon is required\n\n// a variable of that type = one record\nStudent s1;\n\n// reach one member with the dot operator\ns1.cgpa = 3.5;",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Store three students (id, name, CGPA) using three parallel arrays. Swap student 0 and student 2 and print all three students. Notice how much work the swap needs.",
+      "pseudocode": [
+        "START",
+        "CREATE arrays id, name, cgpa",
+        "SWAP id[0] and id[2]",
+        "SWAP name[0] and name[2]",
+        "SWAP cgpa[0] and cgpa[2]",
+        "FOR i = 0 to 2: PRINT id[i], name[i], cgpa[i]",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Create id, name, cgpa arrays]\n  B --> C[Swap id 0 and 2]\n  C --> D[Swap name 0 and 2]\n  D --> E[Swap cgpa 0 and 2]\n  E --> F[i = 0]\n  F --> G{i < 3?}\n  G -- Yes --> H[/Print id, name, cgpa of i/]\n  H --> I[i = i + 1]\n  I --> G\n  G -- No --> J([End])",
+      "sample": {
+        "id": "parallel-arrays",
+        "title": "Parallel arrays: one student spread over three arrays",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    int id[3] = {1, 2, 3};\n    string name[3] = {\"Ali\", \"Sana\", \"Usman\"};\n    double cgpa[3] = {3.5, 3.9, 2.8};\n    // swap student 0 and student 2: three arrays, three swaps\n    int t1 = id[0]; id[0] = id[2]; id[2] = t1;\n    string t2 = name[0]; name[0] = name[2]; name[2] = t2;\n    double t3 = cgpa[0]; cgpa[0] = cgpa[2]; cgpa[2] = t3;\n    for (int i = 0; i < 3; i++) {\n        cout << id[i] << \" \" << name[i] << \" \" << cgpa[i] << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "3 Usman 2.8\n2 Sana 3.9\n1 Ali 3.5\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Array of roll numbers (int)."
+          },
+          {
+            "line": 7,
+            "text": "Array of names (string). It cannot be mixed into the int array: an array holds ONE type."
+          },
+          {
+            "line": 8,
+            "text": "Array of CGPAs (double). The three arrays are only 'parallel' because we agree to use the same index."
+          },
+          {
+            "line": 10,
+            "text": "Swapping the ids needs a temporary variable."
+          },
+          {
+            "line": 11,
+            "text": "Swapping the names needs another temporary of type string."
+          },
+          {
+            "line": 12,
+            "text": "Swapping the CGPAs needs a third temporary. Three arrays means three swaps."
+          },
+          {
+            "line": 14,
+            "text": "Each student is rebuilt for printing by reading the same index from all three arrays."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 6,
+              "vars": {
+                "id": "{1, 2, 3}"
+              },
+              "note": "Array 1 holds the three roll numbers.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "name": "{Ali, Sana, Usman}"
+              },
+              "note": "Array 2 holds the three names. It is a separate array, linked to the first only by the index.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "cgpa": "{3.5, 3.9, 2.8}"
+              },
+              "note": "Array 3 holds the CGPAs. Student 0 is now spread over id[0], name[0] and cgpa[0].",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "t1": "1",
+                "id": "{3, 2, 1}"
+              },
+              "note": "To swap two students we must swap the ids ...",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "t2": "Ali",
+                "name": "{Usman, Sana, Ali}"
+              },
+              "note": "... and then the names ...",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {
+                "t3": "3.5",
+                "cgpa": "{2.8, 3.9, 3.5}"
+              },
+              "note": "... and then the CGPAs. Forget one line and the data is mixed up.",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {
+                "i": "0"
+              },
+              "note": "The loop starts with i = 0.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Student 0 is printed from three different arrays.",
+              "out": "3 Usman 2.8\n"
+            },
+            {
+              "line": 13,
+              "vars": {
+                "i": "1"
+              },
+              "note": "i = 1.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Student 1 is printed.",
+              "out": "2 Sana 3.9\n"
+            },
+            {
+              "line": 13,
+              "vars": {
+                "i": "2"
+              },
+              "note": "i = 2.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Student 2 is printed. The swap worked because we kept all three arrays in step.",
+              "out": "1 Ali 3.5\n"
+            }
+          ],
+          "types": {
+            "id": "int[3]",
+            "name": "string[3]",
+            "cgpa": "double[3]",
+            "t1": "int",
+            "t2": "string",
+            "t3": "double",
+            "i": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Do the same swap using a struct Student. Make two students a and b, swap them with three assignments and print both.",
+      "pseudocode": [
+        "START",
+        "DECLARE struct Student (id, name, cgpa)",
+        "SET a = {1, Ali, 3.5}, b = {3, Usman, 2.8}",
+        "t = a, a = b, b = t",
+        "PRINT a, then PRINT b",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Make Student a and b]\n  B --> C[t = a]\n  C --> D[a = b]\n  D --> E[b = t]\n  E --> F[/Print a/]\n  F --> G[/Print b/]\n  G --> H([End])",
+      "sample": {
+        "id": "struct-swap",
+        "title": "The same swap with a structure",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int id;\n    string name;\n    double cgpa;\n};\n\nint main() {\n    Student a = {1, \"Ali\", 3.5};\n    Student b = {3, \"Usman\", 2.8};\n    Student t = a;\n    a = b;\n    b = t;\n    cout << a.id << \" \" << a.name << \" \" << a.cgpa << endl;\n    cout << b.id << \" \" << b.name << \" \" << b.cgpa << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "3 Usman 2.8\n1 Ali 3.5\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A struct groups the three related variables into ONE new type called Student."
+          },
+          {
+            "line": 6,
+            "text": "The data members. Each one has its own type: that is the big difference from an array."
+          },
+          {
+            "line": 9,
+            "text": "A struct declaration must end with a semicolon."
+          },
+          {
+            "line": 12,
+            "text": "a is a variable of the new type. It holds an id, a name and a cgpa together."
+          },
+          {
+            "line": 14,
+            "text": "One assignment copies every member."
+          },
+          {
+            "line": 15,
+            "text": "Whole-struct assignment: all members of b go into a."
+          },
+          {
+            "line": 17,
+            "text": "The dot operator (a.id) reaches one member of a."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 12,
+              "vars": {
+                "a.id": "1",
+                "a.name": "Ali",
+                "a.cgpa": "3.5"
+              },
+              "note": "One variable a holds the whole student: id, name and CGPA travel together.",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {
+                "b.id": "3",
+                "b.name": "Usman",
+                "b.cgpa": "2.8"
+              },
+              "note": "Variable b is a second student.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {
+                "t.id": "1",
+                "t.name": "Ali",
+                "t.cgpa": "3.5"
+              },
+              "note": "t = a copies ALL three members in one line.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "a.id": "3",
+                "a.name": "Usman",
+                "a.cgpa": "2.8"
+              },
+              "note": "a = b copies all three members of b into a.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "b.id": "1",
+                "b.name": "Ali",
+                "b.cgpa": "3.5"
+              },
+              "note": "b = t finishes the swap. Three lines, not nine.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "Prints a. The dot picks one member.",
+              "out": "3 Usman 2.8\n"
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "Prints b.",
+              "out": "1 Ali 3.5\n"
+            }
+          ],
+          "types": {
+            "a.id": "int",
+            "a.name": "string",
+            "a.cgpa": "double",
+            "b.id": "int",
+            "b.name": "string",
+            "b.cgpa": "double",
+            "t.id": "int",
+            "t.name": "string",
+            "t.cgpa": "double"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Declare a struct Book with title, pages and price. Create two books, find the costlier one and print its title, price and pages.",
+      "pseudocode": [
+        "START",
+        "DECLARE struct Book (title, pages, price)",
+        "SET b1 and b2",
+        "dearer = b1",
+        "IF b2.price > b1.price THEN dearer = b2",
+        "PRINT dearer.title and dearer.price",
+        "PRINT dearer.pages",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Make b1 and b2]\n  B --> C[dearer = b1]\n  C --> D{b2.price > b1.price?}\n  D -- Yes --> E[dearer = b2]\n  D -- No --> F[/Print title, price, pages/]\n  E --> F\n  F --> G([End])",
+      "sample": {
+        "id": "book-record",
+        "title": "Exam: a Book record",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Book {\n    string title;\n    int pages;\n    double price;\n};\n\nint main() {\n    Book b1 = {\"C++ Basics\", 320, 850.5};\n    Book b2 = {\"Data Notes\", 150, 600};\n    Book dearer = b1;\n    if (b2.price > b1.price) {\n        dearer = b2;\n    }\n    cout << \"Costlier: \" << dearer.title << \" (Rs \" << dearer.price << \")\" << endl;\n    cout << \"Pages: \" << dearer.pages << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Costlier: C++ Basics (Rs 850.5)\nPages: 320\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Declares a new type Book with three data members of different types."
+          },
+          {
+            "line": 6,
+            "text": "A string member."
+          },
+          {
+            "line": 7,
+            "text": "An int member."
+          },
+          {
+            "line": 8,
+            "text": "A double member."
+          },
+          {
+            "line": 12,
+            "text": "First book. The values are given in the same order as the members."
+          },
+          {
+            "line": 13,
+            "text": "Second book. 600 is converted to 600.0 for the double member."
+          },
+          {
+            "line": 14,
+            "text": "dearer starts as a copy of b1 (whole struct copied)."
+          },
+          {
+            "line": 15,
+            "text": "Compare the price members, not whole books."
+          },
+          {
+            "line": 16,
+            "text": "If b2 is costlier, overwrite dearer with all of b2."
+          },
+          {
+            "line": 18,
+            "text": "Prints the title and price of the costlier book."
+          },
+          {
+            "line": 19,
+            "text": "Prints the pages of the same book: all its data stayed together."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Separate variables",
+      "when": "Only for one or two facts. Gets messy when there are many.",
+      "example": "int id = 1; string name = \"Ali\"; double cgpa = 3.5;"
+    },
+    {
+      "way": "Parallel arrays",
+      "when": "Avoid for records. The arrays are only linked by the index you must keep in step.",
+      "example": "int id[3]; string name[3]; double cgpa[3];  // student i = id[i], name[i], cgpa[i]"
+    },
+    {
+      "way": "A struct",
+      "when": "Related facts of different types about ONE thing. The best choice for records.",
+      "example": "struct Student { int id; string name; double cgpa; };\nStudent s1 = {1, \"Ali\", 3.5};"
+    },
+    {
+      "way": "Array of structs",
+      "when": "A table of many records (a class register). Lesson 4 of this week.",
+      "example": "Student list[3];  // list[0].name, list[1].cgpa ..."
+    },
+    {
+      "way": "Array vs struct",
+      "when": "Array: same type, reached by index. Struct: any types, reached by member name.",
+      "example": "marks[2]   vs   s1.cgpa"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int data[3] = {1, \"Ali\", 3.5};   // trying to mix types in an array",
+      "right": "struct Student { int id; string name; double cgpa; };\nStudent s = {1, \"Ali\", 3.5};",
+      "error": "g++ reports: invalid conversion from 'const char*' to 'int'. An array holds only one type; use a struct for mixed types."
+    },
+    {
+      "wrong": "int main() {\n    Student s;     // type not declared yet\n    return 0;\n}\nstruct Student { int id; string name; double cgpa; };",
+      "right": "struct Student { int id; string name; double cgpa; };\nint main() {\n    Student s;\n    return 0;\n}",
+      "error": "g++ reports: 'Student' was not declared in this scope. Declare the struct before you use it."
+    },
+    {
+      "wrong": "// sorting only the marks array\nswap(cgpa[0], cgpa[2]);   // names and ids stay behind",
+      "right": "// swap every member (or, with a struct, swap the whole record)\nStudent t = a; a = b; b = t;",
+      "error": "No compiler message at all. The program runs but each name is now paired with the wrong marks. This silent bug is why records should be structs."
+    }
+  ],
+  "examTips": [
+    "Define a struct in one line: a user-defined data type that groups related variables of different types under one name.",
+    "Array vs struct is a favourite question: array = same type, access by index; struct = different types, access by member name with the dot.",
+    "Say 'declaring a struct creates a new type and reserves no memory; the variable reserves memory'.",
+    "Give a real example: CNIC card, student record, book, employee, bank account.",
+    "Never forget the semicolon after the closing brace of a struct."
+  ],
+  "romanSummary": [
+    "Structure (struct) mukhtalif types ke related variables ko ek naam ke neeche jama karta hai, jaise student ka id, name aur CGPA.",
+    "Array mein saari values ek hi type ki hoti hain; struct mein har member ka type alag ho sakta hai.",
+    "Struct ek user-defined data type hai. Ek struct variable ek record (table ki ek row) hota hai.",
+    "Parallel arrays mein data alag alag arrays mein bikhar jata hai aur swap ya sort mein ghalti ka khatra rehta hai; struct mein sab kuch ek saath rehta hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is the main job of a struct?",
+      "options": [
+        "Group related variables of different types under one name",
+        "Store many values of one type",
+        "Repeat a block of code",
+        "Read numbers from the keyboard"
+      ],
+      "answer": "Group related variables of different types under one name",
+      "hint": "Think of a CNIC card.",
+      "explanation": "A struct bundles related facts (maybe int, string and double) into one record."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which statement is TRUE?",
+      "options": [
+        "An array holds one type; a struct can hold members of different types",
+        "A struct holds one type; an array can hold different types",
+        "Both can only hold ints",
+        "Neither can hold a string"
+      ],
+      "answer": "An array holds one type; a struct can hold members of different types",
+      "hint": "Same type or different types?",
+      "explanation": "This is the key difference between the two."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Point {\n    int x;\n    int y;\n};\n\nint main() {\n    Point p = {3, 4};\n    cout << p.x + p.y << endl;\n    return 0;\n}",
+      "answer": "7",
+      "hint": "Add the two members.",
+      "explanation": "p.x is 3 and p.y is 4, so p.x + p.y is 7."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Pair {\n    int a;\n    int b;\n};\n\nint main() {\n    Pair p = {10, 20};\n    Pair q = p;\n    q.a = 99;\n    cout << p.a << \" \" << q.a << \" \" << q.b << endl;\n    return 0;\n}",
+      "answer": "10 99 20",
+      "hint": "q = p copies the members; they are then independent.",
+      "explanation": "q gets its own copy of 10 and 20. Changing q.a does not change p.a."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Find and fix the error:\n\nstruct Student {\n    int id;\n    string name;\n}\n\nint main() { Student s; return 0; }",
+      "answer": "Add a semicolon after the closing brace: struct Student { int id; string name; };",
+      "hint": "Look at the end of the struct.",
+      "explanation": "A struct declaration must end with ; after the closing brace."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank to make a new type with two data members:\n\n_____ Car {\n    string brand;\n    int year;\n};",
+      "answer": "struct",
+      "hint": "The keyword that groups related variables.",
+      "explanation": "struct introduces the new data type Car."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write the declaration of a struct called Employee with an int empId, a string name and a double salary. Then declare a variable e of this type.",
+      "answer": "struct Employee {\n    int empId;\n    string name;\n    double salary;\n};\n\nEmployee e;",
+      "hint": "Three members, a semicolon, then the variable.",
+      "explanation": "The members have different types, which is exactly why a struct is used instead of an array."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "A structure is best described as",
+      "options": [
+        "a user-defined data type that groups related variables",
+        "a loop that repeats",
+        "a function that returns a value",
+        "a kind of comment"
+      ],
+      "answer": "a user-defined data type that groups related variables",
+      "hint": "Not a loop, not a function.",
+      "explanation": "A struct is a new data type you design yourself."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How many different data types can the members of one struct have?",
+      "options": [
+        "Any mix of types",
+        "Only one type",
+        "Only numbers",
+        "Only two types"
+      ],
+      "answer": "Any mix of types",
+      "hint": "Think of id, name, cgpa.",
+      "explanation": "Members may be int, string, double and more in the same struct."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What does declaring a struct (not a variable) reserve?",
+      "options": [
+        "No memory; it only describes the new type",
+        "Memory for one record",
+        "Memory for an array of ten records",
+        "A file on disk"
+      ],
+      "answer": "No memory; it only describes the new type",
+      "hint": "Blueprint or house?",
+      "explanation": "The struct declaration is a blueprint. Memory comes with variables."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "A table row with roll number, name and marks is called a",
+      "options": [
+        "record",
+        "loop",
+        "index",
+        "header file"
+      ],
+      "answer": "record",
+      "hint": "One row of a table.",
+      "explanation": "A record holds all facts about one item, and a struct variable models it."
+    }
+  ],
+  "sources": [
+    "Purpose of structures",
+    "Structure as a user-defined data type",
+    "Structure vs array"
+  ]
+}

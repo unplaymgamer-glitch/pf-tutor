@@ -1,0 +1,763 @@
+{
+  "slug": "function-overloading",
+  "week": 8,
+  "title": "Function overloading: one name, many versions",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "resolver",
+      "title": "Which overload does the compiler choose? Pick the argument type",
+      "overloads": [
+        {
+          "sig": "f(int)",
+          "params": [
+            "int"
+          ]
+        },
+        {
+          "sig": "f(double)",
+          "params": [
+            "double"
+          ]
+        }
+      ],
+      "argTypes": [
+        "char"
+      ]
+    },
+    {
+      "kind": "resolver",
+      "title": "Two parameters: when is a call ambiguous? Try (int, int)",
+      "overloads": [
+        {
+          "sig": "g(int, double)",
+          "params": [
+            "int",
+            "double"
+          ]
+        },
+        {
+          "sig": "g(double, int)",
+          "params": [
+            "double",
+            "int"
+          ]
+        }
+      ],
+      "argTypes": [
+        "int",
+        "int"
+      ]
+    },
+    {
+      "kind": "resolver",
+      "title": "Area functions: square, rectangle, circle",
+      "overloads": [
+        {
+          "sig": "area(int)",
+          "params": [
+            "int"
+          ]
+        },
+        {
+          "sig": "area(int, int)",
+          "params": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "sig": "area(double)",
+          "params": [
+            "double"
+          ]
+        }
+      ],
+      "argTypes": [
+        "int"
+      ]
+    }
+  ],
+  "goal": "After this you can write several functions with the same name, say which one the compiler will choose for a call, and explain why some calls are ambiguous.",
+  "warmup": "In the canteen you say 'one tea' and you get one cup. You say 'tea for the whole group' and you get a pot. The word 'tea' is the same, but the staff look at what you asked for and give the right thing. Overloaded functions work the same way. The name is the same, such as area, but the compiler looks at what you pass inside the brackets and picks the right version.",
+  "definition": "Function overloading means writing more than one function with the SAME name but DIFFERENT parameter lists. The lists can differ in the number of parameters, the types of the parameters, or the order of the types. The return type does not count. The compiler chooses the version while compiling, by comparing the arguments of the call with each parameter list.",
+  "howItWorks": "For every call the compiler looks for the best match. It prefers, in this order: (1) an exact match, where the types are the same; (2) a promotion, which is a safe small widening such as char or bool to int; (3) a conversion, such as int to double. If exactly one function is the best, it is used. If two functions are equally good, the compiler stops with an ambiguity error, because it will not guess. Try the resolver: with f(int) and f(double), the call f('A') uses f(int) (promotion). With g(int, double) and g(double, int), the call g(1, 2) is ambiguous: each version matches one argument exactly and needs a conversion for the other. Two things that do NOT make an overload: a different return type only, or a different parameter name only. Be careful with default arguments: f(int a, int b = 0) and f(int a) both accept f(5), which is ambiguous.",
+  "syntax": "// same name, different parameter lists\nint add(int a, int b);          // two ints\ndouble add(double a, double b); // two doubles\n\nint area(int side);             // square (one int)\nint area(int length, int width);// rectangle (two ints)\ndouble area(double radius);     // circle (one double)\n\n// NOT overloads:\n// int f(int a);   double f(int a);   // only the return type differs: error\n// int f(int a);   int f(int b);      // only the name differs: same function",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write two functions with the same name add: one adds two int values, one adds two double values. Call add(2, 3) and add(2.5, 1.5) and print the results.",
+      "pseudocode": [
+        "START",
+        "DEFINE add(int a, int b) returns a + b",
+        "DEFINE add(double a, double b) returns a + b",
+        "CALL add(2, 3): both int, so the int version runs",
+        "PRINT result",
+        "CALL add(2.5, 1.5): both double, so the double version runs",
+        "PRINT result",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Call add(2, 3)\"]\n  B --> C{\"Argument types?\"}\n  C -->|\"int, int\"| D[\"add(int, int)\"]\n  C -->|\"double, double\"| E[\"add(double, double)\"]\n  D --> F[/Print 5/]\n  F --> G[\"Call add(2.5, 1.5)\"]\n  G --> H[\"add(double, double)\"]\n  H --> I[/Print 4/]\n  E --> I\n  I --> J([End])",
+      "sample": {
+        "id": "add-int-double",
+        "title": "Two add functions",
+        "code": "#include <iostream>\nusing namespace std;\n\nint add(int a, int b) {\n    return a + b;\n}\n\ndouble add(double a, double b) {\n    return a + b;\n}\n\nint main() {\n    cout << add(2, 3) << endl;\n    cout << add(2.5, 1.5) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "5\n4\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "First version of add. It takes two int values."
+          },
+          {
+            "line": 8,
+            "text": "Second version. Same NAME, different parameter TYPES. This is overloading."
+          },
+          {
+            "line": 13,
+            "text": "Both arguments are int, so the compiler chooses the int version. It decides this at compile time, before the program runs."
+          },
+          {
+            "line": 14,
+            "text": "Both arguments are double, so the double version runs."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 12,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "The arguments are int and int. The compiler picks add(int, int), an exact match.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "add(int a, int b)",
+                  "vars": {
+                    "a": "2",
+                    "b": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "Returns 2 + 3 = 5 as an int.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "add(int a, int b)",
+                  "vars": {
+                    "a": "2",
+                    "b": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Prints the result.",
+              "out": "5\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "The arguments are double and double. The compiler picks add(double, double).",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "add(double a, double b)",
+                  "vars": {
+                    "a": "2.5",
+                    "b": "1.5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Returns 2.5 + 1.5 = 4 as a double.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "add(double a, double b)",
+                  "vars": {
+                    "a": "2.5",
+                    "b": "1.5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Prints the result. A double 4 prints as 4.",
+              "out": "4\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "The program ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            }
+          ],
+          "types": {}
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Write an overloaded area function: one int argument gives the area of a square, two int arguments give the area of a rectangle, one double argument gives the area of a circle (use 3.14159).",
+      "pseudocode": [
+        "START",
+        "DEFINE area(int side): square = side * side",
+        "DEFINE area(int length, int width): rectangle",
+        "DEFINE area(double radius): circle",
+        "CALL area(5), area(4, 6), area(2.0)",
+        "PRINT each result",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"area(5)\"]\n  B --> C[\"one int: square\"]\n  C --> D[/Print 25/]\n  D --> E[\"area(4, 6)\"]\n  E --> F[\"two ints: rectangle\"]\n  F --> G[/Print 24/]\n  G --> H[\"area(2.0)\"]\n  H --> I[\"one double: circle\"]\n  I --> J[/Print 12.5664/]\n  J --> K([End])",
+      "sample": {
+        "id": "area-overloads",
+        "title": "Square, rectangle and circle",
+        "code": "#include <iostream>\nusing namespace std;\n\nint area(int side) {\n    return side * side;\n}\n\nint area(int length, int width) {\n    return length * width;\n}\n\ndouble area(double radius) {\n    return 3.14159 * radius * radius;\n}\n\nint main() {\n    cout << \"Square: \" << area(5) << endl;\n    cout << \"Rectangle: \" << area(4, 6) << endl;\n    cout << \"Circle: \" << area(2.0) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Square: 25\nRectangle: 24\nCircle: 12.5664\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "Square: one int parameter."
+          },
+          {
+            "line": 8,
+            "text": "Rectangle: two int parameters. A different NUMBER of parameters makes it a different function."
+          },
+          {
+            "line": 12,
+            "text": "Circle: one double parameter. The type differs from the square version (int)."
+          },
+          {
+            "line": 17,
+            "text": "area(5): the literal 5 is an int, so the compiler picks the square version."
+          },
+          {
+            "line": 18,
+            "text": "Two arguments: only the rectangle version takes two."
+          },
+          {
+            "line": 19,
+            "text": "2.0 is a double, so the circle version is an exact match."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 16,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "One int argument: the compiler picks area(int side), the square version.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "area(int side)",
+                  "vars": {
+                    "side": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "Returns 5 * 5 = 25.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "area(int side)",
+                  "vars": {
+                    "side": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "Prints the label and the result.",
+              "out": "Square: 25\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "Two int arguments: the compiler picks area(int length, int width).",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "area(int length, int width)",
+                  "vars": {
+                    "length": "4",
+                    "width": "6"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Returns 4 * 6 = 24.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "area(int length, int width)",
+                  "vars": {
+                    "length": "4",
+                    "width": "6"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "Prints the label and the result.",
+              "out": "Rectangle: 24\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "One double argument (2.0): the compiler picks area(double radius), the circle version.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "area(double radius)",
+                  "vars": {
+                    "radius": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Returns 3.14159 * 2 * 2 = 12.56636.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "area(double radius)",
+                  "vars": {
+                    "radius": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "Prints the label and the result (6 digits shown).",
+              "out": "Circle: 12.5664\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "The program ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            }
+          ],
+          "types": {}
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Predict the output. Two functions called show take an int and a double. Find out which version runs for show(7), show(2.5), show('A') and show(true). Explain why.",
+      "pseudocode": [
+        "START",
+        "show(7): int, exact match with show(int)",
+        "show(2.5): double, exact match with show(double)",
+        "show('A'): char, promotion to int, so show(int)",
+        "show(true): bool, promotion to int, so show(int)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"show(7)\"]\n  B --> C[\"int: exact match\"]\n  C --> D[\"show(2.5)\"]\n  D --> E[\"double: exact match\"]\n  E --> F[\"show('A')\"]\n  F --> G[\"char: promoted to int\"]\n  G --> H[\"show(true)\"]\n  H --> I[\"bool: promoted to int\"]\n  I --> J([End])",
+      "sample": {
+        "id": "show-promotion",
+        "title": "Exact match and promotion",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid show(int x) {\n    cout << \"int \" << x << endl;\n}\n\nvoid show(double x) {\n    cout << \"double \" << x << endl;\n}\n\nint main() {\n    show(7);\n    show(2.5);\n    show('A');\n    show(true);\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "int 7\ndouble 2.5\nint 65\nint 1\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "show(int): handles whole numbers."
+          },
+          {
+            "line": 8,
+            "text": "show(double): handles decimal numbers."
+          },
+          {
+            "line": 13,
+            "text": "7 is an int: exact match, prints int 7."
+          },
+          {
+            "line": 14,
+            "text": "2.5 is a double: exact match, prints double 2.5."
+          },
+          {
+            "line": 15,
+            "text": "'A' is a char. There is no show(char), so the compiler PROMOTES char to int. The code of 'A' is 65, so it prints int 65."
+          },
+          {
+            "line": 16,
+            "text": "true is a bool. It is also promoted to int. true becomes 1, so it prints int 1. Promotion is preferred over conversion to double."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Different number of parameters",
+      "when": "Square and rectangle area",
+      "example": "int area(int s);  int area(int l, int w);"
+    },
+    {
+      "way": "Different parameter types",
+      "when": "Same job on whole and decimal numbers",
+      "example": "int add(int a, int b);  double add(double a, double b);"
+    },
+    {
+      "way": "Different order of types",
+      "when": "Rare. It can cause ambiguity",
+      "example": "void g(int a, double b);  void g(double a, int b);"
+    },
+    {
+      "way": "Return type only (NOT allowed)",
+      "when": "Never. The compiler cannot choose",
+      "example": "int f(int a);  double f(int a);  // error"
+    },
+    {
+      "way": "Overloading with default arguments",
+      "when": "Take care. A default can make two overloads match the same call",
+      "example": "void f(int a, int b = 0);  void f(int a);  // f(5) is ambiguous"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "void g(int a, double b) { }\nvoid g(double a, int b) { }\ng(1, 2);",
+      "right": "g(1, 2.0);   // exact match for g(int, double)",
+      "error": "call of overloaded 'g(int, int)' is ambiguous"
+    },
+    {
+      "wrong": "int f(int a) { return a; }\ndouble f(int a) { return a * 1.5; }",
+      "right": "int f(int a) { return a; }\ndouble f(double a) { return a * 1.5; }",
+      "error": "ambiguating new declaration of 'double f(int)'"
+    },
+    {
+      "wrong": "void f(int a, int b = 0) { }\nvoid f(int a) { }\nf(5);",
+      "right": "void f(int a, int b) { }   // remove the default\nvoid f(int a) { }\nf(5);",
+      "error": "call of overloaded 'f(int)' is ambiguous"
+    },
+    {
+      "wrong": "int add(int a, int b) { return a + b; }\ndouble add(double a, double b) { return a + b; }\ncout << add(1, 2.5);",
+      "right": "cout << add(1.0, 2.5);   // both double",
+      "error": "call of overloaded 'add(int, double)' is ambiguous"
+    }
+  ],
+  "examTips": [
+    "Overloading = same name, different parameter lists (number, types or order). The return type does not count.",
+    "The compiler prefers an exact match, then a promotion (char or bool to int), then a conversion (int to double).",
+    "If two versions are equally good, the call is ambiguous and the program does not compile.",
+    "A literal such as 2.5 is a double and 5 is an int. 'A' is a char.",
+    "Do not mix default arguments and overloads carelessly: f(int, int = 0) and f(int) clash on f(5)."
+  ],
+  "romanSummary": [
+    "Overloading ka matlab hai ek hi naam ke kai functions, lekin parameters ki ginti, type ya order alag.",
+    "Compiler call ke arguments dekh kar sahi version chunta hai: pehle exact match, phir promotion (char se int), phir conversion (int se double).",
+    "Sirf return type badalna overloading nahi hai, is par error aata hai.",
+    "Agar do versions barabar fit hon to call ambiguous hoti hai, jaise g(int, double) aur g(double, int) ke saath g(1, 2).",
+    "Default arguments ke saath overloading mein ambiguity ka khayal rakhein."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is function overloading?",
+      "options": [
+        "Several functions with the same name but different parameter lists",
+        "One function that calls itself",
+        "A function with too many lines",
+        "Two functions with different names and the same parameters"
+      ],
+      "answer": "Several functions with the same name but different parameter lists",
+      "hint": "Same name, but what must differ?",
+      "explanation": "Overloading means one name, many functions. The functions differ in the number, the types or the order of the parameter types. The compiler picks one from the arguments in the call."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which pair of functions is a valid overload?",
+      "options": [
+        "int f(int a); and double f(int a);",
+        "int f(int a); and int f(int b);",
+        "int f(int a); and int f(int a, int b);",
+        "int f(int a); and int f(int a);"
+      ],
+      "answer": "int f(int a); and int f(int a, int b);",
+      "hint": "The return type alone cannot tell the functions apart.",
+      "explanation": "Different numbers of parameters make a valid overload. Changing only the return type, or only the parameter name, does not."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nvoid p(int x) { cout << \"I\"; }\nvoid p(double x) { cout << \"D\"; }\nvoid p(char x) { cout << \"C\"; }\nint main() {\n    p(3);\n    p(3.0);\n    p('3');\n    p(true);\n    cout << endl;\n    return 0;\n}",
+      "answer": "IDCI",
+      "hint": "Decide for each argument: exact match, or promotion?",
+      "explanation": "3 is int, so I. 3.0 is double, so D. '3' is char and p(char) is an exact match, so C. true is bool: there is no p(bool), and bool is promoted to int, so I."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint mul(int a, int b) { return a * b; }\ndouble mul(double a, double b) { return a * b; }\nint main() {\n    cout << mul(3, 4) << \" \" << mul(1.5, 2.0) << endl;\n    return 0;\n}",
+      "answer": "12 3",
+      "hint": "Which version takes (int, int) and which takes (double, double)?",
+      "explanation": "mul(3, 4) uses the int version and gives 12. mul(1.5, 2.0) uses the double version and gives 3, which prints as 3."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "hard",
+      "prompt": "This program does not compile. Change ONE call so that it works.\n\nvoid g(int a, double b) { cout << \"g1\"; }\nvoid g(double a, int b) { cout << \"g2\"; }\nint main() {\n    g(1, 2);\n    return 0;\n}",
+      "answer": "g(1, 2.0);",
+      "hint": "Both versions need one conversion for g(1, 2). Make one version an exact match.",
+      "explanation": "g(1, 2) is ambiguous: each version is exact for one argument and needs a conversion for the other. g(1, 2.0) matches g(int, double) exactly, so it runs g1."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank so that the second function handles decimal numbers.\n\nvoid show(int x);\nvoid show(____ x);",
+      "answer": "double",
+      "hint": "The first function handles whole numbers.",
+      "explanation": "show(double x) is a different function because its parameter type differs. Then show(2.5) calls it."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write two overloaded functions named bigger. One takes two int values, the other two double values. Each returns the larger value. Call both in main.",
+      "answer": "int bigger(int a, int b) {\n    return (a > b) ? a : b;\n}\n\ndouble bigger(double a, double b) {\n    return (a > b) ? a : b;\n}\n\nint main() {\n    cout << bigger(3, 8) << endl;\n    cout << bigger(2.5, 1.5) << endl;\n    return 0;\n}",
+      "hint": "Same name, parameter types differ.",
+      "explanation": "The two functions have the same name and different parameter types, so they are overloads. bigger(3, 8) runs the int version, bigger(2.5, 1.5) the double version."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "With void f(int a, int b = 0); and void f(int a); both declared, what happens for the call f(5)?",
+      "options": [
+        "It calls f(int a)",
+        "It calls f(int a, int b = 0)",
+        "Compile error: the call is ambiguous",
+        "It prints 0"
+      ],
+      "answer": "Compile error: the call is ambiguous",
+      "hint": "Both versions can be called with one int argument.",
+      "explanation": "The first can use its default b = 0 and the second takes one int. Both match equally, so the compiler cannot choose and reports an ambiguous call."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does the compiler look at to choose an overloaded function?",
+      "options": [
+        "The number and types of the arguments",
+        "Only the return type",
+        "The order of the functions in the file",
+        "The names of the parameters"
+      ],
+      "answer": "The number and types of the arguments",
+      "hint": "Think about what the caller writes inside the brackets.",
+      "explanation": "The compiler compares the arguments of the call with each parameter list and picks the best match."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which change makes two functions a valid overload?",
+      "options": [
+        "A different parameter type",
+        "A different return type only",
+        "A different parameter name only",
+        "A different function body only"
+      ],
+      "answer": "A different parameter type",
+      "hint": "The return type is not part of the choice.",
+      "explanation": "Different parameter types, or a different number of parameters, give a valid overload. A different return type or parameter name alone does not."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Functions: f(int) and f(double). Which one does f('A') call?",
+      "options": [
+        "f(int)",
+        "f(double)",
+        "Neither, it is an error",
+        "Both run"
+      ],
+      "answer": "f(int)",
+      "hint": "A char is promoted to int before it is converted to double.",
+      "explanation": "char to int is a promotion, which is better than the conversion from char to double. So f(int) is chosen."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which is the correct order of preference for the compiler?",
+      "options": [
+        "Exact match, then promotion, then conversion",
+        "Conversion, then promotion, then exact match",
+        "Promotion, then exact match, then conversion",
+        "All are equal"
+      ],
+      "answer": "Exact match, then promotion, then conversion",
+      "hint": "Think: first the perfect fit, then the small widening, then the other changes.",
+      "explanation": "The compiler prefers an exact match, then a promotion (such as char to int), then a conversion (such as int to double)."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "void g(int, double); void g(double, int); What does g(1, 2) give?",
+      "options": [
+        "A compile error: ambiguous call",
+        "It calls g(int, double)",
+        "It calls g(double, int)",
+        "It prints nothing"
+      ],
+      "answer": "A compile error: ambiguous call",
+      "hint": "Count how many arguments each version matches exactly.",
+      "explanation": "Each version matches one argument exactly and needs a conversion for the other. Neither is better, so the call is ambiguous."
+    }
+  ],
+  "sources": [
+    "Function overloading",
+    "Overloaded functions",
+    "Functions"
+  ]
+}

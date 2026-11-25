@@ -1,0 +1,752 @@
+{
+  "slug": "break-continue",
+  "week": 3,
+  "title": "break and continue: leaving a loop or skipping one turn",
+  "defaultView": "visualize",
+  "order": 5,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match each statement with what it does",
+      "pairs": [
+        {
+          "term": "break (in a loop)",
+          "meaning": "Ends the whole loop at once; the program continues after the loop"
+        },
+        {
+          "term": "continue",
+          "meaning": "Skips the rest of this turn and starts the next turn of the loop"
+        },
+        {
+          "term": "break (in a switch)",
+          "meaning": "Leaves the switch only; the loop around it keeps going"
+        },
+        {
+          "term": "break in the inner of two loops",
+          "meaning": "Leaves only the inner loop; the outer loop goes on"
+        },
+        {
+          "term": "continue in a for loop",
+          "meaning": "Jumps to the update (i++), then tests the condition"
+        }
+      ]
+    },
+    {
+      "kind": "pipeline",
+      "title": "One turn of a for loop: where break and continue land",
+      "stages": [
+        {
+          "name": "1. Test the condition",
+          "detail": "If it is false the loop ends normally."
+        },
+        {
+          "name": "2. Start the body",
+          "detail": "The lines run from top to bottom."
+        },
+        {
+          "name": "3. continue? Jump to the update",
+          "detail": "The rest of the body is skipped. Go to step 5."
+        },
+        {
+          "name": "4. break? Jump out of the loop",
+          "detail": "The loop is over. The first line after the loop runs."
+        },
+        {
+          "name": "5. Update (i++)",
+          "detail": "Then back to step 1 for the next turn."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can use break to stop a loop early and continue to skip one turn, and predict what happens to the loop counter and the output.",
+  "warmup": "You are searching a pile of 100 notebooks for your friend's one. When you find it you stop: you do not check the other 99. That is break. Now imagine you are marking exam papers and one paper has no name. You put it aside and take the next paper. You did not stop marking. That is continue.",
+  "definition": "break ends the loop immediately. The program goes on with the first line after the loop. continue ends only the CURRENT turn (iteration). The program goes to the next turn. In a for loop the update part (i++) still runs before the next test. In a while loop there is no update, so you must change the variable yourself before continue. break also ends a case in a switch. These two statements are the 'exceptions' of a loop: they break its normal rhythm.",
+  "howItWorks": "Study the flowchart of the first example. The loop test is a diamond. Inside the body there is a second diamond: i % 7 == 0. If it is true, the arrow does not return to the loop. It jumps out to the line after the loop. That is break. In the second example the arrow of the if goes back to the update of the loop. That is continue. The body below the continue is skipped for that turn only. Watch the trace of the second program: for i = 3, 6 and 9 the step shows line 8 (continue) and sum does not change. Three more things to remember. First, break and continue need an if around them. Without an if, the lines after them can never run. Second, in nested loops break leaves only the loop it is written in, so the outer loop continues (see the third example). Third, inside a switch inside a loop, break ends the switch, not the loop. To leave the loop from inside a switch, use a flag or return. A typical use: checking a prime number. When a divisor is found, break, because there is no need to test more numbers.",
+  "syntax": "for (int i = 1; i <= 20; i++) {\n    if (i % 7 == 0) {\n        break;       // leave the whole loop now\n    }\n    if (i % 2 == 0) {\n        continue;    // skip the rest of THIS turn, go to i++\n    }\n    cout << i << \" \";   // reached only if no break/continue happened\n}\n// after break, the program continues HERE\n\nswitch (choice) {\n    case 1: cout << \"One\"; break;   // break leaves the switch only\n    default: cout << \"Other\";\n}\n",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Print the numbers from 1 and stop at the first multiple of 7. Print Found: and the number, then Done.",
+      "pseudocode": [
+        "START",
+        "FOR i = 1 TO 20",
+        "  IF i is a multiple of 7 THEN",
+        "    PRINT Found and i",
+        "    BREAK (leave the loop)",
+        "  PRINT i",
+        "PRINT Done",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[i = 1]\n  B --> C{i <= 20?}\n  C -->|No| H[/Print Done/]\n  C -->|Yes| D{i % 7 == 0?}\n  D -->|Yes| E[/Print Found i/]\n  E -->|break| H\n  D -->|No| F[/Print i/]\n  F --> G[i = i + 1]\n  G --> C\n  H --> I([End])",
+      "sample": {
+        "id": "break-first-multiple",
+        "title": "break at the first multiple of 7",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    for (int i = 1; i <= 20; i++) {\n        if (i % 7 == 0) {\n            cout << \"\\nFound: \" << i << endl;\n            break;\n        }\n        cout << i << \" \";\n    }\n    cout << \"Done\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "1 2 3 4 5 6 \nFound: 7\nDone\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A normal loop that could run from 1 to 20."
+          },
+          {
+            "line": 6,
+            "text": "Is i a multiple of 7? The remainder after dividing by 7 is 0."
+          },
+          {
+            "line": 7,
+            "text": "Prints the number that stopped the loop. \\n starts a new line first."
+          },
+          {
+            "line": 8,
+            "text": "break ends the loop at once. The numbers 8 to 20 are never visited."
+          },
+          {
+            "line": 10,
+            "text": "Reached only when i is not a multiple of 7. Prints the number and a space."
+          },
+          {
+            "line": 12,
+            "text": "The first line after the loop. Runs after the loop ends normally or by break."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "1"
+              },
+              "note": "Loop starts with i = 1. 1 % 7 is 1, not 0, so no break. Prints 1.",
+              "out": "1 "
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "2"
+              },
+              "note": "i = 2. 2 % 7 = 2. Prints 2.",
+              "out": "2 "
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "3"
+              },
+              "note": "i = 3. Prints 3.",
+              "out": "3 "
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "4"
+              },
+              "note": "i = 4. Prints 4.",
+              "out": "4 "
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "5"
+              },
+              "note": "i = 5. Prints 5.",
+              "out": "5 "
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "6"
+              },
+              "note": "i = 6. Prints 6.",
+              "out": "6 "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "7"
+              },
+              "note": "i = 7. 7 % 7 is 0, so the test is true. Prints the Found line.",
+              "out": "\nFound: 7\n"
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "break! The loop ends at once. i = 8 to 20 are never tried.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "The computer continues with the first line AFTER the loop.",
+              "out": "Done\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "i": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Print the numbers 1 to 10 but skip the multiples of 3. Also add up the numbers you print and show the total.",
+      "pseudocode": [
+        "START",
+        "sum = 0",
+        "FOR i = 1 TO 10",
+        "  IF i is a multiple of 3 THEN CONTINUE",
+        "  PRINT i",
+        "  sum = sum + i",
+        "PRINT sum",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[sum = 0, i = 1]\n  B --> C{i <= 10?}\n  C -->|No| H[/Print sum/]\n  C -->|Yes| D{i % 3 == 0?}\n  D -->|Yes| G[i = i + 1]\n  D -->|No| E[/Print i/]\n  E --> F[sum = sum + i]\n  F --> G\n  G --> C\n  H --> I([End])",
+      "sample": {
+        "id": "continue-skip-multiples",
+        "title": "continue skips multiples of 3",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int sum = 0;\n    for (int i = 1; i <= 10; i++) {\n        if (i % 3 == 0) {\n            continue;\n        }\n        cout << i << \" \";\n        sum += i;\n    }\n    cout << endl;\n    cout << \"Sum: \" << sum << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "1 2 4 5 7 8 10 \nSum: 37\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "sum collects the numbers that are printed."
+          },
+          {
+            "line": 6,
+            "text": "The loop would visit every i from 1 to 10."
+          },
+          {
+            "line": 7,
+            "text": "Multiples of 3 give remainder 0."
+          },
+          {
+            "line": 8,
+            "text": "continue skips lines 10 and 11 for this turn. The loop goes to i++ and tests the condition."
+          },
+          {
+            "line": 10,
+            "text": "Printed only for numbers that were not skipped."
+          },
+          {
+            "line": 11,
+            "text": "Added to sum only for numbers that were not skipped."
+          },
+          {
+            "line": 14,
+            "text": "The total of 1+2+4+5+7+8+10."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "sum": "0"
+              },
+              "note": "sum starts at 0.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "1",
+                "sum": "1"
+              },
+              "note": "i = 1. Not a multiple of 3, so print 1 and add it to sum.",
+              "out": "1 "
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "2",
+                "sum": "3"
+              },
+              "note": "i = 2. Printed and added.",
+              "out": "2 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "3"
+              },
+              "note": "i = 3. 3 % 3 is 0, so continue: skip printing and adding, go to the next i.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "4",
+                "sum": "7"
+              },
+              "note": "i = 4. Printed and added.",
+              "out": "4 "
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "5",
+                "sum": "12"
+              },
+              "note": "i = 5. Printed and added.",
+              "out": "5 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "6"
+              },
+              "note": "i = 6 is a multiple of 3. Skipped.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "7",
+                "sum": "19"
+              },
+              "note": "i = 7. Printed and added.",
+              "out": "7 "
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "8",
+                "sum": "27"
+              },
+              "note": "i = 8. Printed and added.",
+              "out": "8 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "9"
+              },
+              "note": "i = 9 is a multiple of 3. Skipped.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "10",
+                "sum": "37"
+              },
+              "note": "i = 10. Printed and added. Then i++ makes i = 11 and the loop ends.",
+              "out": "10 "
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Prints a new line.",
+              "out": "\n"
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Prints the sum of the numbers that were NOT skipped.",
+              "out": "Sum: 37\n"
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "i": "int",
+            "sum": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "What does this program print? It has two loops. The inner loop uses break when j is 2. Write the output and explain which loop break leaves.",
+      "pseudocode": [
+        "START",
+        "FOR i = 1 TO 3",
+        "  FOR j = 1 TO 3",
+        "    IF j == 2 THEN BREAK (inner loop only)",
+        "    PRINT i, j",
+        "  PRINT a bar",
+        "PRINT new line",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[i = 1]\n  B --> C{i <= 3?}\n  C -->|No| K[/Print new line/]\n  C -->|Yes| D[j = 1]\n  D --> E{j <= 3?}\n  E -->|No| I[/Print bar/]\n  E -->|Yes| F{j == 2?}\n  F -->|\"Yes: break\"| I\n  F -->|No| G[/Print i,j/]\n  G --> H[j = j + 1]\n  H --> E\n  I --> J[i = i + 1]\n  J --> C\n  K --> L([End])",
+      "sample": {
+        "id": "break-nested",
+        "title": "break inside nested loops",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    for (int i = 1; i <= 3; i++) {\n        for (int j = 1; j <= 3; j++) {\n            if (j == 2) {\n                break;\n            }\n            cout << i << \",\" << j << \" \";\n        }\n        cout << \"| \";\n    }\n    cout << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "1,1 | 2,1 | 3,1 | \n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Outer loop: i = 1, 2, 3."
+          },
+          {
+            "line": 6,
+            "text": "Inner loop: j = 1, 2, 3 on every turn of the outer loop."
+          },
+          {
+            "line": 7,
+            "text": "Is j equal to 2?"
+          },
+          {
+            "line": 8,
+            "text": "break leaves only the inner loop. The outer loop continues."
+          },
+          {
+            "line": 10,
+            "text": "Printed only when j is 1 (j = 3 is never reached)."
+          },
+          {
+            "line": 12,
+            "text": "Runs after the inner loop ends, once for each i."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "1",
+                "j": "1"
+              },
+              "note": "i = 1, j = 1. j is not 2, so print 1,1.",
+              "out": "1,1 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "j": "2"
+              },
+              "note": "j = 2. break leaves only the INNER loop.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Back in the outer loop body. Prints a bar.",
+              "out": "| "
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "2",
+                "j": "1"
+              },
+              "note": "The outer loop goes on: i = 2. The inner loop starts again at j = 1. Prints 2,1.",
+              "out": "2,1 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "j": "2"
+              },
+              "note": "j = 2, break again.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Prints a bar.",
+              "out": "| "
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "3",
+                "j": "1"
+              },
+              "note": "i = 3, j = 1. Prints 3,1.",
+              "out": "3,1 "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "j": "2"
+              },
+              "note": "j = 2, break again.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Prints a bar.",
+              "out": "| "
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "The outer loop is finished. Prints a new line.",
+              "out": "\n"
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "i": "int",
+            "j": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "break in a loop",
+      "when": "Stop searching as soon as the answer is found",
+      "example": "if (x == target) break;"
+    },
+    {
+      "way": "continue in a for loop",
+      "when": "Skip unwanted values; the update i++ still runs",
+      "example": "if (i % 3 == 0) continue;"
+    },
+    {
+      "way": "continue in a while loop",
+      "when": "Change the counter BEFORE continue or the loop may never end",
+      "example": "if (i == 2) { i++; continue; }"
+    },
+    {
+      "way": "break in a switch case",
+      "when": "Stop the fall-through to the next case",
+      "example": "case 1: cout << \"One\"; break;"
+    },
+    {
+      "way": "break in nested loops",
+      "when": "Leaves only the loop it is written in",
+      "example": "for (..) { for (..) { if (c) break; } }"
+    },
+    {
+      "way": "Flag or function to leave all loops",
+      "when": "You need to stop outer loops too",
+      "example": "found = true; (checked by both loop conditions)"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "if (x == 1) break;   // no loop or switch around it",
+      "right": "for (int i = 0; i < 5; i++) {\n    if (i == 1) break;\n}",
+      "error": "break statement not within loop or switch"
+    },
+    {
+      "wrong": "if (x == 1) continue;   // no loop around it",
+      "right": "for (int i = 0; i < 5; i++) {\n    if (i == 1) continue;\n}",
+      "error": "continue statement not within a loop"
+    },
+    {
+      "wrong": "int i = 0;\nwhile (i < 5) {\n    if (i == 2) continue;\n    i++;\n}",
+      "right": "int i = 0;\nwhile (i < 5) {\n    if (i == 2) { i++; continue; }\n    i++;\n}",
+      "error": "No compiler error. When i is 2 the loop skips i++ forever, so it becomes an infinite loop."
+    },
+    {
+      "wrong": "for (..) {\n    for (..) {\n        if (found) break;   // expecting to stop both loops\n    }\n}",
+      "right": "for (.. && !found) {\n    for (.. && !found) {\n        if (x) found = true;\n    }\n}",
+      "error": "No compiler error. break leaves only the inner loop, so the outer loop keeps running."
+    }
+  ],
+  "examTips": [
+    "break = leave the loop completely. continue = skip the rest of this turn only.",
+    "In a for loop, continue still runs the update (i++). In a while loop it does not, so update first.",
+    "break inside nested loops stops only the innermost loop. Count how many times the outer loop still runs.",
+    "break and continue are usually inside an if. They have no effect on the lines before them.",
+    "Trace the loop variable value by value and mark the turns that are skipped."
+  ],
+  "romanSummary": [
+    "break loop ko foran khatam kar deta hai aur control loop ke baad wali line par chala jata hai.",
+    "continue sirf current turn ka baqi hissa skip karta hai aur agli iteration shuru ho jati hai.",
+    "for loop mein continue ke baad i++ phir bhi chalta hai, lekin while loop mein khud counter badhana parta hai.",
+    "Nested loops mein break sirf andar wale (inner) loop ko rokta hai. break switch mein bhi use hota hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does break do inside a loop?",
+      "options": [
+        "Ends the loop and continues after it",
+        "Skips one turn only",
+        "Restarts the loop from the beginning",
+        "Ends the whole program"
+      ],
+      "answer": "Ends the loop and continues after it",
+      "hint": "Think of finding the notebook and stopping the search.",
+      "explanation": "break leaves the loop at once. The program continues with the first line after the loop."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\nfor (int i = 1; i <= 5; i++) {\n    if (i == 3) break;\n    cout << i;\n}",
+      "answer": "12",
+      "hint": "When does the loop stop?",
+      "explanation": "1 and 2 are printed. At i = 3 break ends the loop before the cout."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\nfor (int i = 1; i <= 5; i++) {\n    if (i == 3) continue;\n    cout << i;\n}",
+      "answer": "1245",
+      "hint": "Only the turn with i = 3 is skipped.",
+      "explanation": "continue skips only i = 3. The loop carries on with 4 and 5."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nfor (int i = 1; i <= 2; i++) {\n    for (int j = 1; j <= 3; j++) {\n        if (j == 2) continue;\n        cout << i << j << \" \";\n    }\n}",
+      "answer": "11 13 21 23",
+      "hint": "For every i the inner loop skips only j = 2.",
+      "explanation": "j = 2 is skipped each time. The output is i then j: 11, 13, 21, 23."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This loop should print 0 1 3 4 (skipping 2) but it never stops. Fix it.\n\nint i = 0;\nwhile (i < 5) {\n    if (i == 2) continue;\n    cout << i << \" \";\n    i++;\n}",
+      "answer": "int i = 0;\nwhile (i < 5) {\n    if (i == 2) {\n        i++;\n        continue;\n    }\n    cout << i << \" \";\n    i++;\n}",
+      "hint": "What happens to i when continue is executed?",
+      "explanation": "A while loop has no automatic update. When i is 2, continue skips i++, so i stays 2 forever. Add i++ before continue."
+    },
+    {
+      "id": "p6",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that reads a whole number n and prints whether it is prime. Use a loop with break as soon as a divisor is found.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int n;\n    bool isPrime = true;\n    cin >> n;\n    if (n < 2) {\n        isPrime = false;\n    }\n    for (int i = 2; i * i <= n; i++) {\n        if (n % i == 0) {\n            isPrime = false;\n            break;\n        }\n    }\n    cout << n << (isPrime ? \" is prime\" : \" is not prime\") << endl;\n    return 0;\n}",
+      "hint": "Try divisors from 2 while i * i <= n. A divisor means not prime.",
+      "explanation": "Assume prime, test divisors, and break at the first divisor, because more tests are useless."
+    },
+    {
+      "id": "p7",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "A switch is inside a for loop. A case ends with break. What does that break leave?",
+      "options": [
+        "Only the switch",
+        "The for loop",
+        "Both the switch and the loop",
+        "The whole program"
+      ],
+      "answer": "Only the switch",
+      "hint": "Which statement is the break closest to?",
+      "explanation": "break leaves the nearest enclosing switch or loop. Here the nearest is the switch, so the for loop continues."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which statement skips only the current turn of a loop?",
+      "options": [
+        "continue",
+        "break",
+        "return",
+        "exit"
+      ],
+      "answer": "continue",
+      "hint": "It does not end the loop.",
+      "explanation": "continue skips the rest of this turn. break ends the loop."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "After break leaves a loop, which line runs next?",
+      "options": [
+        "The first line after the loop",
+        "The first line of the loop body",
+        "The loop condition",
+        "The end of the program"
+      ],
+      "answer": "The first line after the loop",
+      "hint": "Where does the arrow of break point in the flowchart?",
+      "explanation": "The loop is finished, so the program goes on after it."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "for (int i = 1; i <= 6; i++) { if (i % 2 == 0) continue; cout << i; }  prints:",
+      "options": [
+        "135",
+        "246",
+        "123456",
+        "12"
+      ],
+      "answer": "135",
+      "hint": "Even numbers are skipped.",
+      "explanation": "continue skips 2, 4 and 6, so only 1, 3 and 5 are printed."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "In two nested loops, break is written in the inner loop. What stops?",
+      "options": [
+        "Only the inner loop",
+        "Both loops",
+        "Only the outer loop",
+        "The program"
+      ],
+      "answer": "Only the inner loop",
+      "hint": "break stops the loop it is written in.",
+      "explanation": "The outer loop continues with its next turn."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "In which loop is continue most dangerous if you forget to change the counter first?",
+      "options": [
+        "while",
+        "for",
+        "Both are equally safe",
+        "Neither can use continue"
+      ],
+      "answer": "while",
+      "hint": "Which loop has no automatic update part?",
+      "explanation": "A for loop runs i++ after continue. A while loop does not, so the counter may never change."
+    }
+  ],
+  "sources": [
+    "break statement",
+    "continue statement",
+    "Exceptions in loops",
+    "break in switch"
+  ]
+}

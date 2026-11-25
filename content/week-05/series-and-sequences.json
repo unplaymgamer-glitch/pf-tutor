@@ -1,0 +1,769 @@
+{
+  "slug": "series-and-sequences",
+  "week": 5,
+  "title": "Series and sequences with loops",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match each series to the loop line that builds it",
+      "pairs": [
+        {
+          "term": "Even numbers: 2, 4, 6, 8",
+          "meaning": "cout << 2 * i;"
+        },
+        {
+          "term": "Odd numbers: 1, 3, 5, 7",
+          "meaning": "cout << 2 * i - 1;"
+        },
+        {
+          "term": "Squares: 1, 4, 9, 16",
+          "meaning": "cout << i * i;"
+        },
+        {
+          "term": "Sum of first n numbers: 1 + 2 + ... + n",
+          "meaning": "sum = sum + i;   (sum starts at 0)"
+        },
+        {
+          "term": "Factorial: n! = 1 x 2 x ... x n",
+          "meaning": "fact = fact * i;   (fact starts at 1)"
+        },
+        {
+          "term": "Powers of 2: 2, 4, 8, 16",
+          "meaning": "p = p * 2;   (p starts at 1)"
+        },
+        {
+          "term": "Harmonic series: 1 + 1/2 + 1/3 + ...",
+          "meaning": "sum = sum + 1.0 / i;   (sum is a double)"
+        },
+        {
+          "term": "Fibonacci: 0, 1, 1, 2, 3, 5",
+          "meaning": "next = a + b;  a = b;  b = next;"
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each loop habit to what it gives you",
+      "pairs": [
+        {
+          "term": "A running sum must start at",
+          "meaning": "0, so the first addition is correct"
+        },
+        {
+          "term": "A running product (factorial) must start at",
+          "meaning": "1, because 0 times anything is 0"
+        },
+        {
+          "term": "1 / i with two ints",
+          "meaning": "0 for every i above 1 (integer division)"
+        },
+        {
+          "term": "1.0 / i",
+          "meaning": "a real decimal answer such as 0.5 or 0.333"
+        },
+        {
+          "term": "cout << fixed << setprecision(3)",
+          "meaning": "exactly 3 digits after the decimal point"
+        },
+        {
+          "term": "sign = -sign;",
+          "meaning": "flips +1 and -1 for an alternating series"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can use a loop to print a sequence (even numbers, squares, Fibonacci) and to build a series (a sum or a product) such as the sum of the first n numbers, n factorial, or 1 + 1/2 + 1/3.",
+  "warmup": "Think of your mobile load. Every day you spend a little, and you could write the balance after each day: that list is a sequence. Now think of the total you spent in the whole week: that single number is a series. Or think of a cricket scoreboard: the score after each over is a sequence, and the final total is a series. A loop is perfect for both. It repeats one small step, and the loop variable i tells it which term we are on.",
+  "definition": "A sequence is a list of numbers that follows a rule, for example 2, 4, 6, 8. A series is the sum (or product) of the terms of a sequence, for example 2 + 4 + 6 + 8. To make a sequence, print one term in every round of the loop. To make a series, keep a running total in a variable (the accumulator) and add one term to it in every round.",
+  "howItWorks": "Step 1: find the rule. Write the term as a formula of i. The i-th even number is 2 * i. The i-th square is i * i. Step 2: put the formula inside a for loop that goes from 1 to n. Step 3: if you need a total, create the accumulator BEFORE the loop and update it INSIDE the loop. A sum starts at 0 (adding 0 changes nothing). A product such as a factorial starts at 1 (multiplying by 1 changes nothing). Step 4: print the answer AFTER the loop. Two special cases. A fraction such as 1/i needs a double and 1.0 / i, because 1 / i with two ints is integer division and gives 0. Fibonacci is different: each term is the sum of the two terms before it, so we keep two variables a and b and slide them forward with a temporary variable called next. Use setprecision (from <iomanip>) together with fixed to control the number of decimals.",
+  "syntax": "// sequence: print one term per round\nfor (int i = 1; i <= n; i++) {\n    cout << 2 * i << \" \";      // term as a formula of i\n}\n\n// series: keep a running total\nint sum = 0;                    // sum starts at 0\nfor (int i = 1; i <= n; i++) {\n    sum = sum + i;              // add the i-th term\n}\ncout << sum;                    // print after the loop\n\nint fact = 1;                   // a product starts at 1\nfor (int i = 1; i <= n; i++) {\n    fact = fact * i;\n}\n\n// fraction series: use double and 1.0\ndouble h = 0;\nfor (int i = 1; i <= n; i++) {\n    h = h + 1.0 / i;\n}\ncout << fixed << setprecision(3) << h;   // needs <iomanip>",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "For n = 5, print the first n even numbers, the first n powers of 2, the sum of the first n numbers (1 + 2 + ... + n) and n factorial.",
+      "pseudocode": [
+        "START",
+        "SET n = 5",
+        "FOR i = 1 TO n: PRINT 2 * i",
+        "SET p = 1",
+        "FOR i = 1 TO n: p = p * 2, PRINT p",
+        "SET sum = 0 and fact = 1",
+        "FOR i = 1 TO n: sum = sum + i, fact = fact * i",
+        "PRINT sum and fact",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[n = 5]\n  B --> C[\"i = 1\"]\n  C --> D{i <= n?}\n  D -->|Yes| E[/Print 2 * i/]\n  E --> F[\"i = i + 1\"]\n  F --> D\n  D -->|No| G[\"p = 1, sum = 0, fact = 1\"]\n  G --> H[\"Loops for p, sum and fact\"]\n  H --> I[/Print p values, sum, fact/]\n  I --> J([End])",
+      "sample": {
+        "id": "basic-series",
+        "title": "Even numbers, powers of 2, sum and factorial",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int n = 5;\n\n    cout << \"Even: \";\n    for (int i = 1; i <= n; i++) {\n        cout << 2 * i << \" \";\n    }\n    cout << endl;\n\n    cout << \"Powers of 2: \";\n    int p = 1;\n    for (int i = 1; i <= n; i++) {\n        p = p * 2;\n        cout << p << \" \";\n    }\n    cout << endl;\n\n    int sum = 0;\n    int fact = 1;\n    for (int i = 1; i <= n; i++) {\n        sum = sum + i;\n        fact = fact * i;\n    }\n    cout << \"Sum = \" << sum << endl;\n    cout << \"Factorial = \" << fact << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Even: 2 4 6 8 10 \nPowers of 2: 2 4 8 16 32 \nSum = 15\nFactorial = 120\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "n is the number of terms. const means it never changes."
+          },
+          {
+            "line": 8,
+            "text": "The loop runs for i = 1, 2, 3, 4, 5. That is one round per term."
+          },
+          {
+            "line": 9,
+            "text": "The i-th even number is 2 times i, so we get 2, 4, 6, 8, 10."
+          },
+          {
+            "line": 14,
+            "text": "p holds the current power of 2. It starts at 1 (which is 2 to the power 0)."
+          },
+          {
+            "line": 16,
+            "text": "Each round doubles p: 2, 4, 8, 16, 32."
+          },
+          {
+            "line": 21,
+            "text": "A running SUM starts at 0."
+          },
+          {
+            "line": 22,
+            "text": "A running PRODUCT starts at 1. If it started at 0, the answer would always be 0."
+          },
+          {
+            "line": 24,
+            "text": "Adds the current number: 1, then 1+2, then 1+2+3, and so on."
+          },
+          {
+            "line": 25,
+            "text": "Multiplies the current number: 1, 1x2, 1x2x3, and so on."
+          },
+          {
+            "line": 27,
+            "text": "The totals are printed AFTER the loop, when they are complete."
+          }
+        ]
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read n and print the sum of the series 1 + 1/2 + 1/3 + ... + 1/n with exactly 3 digits after the decimal point.",
+      "pseudocode": [
+        "START",
+        "READ n",
+        "SET sum = 0",
+        "FOR i = 1 TO n",
+        "  term = 1.0 / i",
+        "  sum = sum + term",
+        "PRINT sum with 3 decimals",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read n/]\n  B --> C[\"sum = 0, i = 1\"]\n  C --> D{i <= n?}\n  D -->|Yes| E[\"term = 1.0 / i\"]\n  E --> F[\"sum = sum + term\"]\n  F --> G[\"i = i + 1\"]\n  G --> D\n  D -->|No| H[/Print sum/]\n  H --> I([End])",
+      "sample": {
+        "id": "harmonic-sum",
+        "title": "Sum of 1 + 1/2 + 1/3 + ... + 1/n",
+        "code": "#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    double sum = 0;\n    for (int i = 1; i <= n; i++) {\n        double term = 1.0 / i;\n        sum = sum + term;\n    }\n    cout << fixed << setprecision(3);\n    cout << \"Sum = \" << sum << endl;\n    return 0;\n}\n",
+        "stdin": "3",
+        "expectedOutput": "Sum = 1.833\n",
+        "explanation": [
+          {
+            "line": 2,
+            "text": "iomanip gives us setprecision."
+          },
+          {
+            "line": 7,
+            "text": "Reads how many terms we want."
+          },
+          {
+            "line": 8,
+            "text": "The total has decimals, so it is a double. It starts at 0."
+          },
+          {
+            "line": 9,
+            "text": "i is the denominator: 1, 2, 3, ..., n."
+          },
+          {
+            "line": 10,
+            "text": "1.0 is a decimal number, so the division keeps its decimals. With 1 / i (both int) the answer would be 0 for i = 2 and 3."
+          },
+          {
+            "line": 11,
+            "text": "Adds the new term to the running total."
+          },
+          {
+            "line": 13,
+            "text": "fixed with setprecision(3) prints exactly 3 digits after the decimal point."
+          },
+          {
+            "line": 14,
+            "text": "Prints the total after the loop: 1 + 0.5 + 0.333 = 1.833."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "n": "3"
+              },
+              "note": "cin reads 3 into n. We will add 3 terms: 1 + 1/2 + 1/3.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "sum": "0"
+              },
+              "note": "sum is the running total. It must start at 0.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "1",
+                "term": "1"
+              },
+              "note": "i = 1. term = 1.0 / 1 = 1.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "sum": "1"
+              },
+              "note": "sum = 0 + 1 = 1.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "2",
+                "term": "0.5"
+              },
+              "note": "i = 2. term = 1.0 / 2 = 0.5.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "sum": "1.5"
+              },
+              "note": "sum = 1 + 0.5 = 1.5.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "i": "3",
+                "term": "0.333"
+              },
+              "note": "i = 3. term = 1.0 / 3 = 0.3333... (shown short here).",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "sum": "1.833"
+              },
+              "note": "sum = 1.5 + 0.3333... = 1.8333...",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "i becomes 4, the condition i <= 3 is false, the loop ends. fixed and setprecision(3) ask for exactly 3 digits after the decimal point.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Prints the total rounded to 3 decimals.",
+              "out": "Sum = 1.833\n"
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "n": "int",
+            "i": "int",
+            "term": "double",
+            "sum": "double"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a program that reads n, prints the first n terms of the Fibonacci sequence (0 1 1 2 3 5 ...) and then prints the sum of those terms.",
+      "pseudocode": [
+        "START",
+        "READ n",
+        "SET a = 0, b = 1, sum = 0",
+        "FOR i = 1 TO n",
+        "  PRINT a",
+        "  sum = sum + a",
+        "  next = a + b",
+        "  a = b",
+        "  b = next",
+        "PRINT sum",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read n/]\n  B --> C[\"a = 0, b = 1, sum = 0, i = 1\"]\n  C --> D{i <= n?}\n  D -->|Yes| E[/Print a/]\n  E --> F[\"sum = sum + a\"]\n  F --> G[\"next = a + b\"]\n  G --> H[\"a = b, b = next\"]\n  H --> I[\"i = i + 1\"]\n  I --> D\n  D -->|No| J[/Print sum/]\n  J --> K([End])",
+      "sample": {
+        "id": "fibonacci-sum",
+        "title": "Fibonacci terms and their sum",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    int a = 0, b = 1;\n    int sum = 0;\n    cout << \"Fibonacci: \";\n    for (int i = 1; i <= n; i++) {\n        cout << a << \" \";\n        sum = sum + a;\n        int next = a + b;\n        a = b;\n        b = next;\n    }\n    cout << endl;\n    cout << \"Sum = \" << sum << endl;\n    return 0;\n}\n",
+        "stdin": "5",
+        "expectedOutput": "Fibonacci: 0 1 1 2 3 \nSum = 7\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "How many Fibonacci terms to print."
+          },
+          {
+            "line": 7,
+            "text": "a is the current term and b is the next one. The sequence starts 0, 1."
+          },
+          {
+            "line": 8,
+            "text": "The running total of all printed terms."
+          },
+          {
+            "line": 11,
+            "text": "Prints the current term. The first term is 0."
+          },
+          {
+            "line": 12,
+            "text": "Adds the printed term to the total."
+          },
+          {
+            "line": 13,
+            "text": "next is the new term: the sum of the two before it."
+          },
+          {
+            "line": 14,
+            "text": "Slide forward: a becomes the old b."
+          },
+          {
+            "line": 15,
+            "text": "b becomes the new term. Order matters: if you change a first and then compute next you lose the old value."
+          },
+          {
+            "line": 18,
+            "text": "Prints the total of the terms after the loop."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "n": "5"
+              },
+              "note": "cin reads 5. We want the first 5 Fibonacci numbers.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "a": "0",
+                "b": "1"
+              },
+              "note": "The first two terms are a = 0 and b = 1.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "sum": "0"
+              },
+              "note": "sum will add up every term we print.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Prints the label.",
+              "out": "Fibonacci: "
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "1"
+              },
+              "note": "Round 1: print a = 0.",
+              "out": "0 "
+            },
+            {
+              "line": 15,
+              "vars": {
+                "sum": "0",
+                "next": "1",
+                "a": "1",
+                "b": "1"
+              },
+              "note": "Add the printed term to sum (sum = 0). next = 0 + 1 = 1. Then a takes the old b and b takes next: a = 1, b = 1.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "2"
+              },
+              "note": "Round 2: print a = 1.",
+              "out": "1 "
+            },
+            {
+              "line": 15,
+              "vars": {
+                "sum": "1",
+                "next": "2",
+                "a": "1",
+                "b": "2"
+              },
+              "note": "Add the printed term to sum (sum = 1). next = 1 + 1 = 2. Then a takes the old b and b takes next: a = 1, b = 2.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "3"
+              },
+              "note": "Round 3: print a = 1.",
+              "out": "1 "
+            },
+            {
+              "line": 15,
+              "vars": {
+                "sum": "2",
+                "next": "3",
+                "a": "2",
+                "b": "3"
+              },
+              "note": "Add the printed term to sum (sum = 2). next = 1 + 2 = 3. Then a takes the old b and b takes next: a = 2, b = 3.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "4"
+              },
+              "note": "Round 4: print a = 2.",
+              "out": "2 "
+            },
+            {
+              "line": 15,
+              "vars": {
+                "sum": "4",
+                "next": "5",
+                "a": "3",
+                "b": "5"
+              },
+              "note": "Add the printed term to sum (sum = 4). next = 2 + 3 = 5. Then a takes the old b and b takes next: a = 3, b = 5.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "5"
+              },
+              "note": "Round 5: print a = 3.",
+              "out": "3 "
+            },
+            {
+              "line": 15,
+              "vars": {
+                "sum": "7",
+                "next": "8",
+                "a": "5",
+                "b": "8"
+              },
+              "note": "Add the printed term to sum (sum = 7). next = 3 + 5 = 8. Then a takes the old b and b takes next: a = 5, b = 8.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "The loop is finished. Move to a new line.",
+              "out": "\n"
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "Prints the sum of the five terms: 0 + 1 + 1 + 2 + 3 = 7.",
+              "out": "Sum = 7\n"
+            }
+          ],
+          "types": {
+            "n": "int",
+            "a": "int",
+            "b": "int",
+            "sum": "int",
+            "next": "int",
+            "i": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Even numbers",
+      "when": "2, 4, 6, ... n terms",
+      "example": "for (int i = 1; i <= n; i++) cout << 2 * i << \" \";"
+    },
+    {
+      "way": "Odd numbers",
+      "when": "1, 3, 5, ... n terms",
+      "example": "for (int i = 1; i <= n; i++) cout << 2 * i - 1 << \" \";"
+    },
+    {
+      "way": "Squares",
+      "when": "1, 4, 9, 16, ...",
+      "example": "for (int i = 1; i <= n; i++) cout << i * i << \" \";"
+    },
+    {
+      "way": "Sum of first n numbers",
+      "when": "1 + 2 + ... + n",
+      "example": "int sum = 0;\nfor (int i = 1; i <= n; i++) sum += i;"
+    },
+    {
+      "way": "Factorial",
+      "when": "n! = 1 x 2 x ... x n",
+      "example": "int fact = 1;\nfor (int i = 1; i <= n; i++) fact *= i;"
+    },
+    {
+      "way": "Powers of 2",
+      "when": "2, 4, 8, 16, ...",
+      "example": "int p = 1;\nfor (int i = 1; i <= n; i++) { p *= 2; cout << p << \" \"; }"
+    },
+    {
+      "way": "Harmonic series",
+      "when": "1 + 1/2 + 1/3 + ... + 1/n",
+      "example": "double h = 0;\nfor (int i = 1; i <= n; i++) h += 1.0 / i;"
+    },
+    {
+      "way": "Alternating series",
+      "when": "1 - 2 + 3 - 4 + ...",
+      "example": "int alt = 0, sign = 1;\nfor (int i = 1; i <= n; i++) { alt += sign * i; sign = -sign; }"
+    },
+    {
+      "way": "Fibonacci",
+      "when": "each term is the sum of the previous two",
+      "example": "int a = 0, b = 1;\nfor (int i = 1; i <= n; i++) {\n    cout << a << \" \";\n    int next = a + b;\n    a = b;\n    b = next;\n}"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "double sum = 0;\nfor (int i = 1; i <= 3; i++) {\n    sum = sum + 1 / i;\n}",
+      "right": "sum = sum + 1.0 / i;",
+      "error": "No compiler error. 1 / i is integer division, so the program prints 1 instead of 1.83333. Use 1.0 / i."
+    },
+    {
+      "wrong": "int fact = 0;\nfor (int i = 1; i <= 5; i++) {\n    fact = fact * i;\n}",
+      "right": "int fact = 1;",
+      "error": "No compiler error. A product that starts at 0 stays 0, so it prints 0 instead of 120."
+    },
+    {
+      "wrong": "int sum;           // never set to 0\nfor (int i = 1; i <= 5; i++) {\n    sum = sum + i;\n}",
+      "right": "int sum = 0;",
+      "error": "Compiles (g++ may warn that sum is used uninitialised). sum starts with a garbage value, so the total is wrong. Always give an accumulator a starting value."
+    },
+    {
+      "wrong": "a = b;\nb = a + b;       // a was already changed",
+      "right": "int next = a + b;\na = b;\nb = next;",
+      "error": "No compiler error. The old a is lost, so the sequence is wrong: the program prints 0 1 2 4 8 16 instead of 0 1 1 2 3 5."
+    }
+  ],
+  "examTips": [
+    "Write the term as a formula of i first (2*i, i*i, 2*i-1). The loop is then easy.",
+    "Accumulator rule: a sum starts at 0, a product starts at 1. Create it before the loop, update it inside, print it after.",
+    "For fractions use a double variable and 1.0 / i. If the question asks for decimals, add fixed and setprecision.",
+    "For Fibonacci use three variables a, b, next, and update them in the order next = a + b, a = b, b = next.",
+    "If the question gives n = 5, dry-run the loop for i = 1 to 5 in a small table (i, term, sum). Examiners love this."
+  ],
+  "romanSummary": [
+    "Sequence numbers ki list hoti hai (2, 4, 6) aur series un ka sum hota hai (2 + 4 + 6).",
+    "Pehle term ka formula i ke zariye likho, jaise 2 * i ya i * i, phir usay for loop mein rakho.",
+    "Sum ka variable 0 se start hota hai aur factorial ya product ka variable 1 se.",
+    "Fraction wali series mein double aur 1.0 / i likho, warna 1 / i ka jawab 0 aa jata hai.",
+    "Fibonacci mein har term pichli do terms ka sum hai, is liye a, b aur next teen variables use hote hain."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which loop line prints the first n odd numbers 1, 3, 5, ...?",
+      "options": [
+        "cout << 2 * i - 1;",
+        "cout << 2 * i;",
+        "cout << i * i;",
+        "cout << i + 2;"
+      ],
+      "answer": "cout << 2 * i - 1;",
+      "hint": "Try i = 1, 2, 3 in each option.",
+      "explanation": "For i = 1, 2, 3 the formula 2*i - 1 gives 1, 3, 5. The formula 2*i gives even numbers."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\nint s = 0;\nfor (int i = 1; i <= 4; i++) {\n    s += i * i;\n}\ncout << s << endl;",
+      "answer": "30",
+      "hint": "Add 1, 4, 9 and 16.",
+      "explanation": "s collects the squares: 1 + 4 + 9 + 16 = 30."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint f = 1;\nfor (int i = 1; i <= 4; i++) {\n    f = f * i;\n    cout << f << \" \";\n}\ncout << endl;",
+      "answer": "1 2 6 24",
+      "hint": "Print f after each multiplication.",
+      "explanation": "f becomes 1, 2, 6, 24: it is the factorial after each step."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This program should print 1.83333 for n = 3 but prints 1. Fix the line inside the loop.\n\ndouble sum = 0;\nfor (int i = 1; i <= 3; i++) {\n    sum = sum + 1 / i;\n}\ncout << sum;",
+      "answer": "sum = sum + 1.0 / i;",
+      "hint": "What is 1 / 2 when both are int?",
+      "explanation": "1 / i is integer division. It gives 1 for i = 1 and 0 for i = 2 and 3, so the sum is 1. Writing 1.0 / i makes the division use decimals."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank so that fact holds 5! (120) after the loop.\n\nint fact = ____;\nfor (int i = 1; i <= 5; i++) {\n    fact = fact * i;\n}",
+      "answer": "1",
+      "hint": "A product must start with a number that does not change it.",
+      "explanation": "Multiplying by 1 changes nothing, so a product starts at 1. Starting at 0 would keep the answer 0."
+    },
+    {
+      "id": "p6",
+      "type": "write",
+      "difficulty": "medium",
+      "prompt": "Write a loop that prints the first n odd numbers separated by spaces (n is already read).",
+      "answer": "for (int i = 1; i <= n; i++) {\n    cout << 2 * i - 1 << \" \";\n}",
+      "hint": "The i-th odd number is 2 * i - 1.",
+      "explanation": "Round i prints 2i - 1, so the output is 1 3 5 7 ..."
+    },
+    {
+      "id": "p7",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\ndouble h = 0;\nfor (int i = 1; i <= 4; i++) {\n    h += 1.0 / i;\n}\ncout << fixed << setprecision(2) << h << endl;",
+      "answer": "2.08",
+      "hint": "1 + 0.5 + 0.3333 + 0.25 = ?",
+      "explanation": "The total is 2.08333... and setprecision(2) with fixed rounds it to 2 decimals."
+    },
+    {
+      "id": "p8",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\nint alt = 0, sign = 1;\nfor (int i = 1; i <= 5; i++) {\n    alt += sign * i;\n    sign = -sign;\n}\ncout << alt << endl;",
+      "answer": "3",
+      "hint": "Write the terms: +1, -2, +3, -4, +5.",
+      "explanation": "1 - 2 + 3 - 4 + 5 = 3. sign flips between +1 and -1 each round."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What should a running SUM start at?",
+      "options": [
+        "0",
+        "1",
+        "n",
+        "i"
+      ],
+      "answer": "0",
+      "hint": "Which number does not change a total when added?",
+      "explanation": "Adding 0 changes nothing, so the first real term is added correctly."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What should a running PRODUCT (factorial) start at?",
+      "options": [
+        "1",
+        "0",
+        "-1",
+        "n"
+      ],
+      "answer": "1",
+      "hint": "Which number does not change a product when multiplied?",
+      "explanation": "Multiplying by 1 changes nothing. A product that starts at 0 stays 0."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which expression gives the i-th square number?",
+      "options": [
+        "i * i",
+        "2 * i",
+        "i + i",
+        "i / 2"
+      ],
+      "answer": "i * i",
+      "hint": "Try i = 3.",
+      "explanation": "3 * 3 = 9, the third square."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Why must you write 1.0 / i instead of 1 / i in the harmonic series?",
+      "options": [
+        "1 / i is integer division and gives 0 for i > 1",
+        "1 / i is a compile error",
+        "1.0 is faster",
+        "i must be a double"
+      ],
+      "answer": "1 / i is integer division and gives 0 for i > 1",
+      "hint": "What is 1 / 2 with two ints?",
+      "explanation": "Both operands are int, so the decimal part is thrown away."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "In Fibonacci, which is the correct update order inside the loop?",
+      "options": [
+        "next = a + b; a = b; b = next;",
+        "a = b; b = a + b;",
+        "b = next; a = b; next = a + b;",
+        "a = a + b; b = a;"
+      ],
+      "answer": "next = a + b; a = b; b = next;",
+      "hint": "Do not lose the old value of a before you use it.",
+      "explanation": "Compute the new term first, then slide a and b forward."
+    }
+  ],
+  "sources": [
+    "Sequences and Series Generation",
+    "Nested Loops (loop-generated series)"
+  ]
+}

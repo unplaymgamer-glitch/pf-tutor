@@ -1,0 +1,574 @@
+{
+  "slug": "memory-and-addresses",
+  "week": 9,
+  "title": "Memory and addresses: every variable lives at a number",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "memory",
+      "title": "Variables are boxes with addresses (made-up addresses)",
+      "cells": [
+        {
+          "name": "age",
+          "type": "int",
+          "addr": "0x1000"
+        },
+        {
+          "name": "gpa",
+          "type": "double",
+          "addr": "0x1008"
+        },
+        {
+          "name": "grade",
+          "type": "char",
+          "addr": "0x1010"
+        }
+      ],
+      "steps": [
+        {
+          "code": "int age = 20;",
+          "note": "The computer reserves 4 bytes starting at address 0x1000 and stores 20 there. The address is the number of the first byte.",
+          "values": {
+            "age": "20"
+          },
+          "points": {}
+        },
+        {
+          "code": "double gpa = 3.5;",
+          "note": "A double needs 8 bytes. It gets its own place, here at 0x1008.",
+          "values": {
+            "gpa": "3.5"
+          },
+          "points": {}
+        },
+        {
+          "code": "char grade = 'A';",
+          "note": "A char needs only 1 byte, at 0x1010.",
+          "values": {
+            "grade": "'A'"
+          },
+          "points": {}
+        },
+        {
+          "code": "cout << &age;",
+          "note": "&age is the address of age. Here it would show 0x1000. On a real computer the number is different on every run, so we never rely on it.",
+          "values": {},
+          "points": {}
+        },
+        {
+          "code": "cout << sizeof(age);",
+          "note": "sizeof(age) is the number of bytes age uses: 4. So the next int would be allowed to start 4 bytes later.",
+          "values": {},
+          "points": {}
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match the word to its meaning",
+      "pairs": [
+        {
+          "term": "Address",
+          "meaning": "The number of a byte in memory, like a house number"
+        },
+        {
+          "term": "&x",
+          "meaning": "The address-of operator: gives the address of x"
+        },
+        {
+          "term": "sizeof(int)",
+          "meaning": "How many bytes an int takes (4 on our computers)"
+        },
+        {
+          "term": "Byte",
+          "meaning": "One numbered box of memory"
+        },
+        {
+          "term": "int is 4 bytes",
+          "meaning": "So elements of an int array are 4 bytes apart"
+        },
+        {
+          "term": "Hexadecimal (0x...)",
+          "meaning": "The usual way addresses are written"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can explain that memory is a row of numbered bytes, use & to get the address of a variable, and use sizeof to find how many bytes a type or variable uses.",
+  "warmup": "Think of a long street of identical shops, each with a house number: 1, 2, 3, 4 and so on. If you want to find a shop, you only need its number. Computer memory is the same. It is a very long row of tiny boxes called bytes, and every byte has its own number. That number is called its address. A small shop (a char) fits in one house. A bigger shop (an int) takes four houses next to each other.",
+  "definition": "RAM is a long row of bytes. Every byte has a unique number called its address. When you write int age = 20; the computer reserves 4 bytes in a row, remembers the address of the first one, calls it age, and stores 20 there. So every variable has two things: a value (what is inside the box) and an address (where the box is). The address-of operator & gives the address: &age. The sizeof operator gives the number of bytes: sizeof(int) is 4.",
+  "howItWorks": "Look at the memory picture in the Visualize tab. Each variable is a box. Under the box you see its address. Addresses are written in hexadecimal (base 16) with a 0x in front, for example 0x1000. You do not need to calculate in hexadecimal; just see that the number is where the box starts. The size of the box depends on the type: char 1 byte, int 4 bytes, double 8 bytes. That is why two ints that are declared next to each other have addresses that are 4 apart, for example 0x1000 and 0x1004. An array is simply several boxes of the same type side by side, so its elements are sizeof(type) bytes apart. Important: the real address printed by cout << &age; is different on every computer and often on every run. So in exams and in our programs we print sizeof, differences between addresses, or comparisons like &a == &a, and we use made-up addresses such as 0x1000 when we draw pictures.",
+  "syntax": "int age = 20;\n\ncout << age;          // the VALUE inside the box: 20\ncout << &age;         // the ADDRESS of the box (hexadecimal, differs on every run)\n\ncout << sizeof(int);    // bytes needed by a type: 4\ncout << sizeof(age);    // bytes used by a variable: 4\n\nint marks[5];\ncout << sizeof(marks);                    // whole array: 20 bytes\ncout << sizeof(marks) / sizeof(marks[0]);  // number of elements: 5",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Declare an int, a double and a char. Print how many bytes each type takes.",
+      "pseudocode": [
+        "START",
+        "CREATE age (int), gpa (double), grade (char)",
+        "PRINT sizeof(int)",
+        "PRINT sizeof(double)",
+        "PRINT sizeof(char)",
+        "PRINT sizeof(age)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Create age, gpa, grade\"]\n  B --> C[/\"Print sizeof(int)\"/]\n  C --> D[/\"Print sizeof(double)\"/]\n  D --> E[/\"Print sizeof(char)\"/]\n  E --> F[/\"Print sizeof(age)\"/]\n  F --> G([End])",
+      "sample": {
+        "id": "sizeof-types",
+        "title": "How many bytes does each type use?",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int age = 20;\n    double gpa = 3.5;\n    char grade = 'A';\n    cout << \"int: \" << sizeof(int) << \" bytes\" << endl;\n    cout << \"double: \" << sizeof(double) << \" bytes\" << endl;\n    cout << \"char: \" << sizeof(char) << \" bytes\" << endl;\n    cout << \"age uses \" << sizeof(age) << \" bytes\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "int: 4 bytes\ndouble: 8 bytes\nchar: 1 bytes\nage uses 4 bytes\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "age is an int: the computer reserves 4 bytes for it and stores 20."
+          },
+          {
+            "line": 6,
+            "text": "A double is bigger than an int (8 bytes)."
+          },
+          {
+            "line": 7,
+            "text": "A char is the smallest: 1 byte."
+          },
+          {
+            "line": 8,
+            "text": "sizeof(type) gives the number of bytes that type needs."
+          },
+          {
+            "line": 11,
+            "text": "sizeof(variable) gives the size of the variable's type."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts. Memory is a long row of numbered byte boxes.",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "age": "20"
+              },
+              "note": "The computer reserves 4 bytes (one int) and names that place age. It stores 20 there.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "gpa": "3.5"
+              },
+              "note": "A double needs 8 bytes, so gpa gets a bigger place than age.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "grade": "'A'"
+              },
+              "note": "A char needs just 1 byte.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "sizeof(int) asks: how many bytes does one int take? The answer is 4.",
+              "out": "int: 4 bytes\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "One double takes 8 bytes.",
+              "out": "double: 8 bytes\n"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "One char takes 1 byte.",
+              "out": "char: 1 bytes\n"
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "sizeof also works on a variable. age is an int, so 4 bytes.",
+              "out": "age uses 4 bytes\n"
+            }
+          ],
+          "types": {
+            "age": "int",
+            "gpa": "double",
+            "grade": "char"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Show that every variable has its own address WITHOUT printing the address itself (real addresses change on every run).",
+      "pseudocode": [
+        "START",
+        "CREATE a = 10 and b = 20",
+        "PRINT whether &a equals &a",
+        "PRINT whether &a differs from &b",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"a = 10, b = 20\"]\n  B --> C{\"&a == &a ?\"}\n  C --> D[/\"Print 1 for true\"/]\n  D --> E{\"&a != &b ?\"}\n  E --> F[/\"Print 1 for true\"/]\n  F --> G([End])",
+      "sample": {
+        "id": "address-compare",
+        "title": "Comparing addresses instead of printing them",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a = 10, b = 20;\n    cout << \"a = \" << a << \", b = \" << b << endl;\n    cout << \"Is &a the same address as &a? \" << (&a == &a) << endl;\n    cout << \"Are a and b in different places? \" << (&a != &b) << endl;\n    cout << \"Address of a is a number? \" << ((long long)&a > 0) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "a = 10, b = 20\nIs &a the same address as &a? 1\nAre a and b in different places? 1\nAddress of a is a number? 1\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "a and b are two separate boxes. Each has its own address."
+          },
+          {
+            "line": 7,
+            "text": "&a is the address of a. An address always equals itself. In C++ true prints as 1."
+          },
+          {
+            "line": 8,
+            "text": "Two different variables can never share one place, so their addresses differ. Prints 1 (true)."
+          },
+          {
+            "line": 9,
+            "text": "(long long) turns the address into a plain number so we can compare it. Real addresses are never 0 or negative here."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Exam style: for int marks[5] = {70, 82, 91, 65, 88}, print the size of one element, the size of the whole array, the number of elements and the gap in bytes between the first and the last element.",
+      "pseudocode": [
+        "START",
+        "CREATE array marks with 5 ints",
+        "PRINT sizeof(marks[0])",
+        "PRINT sizeof(marks)",
+        "PRINT sizeof(marks) / sizeof(marks[0])",
+        "PRINT address gap between marks[4] and marks[0]",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Create marks of 5 ints\"]\n  B --> C[/\"Print size of one element\"/]\n  C --> D[/\"Print size of whole array\"/]\n  D --> E[/\"Print element count\"/]\n  E --> F[/\"Print gap in bytes\"/]\n  F --> G([End])",
+      "sample": {
+        "id": "array-bytes",
+        "title": "Bytes in an array and the gap between elements",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int marks[5] = {70, 82, 91, 65, 88};\n    cout << \"One element: \" << sizeof(marks[0]) << \" bytes\" << endl;\n    cout << \"Whole array: \" << sizeof(marks) << \" bytes\" << endl;\n    cout << \"Elements: \" << sizeof(marks) / sizeof(marks[0]) << endl;\n    cout << \"Last element is \" << (long long)&marks[4] - (long long)&marks[0] << \" bytes after the first\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "One element: 4 bytes\nWhole array: 20 bytes\nElements: 5\nLast element is 16 bytes after the first\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "An array of 5 ints is one continuous block."
+          },
+          {
+            "line": 6,
+            "text": "The size of one element."
+          },
+          {
+            "line": 7,
+            "text": "sizeof on the whole array gives all its bytes."
+          },
+          {
+            "line": 8,
+            "text": "Dividing gives the number of elements. This trick always works for an array in the same function where it was declared."
+          },
+          {
+            "line": 9,
+            "text": "Subtracting the two address numbers shows the elements are 4 bytes apart each: 4 steps x 4 bytes = 16."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "marks": "{70, 82, 91, 65, 88}"
+              },
+              "note": "Five ints sit side by side in one block of memory. Each int takes 4 bytes.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "One element is one int: 4 bytes.",
+              "out": "One element: 4 bytes\n"
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "The whole array is 5 boxes of 4 bytes: 5 x 4 = 20 bytes.",
+              "out": "Whole array: 20 bytes\n"
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Total bytes divided by bytes per element gives how many elements: 20 / 4 = 5.",
+              "out": "Elements: 5\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "marks[4] starts 4 boxes after marks[0]. 4 elements x 4 bytes = 16 bytes apart. We print the gap, not the addresses.",
+              "out": "Last element is 16 bytes after the first\n"
+            }
+          ],
+          "types": {
+            "marks": "int[5]"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Value of a variable: age",
+      "when": "You want the data stored in the box.",
+      "example": "cout << age;   // 20"
+    },
+    {
+      "way": "Address of a variable: &age",
+      "when": "You want to know where the box is in memory (hexadecimal, changes on each run).",
+      "example": "cout << &age;   // for example 0x61ff0c"
+    },
+    {
+      "way": "Size of a type: sizeof(int)",
+      "when": "You want how many bytes a type takes.",
+      "example": "cout << sizeof(double);   // 8"
+    },
+    {
+      "way": "Size of a variable: sizeof(age)",
+      "when": "You want the bytes used by one variable (it gives the size of its type).",
+      "example": "cout << sizeof(age);   // 4"
+    },
+    {
+      "way": "Size of a whole array: sizeof(marks)",
+      "when": "You want all bytes of an array. Divide by sizeof(marks[0]) for the element count.",
+      "example": "int n = sizeof(marks) / sizeof(marks[0]);"
+    },
+    {
+      "way": "Address of an array element: &marks[2]",
+      "when": "You want the place of one element. Neighbouring int elements are 4 bytes apart.",
+      "example": "(long long)&marks[1] - (long long)&marks[0]   // 4"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int age = 20;\ncout << &age;   // student thinks this prints 20",
+      "right": "cout << age;    // value\ncout << &age;   // address, not the value",
+      "error": "No compiler error. The program prints an address like 0x61ff0c instead of 20. Without & you get the value, with & you get the address."
+    },
+    {
+      "wrong": "int x = 5;\ncout << &(x + 1);",
+      "right": "int y = x + 1;\ncout << &y;",
+      "error": "error: lvalue required as unary '&' operand"
+    },
+    {
+      "wrong": "cout << sizeof int;",
+      "right": "cout << sizeof(int);",
+      "error": "error: expected primary-expression before 'int'"
+    },
+    {
+      "wrong": "int x = 5;\nint a = &x;   // an address is not an int",
+      "right": "int *a = &x;   // a pointer holds an address (next lesson)",
+      "error": "error: invalid conversion from 'int*' to 'int' [-fpermissive]"
+    },
+    {
+      "wrong": "cout << &age;   // and expecting 0x61ff0c on every computer",
+      "right": "cout << sizeof(age);   // always 4 on our computers",
+      "error": "No compiler error. But the address changes between runs and computers, so never write programs or exam answers that depend on the exact number."
+    }
+  ],
+  "examTips": [
+    "Memory = a row of bytes, each with a unique address. Write this one-line definition and draw a row of boxes with numbers under them.",
+    "Memorise the sizes: char 1 byte, int 4 bytes, double 8 bytes. The array of n ints uses 4 x n bytes.",
+    "& means address-of when it is used in an expression like &x. It can look like something else in function headers (references), but here it is always address-of.",
+    "In an output question that prints an address, the exam usually says the address or asks for the difference. Subtract the addresses and divide by the type size.",
+    "To find the number of elements: sizeof(array) / sizeof(array[0]). Show this division in your answer."
+  ],
+  "romanSummary": [
+    "Computer ki memory bytes ki ek lambi row hai aur har byte ka ek unique number hota hai jise address kehte hain, bilkul ghar ke number ki tarah.",
+    "Har variable ki do cheezein hoti hain: value (andar kya hai) aur address (box kahan hai).",
+    "&x variable x ka address deta hai. Address hexadecimal mein likha hota hai aur har run par alag ho sakta hai.",
+    "sizeof se pata chalta hai ke koi type kitne bytes leti hai: char 1, int 4, double 8 bytes.",
+    "Array ke elements ek ke baad ek rakhe hote hain, is liye int array ke elements 4 bytes ke fasle par hote hain."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In the line cout << &age; what does &age give?",
+      "options": [
+        "The address of age",
+        "The value of age",
+        "The size of age",
+        "The type of age"
+      ],
+      "answer": "The address of age",
+      "hint": "The & operator is called address-of.",
+      "explanation": "& in front of a variable gives where the variable lives in memory."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    double d = 1.5;\n    cout << sizeof(d);\n    return 0;\n}",
+      "answer": "8",
+      "hint": "How many bytes is a double?",
+      "explanation": "A double needs 8 bytes, so sizeof(d) is 8."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print? (two numbers)\n\n#include <iostream>\nusing namespace std;\nint main() {\n    double prices[3] = {10.5, 20.5, 30.5};\n    cout << sizeof(prices) << \" \" << sizeof(prices) / sizeof(prices[0]);\n    return 0;\n}",
+      "answer": "24 3",
+      "hint": "Three doubles of 8 bytes each. Then divide.",
+      "explanation": "The array has 3 x 8 = 24 bytes. 24 divided by the size of one element (8) is 3 elements."
+    },
+    {
+      "id": "p4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "An int a is stored at address 1000. The next int b is declared right after it. Which address is possible for b?",
+      "options": [
+        "1004",
+        "1001",
+        "1002",
+        "1008.5"
+      ],
+      "answer": "1004",
+      "hint": "An int takes 4 bytes.",
+      "explanation": "a occupies bytes 1000 to 1003, so the next int can start at 1004."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill the blank so that the program prints the address of x:\n\nint x = 7;\ncout << ____ << endl;",
+      "answer": "&x",
+      "hint": "Use the address-of operator.",
+      "explanation": "&x is the address of x."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Ali wants the number of elements of int marks[6], but the program prints 24. Fix the line:\n\nint n = sizeof(marks);",
+      "answer": "int n = sizeof(marks) / sizeof(marks[0]);",
+      "hint": "sizeof(marks) counts bytes, not elements.",
+      "explanation": "sizeof(marks) is 6 x 4 = 24 bytes. Dividing by sizeof(marks[0]) (4 bytes) gives 6 elements."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "medium",
+      "prompt": "Write a program that declares double price = 99.5 and prints how many bytes price uses.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    double price = 99.5;\n    cout << sizeof(price) << endl;\n    return 0;\n}",
+      "hint": "Use sizeof on the variable.",
+      "explanation": "sizeof(price) is 8 because price is a double. The program prints 8."
+    },
+    {
+      "id": "p8",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print? (the gap between two addresses)\n\n#include <iostream>\nusing namespace std;\nint main() {\n    int a[3] = {1, 2, 3};\n    cout << (long long)&a[2] - (long long)&a[0];\n    return 0;\n}",
+      "answer": "8",
+      "hint": "Two elements apart, each element is an int.",
+      "explanation": "a[2] is two elements after a[0]. Two ints are 2 x 4 = 8 bytes."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is a memory address?",
+      "options": [
+        "A number that identifies one byte of memory",
+        "The value stored in a variable",
+        "The name of a variable",
+        "The size of an int"
+      ],
+      "answer": "A number that identifies one byte of memory",
+      "hint": "Think of a house number.",
+      "explanation": "Every byte has a unique number. That number is its address."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How many bytes does an int usually take?",
+      "options": [
+        "4",
+        "1",
+        "2",
+        "8"
+      ],
+      "answer": "4",
+      "hint": "Remember the table: char 1, int 4, double 8.",
+      "explanation": "An int uses 4 bytes on our compilers."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which operator gives the address of a variable x?",
+      "options": [
+        "&x",
+        "*x",
+        "x&",
+        "sizeof(x)"
+      ],
+      "answer": "&x",
+      "hint": "It is the address-of operator.",
+      "explanation": "&x gives the address. * will be used later for something else."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "int marks[10]; What does sizeof(marks) give?",
+      "options": [
+        "40",
+        "10",
+        "4",
+        "80"
+      ],
+      "answer": "40",
+      "hint": "10 elements of 4 bytes each.",
+      "explanation": "10 x 4 = 40 bytes."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Why should a program not depend on the exact address printed by cout << &x ?",
+      "options": [
+        "It can be different on every run and computer",
+        "Addresses are always 0",
+        "& does not work with cout",
+        "Addresses are decimal"
+      ],
+      "answer": "It can be different on every run and computer",
+      "hint": "Think about where the operating system puts your program.",
+      "explanation": "The operating system chooses where your program is placed in memory, so the number changes."
+    }
+  ],
+  "sources": [
+    "9.1 Memory and Addresses",
+    "Address-of operator &",
+    "sizeof operator"
+  ]
+}

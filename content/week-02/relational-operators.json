@@ -1,0 +1,572 @@
+{
+  "slug": "relational-operators",
+  "week": 2,
+  "title": "Relational operators: comparing values",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "decision",
+      "title": "Compare a and b: slide the numbers and see which comparisons hold",
+      "vars": [
+        {
+          "name": "a",
+          "label": "a",
+          "min": 0,
+          "max": 20,
+          "value": 10
+        },
+        {
+          "name": "b",
+          "label": "b",
+          "min": 0,
+          "max": 20,
+          "value": 15
+        }
+      ],
+      "branches": [
+        {
+          "expr": "a == b",
+          "label": "a equals b: so a == b, a >= b and a <= b are true (1). a != b, a > b and a < b are false (0)."
+        },
+        {
+          "expr": "a > b",
+          "label": "a is greater than b: so a > b, a >= b and a != b are true (1). The others are false (0)."
+        }
+      ],
+      "elseLabel": "a is less than b: so a < b, a <= b and a != b are true (1). The others are false (0)."
+    },
+    {
+      "kind": "match",
+      "title": "Match each operator to its meaning",
+      "pairs": [
+        {
+          "term": "==",
+          "meaning": "Is equal to (compares two values)"
+        },
+        {
+          "term": "!=",
+          "meaning": "Is not equal to"
+        },
+        {
+          "term": ">=",
+          "meaning": "Is greater than or equal to"
+        },
+        {
+          "term": "<=",
+          "meaning": "Is less than or equal to"
+        },
+        {
+          "term": "=",
+          "meaning": "Assignment: stores a value in a variable (does NOT compare)"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can compare two values with ==, !=, >, <, >= and <=, read the true/false (1/0) result, and never mix up = with ==.",
+  "warmup": "In daily life we compare all the time. Is my mobile balance more than Rs. 100? Is the rickshaw fare equal to the money in my pocket? Is my exam mark at least 50? Every one of these questions has only two possible answers: yes or no. A program asks the same kind of question, and the answer is true or false.",
+  "definition": "A relational operator compares two values. The result is a Boolean value: true or false. C++ prints true as 1 and false as 0. The type that stores such a value is called bool. Example: with a = 10 and b = 20, the expression a < b is true, so it gives 1.",
+  "howItWorks": "Move the sliders. The computer looks at a and b, then tests each operator. Exactly one of three things is always true: a is less than b, a equals b, or a is greater than b. The six operators are just different ways to ask about these three cases. In the next lessons the if statement uses this true/false answer to decide what to do.",
+  "syntax": "a == b    // equal to              (true if both values are the same)\na != b    // not equal to          (true if the values are different)\na > b     // greater than\na < b     // less than\na >= b    // greater than or equal to   (> first, then =)\na <= b    // less than or equal to\n\nbool ok = (a < b);   // a bool variable stores true (1) or false (0)\ncout << (a < b);     // prints 1 or 0; keep the brackets around the comparison\n\n// Careful: = stores a value, == compares two values",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Let a = 10 and b = 20. Print the result of a == b, a != b, a < b and a >= 10, each on its own line.",
+      "pseudocode": [
+        "START",
+        "SET a = 10, b = 20",
+        "PRINT result of a == b",
+        "PRINT result of a != b",
+        "PRINT result of a < b",
+        "PRINT result of a >= 10",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[a = 10, b = 20]\n  B --> C[/Print a == b/]\n  C --> D[/Print a != b/]\n  D --> E[/Print a < b/]\n  E --> F[/Print a >= 10/]\n  F --> G([End])",
+      "sample": {
+        "id": "compare-basic",
+        "title": "Printing comparison results",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a = 10;\n    int b = 20;\n    cout << (a == b) << endl;\n    cout << (a != b) << endl;\n    cout << (a < b) << endl;\n    cout << (a >= 10) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "0\n1\n1\n1\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "a is a whole-number variable that holds 10."
+          },
+          {
+            "line": 6,
+            "text": "b holds 20."
+          },
+          {
+            "line": 7,
+            "text": "10 is not equal to 20, so the answer is false and C++ prints 0. The brackets keep the comparison together."
+          },
+          {
+            "line": 8,
+            "text": "10 and 20 are different, so the answer is true and C++ prints 1."
+          },
+          {
+            "line": 9,
+            "text": "10 is less than 20: true, prints 1."
+          },
+          {
+            "line": 10,
+            "text": "10 is greater than or equal to 10 (it is equal): true, prints 1."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "a": "10"
+              },
+              "note": "a is created and holds 10.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "b": "20"
+              },
+              "note": "b is created and holds 20.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Is 10 equal to 20? No, so the result is false. cout prints 0.",
+              "out": "0\n"
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Is 10 different from 20? Yes, so the result is true. cout prints 1.",
+              "out": "1\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Is 10 less than 20? Yes: true, prints 1.",
+              "out": "1\n"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Is 10 at least 10? Yes (it is equal): true, prints 1.",
+              "out": "1\n"
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "a": "int",
+            "b": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "A rickshaw ride costs Rs. price. Read your budget and the price, store the comparison budget >= price in a bool, and print it (1 = you can pay, 0 = you cannot).",
+      "pseudocode": [
+        "START",
+        "READ budget, price",
+        "SET canBuy = (budget >= price)",
+        "PRINT canBuy",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read budget and price/]\n  B --> C[\"canBuy = budget >= price\"]\n  C --> D[/Print canBuy/]\n  D --> E([End])",
+      "sample": {
+        "id": "compare-bool",
+        "title": "Storing a comparison in a bool",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int budget, price;\n    cout << \"Enter budget and price: \";\n    cin >> budget >> price;\n    bool canBuy = (budget >= price);\n    cout << \"Can buy (1 = yes, 0 = no): \" << canBuy << endl;\n    return 0;\n}\n",
+        "stdin": "500 450\n",
+        "expectedOutput": "Enter budget and price: Can buy (1 = yes, 0 = no): 1\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Two whole-number variables: the money you have and the price."
+          },
+          {
+            "line": 6,
+            "text": "Asks the user for input."
+          },
+          {
+            "line": 7,
+            "text": "Reads the two numbers typed by the user (separated by a space)."
+          },
+          {
+            "line": 8,
+            "text": "Compares budget with price. The answer (true or false) is stored in a bool variable called canBuy."
+          },
+          {
+            "line": 9,
+            "text": "Prints the message and then canBuy. A bool prints as 1 (true) or 0 (false)."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts.",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "budget and price are created (no value yet).",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "The prompt is shown.",
+              "out": "Enter budget and price: "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "budget": "500",
+                "price": "450"
+              },
+              "note": "The user typed 500 and 450, so budget = 500 and price = 450.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "canBuy": "1"
+              },
+              "note": "Is 500 >= 450? Yes, so canBuy becomes true (1).",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Prints the message and the value of canBuy.",
+              "out": "Can buy (1 = yes, 0 = no): 1\n"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "budget": "int",
+            "price": "int",
+            "canBuy": "bool"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "What is the output of the following program? (An exam favourite: = versus ==.)",
+      "pseudocode": [
+        "START",
+        "SET x = 3",
+        "PRINT (x == 5)",
+        "PRINT (x = 5): this STORES 5 in x, and its value is 5",
+        "PRINT (x == 5)",
+        "PRINT x",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[x = 3]\n  B --> C[/Print x == 5/]\n  C --> D[\"Assign x = 5 and print it\"]\n  D --> E[/Print x == 5/]\n  E --> F[/Print x/]\n  F --> G([End])",
+      "sample": {
+        "id": "assign-vs-compare",
+        "title": "The = versus == trap",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int x = 3;\n    cout << (x == 5) << endl;\n    cout << (x = 5) << endl;\n    cout << (x == 5) << endl;\n    cout << x << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "0\n5\n1\n5\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "x starts as 3."
+          },
+          {
+            "line": 6,
+            "text": "Comparison only: 3 is not 5, so it prints 0. x does not change."
+          },
+          {
+            "line": 7,
+            "text": "A single = is assignment. It stores 5 in x, and the value of the whole expression is 5, so 5 is printed."
+          },
+          {
+            "line": 8,
+            "text": "Now x is 5, so the comparison is true and 1 is printed."
+          },
+          {
+            "line": 9,
+            "text": "x holds 5, so 5 is printed."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts.",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "x": "3"
+              },
+              "note": "x is created with value 3.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "Compare 3 with 5: false. Prints 0. x stays 3.",
+              "out": "0\n"
+            },
+            {
+              "line": 7,
+              "vars": {
+                "x": "5"
+              },
+              "note": "Single = assigns: x becomes 5. The value of the expression is 5, so 5 is printed.",
+              "out": "5\n"
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Now x is 5, so 5 == 5 is true. Prints 1.",
+              "out": "1\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Prints the current value of x.",
+              "out": "5\n"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "x": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "a == b",
+      "when": "Check if two values are the same",
+      "example": "cout << (marks == 100);"
+    },
+    {
+      "way": "a != b",
+      "when": "Check if two values are different",
+      "example": "cout << (age != 18);"
+    },
+    {
+      "way": "a > b  /  a < b",
+      "when": "Strictly greater / strictly less (equal does not count)",
+      "example": "cout << (50 > 50);   // prints 0"
+    },
+    {
+      "way": "a >= b  /  a <= b",
+      "when": "Greater or equal / less or equal (equal counts)",
+      "example": "cout << (50 >= 50);  // prints 1"
+    },
+    {
+      "way": "bool ok = (a < b);",
+      "when": "Keep a true/false answer in a variable for later",
+      "example": "bool passed = (marks >= 50);"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "cout << (a => b);",
+      "right": "cout << (a >= b);",
+      "error": "expected primary-expression before '>' token (the > must come first: >=)"
+    },
+    {
+      "wrong": "cout << a > b;",
+      "right": "cout << (a > b);",
+      "error": "no match for 'operator>' (cout << a is evaluated first, so use brackets)"
+    },
+    {
+      "wrong": "if (x = 5)",
+      "right": "if (x == 5)",
+      "error": "usually compiles with no error, which makes it dangerous: it stores 5 in x and is always true"
+    },
+    {
+      "wrong": "if (n % 2 = 0)",
+      "right": "if (n % 2 == 0)",
+      "error": "lvalue required as left operand of assignment"
+    }
+  ],
+  "examTips": [
+    "Remember: true prints as 1 and false prints as 0.",
+    "= stores a value. == compares. Examiners love this trap.",
+    ">= and <= count equal values as true; > and < do not.",
+    "Write the two symbols in the right order: >= and <=, never => or =<.",
+    "Put brackets around a comparison inside cout: cout << (a > b);"
+  ],
+  "romanSummary": [
+    "Relational operators do values ko compare karte hain aur true (1) ya false (0) dete hain.",
+    "Operators ye hain: == (barabar), != (barabar nahi), >, <, >=, <=.",
+    "Ek = value store karta hai, aur do == compare karte hain. Ye sab se bari ghalti hai.",
+    "True aur false ko bool variable mein bhi rakh sakte hain."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is the value of the expression 7 != 7?",
+      "options": [
+        "1 (true)",
+        "0 (false)",
+        "7",
+        "Compile error"
+      ],
+      "answer": "0 (false)",
+      "hint": "Is 7 different from 7?",
+      "explanation": "7 is the same as 7, so 'not equal' is false, which prints as 0."
+    },
+    {
+      "id": "p2",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank: the operator that means 'not equal to' is ______.",
+      "answer": "!=",
+      "hint": "It is made of an exclamation mark and an equals sign.",
+      "explanation": "!= is true when the two values are different."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\nint y = 8;\ncout << (y > 5) << (y < 5) << (y == 8);",
+      "answer": "101",
+      "hint": "Each comparison prints one digit, with no space between them.",
+      "explanation": "8 > 5 is true (1), 8 < 5 is false (0), 8 == 8 is true (1). Output: 101."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Fix the bug so that it prints 1 when marks is at least 50:\n\ncout << (marks => 50);",
+      "answer": "cout << (marks >= 50);",
+      "hint": "The two symbols are in the wrong order.",
+      "explanation": "The correct operator is >= (greater than first, then equals)."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\nint a = 4, b = 9;\ncout << (a + b > 12) << (a * 2 == b - 1) << (a <= b);",
+      "answer": "111",
+      "hint": "Work out the arithmetic first, then compare.",
+      "explanation": "a + b is 13 and 13 > 12 is true. a * 2 is 8 and b - 1 is 8, so they are equal: true. 4 <= 9 is true. Output: 111."
+    },
+    {
+      "id": "p6",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this print (two lines)?\n\nint x = 3;\ncout << (x = 0) << endl;\ncout << (x == 0);",
+      "answer": "0\n1",
+      "hint": "The first line assigns, it does not compare.",
+      "explanation": "(x = 0) stores 0 in x and its value is 0, so 0 is printed. Then x == 0 is true, so 1 is printed."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "medium",
+      "prompt": "Write a program that reads two integers and prints 1 if they are equal, otherwise 0.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << (a == b) << endl;\n    return 0;\n}",
+      "hint": "Use == and put it in brackets inside cout.",
+      "explanation": "a == b gives true (1) or false (0), and cout prints that number."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which operator compares two values for equality?",
+      "options": [
+        "=",
+        "==",
+        "!=",
+        "=>"
+      ],
+      "answer": "==",
+      "hint": "One symbol stores, two symbols compare.",
+      "explanation": "== compares; a single = assigns."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does cout << (5 > 3); print?",
+      "options": [
+        "true",
+        "1",
+        "0",
+        "5"
+      ],
+      "answer": "1",
+      "hint": "5 is bigger than 3, so the comparison is true.",
+      "explanation": "true is printed as 1."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which expression is true when marks is 50?",
+      "options": [
+        "marks > 50",
+        "marks < 50",
+        "marks >= 50",
+        "marks != 50"
+      ],
+      "answer": "marks >= 50",
+      "hint": "Equal values count only for >= and <=.",
+      "explanation": "marks > 50 is false when marks is 50, but marks >= 50 is true."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What does if (x = 5) do?",
+      "options": [
+        "Checks if x is 5",
+        "Stores 5 in x and is always true",
+        "Gives a compile error always",
+        "Checks if x is not 5"
+      ],
+      "answer": "Stores 5 in x and is always true",
+      "hint": "A single = is assignment.",
+      "explanation": "x = 5 stores 5 in x, and the value 5 counts as true, so the condition is always true."
+    }
+  ],
+  "sources": [
+    "Relational operators",
+    "Boolean values (true/false) and bool"
+  ]
+}

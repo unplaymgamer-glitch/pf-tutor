@@ -1,0 +1,839 @@
+{
+  "slug": "array-of-structures",
+  "week": 12,
+  "title": "Array of structures: a table of records",
+  "defaultView": "visualize",
+  "order": 4,
+  "visuals": [
+    {
+      "kind": "memory",
+      "title": "An array of structs in memory: records one after another",
+      "cells": [
+        {
+          "name": "list[0].id",
+          "type": "int",
+          "addr": "0x2000"
+        },
+        {
+          "name": "list[0].name",
+          "type": "string",
+          "addr": "0x2008"
+        },
+        {
+          "name": "list[0].cgpa",
+          "type": "double",
+          "addr": "0x2018"
+        },
+        {
+          "name": "list[1].id",
+          "type": "int",
+          "addr": "0x2020"
+        },
+        {
+          "name": "list[1].name",
+          "type": "string",
+          "addr": "0x2028"
+        },
+        {
+          "name": "list[1].cgpa",
+          "type": "double",
+          "addr": "0x2038"
+        },
+        {
+          "name": "list[2].id",
+          "type": "int",
+          "addr": "0x2040"
+        },
+        {
+          "name": "list[2].name",
+          "type": "string",
+          "addr": "0x2048"
+        },
+        {
+          "name": "list[2].cgpa",
+          "type": "double",
+          "addr": "0x2058"
+        }
+      ],
+      "steps": [
+        {
+          "code": "Student list[3] = {{1, \"Ali\", 3.5}, {2, \"Sana\", 3.9}, {3, \"Usman\", 2.8}};",
+          "note": "Each element is a whole record, stored one after the other. list[0] holds an id, a name and a cgpa, then list[1] starts. Addresses are made up.",
+          "values": {
+            "list[0].id": "1",
+            "list[0].name": "Ali",
+            "list[0].cgpa": "3.5",
+            "list[1].id": "2",
+            "list[1].name": "Sana",
+            "list[1].cgpa": "3.9",
+            "list[2].id": "3",
+            "list[2].name": "Usman",
+            "list[2].cgpa": "2.8"
+          },
+          "points": {}
+        },
+        {
+          "code": "list[j] = list[j + 1];  // j = 0, after the swap (t kept Ali)",
+          "note": "A whole record moves: id, name and cgpa of Sana are copied into the list[0] boxes.",
+          "values": {
+            "list[0].id": "2",
+            "list[0].name": "Sana",
+            "list[0].cgpa": "3.9"
+          },
+          "points": {}
+        },
+        {
+          "code": "list[j + 1] = t;",
+          "note": "Ali's whole record goes into list[1]. The array is now sorted by cgpa, highest first.",
+          "values": {
+            "list[1].id": "1",
+            "list[1].name": "Ali",
+            "list[1].cgpa": "3.5"
+          },
+          "points": {}
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match the code to its meaning",
+      "pairs": [
+        {
+          "term": "Student list[50];",
+          "meaning": "An array of 50 student records"
+        },
+        {
+          "term": "list[2]",
+          "meaning": "The whole third record"
+        },
+        {
+          "term": "list[2].name",
+          "meaning": "The name member of the third record"
+        },
+        {
+          "term": "list.name",
+          "meaning": "Error: you must say which record, list[i].name"
+        },
+        {
+          "term": "list[j] = list[j + 1];",
+          "meaning": "Copies a whole record (used when sorting)"
+        },
+        {
+          "term": "list[i].cgpa > list[best].cgpa",
+          "meaning": "Compares one member of two records"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can declare an array of structs, fill it with a loop, print a table, search by a member, find the highest value and sort the records by one member.",
+  "warmup": "The class attendance register at UMT is a table. Each row is one student with roll number, name and CGPA. One struct variable is one row. An array of structs is the whole register: row 0, row 1, row 2, and so on. To find a student you look down the roll-number column. To make a merit list you sort the rows by the CGPA column.",
+  "definition": "An array of structures is an array whose elements are structs. Student list[50]; makes 50 Student records. list[i] is the whole record number i (counting from 0). list[i].name is one member of that record. Everything you learned about arrays (index from 0, loops, searching, sorting) still works. The only change is that you compare or print a member, such as list[i].cgpa.",
+  "howItWorks": "Declare the struct first, then the array: Student list[N];. Fill it in one of three ways: an initialiser list with one brace group per record, a loop with cin >> list[i].id >> list[i].name >> list[i].cgpa, or assignments one member at a time. Print a table with a loop and \\t (tab) between the members. To search by id, loop through the records and test list[i].id == target. Keep the index of the match in a variable and start it at -1, which means not found. To find the highest CGPA, do the same as the max of an array (Week 4): assume record 0 is best, then compare list[i].cgpa with list[best].cgpa and remember the index. To sort, use bubble sort or selection sort from Week 5, but compare the member you sort by, for example list[j].cgpa < list[j + 1].cgpa. Swap the WHOLE records: Student t = list[j]; list[j] = list[j + 1]; list[j + 1] = t;. One swap moves the id, the name and the cgpa together, so the student's data never gets mixed up. That is the big win over parallel arrays. Remember: you cannot write list.name, because list is the whole array. And you cannot compare two records with < or ==, so always name the member.",
+  "syntax": "struct Student { int id; string name; double cgpa; };\n\nconst int N = 3;\nStudent list[N];                          // 3 records\n\n// fill with a loop\nfor (int i = 0; i < N; i++) {\n    cin >> list[i].id >> list[i].name >> list[i].cgpa;\n}\n\n// or with an initialiser list (one brace group per record)\nStudent top[2] = { {1, \"Ali\", 3.5}, {2, \"Sana\", 3.9} };\n\n// use one member of one record\ncout << list[0].name;\n\n// sort by cgpa: swap whole records\nStudent t = list[j]; list[j] = list[j + 1]; list[j + 1] = t;",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Read the id, name and CGPA of 3 students into an array of structs and print them as a table with the headings ID, Name and CGPA.",
+      "pseudocode": [
+        "START",
+        "DECLARE struct Student and array list[3]",
+        "FOR i = 0 to 2: PRINT prompt, READ id, name, cgpa into list[i]",
+        "PRINT heading",
+        "FOR i = 0 to 2: PRINT id, name, cgpa of list[i]",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[i = 0]\n  B --> C{i < 3?}\n  C -- Yes --> D[/Read id, name, cgpa into list i/]\n  D --> E[i = i + 1]\n  E --> C\n  C -- No --> F[/Print heading/]\n  F --> G[i = 0]\n  G --> H{i < 3?}\n  H -- Yes --> I[/Print list i/]\n  I --> J[i = i + 1]\n  J --> H\n  H -- No --> K([End])",
+      "sample": {
+        "id": "fill-and-print",
+        "title": "Fill an array of structs with cin and print a table",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int id;\n    string name;\n    double cgpa;\n};\n\nint main() {\n    const int N = 3;\n    Student list[N];\n    for (int i = 0; i < N; i++) {\n        cout << \"Student \" << i + 1 << \" (id name cgpa): \";\n        cin >> list[i].id >> list[i].name >> list[i].cgpa;\n    }\n    cout << \"\\nID\\tName\\tCGPA\" << endl;\n    for (int i = 0; i < N; i++) {\n        cout << list[i].id << \"\\t\" << list[i].name << \"\\t\" << list[i].cgpa << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "1 Ali 3.5\n2 Sana 3.9\n3 Usman 2.8\n",
+        "graphics": false,
+        "expectedOutput": "Student 1 (id name cgpa): Student 2 (id name cgpa): Student 3 (id name cgpa): \nID\tName\tCGPA\n1\tAli\t3.5\n2\tSana\t3.9\n3\tUsman\t2.8\n",
+        "explanation": [
+          {
+            "line": 12,
+            "text": "The number of students."
+          },
+          {
+            "line": 13,
+            "text": "An array whose elements are whole Student records."
+          },
+          {
+            "line": 14,
+            "text": "Loop over the elements; the first loop reads."
+          },
+          {
+            "line": 15,
+            "text": "Asks for student number i + 1 (people count from 1)."
+          },
+          {
+            "line": 16,
+            "text": "list[i] is one record; .id etc. picks a member. Index first, then dot."
+          },
+          {
+            "line": 18,
+            "text": "\\t is a tab, so the columns line up."
+          },
+          {
+            "line": 20,
+            "text": "The second loop prints one row per record."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 13,
+              "vars": {
+                "N": "3"
+              },
+              "note": "An array of 3 Student records: list[0], list[1], list[2]. Each element holds an id, a name and a cgpa.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "i": "0"
+              },
+              "note": "Loop with i = 0: ask for student 1.",
+              "out": "Student 1 (id name cgpa): "
+            },
+            {
+              "line": 16,
+              "vars": {
+                "list[0].id": "1",
+                "list[0].name": "Ali",
+                "list[0].cgpa": "3.5"
+              },
+              "note": "cin fills the three members of list[0].",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "i": "1"
+              },
+              "note": "Loop with i = 1: ask for student 2.",
+              "out": "Student 2 (id name cgpa): "
+            },
+            {
+              "line": 16,
+              "vars": {
+                "list[1].id": "2",
+                "list[1].name": "Sana",
+                "list[1].cgpa": "3.9"
+              },
+              "note": "cin fills the three members of list[1].",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "i": "2"
+              },
+              "note": "Loop with i = 2: ask for student 3.",
+              "out": "Student 3 (id name cgpa): "
+            },
+            {
+              "line": 16,
+              "vars": {
+                "list[2].id": "3",
+                "list[2].name": "Usman",
+                "list[2].cgpa": "2.8"
+              },
+              "note": "cin fills the three members of list[2].",
+              "out": ""
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "The table header.",
+              "out": "\nID\tName\tCGPA\n"
+            },
+            {
+              "line": 20,
+              "vars": {
+                "i": "0"
+              },
+              "note": "Row 1: print the members of list[0].",
+              "out": "1\tAli\t3.5\n"
+            },
+            {
+              "line": 20,
+              "vars": {
+                "i": "1"
+              },
+              "note": "Row 2: print the members of list[1].",
+              "out": "2\tSana\t3.9\n"
+            },
+            {
+              "line": 20,
+              "vars": {
+                "i": "2"
+              },
+              "note": "Row 3: print the members of list[2].",
+              "out": "3\tUsman\t2.8\n"
+            }
+          ],
+          "types": {
+            "N": "int",
+            "i": "int",
+            "list[0].id": "int",
+            "list[0].name": "string",
+            "list[0].cgpa": "double",
+            "list[1].id": "int",
+            "list[1].name": "string",
+            "list[1].cgpa": "double",
+            "list[2].id": "int",
+            "list[2].name": "string",
+            "list[2].cgpa": "double"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Four students are stored with an initialiser list. Search for the student with id 3 and print the name, then find and print the student with the highest CGPA.",
+      "pseudocode": [
+        "START",
+        "SET list with 4 students, target = 3, found = -1",
+        "FOR each i: IF list[i].id == target THEN found = i",
+        "IF found != -1 PRINT name ELSE PRINT Not found",
+        "best = 0",
+        "FOR i = 1 to 3: IF list[i].cgpa > list[best].cgpa THEN best = i",
+        "PRINT list[best] name and cgpa",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[found = -1, i = 0]\n  B --> C{i < 4?}\n  C -- Yes --> D{list i id == target?}\n  D -- Yes --> E[found = i]\n  D -- No --> F[i = i + 1]\n  E --> F\n  F --> C\n  C -- No --> G[/Print found student/]\n  G --> H[best = 0, i = 1]\n  H --> I{i < 4?}\n  I -- Yes --> J{list i cgpa > list best cgpa?}\n  J -- Yes --> K[best = i]\n  J -- No --> L[i = i + 1]\n  K --> L\n  L --> I\n  I -- No --> M[/Print best student/]\n  M --> N([End])",
+      "sample": {
+        "id": "search-and-highest",
+        "title": "Search by id and find the highest CGPA",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int id;\n    string name;\n    double cgpa;\n};\n\nint main() {\n    const int N = 4;\n    Student list[N] = {\n        {1, \"Ali\", 3.5},\n        {2, \"Sana\", 3.9},\n        {3, \"Usman\", 2.8},\n        {4, \"Hina\", 3.1}\n    };\n\n    int target = 3;\n    int found = -1;\n    for (int i = 0; i < N; i++) {\n        if (list[i].id == target) {\n            found = i;\n        }\n    }\n    if (found != -1) {\n        cout << \"Found: \" << list[found].name << \" (id \" << target << \")\" << endl;\n    } else {\n        cout << \"Not found\" << endl;\n    }\n\n    int best = 0;\n    for (int i = 1; i < N; i++) {\n        if (list[i].cgpa > list[best].cgpa) {\n            best = i;\n        }\n    }\n    cout << \"Highest CGPA: \" << list[best].name << \" \" << list[best].cgpa << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Found: Usman (id 3)\nHighest CGPA: Sana 3.9\n",
+        "explanation": [
+          {
+            "line": 13,
+            "text": "Initialiser list for an array of structs: an outer brace, then one inner brace per record."
+          },
+          {
+            "line": 14,
+            "text": "One record: id, name, cgpa."
+          },
+          {
+            "line": 21,
+            "text": "Index of the match; -1 means not found."
+          },
+          {
+            "line": 23,
+            "text": "Compare ONE member of each record with the target."
+          },
+          {
+            "line": 24,
+            "text": "Remember where it was found."
+          },
+          {
+            "line": 27,
+            "text": "Decide what to print."
+          },
+          {
+            "line": 33,
+            "text": "best holds the index of the highest CGPA so far."
+          },
+          {
+            "line": 35,
+            "text": "Compare the member of the current record with the member of the best record."
+          },
+          {
+            "line": 39,
+            "text": "Print the whole winner: name and CGPA."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 12,
+              "vars": {
+                "N": "4"
+              },
+              "note": "Four records are created by the initialiser list: one brace group per student.",
+              "out": ""
+            },
+            {
+              "line": 20,
+              "vars": {
+                "target": "3"
+              },
+              "note": "We search for id 3.",
+              "out": ""
+            },
+            {
+              "line": 21,
+              "vars": {
+                "found": "-1"
+              },
+              "note": "found = -1 means: not found yet (-1 is never a valid index).",
+              "out": ""
+            },
+            {
+              "line": 23,
+              "vars": {
+                "i": "2",
+                "found": "2"
+              },
+              "note": "At i = 2 the id is 3, so found = 2. (i = 0 and 1 did not match.)",
+              "out": ""
+            },
+            {
+              "line": 28,
+              "vars": {},
+              "note": "Prints the name of list[2].",
+              "out": "Found: Usman (id 3)\n"
+            },
+            {
+              "line": 33,
+              "vars": {
+                "best": "0"
+              },
+              "note": "Assume the first student has the highest CGPA.",
+              "out": ""
+            },
+            {
+              "line": 35,
+              "vars": {
+                "i": "1",
+                "best": "1"
+              },
+              "note": "i = 1: 3.9 > 3.5, so best = 1.",
+              "out": ""
+            },
+            {
+              "line": 35,
+              "vars": {
+                "i": "3"
+              },
+              "note": "i = 2 (2.8) and i = 3 (3.1) are not above 3.9, so best stays 1.",
+              "out": ""
+            },
+            {
+              "line": 39,
+              "vars": {},
+              "note": "Prints the winner.",
+              "out": "Highest CGPA: Sana 3.9\n"
+            }
+          ],
+          "types": {
+            "target": "int",
+            "found": "int",
+            "i": "int",
+            "best": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Three students are stored in an array of structs. Sort them by CGPA from highest to lowest using bubble sort and print the ranked list.",
+      "pseudocode": [
+        "START",
+        "SET list of 3 students",
+        "FOR i = 0 to N-2",
+        "  FOR j = 0 to N-2-i",
+        "    IF list[j].cgpa < list[j+1].cgpa THEN swap the whole records",
+        "FOR i = 0 to N-1: PRINT rank, name, cgpa",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[i = 0]\n  B --> C{i < N - 1?}\n  C -- Yes --> D[j = 0]\n  D --> E{j < N - 1 - i?}\n  E -- Yes --> F{list j cgpa < list j+1 cgpa?}\n  F -- Yes --> G[Swap records j and j+1]\n  F -- No --> H[j = j + 1]\n  G --> H\n  H --> E\n  E -- No --> I[i = i + 1]\n  I --> C\n  C -- No --> J[/Print ranked list/]\n  J --> K([End])",
+      "sample": {
+        "id": "sort-by-cgpa",
+        "title": "Exam: bubble sort records by CGPA",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int id;\n    string name;\n    double cgpa;\n};\n\nint main() {\n    const int N = 3;\n    Student list[N] = {{1, \"Ali\", 3.5}, {2, \"Sana\", 3.9}, {3, \"Usman\", 2.8}};\n\n    for (int i = 0; i < N - 1; i++) {\n        for (int j = 0; j < N - 1 - i; j++) {\n            if (list[j].cgpa < list[j + 1].cgpa) {\n                Student t = list[j];\n                list[j] = list[j + 1];\n                list[j + 1] = t;\n            }\n        }\n    }\n\n    for (int i = 0; i < N; i++) {\n        cout << i + 1 << \". \" << list[i].name << \" \" << list[i].cgpa << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "1. Sana 3.9\n2. Ali 3.5\n3. Usman 2.8\n",
+        "explanation": [
+          {
+            "line": 13,
+            "text": "Array of three records, initialised with braces."
+          },
+          {
+            "line": 15,
+            "text": "Outer loop: the passes of bubble sort (Week 5)."
+          },
+          {
+            "line": 16,
+            "text": "Inner loop: compare neighbours; each pass needs one fewer comparison."
+          },
+          {
+            "line": 17,
+            "text": "Sort by ONE member (cgpa). < puts the highest first."
+          },
+          {
+            "line": 18,
+            "text": "The temporary must be a whole Student."
+          },
+          {
+            "line": 19,
+            "text": "Whole-record assignment moves id, name and cgpa together."
+          },
+          {
+            "line": 20,
+            "text": "Finishes the swap."
+          },
+          {
+            "line": 26,
+            "text": "Prints the ranked list."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 13,
+              "vars": {
+                "list[0].name": "Ali",
+                "list[1].name": "Sana",
+                "list[2].name": "Usman"
+              },
+              "note": "Three records, in the order Ali (3.5), Sana (3.9), Usman (2.8). We sort by cgpa, highest first.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "i": "0"
+              },
+              "note": "Pass 1 of bubble sort.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {
+                "j": "0"
+              },
+              "note": "3.5 < 3.9 is true: the neighbours are in the wrong order.",
+              "out": ""
+            },
+            {
+              "line": 18,
+              "vars": {
+                "t.name": "Ali"
+              },
+              "note": "t keeps a copy of the whole record list[0].",
+              "out": ""
+            },
+            {
+              "line": 19,
+              "vars": {
+                "list[0].name": "Sana"
+              },
+              "note": "The whole record Sana (id, name and cgpa together) moves to position 0.",
+              "out": ""
+            },
+            {
+              "line": 20,
+              "vars": {
+                "list[1].name": "Ali"
+              },
+              "note": "Ali goes to position 1. One swap moved all members.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {
+                "j": "1"
+              },
+              "note": "j = 1: 3.5 < 2.8 is false, no swap.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "i": "1"
+              },
+              "note": "Pass 2.",
+              "out": ""
+            },
+            {
+              "line": 17,
+              "vars": {
+                "j": "0"
+              },
+              "note": "3.9 < 3.5 is false. The array is sorted.",
+              "out": ""
+            },
+            {
+              "line": 26,
+              "vars": {
+                "i": "0"
+              },
+              "note": "Prints rank 1.",
+              "out": "1. Sana 3.9\n"
+            },
+            {
+              "line": 26,
+              "vars": {
+                "i": "1"
+              },
+              "note": "Prints rank 2.",
+              "out": "2. Ali 3.5\n"
+            },
+            {
+              "line": 26,
+              "vars": {
+                "i": "2"
+              },
+              "note": "Prints rank 3.",
+              "out": "3. Usman 2.8\n"
+            }
+          ],
+          "types": {
+            "i": "int",
+            "j": "int",
+            "t.name": "string",
+            "list[0].name": "string",
+            "list[1].name": "string",
+            "list[2].name": "string"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Initialiser list",
+      "when": "You know the records in advance. One inner brace per record.",
+      "example": "Student list[2] = { {1, \"Ali\", 3.5}, {2, \"Sana\", 3.9} };"
+    },
+    {
+      "way": "Loop with cin",
+      "when": "The user types the records.",
+      "example": "for (int i = 0; i < N; i++)\n    cin >> list[i].id >> list[i].name >> list[i].cgpa;"
+    },
+    {
+      "way": "Member by member",
+      "when": "Setting a few values yourself.",
+      "example": "list[0].id = 1;\nlist[0].name = \"Ali\";\nlist[0].cgpa = 3.5;"
+    },
+    {
+      "way": "Copy a record",
+      "when": "Copy one element into another (also used when swapping).",
+      "example": "list[1] = list[0];"
+    },
+    {
+      "way": "Partial initialiser list",
+      "when": "Fewer records than the size. The rest are set to zero or empty.",
+      "example": "Student list[5] = { {1, \"Ali\", 3.5} };"
+    },
+    {
+      "way": "Search / max / sort",
+      "when": "Same ideas as arrays; compare a member, not the whole record.",
+      "example": "if (list[i].cgpa > list[best].cgpa) best = i;"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "Student list[3];\ncout << list.name;",
+      "right": "cout << list[0].name;   // say which record",
+      "error": "g++ reports: request for member 'name' in 'list', which is of non-class type 'Student [3]'. The array has no members; each element does."
+    },
+    {
+      "wrong": "if (list[j] > list[j + 1]) {\n    // swap\n}",
+      "right": "if (list[j].cgpa > list[j + 1].cgpa) {\n    // swap\n}",
+      "error": "g++ reports: no match for 'operator>' (operand types are 'Student' and 'Student'). Compare one member."
+    },
+    {
+      "wrong": "for (int i = 0; i <= N; i++) {\n    cin >> list[i].id;   // list[N] does not exist\n}",
+      "right": "for (int i = 0; i < N; i++) {\n    cin >> list[i].id;\n}",
+      "error": "No compiler error. Reading past the end of the array is undefined behaviour and may crash or corrupt data."
+    },
+    {
+      "wrong": "// sorting by cgpa but swapping only that member\nswap(list[j].cgpa, list[j + 1].cgpa);",
+      "right": "Student t = list[j];\nlist[j] = list[j + 1];\nlist[j + 1] = t;",
+      "error": "No compiler error. The CGPAs move but the names and ids stay behind, so every student gets the wrong CGPA. Swap whole records."
+    }
+  ],
+  "examTips": [
+    "list[i] is a whole record; list[i].member is one value. Write index first, then the dot.",
+    "To sort or search by a member, compare that member only; swap the whole record using a Student temporary.",
+    "Initialiser list for an array of structs: one inner brace for each record.",
+    "Start a search index at -1 so you can tell 'not found' from a real index.",
+    "Loop bounds: i < N, never i <= N."
+  ],
+  "romanSummary": [
+    "Bohat se records ke liye array of structures banate hain: Student list[50]; aur access list[i].name se hota hai.",
+    "list[i] poora record hai aur list[i].cgpa us record ka ek member.",
+    "Table print karne ke liye loop chalao aur members ke darmiyan \\t lagao.",
+    "Search ya sorting member par hoti hai (list[j].cgpa), lekin swap poore record ka hota hai taake id, name aur cgpa saath rahen.",
+    "Records ko < ya == se seedha compare nahi kar sakte, hamesha member likho."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Student list[10]; What is list[3]?",
+      "options": [
+        "The fourth record (a whole Student)",
+        "The third record",
+        "The name of student 3",
+        "An int"
+      ],
+      "answer": "The fourth record (a whole Student)",
+      "hint": "Index starts at 0.",
+      "explanation": "list[3] is the whole record at index 3, which is the fourth one."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which expression is the cgpa of the third student?",
+      "options": [
+        "list[2].cgpa",
+        "list.cgpa[2]",
+        "list[3].cgpa",
+        "cgpa.list[2]"
+      ],
+      "answer": "list[2].cgpa",
+      "hint": "Third element has index 2; index then dot.",
+      "explanation": "The element is chosen first with [ ], then the member with a dot."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int id;\n    string name;\n    double cgpa;\n};\n\nint main() {\n    Student list[2] = {{1, \"Ali\", 3.5}, {2, \"Sana\", 3.9}};\n    cout << list[1].name << \" \" << list[0].id << endl;\n    return 0;\n}",
+      "answer": "Sana 1",
+      "hint": "Index 1 is the second record.",
+      "explanation": "list[1].name is Sana and list[0].id is 1."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int id;\n    string name;\n    double cgpa;\n};\n\nint main() {\n    Student list[3] = {{1, \"Ali\", 3.5}, {2, \"Sana\", 3.9}, {3, \"Usman\", 2.8}};\n    double total = 0;\n    for (int i = 0; i < 3; i++) {\n        total += list[i].cgpa;\n    }\n    cout << total << endl;\n    return 0;\n}",
+      "answer": "10.2",
+      "hint": "Add the three cgpa values.",
+      "explanation": "3.5 + 3.9 + 2.8 = 10.2."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int id;\n    string name;\n    double cgpa;\n};\n\nint main() {\n    Student list[3] = {{1, \"Ali\", 3.5}, {2, \"Sana\", 3.9}, {3, \"Usman\", 2.8}};\n    int low = 0;\n    for (int i = 1; i < 3; i++) {\n        if (list[i].cgpa < list[low].cgpa) low = i;\n    }\n    cout << list[low].name << \" \" << low << endl;\n    return 0;\n}",
+      "answer": "Usman 2",
+      "hint": "Track the index of the smallest cgpa.",
+      "explanation": "Usman has the smallest CGPA (2.8) at index 2."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Find and fix the error:\n\nStudent list[3];\nfor (int i = 0; i < 3; i++) {\n    cin >> list.name;\n}",
+      "answer": "cin >> list[i].name;",
+      "hint": "Which record?",
+      "explanation": "The array has no member name. Each element list[i] does."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "hard",
+      "prompt": "Complete the swap of two whole records in a sort:\n\n_____ t = list[j];\nlist[j] = list[j + 1];\nlist[j + 1] = t;",
+      "answer": "Student",
+      "hint": "The temporary must have the element type.",
+      "explanation": "t must be able to hold a whole record, so its type is Student."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a loop that prints the name of every student in list (size N) whose cgpa is at least 3.0, one per line.",
+      "answer": "for (int i = 0; i < N; i++) {\n    if (list[i].cgpa >= 3.0) {\n        cout << list[i].name << endl;\n    }\n}",
+      "hint": "Loop, test one member, print another.",
+      "explanation": "The test uses list[i].cgpa and the output uses list[i].name of the same record."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is an array of structures?",
+      "options": [
+        "An array whose elements are struct records",
+        "A struct that holds one array of ints",
+        "A function with many parameters",
+        "A loop over characters"
+      ],
+      "answer": "An array whose elements are struct records",
+      "hint": "Think of a table of rows.",
+      "explanation": "Each element is one record."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How do you print the name of record i?",
+      "options": [
+        "cout << list[i].name;",
+        "cout << list.name[i];",
+        "cout << name.list[i];",
+        "cout << list(i).name;"
+      ],
+      "answer": "cout << list[i].name;",
+      "hint": "Index then dot.",
+      "explanation": "list[i] picks the record and .name picks the member."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "When sorting records by cgpa, what should be swapped?",
+      "options": [
+        "The whole records",
+        "Only the cgpa members",
+        "Only the names",
+        "Only the ids"
+      ],
+      "answer": "The whole records",
+      "hint": "Keep id, name and cgpa together.",
+      "explanation": "Swapping whole records keeps each student's data together."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "In a search by id, what does found = -1 at the start mean?",
+      "options": [
+        "No match has been found yet",
+        "The array is empty",
+        "The first record matched",
+        "The id is negative"
+      ],
+      "answer": "No match has been found yet",
+      "hint": "-1 is never a valid index.",
+      "explanation": "-1 is a safe marker for not found."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which is a correct initialiser for an array of two Student records?",
+      "options": [
+        "Student s[2] = { {1, \"Ali\", 3.5}, {2, \"Sana\", 3.9} };",
+        "Student s[2] = 1, \"Ali\", 3.5;",
+        "Student s[2] = (1, \"Ali\", 3.5);",
+        "Student s = [1, \"Ali\", 3.5];"
+      ],
+      "answer": "Student s[2] = { {1, \"Ali\", 3.5}, {2, \"Sana\", 3.9} };",
+      "hint": "One brace group per record.",
+      "explanation": "Outer braces for the array, inner braces for each record."
+    }
+  ],
+  "sources": [
+    "Array of structures",
+    "Searching an array of structures",
+    "Sorting an array of structures",
+    "Initialising an array of structures"
+  ]
+}

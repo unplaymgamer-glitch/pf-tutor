@@ -1,0 +1,543 @@
+{
+  "slug": "presentation-checklist",
+  "week": 16,
+  "title": "Presentation and demo checklist",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "A demo in the right order",
+      "stages": [
+        {
+          "name": "1. Introduce the problem",
+          "detail": "One or two sentences: what problem does your project solve?"
+        },
+        {
+          "name": "2. Show the menu and every feature",
+          "detail": "Use sample data and demonstrate each menu option."
+        },
+        {
+          "name": "3. Show input validation",
+          "detail": "Type wrong input on purpose and show how the program reacts."
+        },
+        {
+          "name": "4. Show save and load",
+          "detail": "Close the program, open it again, and show the data is still there."
+        },
+        {
+          "name": "5. Explain the code",
+          "detail": "Which structs and functions you made, and why."
+        },
+        {
+          "name": "6. Limitations and ideas",
+          "detail": "Say honestly what is missing and how you would improve it."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Which concept does this project feature show?",
+      "pairs": [
+        {
+          "term": "Menu that repeats until Quit",
+          "meaning": "do-while loop with a switch"
+        },
+        {
+          "term": "Keeping 50 students' records",
+          "meaning": "Array of structures"
+        },
+        {
+          "term": "Data is still there after reopening",
+          "meaning": "File handling (save and load)"
+        },
+        {
+          "term": "Rejecting a mark of 150",
+          "meaning": "Input validation with a loop and conditions"
+        },
+        {
+          "term": "Function changes the caller's counter",
+          "meaning": "Pass by reference"
+        },
+        {
+          "term": "Board of 3 by 3 cells",
+          "meaning": "2-D array"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can prepare a project demo, explain your code in about two minutes, test it with bad input before the day, and answer viva questions about the concepts it uses.",
+  "warmup": "Before a cricket match the team has a net session. Nobody plays the real game without practice. A demo is the same: run through it once with a friend, try the awkward balls (wrong input) and know your shots (your code). The project is worth 15% of the grade, so a calm, prepared demo is worth the effort.",
+  "definition": "A demo is a short live show of your running project, followed by questions. A viva is the spoken question session in which the instructor asks about your code. A boundary test checks the values right at the edge of what is allowed, for example 0, 100 and 101 when marks must be from 0 to 100. A checklist is a list you tick off so nothing is forgotten.",
+  "howItWorks": "Follow the checklist from the course notes: introduce the problem in one or two sentences, show the main menu and demonstrate every feature with sample data, show input validation with wrong input, show that data is saved and loaded from the file (close and reopen the program), explain the code (which structures and functions you made and why), be ready for viva questions, and mention limitations and possible improvements honestly. A two-minute explanation can have four parts: what the project does (10 seconds), the main data (the struct and the array), the functions and what each one does, and one thing you are proud of or would improve. Before the demo test bad input: letters instead of numbers, negative numbers, zero, very large numbers, and the border values. Typical viva questions: What does this loop do? Why did you use pass by reference here? What happens if the file is missing? Every team member must be able to explain any part of the code, and instructors may ask someone to change something small during the demo, for example a grade boundary or one more menu option. If you do not know an answer, say so honestly and explain what you would check, rather than guess.",
+  "syntax": "// Input validation: ask again until the value is good\ncin >> mark;\nwhile (mark < 0 || mark > 100) {\n    cout << \"Invalid. Try again: \";\n    cin >> mark;\n}\n\n// Boundary tests for a 0 to 100 rule:\n// -1 (just outside), 0 (edge), 1 (just inside),\n// 99 (just inside), 100 (edge), 101 (just outside)\n\n// Safe reading when the user types letters:\nif (!(cin >> choice)) {\n    cin.clear();             // reset the error state\n    cin.ignore(1000, '\\n');  // throw away the bad line\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write an input validation loop that asks for marks from 0 to 100 and keeps asking until the user gives a valid value. Test it with -5, 150 and 85.",
+      "pseudocode": [
+        "START",
+        "READ mark",
+        "WHILE mark < 0 OR mark > 100",
+        "  PRINT Invalid",
+        "  READ mark",
+        "PRINT Accepted and mark",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/\"Read mark\"/]\n  B --> C{\"mark < 0 or mark > 100?\"}\n  C -->|Yes| D[/\"Print Invalid\"/]\n  D --> E[/\"Read mark again\"/]\n  E --> C\n  C -->|No| F[/\"Print Accepted\"/]\n  F --> G([End])",
+      "sample": {
+        "id": "demo-validation",
+        "title": "Input validation loop: ask again until the value is good",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int mark;\n    cout << \"Enter marks (0-100): \";\n    cin >> mark;\n    while (mark < 0 || mark > 100) {\n        cout << \"Invalid. Enter marks (0-100): \";\n        cin >> mark;\n    }\n    cout << \"Accepted: \" << mark << endl;\n    return 0;\n}\n",
+        "stdin": "-5\n150\n85\n",
+        "graphics": false,
+        "expectedOutput": "Enter marks (0-100): Invalid. Enter marks (0-100): Invalid. Enter marks (0-100): Accepted: 85\n",
+        "explanation": [
+          {
+            "line": 7,
+            "text": "The first read happens before the loop."
+          },
+          {
+            "line": 8,
+            "text": "Bad means too small OR too big. We need || here, not &&, because no number is both below 0 and above 100."
+          },
+          {
+            "line": 9,
+            "text": "Tell the user what went wrong, so they can fix it."
+          },
+          {
+            "line": 10,
+            "text": "Read again inside the loop. Without this line the loop would never end."
+          },
+          {
+            "line": 12,
+            "text": "Reached only when the value is between 0 and 100."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {},
+              "note": "The program starts. mark has no value yet.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "Ask for marks.",
+              "out": "Enter marks (0-100): "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "mark": "-5"
+              },
+              "note": "The user types -5.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "-5 < 0 is true, so the input is bad and the loop body runs.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Tell the user what is wrong and ask again.",
+              "out": "Invalid. Enter marks (0-100): "
+            },
+            {
+              "line": 10,
+              "vars": {
+                "mark": "150"
+              },
+              "note": "The user types 150.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "150 > 100 is true, so it is bad again.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Ask again.",
+              "out": "Invalid. Enter marks (0-100): "
+            },
+            {
+              "line": 10,
+              "vars": {
+                "mark": "85"
+              },
+              "note": "The user types 85.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "85 is not below 0 and not above 100, so the condition is false and the loop ends.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Only a good value gets here.",
+              "out": "Accepted: 85\n"
+            }
+          ],
+          "types": {
+            "mark": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Write a function isValidMark and test it with a list of boundary values: -1, 0, 1, 99, 100 and 101. Print valid or invalid for each.",
+      "pseudocode": [
+        "START",
+        "tests = -1, 0, 1, 99, 100, 101",
+        "FOR each test value",
+        "  IF isValidMark THEN PRINT valid ELSE PRINT invalid",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"tests = -1, 0, 1, 99, 100, 101\"]\n  B --> C[\"Take next test value\"]\n  C --> D{\"isValidMark?\"}\n  D -->|Yes| E[/\"Print valid\"/]\n  D -->|No| F[/\"Print invalid\"/]\n  E --> G{\"More values?\"}\n  F --> G\n  G -->|Yes| C\n  G -->|No| H([End])",
+      "sample": {
+        "id": "demo-boundary-tests",
+        "title": "A boundary test list for a 0 to 100 rule",
+        "code": "#include <iostream>\nusing namespace std;\n\nbool isValidMark(int m) {\n    return m >= 0 && m <= 100;\n}\n\nint main() {\n    int tests[6] = {-1, 0, 1, 99, 100, 101};\n    for (int i = 0; i < 6; i++) {\n        cout << tests[i] << \" -> \";\n        if (isValidMark(tests[i])) {\n            cout << \"valid\" << endl;\n        } else {\n            cout << \"invalid\" << endl;\n        }\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "-1 -> invalid\n0 -> valid\n1 -> valid\n99 -> valid\n100 -> valid\n101 -> invalid\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "The rule lives in one small function, so it is easy to test."
+          },
+          {
+            "line": 5,
+            "text": "Valid means at least 0 AND at most 100."
+          },
+          {
+            "line": 9,
+            "text": "The test list: just outside, exactly on, and just inside each border. Bugs hide at the borders."
+          },
+          {
+            "line": 10,
+            "text": "Run every test in a loop."
+          },
+          {
+            "line": 12,
+            "text": "Print what the program decided, so you can compare with what you expect."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a function readChoice that reads a menu choice from 1 to 4 and keeps asking while the user types letters or numbers outside the range. Test it with abc, 9 and 3.",
+      "pseudocode": [
+        "START",
+        "REPEAT",
+        "  READ choice",
+        "  IF read ok AND choice from 1 to 4 THEN RETURN it",
+        "  PRINT Bad input",
+        "  clear the error, skip the bad line",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/\"Read choice\"/]\n  B --> C{\"Read ok and 1 to 4?\"}\n  C -->|Yes| D[/\"Print You chose\"/]\n  C -->|No| E[/\"Print Bad input\"/]\n  E --> F[\"Clear error, skip the bad line\"]\n  F --> B\n  D --> G([End])",
+      "sample": {
+        "id": "demo-safe-menu-input",
+        "title": "A menu choice that survives letters and wrong numbers",
+        "code": "#include <iostream>\nusing namespace std;\n\nint readChoice() {\n    int choice;\n    while (true) {\n        cout << \"Choice (1-4): \";\n        if (cin >> choice && choice >= 1 && choice <= 4) {\n            return choice;\n        }\n        cout << \"Bad input, try again.\" << endl;\n        cin.clear();\n        cin.ignore(1000, '\\n');\n    }\n}\n\nint main() {\n    int c = readChoice();\n    cout << \"You chose \" << c << endl;\n    return 0;\n}\n",
+        "stdin": "abc\n9\n3\n",
+        "graphics": false,
+        "expectedOutput": "Choice (1-4): Bad input, try again.\nChoice (1-4): Bad input, try again.\nChoice (1-4): You chose 3\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Keep asking until we return a good value."
+          },
+          {
+            "line": 8,
+            "text": "Two checks in one: the read must succeed (it fails for letters) AND the number must be 1 to 4."
+          },
+          {
+            "line": 9,
+            "text": "Only a valid choice leaves the function."
+          },
+          {
+            "line": 12,
+            "text": "After a failed read, cin is in an error state. clear() resets it."
+          },
+          {
+            "line": 13,
+            "text": "Throw away the rest of the bad line, so the same bad text is not read again."
+          },
+          {
+            "line": 18,
+            "text": "main stays simple because the checking is inside readChoice."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Demo checklist (from the notes)",
+      "when": "Use as your order on the day.",
+      "example": "Problem, menu, every feature, wrong input, save/load, explain code, limits"
+    },
+    {
+      "way": "Two-minute code explanation",
+      "when": "The instructor says: explain your project.",
+      "example": "What it does; the struct and array; the functions; one improvement"
+    },
+    {
+      "way": "Boundary test values",
+      "when": "Checking a range rule such as 0 to 100.",
+      "example": "-1, 0, 1, 99, 100, 101"
+    },
+    {
+      "way": "Bad input tests",
+      "when": "Before the demo, to see if the program survives.",
+      "example": "letters, negative, zero, huge number, empty line"
+    },
+    {
+      "way": "Validation with a while loop",
+      "when": "Ask again until the value is valid.",
+      "example": "while (mark < 0 || mark > 100) { ... }"
+    },
+    {
+      "way": "Viva question practice",
+      "when": "Practise answering with your own project.",
+      "example": "What does this loop do? Why pass by reference? What if the file is missing?"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "while (mark < 0 && mark > 100) {\n    cin >> mark;\n}",
+      "right": "while (mark < 0 || mark > 100) {\n    cin >> mark;\n}",
+      "error": "No compiler error. No number is below 0 AND above 100 at the same time, so the loop never runs and bad input is accepted."
+    },
+    {
+      "wrong": "while (mark < 0 || mark > 100) {\n    cout << \"Invalid\";\n}",
+      "right": "while (mark < 0 || mark > 100) {\n    cout << \"Invalid\";\n    cin >> mark;\n}",
+      "error": "No compiler error. Without a new read inside the loop mark never changes, so the program prints Invalid forever."
+    },
+    {
+      "wrong": "cin >> choice;   // user types abc\n// next cin >> ... all fail too",
+      "right": "if (!(cin >> choice)) {\n    cin.clear();\n    cin.ignore(1000, '\\n');\n}",
+      "error": "No compiler error. After a failed read cin stays in an error state and later reads are skipped, which can create an endless loop."
+    },
+    {
+      "wrong": "// Demo only with perfect input, never tried letters or 0",
+      "right": "// Test letters, negative numbers, zero, large numbers and borders first",
+      "error": "Not a compiler error. Wrong input is the first thing an instructor tries. Test it before the day."
+    },
+    {
+      "wrong": "// Only one member understands the code",
+      "right": "// Every member can explain every part",
+      "error": "Not a compiler error. The notes say every team member should be able to explain any part, and someone may be asked to change a small thing during the demo."
+    }
+  ],
+  "examTips": [
+    "Use || (OR) in a validation loop for 'outside the range'. && would never be true.",
+    "Name boundary tests: just outside, on the edge, and just inside, for example -1, 0, 1 and 99, 100, 101.",
+    "Be ready to say which concept each project feature shows: menu = loop + switch, records = array of structures, saving = files.",
+    "Know the notes' sample viva questions: what does this loop do, why pass by reference, what if the file is missing.",
+    "If you do not know an answer, say so and explain how you would find out. Honest answers are better than guesses."
+  ],
+  "romanSummary": [
+    "Demo mein pehle problem batayein, phir menu aur har feature sample data ke saath chala kar dikhayein.",
+    "Galat input ka result dikhayein aur file save/load ka saboot dein: program band karke dobara kholein aur data dikhayein.",
+    "Code do minute mein samjhayein: project kya karta hai, kaunsa struct aur array hai, kaunse functions hain aur kya behtar ho sakta hai.",
+    "Demo se pehle bad input test karein: letters, negative, zero, bohat bara number aur border values jaise 0, 100, 101.",
+    "Har member ko poora code samajh aana chahiye kyunke viva mein koi bhi sawal ya chhoti tabdeeli maangi ja sakti hai. Project grade ka 15% hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which is a good first step in a project demo?",
+      "options": [
+        "Introduce the problem in one or two sentences",
+        "Show the last function first",
+        "Delete the data file",
+        "Skip the menu"
+      ],
+      "answer": "Introduce the problem in one or two sentences",
+      "hint": "Start simple.",
+      "explanation": "The checklist starts with the problem the project solves."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "For marks that must be from 0 to 100, which pair is a boundary test?",
+      "options": [
+        "100 and 101",
+        "37 and 52",
+        "10 and 20",
+        "5 and 6"
+      ],
+      "answer": "100 and 101",
+      "hint": "Test at the edge.",
+      "explanation": "Bugs hide at the border, so test the last valid and first invalid value."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int m = 100;\n    cout << (m >= 0 && m <= 100) << endl;\n    m = 101;\n    cout << (m >= 0 && m <= 100) << endl;\n    return 0;\n}\n",
+      "answer": "1\n0",
+      "hint": "true prints as 1, false as 0.",
+      "explanation": "100 is valid (1), 101 is outside the range (0)."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This loop should reject marks outside 0 to 100 but accepts everything. Find the bug:\n\nwhile (mark < 0 && mark > 100) {\n    cin >> mark;\n}",
+      "answer": "Use || instead of &&: while (mark < 0 || mark > 100). No number is below 0 and above 100 at once.",
+      "hint": "Can both parts be true together?",
+      "explanation": "With && the condition is never true, so the loop never runs."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill the blank:\n\nwhile (mark < 0 ____ mark > 100) {",
+      "answer": "||",
+      "hint": "Outside the range means one OR the other.",
+      "explanation": "|| means OR. Either side being true makes the mark invalid."
+    },
+    {
+      "id": "p6",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "The instructor asks: 'Why did you use pass by reference here?' Which answer is best?",
+      "options": [
+        "So the function can change the caller's variable, such as the record count",
+        "Because it looks nicer",
+        "Because references are faster than everything",
+        "I do not know"
+      ],
+      "answer": "So the function can change the caller's variable, such as the record count",
+      "hint": "Think of int &n.",
+      "explanation": "A reference parameter is another name for the caller's variable, so changes stay."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a loop that keeps asking for an age until the user enters a number from 1 to 120, then prints the accepted age. Assume int age is already declared.",
+      "answer": "cout << \"Age: \";\ncin >> age;\nwhile (age < 1 || age > 120) {\n    cout << \"Invalid. Age: \";\n    cin >> age;\n}\ncout << \"Accepted: \" << age << endl;",
+      "hint": "Read first, loop while bad, read again inside.",
+      "explanation": "Same pattern as marks: read, while outside the range ask again."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which test should you do BEFORE the demo?",
+      "options": [
+        "Type letters, negative numbers, zero and border values",
+        "Only type perfect data",
+        "Only test the menu",
+        "Nothing, hope it works"
+      ],
+      "answer": "Type letters, negative numbers, zero and border values",
+      "hint": "The instructor will try wrong input.",
+      "explanation": "Testing with bad input finds crashes and endless loops early."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which concept does the project feature 'the menu shows again after each action until Quit' show?",
+      "options": [
+        "A do-while loop with a switch",
+        "A 2-D array",
+        "Recursion",
+        "Function overloading"
+      ],
+      "answer": "A do-while loop with a switch",
+      "hint": "Repeat and choose.",
+      "explanation": "The loop repeats and the switch picks the action."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which concept does the feature 'records are still there after closing and reopening' show?",
+      "options": [
+        "File handling",
+        "A switch",
+        "Pointers to arrays",
+        "Default arguments"
+      ],
+      "answer": "File handling",
+      "hint": "Data must stay on disk.",
+      "explanation": "Saving to and loading from a file keeps the data."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which concept does the feature 'rejecting a negative price' show?",
+      "options": [
+        "Input validation",
+        "A 2-D array",
+        "Recursion",
+        "A graphics function"
+      ],
+      "answer": "Input validation",
+      "hint": "Check before accepting.",
+      "explanation": "A loop or if checks the value and asks again."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which concept does the feature 'store 50 students with id, name and marks' show?",
+      "options": [
+        "Array of structures",
+        "Only one int variable",
+        "A single char",
+        "A goto"
+      ],
+      "answer": "Array of structures",
+      "hint": "Many records of one type.",
+      "explanation": "A struct describes one student and an array holds many."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "According to the course notes, the project is worth what share of the grade?",
+      "options": [
+        "15%",
+        "5%",
+        "30%",
+        "100%"
+      ],
+      "answer": "15%",
+      "hint": "See the top of Week 16.",
+      "explanation": "The notes state that the semester project is 15% of the grade."
+    }
+  ],
+  "sources": [
+    "Presentation and demo checklist",
+    "Explaining your code",
+    "Handling viva questions",
+    "Testing with bad input before the demo"
+  ]
+}

@@ -1,0 +1,593 @@
+{
+  "slug": "logical-operators",
+  "week": 2,
+  "title": "Compound conditions and logical operators (&&, ||, !)",
+  "defaultView": "visualize",
+  "order": 7,
+  "visuals": [
+    {
+      "kind": "truth",
+      "title": "AND (&&): true only when BOTH sides are true",
+      "op": "and"
+    },
+    {
+      "kind": "truth",
+      "title": "OR (||): true when AT LEAST ONE side is true",
+      "op": "or"
+    },
+    {
+      "kind": "truth",
+      "title": "NOT (!): flips true to false and false to true",
+      "op": "not"
+    },
+    {
+      "kind": "decision",
+      "title": "Compound condition: marks must be between 0 and 100 to be valid",
+      "vars": [
+        {
+          "name": "marks",
+          "label": "marks",
+          "min": -20,
+          "max": 120,
+          "value": 75
+        }
+      ],
+      "branches": [
+        {
+          "expr": "marks < 0 || marks > 100",
+          "label": "Invalid marks"
+        },
+        {
+          "expr": "marks >= 50 && marks <= 100",
+          "label": "Pass"
+        }
+      ],
+      "elseLabel": "Fail"
+    }
+  ],
+  "goal": "After this you can join two or more conditions with &&, || and !, predict the result with a truth table, write a correct range check, and explain short-circuit evaluation.",
+  "warmup": "To get your exam roll number slip, the office says: 'You need your fee challan AND your student card.' If you have only one, you do not get the slip. To enter a ground for free, the rule may be: 'Students OR staff.' Either one is enough. And a shop sign says 'NOT open on Sunday.' Real life already uses AND, OR and NOT. C++ uses the same ideas to check more than one thing in a single if.",
+  "definition": "A compound condition joins two or more simple conditions. C++ has three logical operators. && means AND: true only when both sides are true. || means OR: true when at least one side is true. ! means NOT: it reverses a condition, so true becomes false and false becomes true. The result of every logical operator is a bool, either true or false.",
+  "howItWorks": "The computer reads a compound condition from left to right and uses the precedence order: ! first, then arithmetic, then relational (< <= > >=), then equality (== !=), then &&, and last ||. So a || b && c means a || (b && c). Use brackets whenever you are unsure. C++ also uses short-circuit evaluation: it stops as soon as the answer is known. In A && B, if A is false, B is never checked. In A || B, if A is true, B is never checked. Run the trace of the second example to see a function that does NOT run because of this.",
+  "syntax": "if (condition1 && condition2)   // AND: both must be true\n    statement;\n\nif (condition1 || condition2)   // OR: at least one must be true\n    statement;\n\nif (!condition)                 // NOT: true when condition is false\n    statement;\n\nif (x >= 1 && x <= 10)          // range check: write both sides\n    statement;\n\nif ((a || b) && c)              // brackets show the order clearly\n    statement;",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "A person can vote only if age is 18 or more AND they have a CNIC. Read the age and whether they have a CNIC (1 for yes, 0 for no) and print the result.",
+      "pseudocode": [
+        "START",
+        "READ age",
+        "READ hasCNIC",
+        "IF age >= 18 AND hasCNIC THEN",
+        "    PRINT \"You can vote.\"",
+        "ELSE",
+        "    PRINT \"You cannot vote.\"",
+        "END IF",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read age and hasCNIC/]\n  B --> C{\"age >= 18 && hasCNIC ?\"}\n  C -->|True| D[/Print You can vote/]\n  C -->|False| E[/Print You cannot vote/]\n  D --> F([End])\n  E --> F",
+      "sample": {
+        "id": "voter-check",
+        "title": "Voter check with &&",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int age;\n    bool hasCNIC;\n    cout << \"Enter age: \";\n    cin >> age;\n    cout << \"Has CNIC (1 = yes, 0 = no): \";\n    cin >> hasCNIC;\n    if (age >= 18 && hasCNIC) {\n        cout << \"You can vote.\" << endl;\n    } else {\n        cout << \"You cannot vote.\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "20 1",
+        "expectedOutput": "Enter age: Has CNIC (1 = yes, 0 = no): You can vote.\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "age stores the person's age."
+          },
+          {
+            "line": 6,
+            "text": "hasCNIC is a bool. It holds 1 (true) or 0 (false) when we read it."
+          },
+          {
+            "line": 8,
+            "text": "cin reads the age from the keyboard."
+          },
+          {
+            "line": 10,
+            "text": "cin reads 1 or 0 into hasCNIC."
+          },
+          {
+            "line": 11,
+            "text": "&& joins two conditions. The block runs only if both are true."
+          },
+          {
+            "line": 12,
+            "text": "Printed when both conditions are true."
+          },
+          {
+            "line": 14,
+            "text": "Printed when at least one condition is false."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts in main().",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "The prompt for age is printed.",
+              "out": "Enter age: "
+            },
+            {
+              "line": 8,
+              "vars": {
+                "age": "20"
+              },
+              "note": "The user types 20, so age becomes 20.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "The prompt for the CNIC is printed.",
+              "out": "Has CNIC (1 = yes, 0 = no): "
+            },
+            {
+              "line": 10,
+              "vars": {
+                "hasCNIC": "true"
+              },
+              "note": "The user types 1, so hasCNIC becomes true.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "age >= 18 is true and hasCNIC is true. true && true is true, so we enter the if block.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "The voting message is printed.",
+              "out": "You can vote.\n"
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "age": "int",
+            "hasCNIC": "bool"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Prove short-circuit evaluation. Make a function isBig() that prints a message when it runs. Use it on the right side of && and || and see when the message appears.",
+      "pseudocode": [
+        "START",
+        "SET a = false",
+        "IF a AND isBig(20) THEN print First (isBig is skipped because a is false)",
+        "PRINT \"After first\"",
+        "IF NOT a OR isBig(20) THEN print Second (isBig is skipped because NOT a is true)",
+        "IF a OR isBig(20) THEN print Third (isBig must run, because a is false)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"a = false\"]\n  B --> C{\"a && isBig(20) ?\"}\n  C -->|\"False (isBig skipped)\"| D[/Print After first/]\n  C -->|True| X[/Print First/]\n  X --> D\n  D --> E{\"!a || isBig(20) ?\"}\n  E -->|\"True (isBig skipped)\"| F[/Print Second/]\n  E -->|False| G\n  F --> G{\"a || isBig(20) ?\"}\n  G -->|\"isBig runs, returns true\"| H[/Print Third/]\n  G -->|False| I([End])\n  H --> I",
+      "sample": {
+        "id": "short-circuit-proof",
+        "title": "Short-circuit proof with a function",
+        "code": "#include <iostream>\nusing namespace std;\n\nbool isBig(int n) {\n    cout << \"isBig runs\" << endl;\n    return n > 10;\n}\n\nint main() {\n    bool a = false;\n    if (a && isBig(20)) {\n        cout << \"First\" << endl;\n    }\n    cout << \"After first\" << endl;\n    if (!a || isBig(20)) {\n        cout << \"Second\" << endl;\n    }\n    if (a || isBig(20)) {\n        cout << \"Third\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "After first\nSecond\nisBig runs\nThird\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "isBig() checks if n is above 10."
+          },
+          {
+            "line": 5,
+            "text": "This line is our spy. If we ever see 'isBig runs', the function was called."
+          },
+          {
+            "line": 6,
+            "text": "Returns true when n is greater than 10."
+          },
+          {
+            "line": 10,
+            "text": "a is false."
+          },
+          {
+            "line": 11,
+            "text": "a is false, so a && anything is already false. isBig(20) is never called."
+          },
+          {
+            "line": 14,
+            "text": "This prints, and there is no 'isBig runs' before it."
+          },
+          {
+            "line": 15,
+            "text": "!a is true, so true || anything is already true. isBig is skipped again."
+          },
+          {
+            "line": 18,
+            "text": "a is false, so || cannot decide yet. It must call isBig(20) to find out."
+          },
+          {
+            "line": 19,
+            "text": "Printed because isBig(20) returned true."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 10,
+              "vars": {
+                "a": "false"
+              },
+              "note": "main() starts and sets a to false.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "a": "false"
+              },
+              "note": "false && ... is already false. C++ skips isBig(20) completely.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {
+                "a": "false"
+              },
+              "note": "Because the if was false, we continue here. Notice that isBig did not print anything.",
+              "out": "After first\n"
+            },
+            {
+              "line": 15,
+              "vars": {
+                "a": "false"
+              },
+              "note": "!a is true. true || ... is already true, so isBig is skipped again.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "a": "false"
+              },
+              "note": "The if block runs.",
+              "out": "Second\n"
+            },
+            {
+              "line": 18,
+              "vars": {
+                "a": "false"
+              },
+              "note": "a is false, so C++ must check the right side. It calls isBig(20).",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "a": "false",
+                "n": "20"
+              },
+              "note": "Inside isBig, n is 20. The spy line prints.",
+              "out": "isBig runs\n"
+            },
+            {
+              "line": 6,
+              "vars": {
+                "a": "false",
+                "n": "20"
+              },
+              "note": "20 > 10 is true, so isBig returns true.",
+              "out": ""
+            },
+            {
+              "line": 19,
+              "vars": {
+                "a": "false"
+              },
+              "note": "false || true is true, so the block runs.",
+              "out": "Third\n"
+            },
+            {
+              "line": 21,
+              "vars": {
+                "a": "false"
+              },
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "a": "bool",
+            "n": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a program that reads a year and tells whether it is a leap year. A leap year is divisible by 4 but not by 100, or it is divisible by 400.",
+      "pseudocode": [
+        "START",
+        "READ year",
+        "IF (year divisible by 4 AND NOT divisible by 100) OR (year divisible by 400) THEN",
+        "    PRINT year is a leap year",
+        "ELSE",
+        "    PRINT year is not a leap year",
+        "END IF",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read year/]\n  B --> C{\"(year%4==0 && year%100!=0) || year%400==0 ?\"}\n  C -->|True| D[/Print leap year/]\n  C -->|False| E[/Print not a leap year/]\n  D --> F([End])\n  E --> F",
+      "sample": {
+        "id": "leap-year",
+        "title": "Leap year with &&, || and brackets",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int year;\n    cout << \"Enter year: \";\n    cin >> year;\n    if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {\n        cout << year << \" is a leap year.\" << endl;\n    } else {\n        cout << year << \" is not a leap year.\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "1900",
+        "expectedOutput": "Enter year: 1900 is not a leap year.\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "year stores the year we read."
+          },
+          {
+            "line": 7,
+            "text": "Reads the year from the keyboard."
+          },
+          {
+            "line": 8,
+            "text": "year % 4 == 0 means divisible by 4. The && part needs divisible by 4 AND not by 100. The || adds the other way to be a leap year: divisible by 400. Brackets make the grouping clear."
+          },
+          {
+            "line": 9,
+            "text": "Printed when the whole condition is true."
+          },
+          {
+            "line": 11,
+            "text": "Printed otherwise. For 1900: 1900 % 4 == 0 is true, but 1900 % 100 != 0 is false, so the left group is false. 1900 % 400 is 300, so the right group is false too."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "A && B",
+      "when": "Both conditions must be true",
+      "example": "if (age >= 18 && hasCNIC)"
+    },
+    {
+      "way": "A || B",
+      "when": "At least one condition must be true",
+      "example": "if (day == 6 || day == 7)"
+    },
+    {
+      "way": "!A",
+      "when": "Reverse a condition",
+      "example": "if (!(marks >= 50))   // same as marks < 50"
+    },
+    {
+      "way": "Range inside: low <= x && x <= high",
+      "when": "x must be between two limits",
+      "example": "if (marks >= 0 && marks <= 100)"
+    },
+    {
+      "way": "Range outside: x < low || x > high",
+      "when": "x is outside the allowed limits",
+      "example": "if (marks < 0 || marks > 100)"
+    },
+    {
+      "way": "Brackets (A || B) && C",
+      "when": "Force the order you want, since && is done before ||",
+      "example": "if ((a == 1 || a == 2) && b > 0)"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "if (0 < x < 10)",
+      "right": "if (x > 0 && x < 10)",
+      "error": "It compiles. g++ -Wall only warns 'comparisons like X<=Y<=Z do not have their mathematical meaning'. C++ computes 0 < x first, which gives 1 or 0, then compares that with 10. So for x = 15 it still prints 'in range'."
+    },
+    {
+      "wrong": "if (x == 5 || 6)",
+      "right": "if (x == 5 || x == 6)",
+      "error": "It compiles with no error, but 6 alone is non-zero, which counts as true. The condition is always true (it printed 'five or six' for x = 15)."
+    },
+    {
+      "wrong": "if (marks < 0 && marks > 100)",
+      "right": "if (marks < 0 || marks > 100)",
+      "error": "It compiles with no error, but no number is below 0 and above 100 at the same time, so it is never true (marks = 120 printed 'never invalid')."
+    },
+    {
+      "wrong": "if (x > 1 && < 10)",
+      "right": "if (x > 1 && x < 10)",
+      "error": "expected primary-expression before '<' token"
+    }
+  ],
+  "examTips": [
+    "Learn the three truth tables by heart: && is true only for T,T. || is false only for F,F. ! flips the value.",
+    "Precedence order: ! then arithmetic then < <= > >= then == != then && then ||. So a || b && c is a || (b && c).",
+    "Never write 0 < x < 10. Write x > 0 && x < 10. Examiners love this mistake.",
+    "Short-circuit: in A && B, B is skipped when A is false. In A || B, B is skipped when A is true. A function call or ++ on the skipped side does not happen.",
+    "If a question asks for 'inside a range' use &&. For 'outside a range' use ||."
+  ],
+  "romanSummary": [
+    "Compound condition kai conditions ko ek if mein jorta hai.",
+    "&& (AND) tab true hota hai jab dono conditions true hon.",
+    "|| (OR) tab true hota hai jab kam az kam ek condition true ho.",
+    "! (NOT) result ko ulta kar deta hai: true se false, false se true.",
+    "Range check aise likhein: x > 10 && x < 20. 10 < x < 20 likhna ghalat hai.",
+    "Short-circuit: A && B mein A false ho to B check hi nahi hota; A || B mein A true ho to B check nahi hota."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which operator is true only when BOTH conditions are true?",
+      "options": [
+        "&&",
+        "||",
+        "!",
+        "=="
+      ],
+      "answer": "&&",
+      "hint": "Think of 'AND'.",
+      "explanation": "&& (AND) needs both sides true. || needs only one."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int x = 25;\n    if (x > 10 && x < 20) {\n        cout << \"A\";\n    } else {\n        cout << \"B\";\n    }\n    cout << endl;\n    return 0;\n}",
+      "answer": "B",
+      "hint": "Check x > 10 first, then x < 20.",
+      "explanation": "x > 10 is true but x < 20 is false. true && false is false, so the else part prints B."
+    },
+    {
+      "id": "p3",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank so the condition checks that month is from 1 to 12:\n\nif (month >= 1 ____ month <= 12)",
+      "answer": "&&",
+      "hint": "The month must satisfy both limits.",
+      "explanation": "A number inside a range must be above the low limit AND below the high limit."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int count = 0;\n    bool a = false;\n    if (a && (++count > 0)) {\n        cout << \"X\" << endl;\n    }\n    cout << \"count = \" << count << endl;\n    if (!a && (++count > 0)) {\n        cout << \"Y\" << endl;\n    }\n    cout << \"count = \" << count << endl;\n    return 0;\n}",
+      "answer": "count = 0\nY\ncount = 1",
+      "hint": "Does ++count run when the left side already decides the answer?",
+      "explanation": "In the first if, a is false, so ++count is skipped (short-circuit). In the second if, !a is true, so && must check the right side and ++count runs."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int a = 1, b = 0, c = 0;\n    cout << (a || b && c) << \" \" << ((a || b) && c) << endl;\n    return 0;\n}",
+      "answer": "1 0",
+      "hint": "&& is done before ||. Brackets change the order.",
+      "explanation": "a || b && c is a || (b && c) = 1 || 0 = 1. (a || b) && c is 1 && 0 = 0."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Fix the bug. The program should print 'ok' only when x is between 1 and 10:\n\nif (0 < x < 10)\n    cout << \"ok\";",
+      "answer": "if (x > 0 && x < 10)\n    cout << \"ok\";",
+      "hint": "C++ cannot chain comparisons.",
+      "explanation": "0 < x gives 1 or 0, and that is then compared with 10, which is always true. Write both comparisons and join them with &&."
+    },
+    {
+      "id": "p7",
+      "type": "bug",
+      "difficulty": "hard",
+      "prompt": "Fix the bug. The program should print 'special' for x equal to 5 or 6:\n\nif (x == 5 || 6)\n    cout << \"special\";",
+      "answer": "if (x == 5 || x == 6)\n    cout << \"special\";",
+      "hint": "Each side of || needs its own full comparison.",
+      "explanation": "The plain 6 is non-zero, so it counts as true and the condition is always true. Compare x on both sides."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that reads an age. If the age is below 12 or 60 or above, print Discount, otherwise print Full price.",
+      "answer": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int age;\n    cin >> age;\n    if (age < 12 || age >= 60) {\n        cout << \"Discount\" << endl;\n    } else {\n        cout << \"Full price\" << endl;\n    }\n    return 0;\n}",
+      "hint": "Two separate groups both get a discount, so use ||.",
+      "explanation": "The discount ages are two ranges that do not overlap, so join them with || (OR)."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does the ! operator do?",
+      "options": [
+        "It reverses true to false and false to true",
+        "It multiplies two numbers",
+        "It checks if two values are equal",
+        "It ends the program"
+      ],
+      "answer": "It reverses true to false and false to true",
+      "hint": "Think of 'NOT'.",
+      "explanation": "! is the NOT operator. It flips a bool value."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "For A || B, when is the result false?",
+      "options": [
+        "Only when both A and B are false",
+        "When A is false",
+        "When B is false",
+        "When both are true"
+      ],
+      "answer": "Only when both A and B are false",
+      "hint": "Which operator needs only one true side?",
+      "explanation": "|| is false only if both sides are false."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which is the correct way to test that x is between 10 and 20?",
+      "options": [
+        "10 < x < 20",
+        "x > 10 && x < 20",
+        "x > 10 || x < 20",
+        "x > 10 & < 20"
+      ],
+      "answer": "x > 10 && x < 20",
+      "hint": "C++ cannot chain comparisons.",
+      "explanation": "Write each comparison separately and join them with &&."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "In the condition a || b && c, which part is evaluated as a group first?",
+      "options": [
+        "a || b",
+        "b && c",
+        "a || c",
+        "They are evaluated randomly"
+      ],
+      "answer": "b && c",
+      "hint": "Which has higher precedence, && or ||?",
+      "explanation": "&& has higher precedence than ||, so it means a || (b && c)."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "int n = 0; Which condition is safe and never divides by zero?",
+      "options": [
+        "if (n != 0 && 10 / n > 1)",
+        "if (10 / n > 1 && n != 0)",
+        "if (n != 0 || 10 / n > 1)",
+        "if (n == 0 && 10 / n > 1)"
+      ],
+      "answer": "if (n != 0 && 10 / n > 1)",
+      "hint": "Short-circuit skips the right side when the left is false.",
+      "explanation": "When n is 0, n != 0 is false, so && skips 10 / n. With || the division would run when n != 0 is false."
+    }
+  ],
+  "sources": [
+    "Compound Condition",
+    "Logical Operators",
+    "Operator Precedence",
+    "Short Circuit Evaluation"
+  ]
+}

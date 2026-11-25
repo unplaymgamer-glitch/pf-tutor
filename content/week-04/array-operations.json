@@ -1,0 +1,699 @@
+{
+  "slug": "array-operations",
+  "week": 4,
+  "title": "Other array operations: sum, average, count, copy, reverse, insert, delete",
+  "defaultView": "visualize",
+  "order": 5,
+  "visuals": [
+    {
+      "kind": "array",
+      "title": "Running sum: watch the total grow one element at a time",
+      "mode": "sum",
+      "values": [
+        4,
+        9,
+        2,
+        7,
+        10,
+        3
+      ]
+    },
+    {
+      "kind": "array",
+      "title": "Reverse: swap the two ends, move inward",
+      "mode": "reverse",
+      "values": [
+        10,
+        20,
+        30,
+        40,
+        50,
+        60
+      ]
+    }
+  ],
+  "goal": "After this you can find the sum and average of an array, count elements that meet a condition, copy and reverse arrays, and insert or delete an element by shifting.",
+  "warmup": "Your exam marks of five subjects are written in a row. To know your total you add them one by one. To know your average you divide the total by 5. To know in how many subjects you got more than 60 you go through the row and tick the good ones. Everything an array program does is this same idea: walk through the row, look at each box, and keep a small note (a total or a counter) in a separate variable.",
+  "definition": "Most array tasks need only one loop that visits every index from 0 to N - 1. Inside the loop you update a helper variable. A sum adds each element to a total. A counter adds 1 when an element passes an if test. Copying sends a[i] into b[i]. Reversing swaps the first and last elements, then the second and second-last, and so on. Inserting or deleting shifts elements to make room or to close a gap. An array has a fixed size, so 'insert' and 'delete' really mean moving values around inside it.",
+  "howItWorks": "Sum and average: start sum at 0, add a[i] in the loop, then divide with (double)sum / N. Count: start count at 0, and use if (condition) count++ inside the loop. For 'above average' you must find the average first, then do a second loop. Copy: you cannot write b = a, because an array name is not an ordinary variable. A loop copies b[i] = a[i]. Swap: use a temporary box: temp = x; x = y; y = temp. Reverse in place: swap a[i] with a[N - 1 - i] only for i < N / 2. Running the loop to N would swap every pair twice and the array would come back unchanged. Insert at index pos: shift elements to the right, starting from the LAST one (a[i] = a[i - 1] for i from n down to pos + 1), write the new value in a[pos], then n++. Delete at index pos: shift elements to the left (a[i] = a[i + 1] for i from pos up to n - 2), then n--. Press Play on the Visualize tab to watch the sum and the reverse.",
+  "syntax": "const int N = 5;\nint a[N] = {4, 9, 2, 7, 10};\n\n// sum and average\nint sum = 0;\nfor (int i = 0; i < N; i++) sum += a[i];   // add each element\ndouble avg = (double)sum / N;               // cast first, then divide\n\n// count elements that pass a test\nint count = 0;\nfor (int i = 0; i < N; i++)\n    if (a[i] % 2 == 0) count++;            // even numbers\n\n// copy a into b (b = a is NOT allowed)\nfor (int i = 0; i < N; i++) b[i] = a[i];\n\n// swap two values with a temporary\nint temp = a[0]; a[0] = a[1]; a[1] = temp;\n\n// reverse in place\nfor (int i = 0; i < N / 2; i++) { int t = a[i]; a[i] = a[N - 1 - i]; a[N - 1 - i] = t; }\n\n// insert x at index pos (n = values in use, array has a spare box)\nfor (int i = n; i > pos; i--) a[i] = a[i - 1];  // shift right\na[pos] = x;  n++;\n\n// delete the element at index pos\nfor (int i = pos; i < n - 1; i++) a[i] = a[i + 1];  // shift left\nn--;",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Store the marks 60, 75, 90, 45, 80 in an array. Print their sum and average.",
+      "pseudocode": [
+        "START",
+        "SET sum = 0",
+        "FOR i = 0 TO N - 1: ADD marks[i] TO sum",
+        "SET avg = sum / N (decimal)",
+        "PRINT sum and avg",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[sum = 0, i = 0]\n  B --> C{i < N?}\n  C -->|Yes| D[sum = sum + marks i]\n  D --> E[i = i + 1]\n  E --> C\n  C -->|No| F[avg = sum / N]\n  F --> G[/Print sum and avg/]\n  G --> H([End])",
+      "sample": {
+        "id": "sum-average",
+        "title": "Sum and average of five marks",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int N = 5;\n    int marks[N] = {60, 75, 90, 45, 80};\n    int sum = 0;\n    for (int i = 0; i < N; i++) {\n        sum += marks[i];\n    }\n    double avg = (double)sum / N;\n    cout << \"Sum = \" << sum << endl;\n    cout << \"Average = \" << avg << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Sum = 350\nAverage = 70\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "N is the size of the array. Using a constant means we change the size in one place only."
+          },
+          {
+            "line": 6,
+            "text": "Five marks stored in an array."
+          },
+          {
+            "line": 7,
+            "text": "The total must start at 0. Without this, sum would hold a garbage value."
+          },
+          {
+            "line": 8,
+            "text": "Visits every index from 0 to N - 1."
+          },
+          {
+            "line": 9,
+            "text": "Adds the current element to the running total."
+          },
+          {
+            "line": 11,
+            "text": "(double)sum makes the division decimal. Without it, 350 / 5 is integer division."
+          },
+          {
+            "line": 13,
+            "text": "Prints 70. cout does not print a trailing .0."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "N": "5"
+              },
+              "note": "N is a constant: the size of the array.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "marks": "{60, 75, 90, 45, 80}"
+              },
+              "note": "The array holds five marks, at indexes 0 to 4.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "sum": "0"
+              },
+              "note": "sum starts at 0, like an empty tray before we add anything.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "0",
+                "sum": "60"
+              },
+              "note": "i = 0: sum = 0 + marks[0] = 0 + 60 = 60.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "1",
+                "sum": "135"
+              },
+              "note": "i = 1: sum = 60 + 75 = 135.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "2",
+                "sum": "225"
+              },
+              "note": "i = 2: sum = 135 + 90 = 225.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "3",
+                "sum": "270"
+              },
+              "note": "i = 3: sum = 225 + 45 = 270.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "4",
+                "sum": "350"
+              },
+              "note": "i = 4: sum = 270 + 80 = 350.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "5"
+              },
+              "note": "i becomes 5. The test i < 5 is false, so the loop ends.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "avg": "70"
+              },
+              "note": "(double)350 / 5 = 70. The cast makes this a decimal division.",
+              "out": ""
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "Prints the sum.",
+              "out": "Sum = 350\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Prints the average.",
+              "out": "Average = 70\n"
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "N": "const int",
+            "marks": "int[5]",
+            "sum": "int",
+            "i": "int",
+            "avg": "double"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "For the array {4, 9, 2, 7, 10, 3}, count the even numbers and the numbers above the average, and copy the array into a second array.",
+      "pseudocode": [
+        "START",
+        "FOR each i: ADD a[i] TO sum and COPY a[i] TO b[i]",
+        "avg = sum / N",
+        "FOR each i: IF a[i] is even THEN evens++; IF a[i] > avg THEN above++",
+        "PRINT avg, evens, above and the copy",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Loop 1: sum and copy]\n  B --> C[avg = sum / N]\n  C --> D[Loop 2: i = 0]\n  D --> E{i < N?}\n  E -->|Yes| F{a i is even?}\n  F -->|Yes| G[evens++]\n  F -->|No| H{a i > avg?}\n  G --> H\n  H -->|Yes| I[above++]\n  H -->|No| J[i++]\n  I --> J\n  J --> E\n  E -->|No| K[/Print results and copy/]\n  K --> L([End])",
+      "sample": {
+        "id": "count-and-copy",
+        "title": "Count even numbers, count above average, copy an array",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    const int N = 6;\n    int a[N] = {4, 9, 2, 7, 10, 3};\n    int b[N];\n    int sum = 0;\n    for (int i = 0; i < N; i++) {\n        sum += a[i];\n        b[i] = a[i];\n    }\n    double avg = (double)sum / N;\n    int evens = 0, above = 0;\n    for (int i = 0; i < N; i++) {\n        if (a[i] % 2 == 0) {\n            evens++;\n        }\n        if (a[i] > avg) {\n            above++;\n        }\n    }\n    cout << \"Average = \" << avg << endl;\n    cout << \"Evens = \" << evens << endl;\n    cout << \"Above average = \" << above << endl;\n    cout << \"Copy: \";\n    for (int i = 0; i < N; i++) {\n        cout << b[i] << \" \";\n    }\n    cout << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Average = 5.83333\nEvens = 3\nAbove average = 3\nCopy: 4 9 2 7 10 3 \n",
+        "explanation": [
+          {
+            "line": 7,
+            "text": "b is an empty array of the same size. Its boxes will be filled by the copy loop."
+          },
+          {
+            "line": 11,
+            "text": "Copies one element. b = a is not allowed in C++, so we copy box by box."
+          },
+          {
+            "line": 13,
+            "text": "Sum is 35, so avg = 35 / 6 = 5.83333... cout prints 5.83333 (six significant digits)."
+          },
+          {
+            "line": 14,
+            "text": "Two separate counters, both starting at 0."
+          },
+          {
+            "line": 16,
+            "text": "An even number leaves remainder 0 when divided by 2."
+          },
+          {
+            "line": 19,
+            "text": "Compares each element with the average. 9, 7 and 10 are above 5.83."
+          },
+          {
+            "line": 28,
+            "text": "Prints the copy to prove that all elements arrived."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "An array holds 10, 20, 30, 40, 50 and has one spare box. Reverse it in place, then insert 35 at index 2, and print the array.",
+      "pseudocode": [
+        "START",
+        "n = 5",
+        "FOR i = 0 TO n / 2 - 1: SWAP a[i] AND a[n - 1 - i]",
+        "FOR i = n DOWN TO 3: a[i] = a[i - 1]",
+        "a[2] = 35, n = n + 1",
+        "PRINT all n elements",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Array of 5, n = 5]\n  B --> C[Reverse: swap a i and a n-1-i for i < n/2]\n  C --> D[Shift right from the end down to index 3]\n  D --> E[a 2 = 35, n = n + 1]\n  E --> F[/Print a 0 to a n-1/]\n  F --> G([End])",
+      "sample": {
+        "id": "reverse-insert",
+        "title": "Reverse an array, then insert a value",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[6] = {10, 20, 30, 40, 50};\n    int n = 5;\n    for (int i = 0; i < n / 2; i++) {\n        int temp = a[i];\n        a[i] = a[n - 1 - i];\n        a[n - 1 - i] = temp;\n    }\n    for (int i = n; i > 2; i--) {\n        a[i] = a[i - 1];\n    }\n    a[2] = 35;\n    n++;\n    for (int i = 0; i < n; i++) {\n        cout << a[i] << \" \";\n    }\n    cout << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "50 40 35 30 20 10 \n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Capacity 6, but only 5 values stored. The spare box makes room for the insert."
+          },
+          {
+            "line": 6,
+            "text": "n is the number of values in use."
+          },
+          {
+            "line": 7,
+            "text": "Swap only up to the middle. Going to n would swap every pair twice and undo the work."
+          },
+          {
+            "line": 8,
+            "text": "Swapping needs a third box to hold one value safely."
+          },
+          {
+            "line": 9,
+            "text": "The element i from the left trades with the element i from the right."
+          },
+          {
+            "line": 12,
+            "text": "Shift right starting from the LAST element, so nothing is overwritten before it moves."
+          },
+          {
+            "line": 15,
+            "text": "The gap is free now, so the new value goes in."
+          },
+          {
+            "line": 16,
+            "text": "Do not forget to count the new element."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "a": "{10, 20, 30, 40, 50, 0}"
+              },
+              "note": "Five values, one spare box at the end (it is 0).",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "n": "5"
+              },
+              "note": "n counts the values really stored. Capacity is 6.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "0",
+                "temp": "10"
+              },
+              "note": "Reverse, i = 0: save a[0] in temp.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "a": "{50, 20, 30, 40, 50, 0}"
+              },
+              "note": "a[0] takes a[4] = 50.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "a": "{50, 20, 30, 40, 10, 0}"
+              },
+              "note": "a[4] takes the saved 10. First pair swapped.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "i": "1",
+                "temp": "20"
+              },
+              "note": "i = 1: save a[1] = 20.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "a": "{50, 40, 30, 40, 10, 0}"
+              },
+              "note": "a[1] takes a[3] = 40.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "a": "{50, 40, 30, 20, 10, 0}"
+              },
+              "note": "a[3] takes 20. Now i = 2 and 2 < 2 is false, so reversing is finished. The middle value 30 stays.",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {
+                "i": "5",
+                "a": "{50, 40, 30, 20, 10, 10}"
+              },
+              "note": "Insert at index 2. Shift right, starting from the END: a[5] = a[4].",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {
+                "i": "4",
+                "a": "{50, 40, 30, 20, 20, 10}"
+              },
+              "note": "i = 4: a[4] = a[3].",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {
+                "i": "3",
+                "a": "{50, 40, 30, 30, 20, 10}"
+              },
+              "note": "i = 3: a[3] = a[2]. Now index 2 is free (a copy of 30 sits in index 3).",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {
+                "a": "{50, 40, 35, 30, 20, 10}"
+              },
+              "note": "Put the new value 35 into the free box.",
+              "out": ""
+            },
+            {
+              "line": 16,
+              "vars": {
+                "n": "6"
+              },
+              "note": "One more value is stored, so n becomes 6.",
+              "out": ""
+            },
+            {
+              "line": 18,
+              "vars": {
+                "i": "5"
+              },
+              "note": "The loop prints all six values.",
+              "out": "50 40 35 30 20 10 "
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "New line.",
+              "out": "\n"
+            }
+          ],
+          "types": {
+            "a": "int[6]",
+            "n": "int",
+            "i": "int",
+            "temp": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Sum with a loop",
+      "when": "Total of all elements",
+      "example": "int sum = 0; for (int i = 0; i < N; i++) sum += a[i];"
+    },
+    {
+      "way": "Average",
+      "when": "After the sum is ready",
+      "example": "double avg = (double)sum / N;"
+    },
+    {
+      "way": "Counter with if",
+      "when": "How many elements satisfy a condition (even, above average, negative)",
+      "example": "if (a[i] % 2 == 0) count++;"
+    },
+    {
+      "way": "Copy loop",
+      "when": "Make a second array with the same values",
+      "example": "for (int i = 0; i < N; i++) b[i] = a[i];"
+    },
+    {
+      "way": "Swap with temp",
+      "when": "Exchange two elements",
+      "example": "int temp = a[i]; a[i] = a[j]; a[j] = temp;"
+    },
+    {
+      "way": "Reverse in place",
+      "when": "Flip the order of the array",
+      "example": "for (int i = 0; i < N / 2; i++) swap a[i] with a[N - 1 - i];"
+    },
+    {
+      "way": "Insert at a position",
+      "when": "Put a new value in the middle (needs a spare box)",
+      "example": "for (int i = n; i > pos; i--) a[i] = a[i - 1]; a[pos] = x; n++;"
+    },
+    {
+      "way": "Delete at a position",
+      "when": "Remove one value and close the gap",
+      "example": "for (int i = pos; i < n - 1; i++) a[i] = a[i + 1]; n--;"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int a[3] = {1, 2, 3};\nint b[3];\nb = a;",
+      "right": "for (int i = 0; i < 3; i++) {\n    b[i] = a[i];\n}",
+      "error": "g++ reports: error: invalid array assignment. An array cannot be assigned as a whole; copy it with a loop."
+    },
+    {
+      "wrong": "int sum = 31, N = 4;\ndouble avg = sum / N;",
+      "right": "double avg = (double)sum / N;",
+      "error": "No compiler error. avg becomes 7 instead of 7.75, because sum / N is integer division."
+    },
+    {
+      "wrong": "for (int i = 0; i < N; i++) {\n    int t = a[i]; a[i] = a[N - 1 - i]; a[N - 1 - i] = t;\n}",
+      "right": "for (int i = 0; i < N / 2; i++) {\n    int t = a[i]; a[i] = a[N - 1 - i]; a[N - 1 - i] = t;\n}",
+      "error": "No compiler error. The second half of the loop swaps every pair back, so the array looks unchanged."
+    },
+    {
+      "wrong": "// insert at pos, shifting from the front\nfor (int i = pos; i < n; i++) {\n    a[i + 1] = a[i];\n}",
+      "right": "for (int i = n; i > pos; i--) {\n    a[i] = a[i - 1];\n}",
+      "error": "No compiler error. Shifting from the front copies the same value into every box after pos. Always shift right starting from the last element."
+    }
+  ],
+  "examTips": [
+    "Start sum at 0 and counters at 0. An uninitialised variable holds garbage.",
+    "Average of integers: write (double)sum / N. Writing sum / N is the most common lost mark.",
+    "To reverse or copy, draw two small tables (before and after) and trace three indexes. Examiners like this.",
+    "Insert shifts RIGHT from the end. Delete shifts LEFT from the position. Do not forget n++ or n--.",
+    "A swap always needs a temp variable, and a reverse loop runs to N / 2, not N."
+  ],
+  "romanSummary": [
+    "Sum, average, count, copy aur reverse sab ek loop se hote hain jo index 0 se N - 1 tak chalta hai.",
+    "Sum ke liye pehle sum = 0 karo, phir loop mein sum += a[i]. Average ke liye (double)sum / N likho.",
+    "Array ko b = a se copy nahi kar sakte, loop mein b[i] = a[i] likhna parta hai.",
+    "Swap ke liye temp variable chahiye. Reverse mein a[i] aur a[N - 1 - i] ko swap karo, loop sirf N / 2 tak chalta hai.",
+    "Insert mein elements ko aakhir se right shift karo, delete mein left shift karo, phir n++ ya n-- karna na bhoolo."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which code copies array a into array b correctly?",
+      "options": [
+        "for (int i = 0; i < N; i++) b[i] = a[i];",
+        "b = a;",
+        "b[N] = a[N];",
+        "copy a to b;"
+      ],
+      "answer": "for (int i = 0; i < N; i++) b[i] = a[i];",
+      "hint": "An array name is not a normal variable you can assign.",
+      "explanation": "C++ does not allow b = a for arrays. A loop copies element by element."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    int a[4] = {3, 8, 5, 6};\n    int sum = 0;\n    for (int i = 0; i < 4; i++) {\n        sum += a[i];\n    }\n    cout << sum << \" \" << (double)sum / 4 << endl;\n    return 0;\n}",
+      "answer": "22 5.5",
+      "hint": "Add the four numbers, then divide as a decimal.",
+      "explanation": "The sum is 3 + 8 + 5 + 6 = 22, and 22 / 4.0 = 5.5."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    int a[5] = {5, 12, 7, 20, 9};\n    int count = 0;\n    for (int i = 0; i < 5; i++) {\n        if (a[i] > 8) {\n            count++;\n        }\n    }\n    cout << count << endl;\n    return 0;\n}",
+      "answer": "3",
+      "hint": "Which elements are bigger than 8?",
+      "explanation": "12, 20 and 9 are above 8, so count becomes 3. 5 and 7 are not counted."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "The marks are {7, 8, 8, 8} (sum 31, N = 4). The program should print 7.75 but prints 7. Fix the line.\n\nint sum = 31, N = 4;\ndouble avg = sum / N;",
+      "answer": "double avg = (double)sum / N;",
+      "hint": "Both numbers are int. What kind of division is that?",
+      "explanation": "sum / N is integer division (31 / 4 = 7), and only then is the 7 stored in avg. Cast one side to double first."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Delete the element at index pos from array a (n elements) by shifting left. Fill in the blanks.\n\nfor (int i = ____; i < n - 1; i++) {\n    a[i] = a[____];\n}\nn--;",
+      "answer": "for (int i = pos; i < n - 1; i++) {\n    a[i] = a[i + 1];\n}\nn--;",
+      "hint": "Start at the element being deleted. Each box takes the value of its right neighbour.",
+      "explanation": "Starting at pos, every element is replaced by the one on its right. The last element is left behind, so n-- forgets it."
+    },
+    {
+      "id": "p6",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print? (Insert 25 at index 1.)\n\n#include <iostream>\nusing namespace std;\nint main() {\n    int a[6] = {10, 20, 30, 40};\n    int n = 4;\n    int pos = 1;\n    for (int i = n; i > pos; i--) {\n        a[i] = a[i - 1];\n    }\n    a[pos] = 25;\n    n++;\n    for (int i = 0; i < n; i++) {\n        cout << a[i] << \" \";\n    }\n    cout << endl;\n    return 0;\n}",
+      "answer": "10 25 20 30 40 ",
+      "hint": "Shift 20, 30, 40 one step right, then drop 25 in.",
+      "explanation": "After shifting: 10 20 20 30 40. Then a[1] = 25 gives 10 25 20 30 40."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that reads 5 integers into an array and prints how many of them are above the average. (Input 10 20 30 40 50 should print 2.)",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    const int N = 5;\n    int a[N];\n    int sum = 0;\n    for (int i = 0; i < N; i++) {\n        cin >> a[i];\n        sum += a[i];\n    }\n    double avg = (double)sum / N;\n    int count = 0;\n    for (int i = 0; i < N; i++) {\n        if (a[i] > avg) {\n            count++;\n        }\n    }\n    cout << \"Above average: \" << count << endl;\n    return 0;\n}",
+      "hint": "Do two loops: one for the sum (and reading), one for counting. Use (double)sum / N.",
+      "explanation": "The average is 30. Only 40 and 50 are above it, so the answer is 2. We must finish the first loop before we know the average."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Why does the in-place reverse loop run only while i < N / 2?",
+      "options": [
+        "Each swap fixes two elements, so after N / 2 swaps everything is done",
+        "Because arrays are half empty",
+        "Because index N / 2 is out of bounds",
+        "To make the loop faster than the sum loop"
+      ],
+      "answer": "Each swap fixes two elements, so after N / 2 swaps everything is done",
+      "hint": "One swap moves two elements.",
+      "explanation": "A swap fixes a left element and a right element. If the loop ran to N, every pair would be swapped back to where it started."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Before adding elements into sum, what should sum be?",
+      "options": [
+        "0",
+        "1",
+        "The first element is not needed",
+        "Any value"
+      ],
+      "answer": "0",
+      "hint": "Think of an empty basket.",
+      "explanation": "The running total starts from 0 so nothing extra is added."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which is the correct way to get the average of an int array with total sum and size N?",
+      "options": [
+        "(double)sum / N",
+        "sum / N",
+        "sum * N",
+        "sum - N"
+      ],
+      "answer": "(double)sum / N",
+      "hint": "Avoid integer division.",
+      "explanation": "Casting sum to double makes the division keep decimals."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is needed to swap a[0] and a[1] safely?",
+      "options": [
+        "A temporary variable",
+        "Nothing, just a[0] = a[1]; a[1] = a[0];",
+        "A second array of size 0",
+        "The sum variable"
+      ],
+      "answer": "A temporary variable",
+      "hint": "After a[0] = a[1], the old a[0] is lost.",
+      "explanation": "temp = a[0]; a[0] = a[1]; a[1] = temp; keeps the old value safe."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "To insert a value into the middle of an array, in which order should you shift elements?",
+      "options": [
+        "From the last element towards the insert position",
+        "From the insert position towards the last element",
+        "In any order",
+        "You cannot insert"
+      ],
+      "answer": "From the last element towards the insert position",
+      "hint": "Do not overwrite a value before it has moved.",
+      "explanation": "Shifting right from the end copies each value before its box gets overwritten."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "a = {1, 2, 3, 4, 5}, n = 5. After deleting index 1 by shifting left and n--, what are the n stored values?",
+      "options": [
+        "1 3 4 5",
+        "1 2 4 5",
+        "2 3 4 5",
+        "1 3 4 5 5"
+      ],
+      "answer": "1 3 4 5",
+      "hint": "Index 1 holds 2.",
+      "explanation": "2 is overwritten by 3, 3 by 4, 4 by 5. n becomes 4, so the last 5 is ignored."
+    }
+  ],
+  "sources": [
+    "Other common array operations",
+    "Sum and average of an array",
+    "Counting elements",
+    "Copying and reversing arrays",
+    "Inserting and deleting array elements",
+    "Swapping elements"
+  ]
+}

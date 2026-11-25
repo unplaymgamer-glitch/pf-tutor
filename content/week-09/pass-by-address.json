@@ -1,0 +1,1107 @@
+{
+  "slug": "pass-by-address",
+  "week": 9,
+  "title": "Pass by address: sending &x to a pointer parameter",
+  "defaultView": "visualize",
+  "order": 4,
+  "visuals": [
+    {
+      "kind": "memory",
+      "title": "swapByAddress(&x, &y): the pointers a and b reach main's variables (made-up addresses)",
+      "cells": [
+        {
+          "name": "x",
+          "type": "int",
+          "addr": "0x1000"
+        },
+        {
+          "name": "y",
+          "type": "int",
+          "addr": "0x1004"
+        },
+        {
+          "name": "a",
+          "type": "int*",
+          "addr": "0x2000"
+        },
+        {
+          "name": "b",
+          "type": "int*",
+          "addr": "0x2008"
+        },
+        {
+          "name": "temp",
+          "type": "int",
+          "addr": "0x2010"
+        }
+      ],
+      "steps": [
+        {
+          "code": "int x = 5, y = 9;   // in main",
+          "note": "main has two ordinary variables.",
+          "values": {
+            "x": "5",
+            "y": "9"
+          },
+          "points": {}
+        },
+        {
+          "code": "swapByAddress(&x, &y);",
+          "note": "The function's parameters a and b are NEW boxes that store the ADDRESSES 0x1000 and 0x1004. So a points to x and b points to y.",
+          "values": {
+            "a": "0x1000",
+            "b": "0x1004"
+          },
+          "points": {
+            "a": "x",
+            "b": "y"
+          }
+        },
+        {
+          "code": "int temp = *a;",
+          "note": "*a is x. temp stores a copy of 5.",
+          "values": {
+            "temp": "5"
+          },
+          "points": {
+            "a": "x",
+            "b": "y"
+          }
+        },
+        {
+          "code": "*a = *b;",
+          "note": "Copy the value of y (9) into x, through the pointers.",
+          "values": {
+            "x": "9"
+          },
+          "points": {
+            "a": "x",
+            "b": "y"
+          }
+        },
+        {
+          "code": "*b = temp;",
+          "note": "Put the saved 5 into y. Now x = 9 and y = 5.",
+          "values": {
+            "y": "5"
+          },
+          "points": {
+            "a": "x",
+            "b": "y"
+          }
+        },
+        {
+          "code": "}   // swapByAddress ends",
+          "note": "a, b and temp disappear. They were only the function's local boxes, but x and y in main stay swapped.",
+          "values": {},
+          "points": {
+            "a": "x",
+            "b": "y"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match the idea to the code",
+      "pairs": [
+        {
+          "term": "f(&x)",
+          "meaning": "The call sends the address of x"
+        },
+        {
+          "term": "void f(int *p)",
+          "meaning": "The parameter is a pointer that receives an address"
+        },
+        {
+          "term": "*p = 10;",
+          "meaning": "Inside the function: changes the caller's variable"
+        },
+        {
+          "term": "Several results from one function",
+          "meaning": "Pass the address of one variable per result"
+        },
+        {
+          "term": "if (p != nullptr)",
+          "meaning": "Check before using a pointer parameter"
+        },
+        {
+          "term": "f(x) when f wants int *",
+          "meaning": "Compiler error: you forgot the &"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can write a function with pointer parameters, call it with &, change the caller's variables through the pointers, return more than one result, and check a pointer for nullptr.",
+  "warmup": "You want your friend to repaint a wall at your home. You cannot send the wall to his house. Instead you give him your home ADDRESS. He goes there and paints your own wall. Pass by address is the same. The caller does not send the variable or a copy, it sends where the variable lives. The function goes there and changes the real thing.",
+  "definition": "In pass by address (also called pass by pointer) the caller sends the address of a variable, written &x. The function receives it in a pointer parameter such as int *p. By dereferencing the pointer (*p), the function can read and change the caller's variable. The pointer itself is a copy of the address, but it points to the original variable, so changes are kept after the function returns.",
+  "howItWorks": "Step through the traces and watch the call stack. When main calls doubleIt(&x), the function creates its own pointer box n and stores the address of x in it. The call stack shows n as 0x1000 -> points to x. Inside the function, *n = *n * 2 follows that address and changes main's x. When the function ends, n disappears, but x keeps the new value. Remember the two symbols: at the CALL you write &x (the address), inside the function you write *p (the value at the address). Compare with the other two ways. By value: f(x) and the function works on a copy. By reference: f(x) with int &x in the header, and x is another name for the same box. By address: f(&x) with int *p in the header, and *p is used inside. Both reference and address change the original. The difference is the symbols, and that an address can be null, so check it first: if (p != nullptr). Pass by address also lets one function give back several results, because you pass one address per result (as in calc and divide). Finally, a common bug is changing p instead of *p. p = p + 1 only moves the local pointer and the caller's variable is not changed.",
+  "syntax": "void doubleIt(int *n) {   // n is a pointer to int\n    *n = *n * 2;          // * reaches the caller's variable\n}\n\nvoid calc(int a, int b, int *sum, int *diff, int *prod) {\n    *sum  = a + b;\n    *diff = a - b;\n    *prod = a * b;\n}\n\nint x = 5;\ndoubleIt(&x);          // send the ADDRESS of x\n\nint s, d, p;\ncalc(12, 4, &s, &d, &p);   // s = 16, d = 8, p = 48\n\nvoid safe(int *p) {\n    if (p != nullptr) {    // check before using\n        *p = 0;\n    }\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write a function doubleIt that doubles a number in the caller. Call it with the address of x = 7 and print x.",
+      "pseudocode": [
+        "START",
+        "x = 7",
+        "CALL doubleIt(&x)  (send the address of x)",
+        "Inside: *n = *n * 2",
+        "Return to main",
+        "PRINT x",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"x = 7\"]\n  B --> C[\"Call doubleIt with &x\"]\n  C --> D[\"Inside: *n = *n * 2\"]\n  D --> E[\"Return to main\"]\n  E --> F[/\"Print x\"/]\n  F --> G([End])",
+      "sample": {
+        "id": "double-by-address",
+        "title": "Change the caller's variable through a pointer parameter",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid doubleIt(int *n) {\n    *n = *n * 2;\n}\n\nint main() {\n    int x = 7;\n    doubleIt(&x);\n    cout << \"x = \" << x << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "x = 14\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "The parameter is a pointer to int. It will hold the address of an int."
+          },
+          {
+            "line": 5,
+            "text": "* follows the address to the caller's variable. We read it, double it and write it back."
+          },
+          {
+            "line": 9,
+            "text": "x belongs to main."
+          },
+          {
+            "line": 10,
+            "text": "We send the ADDRESS of x with &."
+          },
+          {
+            "line": 11,
+            "text": "x now holds 14."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 9,
+              "vars": {
+                "x": "7"
+              },
+              "note": "main creates its own box x holding 7. Say it lives at address 0x1000.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "7"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {
+                "n": "0x1000"
+              },
+              "note": "&x is the address of x. The function receives it in its pointer parameter n. n is a NEW box, but what it holds is x's address, so it points to the caller's x.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "7"
+                  }
+                },
+                {
+                  "fn": "doubleIt(n)",
+                  "vars": {
+                    "n": "0x1000 -> points to x"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {
+                "x": "14"
+              },
+              "note": "*n means the box n points to, which is main's x. Read 7, multiply by 2, store 14 back into x.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "14"
+                  }
+                },
+                {
+                  "fn": "doubleIt(n)",
+                  "vars": {
+                    "n": "0x1000 -> points to x"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "doubleIt has finished and its box n is gone. But x in main really changed.",
+              "out": "x = 14\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "14"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "x": "int",
+            "n": "int*"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Write swapByAddress(int *a, int *b) that really swaps two numbers of main (x = 5, y = 9), then call doubleIt on x.",
+      "pseudocode": [
+        "START",
+        "x = 5, y = 9",
+        "CALL swapByAddress(&x, &y)",
+        "temp = *a; *a = *b; *b = temp",
+        "PRINT x and y",
+        "CALL doubleIt(&x)",
+        "PRINT x",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"x = 5, y = 9\"]\n  B --> C[\"swapByAddress(&x, &y)\"]\n  C --> D[\"temp = *a; *a = *b; *b = temp\"]\n  D --> E[/\"Print x and y\"/]\n  E --> F[\"doubleIt(&x)\"]\n  F --> G[/\"Print x\"/]\n  G --> H([End])",
+      "sample": {
+        "id": "swap-by-address",
+        "title": "Swap and double using addresses",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid swapByAddress(int *a, int *b) {\n    int temp = *a;\n    *a = *b;\n    *b = temp;\n}\n\nvoid doubleIt(int *n) {\n    *n = *n * 2;\n}\n\nint main() {\n    int x = 5, y = 9;\n    swapByAddress(&x, &y);\n    cout << \"x = \" << x << \", y = \" << y << endl;\n    doubleIt(&x);\n    cout << \"x doubled = \" << x << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "x = 9, y = 5\nx doubled = 18\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "Two pointer parameters. The function can reach both caller variables."
+          },
+          {
+            "line": 5,
+            "text": "Save the value that a points to."
+          },
+          {
+            "line": 6,
+            "text": "Copy the value b points to into the box a points to."
+          },
+          {
+            "line": 7,
+            "text": "Finish the swap."
+          },
+          {
+            "line": 16,
+            "text": "Both arguments are addresses."
+          },
+          {
+            "line": 18,
+            "text": "Same idea again with one pointer."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 15,
+              "vars": {
+                "x": "5",
+                "y": "9"
+              },
+              "note": "main has x = 5 at 0x1000 and y = 9 at 0x1004.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "5",
+                    "y": "9"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 16,
+              "vars": {
+                "a": "0x1000",
+                "b": "0x1004"
+              },
+              "note": "We send the addresses of x and y. a and b are pointer boxes that store those addresses, so a points to x and b points to y.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "5",
+                    "y": "9"
+                  }
+                },
+                {
+                  "fn": "swapByAddress(a, b)",
+                  "vars": {
+                    "a": "0x1000 -> x",
+                    "b": "0x1004 -> y"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {
+                "temp": "5"
+              },
+              "note": "*a is x (5). temp keeps a safe copy.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "5",
+                    "y": "9"
+                  }
+                },
+                {
+                  "fn": "swapByAddress(a, b)",
+                  "vars": {
+                    "a": "0x1000 -> x",
+                    "b": "0x1004 -> y",
+                    "temp": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {
+                "x": "9"
+              },
+              "note": "Read y through b (9) and write it into x through a. x is now 9.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "9",
+                    "y": "9"
+                  }
+                },
+                {
+                  "fn": "swapByAddress(a, b)",
+                  "vars": {
+                    "a": "0x1000 -> x",
+                    "b": "0x1004 -> y",
+                    "temp": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "y": "5"
+              },
+              "note": "Write the saved 5 into y through b. The swap is done.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "9",
+                    "y": "5"
+                  }
+                },
+                {
+                  "fn": "swapByAddress(a, b)",
+                  "vars": {
+                    "a": "0x1000 -> x",
+                    "b": "0x1004 -> y",
+                    "temp": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "swapByAddress finished; a, b and temp are gone. x and y in main are really swapped.",
+              "out": "x = 9, y = 5\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "9",
+                    "y": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 18,
+              "vars": {
+                "n": "0x1000"
+              },
+              "note": "A second call: n points to x again.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "9",
+                    "y": "5"
+                  }
+                },
+                {
+                  "fn": "doubleIt(n)",
+                  "vars": {
+                    "n": "0x1000 -> x"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {
+                "x": "18"
+              },
+              "note": "x = 9 x 2 = 18.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "18",
+                    "y": "5"
+                  }
+                },
+                {
+                  "fn": "doubleIt(n)",
+                  "vars": {
+                    "n": "0x1000 -> x"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "Back in main, x holds 18.",
+              "out": "x doubled = 18\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "18",
+                    "y": "5"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "x": "int",
+            "y": "int",
+            "a": "int*",
+            "b": "int*",
+            "temp": "int",
+            "n": "int*"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Exam style: write a function divide that returns the quotient and remainder of two numbers through pointer parameters, and returns false if a pointer is null or the divisor is 0. Show three calls.",
+      "pseudocode": [
+        "START",
+        "q = 0, r = 0",
+        "CALL divide(17, 5, &q, &r)",
+        "IF a pointer is null OR b == 0 THEN return false",
+        "ELSE *quotient = a / b; *remainder = a % b; return true",
+        "PRINT result if it worked",
+        "CALL again with 0, then with nullptr",
+        "PRINT the error messages",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"q = 0, r = 0\"]\n  B --> C[\"Call divide with &q, &r\"]\n  C --> D{\"null pointer or b == 0 ?\"}\n  D -->|Yes| E[\"return false\"]\n  D -->|No| F[\"*quotient = a / b; *remainder = a % b\"]\n  F --> G[\"return true\"]\n  E --> H[/\"Print error message\"/]\n  G --> I[/\"Print q and r\"/]\n  H --> J([End])\n  I --> J",
+      "sample": {
+        "id": "safe-divide",
+        "title": "Two results through pointers, with a nullptr check",
+        "code": "#include <iostream>\nusing namespace std;\n\nbool divide(int a, int b, int *quotient, int *remainder) {\n    if (quotient == nullptr || remainder == nullptr || b == 0) {\n        return false;\n    }\n    *quotient = a / b;\n    *remainder = a % b;\n    return true;\n}\n\nint main() {\n    int q = 0, r = 0;\n    if (divide(17, 5, &q, &r)) {\n        cout << \"17 / 5 = \" << q << \" remainder \" << r << endl;\n    }\n    if (!divide(17, 0, &q, &r)) {\n        cout << \"Cannot divide by zero\" << endl;\n    }\n    if (!divide(17, 5, nullptr, &r)) {\n        cout << \"Null pointer rejected\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "17 / 5 = 3 remainder 2\nCannot divide by zero\nNull pointer rejected\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "Two normal parameters (inputs) and two pointer parameters (outputs). The function returns true or false to say whether it worked."
+          },
+          {
+            "line": 5,
+            "text": "Check every pointer for nullptr and check b for 0 BEFORE using them."
+          },
+          {
+            "line": 8,
+            "text": "Write the quotient into the caller's variable."
+          },
+          {
+            "line": 9,
+            "text": "Write the remainder into the caller's variable."
+          },
+          {
+            "line": 14,
+            "text": "Variables that will receive the results. We give them a starting value."
+          },
+          {
+            "line": 15,
+            "text": "The addresses of q and r are passed with &."
+          },
+          {
+            "line": 18,
+            "text": "Dividing by zero is rejected, and q and r keep their old values."
+          },
+          {
+            "line": 21,
+            "text": "A nullptr is passed on purpose to show the check working."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 14,
+              "vars": {
+                "q": "0",
+                "r": "0"
+              },
+              "note": "q is at 0x1000, r at 0x1004. They will receive the results.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "q": "0",
+                    "r": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {
+                "a": "17",
+                "b": "5",
+                "quotient": "0x1000",
+                "remainder": "0x1004"
+              },
+              "note": "Call 1: a and b are copies of 17 and 5. quotient and remainder hold the addresses of q and r.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "q": "0",
+                    "r": "0"
+                  }
+                },
+                {
+                  "fn": "divide(a, b, quotient, remainder)",
+                  "vars": {
+                    "a": "17",
+                    "b": "5",
+                    "quotient": "0x1000 -> q",
+                    "remainder": "0x1004 -> r"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "Safety check: neither pointer is null and b is not 0, so we continue.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "q": "0",
+                    "r": "0"
+                  }
+                },
+                {
+                  "fn": "divide(a, b, quotient, remainder)",
+                  "vars": {
+                    "a": "17",
+                    "b": "5",
+                    "quotient": "0x1000 -> q",
+                    "remainder": "0x1004 -> r"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {
+                "q": "3"
+              },
+              "note": "17 / 5 = 3 is written into q through quotient.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "q": "3",
+                    "r": "0"
+                  }
+                },
+                {
+                  "fn": "divide(a, b, quotient, remainder)",
+                  "vars": {
+                    "a": "17",
+                    "b": "5",
+                    "quotient": "0x1000 -> q",
+                    "remainder": "0x1004 -> r"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {
+                "r": "2"
+              },
+              "note": "17 % 5 = 2 is written into r through remainder.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "q": "3",
+                    "r": "2"
+                  }
+                },
+                {
+                  "fn": "divide(a, b, quotient, remainder)",
+                  "vars": {
+                    "a": "17",
+                    "b": "5",
+                    "quotient": "0x1000 -> q",
+                    "remainder": "0x1004 -> r"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "divide returned true, so the if body runs.",
+              "out": "17 / 5 = 3 remainder 2\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "q": "3",
+                    "r": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 18,
+              "vars": {
+                "a": "17",
+                "b": "0"
+              },
+              "note": "Call 2: b is 0.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "q": "3",
+                    "r": "2"
+                  }
+                },
+                {
+                  "fn": "divide(a, b, quotient, remainder)",
+                  "vars": {
+                    "a": "17",
+                    "b": "0",
+                    "quotient": "0x1000 -> q",
+                    "remainder": "0x1004 -> r"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "The check finds b == 0, so the function returns false without touching q or r.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "q": "3",
+                    "r": "2"
+                  }
+                },
+                {
+                  "fn": "divide(a, b, quotient, remainder)",
+                  "vars": {
+                    "a": "17",
+                    "b": "0",
+                    "quotient": "0x1000 -> q",
+                    "remainder": "0x1004 -> r"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "!false is true, so the message is printed.",
+              "out": "Cannot divide by zero\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "q": "3",
+                    "r": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 21,
+              "vars": {
+                "a": "17",
+                "b": "5",
+                "quotient": "nullptr",
+                "remainder": "0x1004"
+              },
+              "note": "Call 3: the caller passes nullptr instead of an address.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "q": "3",
+                    "r": "2"
+                  }
+                },
+                {
+                  "fn": "divide(a, b, quotient, remainder)",
+                  "vars": {
+                    "a": "17",
+                    "b": "5",
+                    "quotient": "nullptr",
+                    "remainder": "0x1004 -> r"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "quotient == nullptr is true, so we return false immediately. Without this check, *quotient would crash.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "q": "3",
+                    "r": "2"
+                  }
+                },
+                {
+                  "fn": "divide(a, b, quotient, remainder)",
+                  "vars": {
+                    "a": "17",
+                    "b": "5",
+                    "quotient": "nullptr",
+                    "remainder": "0x1004 -> r"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 22,
+              "vars": {},
+              "note": "The caller reports the problem.",
+              "out": "Null pointer rejected\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "q": "3",
+                    "r": "2"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "q": "int",
+            "r": "int",
+            "a": "int",
+            "b": "int",
+            "quotient": "int*",
+            "remainder": "int*"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "By value:  header f(int x), call f(a), inside x = 5;",
+      "when": "The function only reads the value. Original changes: No. Can be null: not applicable.",
+      "example": "int square(int x) { return x * x; }\nsquare(a);"
+    },
+    {
+      "way": "By reference:  header f(int &x), call f(a), inside x = 5;",
+      "when": "The function must change the original and you want the simplest code. Original changes: Yes. Can be null: No.",
+      "example": "void inc(int &x) { x = x + 1; }\ninc(a);"
+    },
+    {
+      "way": "By address:  header f(int *x), call f(&a), inside *x = 5;",
+      "when": "The function must change the original. Original changes: Yes. Can be null: Yes, so check x != nullptr first.",
+      "example": "void inc(int *x) { *x = *x + 1; }\ninc(&a);"
+    },
+    {
+      "way": "Several results with pointers",
+      "when": "One return value is not enough. Pass the address of one variable for each result.",
+      "example": "void calc(int a, int b, int *sum, int *prod);\ncalc(6, 7, &s, &p);"
+    },
+    {
+      "way": "Safe pointer parameter",
+      "when": "The caller might pass nullptr. Test before dereferencing.",
+      "example": "if (p != nullptr) { *p = 0; }"
+    },
+    {
+      "way": "Return value",
+      "when": "Only one result is needed. Often simplest.",
+      "example": "int sum(int a, int b) { return a + b; }"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "void doubleIt(int *n) { *n = *n * 2; }\nint x = 7;\ndoubleIt(x);   // forgot &",
+      "right": "doubleIt(&x);   // send the address",
+      "error": "error: invalid conversion from 'int' to 'int*' [-fpermissive]"
+    },
+    {
+      "wrong": "void doubleIt(int *n) {\n    n = n * 2;   // forgot * inside\n}",
+      "right": "void doubleIt(int *n) {\n    *n = *n * 2;\n}",
+      "error": "error: invalid operands of types 'int*' and 'int' to binary 'operator*'"
+    },
+    {
+      "wrong": "void inc(int *n) {\n    n = n + 1;   // moves the pointer, not the value\n}",
+      "right": "void inc(int *n) {\n    *n = *n + 1;\n}",
+      "error": "No compiler error (this is legal pointer arithmetic). But the caller's variable is NOT changed: only the function's own pointer moved to the next int. Always use *n when you mean the value."
+    },
+    {
+      "wrong": "doubleIt(&5);   // 5 is not a variable",
+      "right": "int x = 5;\ndoubleIt(&x);",
+      "error": "error: lvalue required as unary '&' operand"
+    },
+    {
+      "wrong": "void setZero(int *p) {\n    *p = 0;   // what if the caller passes nullptr?\n}",
+      "right": "void setZero(int *p) {\n    if (p != nullptr) {\n        *p = 0;\n    }\n}",
+      "error": "It compiles, but crashes at run time if the caller passes nullptr. Check the pointer first."
+    }
+  ],
+  "examTips": [
+    "At the call write &x. Inside the function write *p. Memorise this pair; most lost marks are a missing & or a missing *.",
+    "Swap with pointers: temp = *a; *a = *b; *b = temp; Do not write temp = a (that is an address, not a value).",
+    "When a question asks for several results, use pointer parameters (or references) for the extra outputs and show the call with &s, &d, &p.",
+    "Comparison table to remember: by value changes nothing, by reference and by address change the original. Only by address can the argument be null, so check it.",
+    "In a trace, draw the pointer parameter as an arrow to the caller's variable, then follow the arrow for every *p."
+  ],
+  "romanSummary": [
+    "Pass by address mein call karte waqt variable ka address bhejte hain (&x) aur function pointer parameter (int *p) mein receive karta hai.",
+    "Function ke andar *p se original variable parh aur badal sakte hain, is liye caller ki value badal jati hai.",
+    "Reference aur address dono se original badalta hai. Farq yeh hai ke address wale tareeqe mein call par & aur andar * lagana parta hai.",
+    "Is tareeqe se ek function kai results wapas bhej sakta hai, bas har result ke liye ek address bhejo, jaise calc(12, 4, &s, &d, &p).",
+    "Pointer null ho sakta hai, is liye function mein use karne se pehle if (p != nullptr) zaroor check karo."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "A function has the header void f(int *p). Which call is correct for an int x?",
+      "options": [
+        "f(&x);",
+        "f(x);",
+        "f(*x);",
+        "f(&&x);"
+      ],
+      "answer": "f(&x);",
+      "hint": "The function wants an address.",
+      "explanation": "A pointer parameter receives an address, so you send &x."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nvoid inc(int *n) {\n    *n = *n + 1;\n}\nint main() {\n    int x = 4;\n    inc(&x);\n    inc(&x);\n    cout << x;\n    return 0;\n}",
+      "answer": "6",
+      "hint": "Each call changes x itself.",
+      "explanation": "inc is called twice and each call adds 1 to the caller's x: 4 -> 5 -> 6."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print? (two numbers)\n\n#include <iostream>\nusing namespace std;\nvoid swapByAddress(int *a, int *b) {\n    int temp = *a;\n    *a = *b;\n    *b = temp;\n}\nint main() {\n    int a = 1, b = 2;\n    swapByAddress(&a, &b);\n    cout << a << \" \" << b;\n    return 0;\n}",
+      "answer": "2 1",
+      "hint": "The function swaps the real variables.",
+      "explanation": "swapByAddress swaps a and b of main, so it prints 2 1."
+    },
+    {
+      "id": "p4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which statement is true for pass by address?",
+      "options": [
+        "The function can change the caller's variable using *p",
+        "The function always works on a copy of the variable",
+        "The call is written f(x) without &",
+        "The pointer can never be null"
+      ],
+      "answer": "The function can change the caller's variable using *p",
+      "hint": "Think about what * does.",
+      "explanation": "Through the address, the function reaches the original variable. The pointer itself is a copy of the address."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill the blank to call addTen(int *n) so that x changes:\n\nint x = 5;\naddTen(____);",
+      "answer": "&x",
+      "hint": "Send the address.",
+      "explanation": "&x is the address of x."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This swap does not change the caller's numbers. Rewrite the three lines in the body so it works.\n\nvoid swapByAddress(int *a, int *b) {\n    int temp = a;\n    a = b;\n    b = temp;\n}",
+      "answer": "int temp = *a;\n*a = *b;\n*b = temp;",
+      "hint": "You must use * to reach the values.",
+      "explanation": "Without * the function only moves pointers (and temp = a does not even compile). With * it swaps the values stored in the caller's variables."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "medium",
+      "prompt": "Write a program with a function calc(int a, int b, int *sum, int *prod) that stores the sum and the product through the pointers. Call it with 6 and 7 and print both results.",
+      "answer": "#include <iostream>\nusing namespace std;\n\nvoid calc(int a, int b, int *sum, int *prod) {\n    *sum = a + b;\n    *prod = a * b;\n}\n\nint main() {\n    int s, p;\n    calc(6, 7, &s, &p);\n    cout << s << \" \" << p << endl;\n    return 0;\n}",
+      "hint": "Pass &s and &p in the call.",
+      "explanation": "*sum = 6 + 7 = 13 and *prod = 6 x 7 = 42."
+    },
+    {
+      "id": "p8",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print? (two numbers)\n\n#include <iostream>\nusing namespace std;\nvoid setTo(int *p, int v) {\n    if (p != nullptr) {\n        *p = v;\n    }\n}\nint main() {\n    int a = 1, b = 2;\n    setTo(&a, 10);\n    setTo(nullptr, 99);\n    setTo(&b, a + 5);\n    cout << a << \" \" << b;\n    return 0;\n}",
+      "answer": "10 15",
+      "hint": "The nullptr call does nothing. The last call uses a, which is already changed.",
+      "explanation": "setTo(&a, 10) makes a 10. setTo(nullptr, 99) is skipped by the check. setTo(&b, a + 5) makes b 15."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does the function receive in pass by address?",
+      "options": [
+        "The address of the caller's variable",
+        "A copy of the value only",
+        "The name of the variable",
+        "Nothing"
+      ],
+      "answer": "The address of the caller's variable",
+      "hint": "That is why it is called pass by address.",
+      "explanation": "The pointer parameter holds the address, so the function can reach the original."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Inside a function with int *p, how do you set the caller's variable to 5?",
+      "options": [
+        "*p = 5;",
+        "p = 5;",
+        "&p = 5;",
+        "p = &5;"
+      ],
+      "answer": "*p = 5;",
+      "hint": "Follow the address with *.",
+      "explanation": "*p = 5 writes 5 into the variable p points to."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which is a difference between reference and address passing?",
+      "options": [
+        "With an address the argument can be nullptr",
+        "References are slower",
+        "Only addresses change the original",
+        "Only references need a function"
+      ],
+      "answer": "With an address the argument can be nullptr",
+      "hint": "One of them can hold no address.",
+      "explanation": "A pointer parameter may be null so check it; a reference always refers to a real variable."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "void calc(int a, int b, int *s, int *p); How do you call it to get the sum into int sum and the product into int prod?",
+      "options": [
+        "calc(2, 3, &sum, &prod);",
+        "calc(2, 3, sum, prod);",
+        "calc(2, 3, *sum, *prod);",
+        "calc(&2, &3, sum, prod);"
+      ],
+      "answer": "calc(2, 3, &sum, &prod);",
+      "hint": "Outputs need addresses.",
+      "explanation": "Send the addresses of the variables that should receive the results."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "A function does n = n + 1; where n is int *n. What happens to the caller's variable?",
+      "options": [
+        "Nothing: only the pointer moves",
+        "It increases by 1",
+        "It increases by 4",
+        "The program must crash"
+      ],
+      "answer": "Nothing: only the pointer moves",
+      "hint": "Is there a * in front of n?",
+      "explanation": "Without * you change the pointer (it moves to the next int), not the value it points to."
+    }
+  ],
+  "sources": [
+    "9.4 Functions and Pointers: Pass-by-Address",
+    "Swap using pass-by-address",
+    "By value / by reference / by address comparison",
+    "Calculating several results through pointers"
+  ]
+}

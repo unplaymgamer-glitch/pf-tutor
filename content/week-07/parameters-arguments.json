@@ -1,0 +1,1151 @@
+{
+  "slug": "parameters-arguments",
+  "week": 7,
+  "title": "Parameters and arguments: giving data to a function",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Formal or actual? Match the term",
+      "pairs": [
+        {
+          "term": "x and y in int add(int x, int y)",
+          "meaning": "Parameters (formal parameters): the boxes in the function header."
+        },
+        {
+          "term": "a and b in add(a, b)",
+          "meaning": "Arguments (actual parameters): the values given in the call."
+        },
+        {
+          "term": "add(100, 250)",
+          "meaning": "Arguments can be plain values."
+        },
+        {
+          "term": "add(2 * 5, y + 1)",
+          "meaning": "Arguments can be expressions. They are calculated first, then copied."
+        },
+        {
+          "term": "Matching rule",
+          "meaning": "First argument goes to first parameter, second to second: by position, not by name."
+        },
+        {
+          "term": "Number of arguments",
+          "meaning": "Must be equal to the number of parameters."
+        }
+      ]
+    },
+    {
+      "kind": "pipeline",
+      "title": "How the values flow in and out",
+      "stages": [
+        {
+          "name": "1. Evaluate the arguments",
+          "detail": "Each argument expression is calculated: 2 * 5 becomes 10."
+        },
+        {
+          "name": "2. Copy into parameters",
+          "detail": "The value of the 1st argument goes into the 1st parameter, the 2nd into the 2nd, and so on. The parameters are new boxes."
+        },
+        {
+          "name": "3. Run the body",
+          "detail": "The function works on its own copies. The caller's variables are not touched."
+        },
+        {
+          "name": "4. Return the value",
+          "detail": "The result of return travels back and replaces the call in the expression."
+        },
+        {
+          "name": "5. Use the result",
+          "detail": "The caller prints it, stores it, or uses it in a bigger expression or another call."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can tell parameters (formal) from arguments (actual), call a function with the right number, order and types of arguments, use the returned value in expressions, and follow a function that calls another function.",
+  "warmup": "You order at a juice shop: 'Two mango juices, one with no sugar.' The order slip has blank boxes: how many, which flavour, sugar or not. Those blank boxes are the PARAMETERS. What you say at the counter, 'two, mango, no sugar', are the ARGUMENTS. The shopkeeper copies your words into the boxes by position: first answer in first box. If you swap the order, you may get the wrong juice!",
+  "definition": "A parameter (also called a formal parameter) is a variable in the function header that receives a value, like x and y in int add(int x, int y). An argument (also called an actual parameter) is the value written in the function call, like a and b in add(a, b). When the function is called, each argument is evaluated, and then COPIED into the matching parameter. Matching is by position, not by name. The number of arguments must equal the number of parameters, and each argument type must be compatible with its parameter type.",
+  "howItWorks": "Step through the traces and watch the call stack. At the call, a new box is made for every parameter and the value of each argument is copied into it. The function works only with its own copies, so changing a parameter inside the function does not change the caller's variable (next lesson explains this properly). Arguments can be plain values (add(100, 250)), variables (add(a, b)) or expressions (add(2 * 5, y + 1)): the expression is calculated first. The order matters: subtract(10, 3) and subtract(3, 10) give different answers. If the argument type differs from the parameter type, C++ converts it. A double like 9.8 sent to an int parameter becomes 9, and the decimal part is lost, so avoid this. The value returned by a function can be printed, stored in a variable, used inside a bigger expression, or given as an argument to another function. A function can call another function: the second one is placed on top of the call stack, finishes first, and returns to the first.",
+  "syntax": "// header: parameters (formal)\nint add(int x, int y)\n{\n    return x + y;\n}\n\nint main()\n{\n    int a = 7, b = 5;\n    int s = add(a, b);          // arguments (actual): a and b\n    cout << add(100, 250);      // arguments can be plain values\n    cout << add(a * 2, b + 1);  // ... or expressions\n    int t = add(add(1, 2), 3);  // a returned value can be an argument\n    return 0;\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write a function area(length, width) that returns the area of a rectangle. In main, call it with l = 8 and w = 5. Point out the parameters and the arguments.",
+      "pseudocode": [
+        "START",
+        "l = 8, w = 5",
+        "CALL area(l, w): length = 8, width = 5",
+        "  RETURN length * width = 40",
+        "PRINT Area = 40",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[l = 8, w = 5]\n  B --> C[\"Call area(l, w)\"]\n  C --> D[\"length = 8, width = 5\"]\n  D --> E[\"return length * width\"]\n  E --> F[/Print Area = 40/]\n  F --> G([End])",
+      "sample": {
+        "id": "area-formal-actual",
+        "title": "Parameters (formal) and arguments (actual)",
+        "code": "#include <iostream>\nusing namespace std;\n\nint area(int length, int width) {\n    return length * width;\n}\n\nint main() {\n    int l = 8, w = 5;\n    cout << \"Area = \" << area(l, w) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Area = 40\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "length and width are the PARAMETERS (formal parameters). They are empty boxes waiting for values."
+          },
+          {
+            "line": 5,
+            "text": "Uses the two parameters like ordinary variables."
+          },
+          {
+            "line": 9,
+            "text": "These are variables of main. Their names are different from the parameters. That is fine."
+          },
+          {
+            "line": 10,
+            "text": "l and w are the ARGUMENTS (actual parameters). The value of l goes to length, the value of w goes to width: matched by position, not by name."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Program starts.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {
+                "l": "8",
+                "w": "5"
+              },
+              "note": "main creates l = 8 and w = 5.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "l": "8",
+                    "w": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {
+                "length": "8",
+                "width": "5"
+              },
+              "note": "The call area(l, w). First argument l (8) is copied into the first parameter length. Second argument w (5) is copied into width.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "l": "8",
+                    "w": "5"
+                  }
+                },
+                {
+                  "fn": "area(length, width)",
+                  "vars": {
+                    "length": "8",
+                    "width": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "8 * 5 = 40 is returned.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "l": "8",
+                    "w": "5"
+                  }
+                },
+                {
+                  "fn": "area(length, width)",
+                  "vars": {
+                    "length": "8",
+                    "width": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "The call is replaced by 40 and cout prints it. length and width are gone.",
+              "out": "Area = 40\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "l": "8",
+                    "w": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "main ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "l": "8",
+                    "w": "5"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "l": "int",
+            "w": "int",
+            "length": "int",
+            "width": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Write subtract(a, b) that returns a - b. Call it with (x, y), then (y, x), then with expressions, then with a decimal argument. Show how the order, the expressions and the types of the arguments affect the result.",
+      "pseudocode": [
+        "START",
+        "x = 10, y = 3",
+        "PRINT subtract(x, y)        -> 7",
+        "PRINT subtract(y, x)        -> -7",
+        "PRINT subtract(2 * 5, y + 1) -> 6",
+        "PRINT subtract(9.8, 2)      -> a = 9, answer 7",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[x = 10, y = 3]\n  B --> C[\"Call subtract(x, y), print 7\"]\n  C --> D[\"Call subtract(y, x), print -7\"]\n  D --> E[\"Call subtract(2 * 5, y + 1), print 6\"]\n  E --> F[\"Call subtract(9.8, 2), a becomes 9, print 7\"]\n  F --> G([End])",
+      "sample": {
+        "id": "subtract-order",
+        "title": "Order, expressions and types of arguments",
+        "code": "#include <iostream>\nusing namespace std;\n\nint subtract(int a, int b) {\n    return a - b;\n}\n\nint main() {\n    int x = 10, y = 3;\n    cout << subtract(x, y) << endl;\n    cout << subtract(y, x) << endl;\n    cout << subtract(2 * 5, y + 1) << endl;\n    cout << subtract(9.8, 2) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "7\n-7\n6\n7\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "a is the first parameter and b is the second. Order matters because subtraction is not symmetric."
+          },
+          {
+            "line": 5,
+            "text": "Always first minus second."
+          },
+          {
+            "line": 10,
+            "text": "10 goes to a, 3 goes to b. Answer 7."
+          },
+          {
+            "line": 11,
+            "text": "Same function and the same variables, but the order is swapped. Answer -7."
+          },
+          {
+            "line": 12,
+            "text": "An argument may be an expression. It is calculated first, then the RESULT is copied."
+          },
+          {
+            "line": 13,
+            "text": "9.8 is converted to int 9 when it is copied into a. The compiler allows it but the decimal part is lost, so the answer is 9 - 2 = 7."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Program starts.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {
+                "x": "10",
+                "y": "3"
+              },
+              "note": "main creates x = 10 and y = 3.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {
+                "a": "10",
+                "b": "3"
+              },
+              "note": "Arguments are evaluated first, then copied: x is 10, so a = 10. y is 3, so b = 3.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "3"
+                  }
+                },
+                {
+                  "fn": "subtract(a, b)",
+                  "vars": {
+                    "a": "10",
+                    "b": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "a - b = 7 is returned.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "3"
+                  }
+                },
+                {
+                  "fn": "subtract(a, b)",
+                  "vars": {
+                    "a": "10",
+                    "b": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "The call is replaced by 7 and printed.",
+              "out": "7\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {
+                "a": "3",
+                "b": "10"
+              },
+              "note": "Arguments are evaluated first, then copied: the order changed, so now a = 3 and b = 10. The position decides, not the name.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "3"
+                  }
+                },
+                {
+                  "fn": "subtract(a, b)",
+                  "vars": {
+                    "a": "3",
+                    "b": "10"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "a - b = -7 is returned.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "3"
+                  }
+                },
+                {
+                  "fn": "subtract(a, b)",
+                  "vars": {
+                    "a": "3",
+                    "b": "10"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "The call is replaced by -7 and printed.",
+              "out": "-7\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {
+                "a": "10",
+                "b": "4"
+              },
+              "note": "Arguments are evaluated first, then copied: 2 * 5 becomes 10 and y + 1 becomes 4. An argument can be any expression.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "3"
+                  }
+                },
+                {
+                  "fn": "subtract(a, b)",
+                  "vars": {
+                    "a": "10",
+                    "b": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "a - b = 6 is returned.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "3"
+                  }
+                },
+                {
+                  "fn": "subtract(a, b)",
+                  "vars": {
+                    "a": "10",
+                    "b": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "The call is replaced by 6 and printed.",
+              "out": "6\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {
+                "a": "9",
+                "b": "2"
+              },
+              "note": "Arguments are evaluated first, then copied: 9.8 is a double, but the parameter a is an int. The decimal part is cut off, so a = 9. (Be careful: data is lost.)",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "3"
+                  }
+                },
+                {
+                  "fn": "subtract(a, b)",
+                  "vars": {
+                    "a": "9",
+                    "b": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "a - b = 7 is returned.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "3"
+                  }
+                },
+                {
+                  "fn": "subtract(a, b)",
+                  "vars": {
+                    "a": "9",
+                    "b": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "The call is replaced by 7 and printed.",
+              "out": "7\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "main ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "10",
+                    "y": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "x": "int",
+            "y": "int",
+            "a": "int",
+            "b": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a function square(n) and a function sumOfSquares(a, b) that uses square twice. In main read a and b (input 3 4), print the sum of their squares, and print the square of a + 1.",
+      "pseudocode": [
+        "START",
+        "READ a, b",
+        "CALL sumOfSquares(a, b)",
+        "  CALL square(a) = 9",
+        "  CALL square(b) = 16",
+        "  RETURN 9 + 16 = 25",
+        "PRINT 25",
+        "PRINT square(a + 1) = 16",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read a and b/]\n  B --> C[\"Call sumOfSquares(a, b)\"]\n  C --> D[\"Call square(a) returns 9\"]\n  D --> E[\"Call square(b) returns 16\"]\n  E --> F[\"return 9 + 16 = 25\"]\n  F --> G[/Print 25/]\n  G --> H[\"Call square(a + 1) returns 16\"]\n  H --> I[/Print 16/]\n  I --> J([End])",
+      "sample": {
+        "id": "sum-of-squares",
+        "title": "One function calling another",
+        "code": "#include <iostream>\nusing namespace std;\n\nint square(int n) {\n    return n * n;\n}\n\nint sumOfSquares(int a, int b) {\n    return square(a) + square(b);\n}\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << \"Sum of squares = \" << sumOfSquares(a, b) << endl;\n    cout << \"Square of a + 1 = \" << square(a + 1) << endl;\n    return 0;\n}\n",
+        "stdin": "3 4",
+        "expectedOutput": "Sum of squares = 25\nSquare of a + 1 = 16\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "A small helper: returns n times n."
+          },
+          {
+            "line": 9,
+            "text": "sumOfSquares does not repeat the multiplication. It CALLS square twice. Each returned value is used inside the expression."
+          },
+          {
+            "line": 14,
+            "text": "main reads two numbers. The names a and b also appear as parameters of sumOfSquares, but those are different boxes."
+          },
+          {
+            "line": 15,
+            "text": "main calls sumOfSquares. That function in turn calls square, so the call stack becomes three functions deep."
+          },
+          {
+            "line": 16,
+            "text": "The argument a + 1 is calculated first (3 + 1 = 4), then 4 is copied into n."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 13,
+              "vars": {
+                "a": "?",
+                "b": "?"
+              },
+              "note": "main creates a and b.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "?",
+                    "b": "?"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {
+                "a": "3",
+                "b": "4"
+              },
+              "note": "cin reads 3 and 4.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {
+                "a": "3",
+                "b": "4"
+              },
+              "note": "main calls sumOfSquares(a, b). The function's own a and b get copies of 3 and 4.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                },
+                {
+                  "fn": "sumOfSquares(a, b)",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {
+                "n": "3"
+              },
+              "note": "To find the value to return, it first calls square(a). n is a copy of a, which is 3.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                },
+                {
+                  "fn": "sumOfSquares(a, b)",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                },
+                {
+                  "fn": "square(n)",
+                  "vars": {
+                    "n": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "3 * 3 = 9 goes back to sumOfSquares.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                },
+                {
+                  "fn": "sumOfSquares(a, b)",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                },
+                {
+                  "fn": "square(n)",
+                  "vars": {
+                    "n": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {
+                "n": "4"
+              },
+              "note": "Now it calls square(b). n is now 4.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                },
+                {
+                  "fn": "sumOfSquares(a, b)",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                },
+                {
+                  "fn": "square(n)",
+                  "vars": {
+                    "n": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "4 * 4 = 16 goes back. sumOfSquares now has 9 + 16 = 25 and returns it.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                },
+                {
+                  "fn": "sumOfSquares(a, b)",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                },
+                {
+                  "fn": "square(n)",
+                  "vars": {
+                    "n": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "main receives 25 and prints it.",
+              "out": "Sum of squares = 25\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 16,
+              "vars": {
+                "n": "4"
+              },
+              "note": "The argument a + 1 is 4. It is copied into n.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                },
+                {
+                  "fn": "square(n)",
+                  "vars": {
+                    "n": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "4 * 4 = 16 is returned.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                },
+                {
+                  "fn": "square(n)",
+                  "vars": {
+                    "n": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "main prints 16.",
+              "out": "Square of a + 1 = 16\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 17,
+              "vars": {},
+              "note": "main ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "a": "3",
+                    "b": "4"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "a": "int",
+            "b": "int",
+            "n": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Arguments are variables",
+      "when": "The data is already stored in variables",
+      "example": "area(l, w)"
+    },
+    {
+      "way": "Arguments are plain values",
+      "when": "You already know the numbers",
+      "example": "area(8, 5)"
+    },
+    {
+      "way": "Arguments are expressions",
+      "when": "The value must be calculated first",
+      "example": "area(l + 2, w * 2)"
+    },
+    {
+      "way": "Returned value printed directly",
+      "when": "You only need to display the answer",
+      "example": "cout << area(l, w) << endl;"
+    },
+    {
+      "way": "Returned value stored",
+      "when": "You need the answer again later",
+      "example": "int a1 = area(l, w);"
+    },
+    {
+      "way": "Returned value used in an expression",
+      "when": "The answer is part of a bigger calculation",
+      "example": "int total = area(l, w) + area(3, 4);"
+    },
+    {
+      "way": "Function call as an argument",
+      "when": "The answer of one function feeds another",
+      "example": "square(sumOfSquares(1, 2))   // square(5) = 25"
+    },
+    {
+      "way": "Function calling another function",
+      "when": "Split a job into small helpers",
+      "example": "int sumOfSquares(int a, int b) { return square(a) + square(b); }"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int add(int a, int b) { return a + b; }\nint main() {\n    cout << add(1);\n    return 0;\n}",
+      "right": "cout << add(1, 2);",
+      "error": "too few arguments to function 'int add(int, int)'"
+    },
+    {
+      "wrong": "cout << add(1, 2, 3);",
+      "right": "cout << add(1, 2);",
+      "error": "too many arguments to function 'int add(int, int)'"
+    },
+    {
+      "wrong": "cout << add(int x, int y);",
+      "right": "cout << add(x, y);",
+      "error": "expected primary-expression before 'int'"
+    },
+    {
+      "wrong": "int add(a, b) { return a + b; }",
+      "right": "int add(int a, int b) { return a + b; }",
+      "error": "'a' was not declared in this scope"
+    },
+    {
+      "wrong": "cout << subtract(3, 10);   // wanted 10 - 3",
+      "right": "cout << subtract(10, 3);",
+      "error": "No compiler error. The arguments are matched by position, so you get 3 - 10 = -7. The compiler cannot know which order you meant."
+    }
+  ],
+  "examTips": [
+    "Parameter = formal = in the function HEADER. Argument = actual = in the function CALL.",
+    "Arguments are matched to parameters by position (order), never by name.",
+    "Number, order and types of the arguments must match the parameters.",
+    "An argument can be a value, a variable or an expression. The expression is calculated first, then copied.",
+    "For a function that calls another function, trace from the inside out: the innermost call finishes first and returns to the one below it.",
+    "Changing a parameter inside the function does not change the variable in main (it is a copy)."
+  ],
+  "romanSummary": [
+    "Function ke header mein jo variables hote hain unhe parameters (formal) kehte hain, jaise int add(int x, int y).",
+    "Call mein jo values dete hain unhe arguments (actual) kehte hain, jaise add(a, b).",
+    "Arguments parameters se position ke hisab se match hote hain, naam se nahi. Tadad, tarteeb aur type sahi honi chahiye.",
+    "Argument pehle calculate hota hai phir uski copy parameter mein jati hai, isliye function ke andar change se main ka variable nahi badalta.",
+    "Return hui value ko cout mein print kar sakte hain, variable mein store kar sakte hain ya kisi aur function ko de sakte hain."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In the call area(l, w), what are l and w?",
+      "options": [
+        "Arguments (actual parameters)",
+        "Parameters (formal parameters)",
+        "Return types",
+        "Function names"
+      ],
+      "answer": "Arguments (actual parameters)",
+      "hint": "They are written in the call, not in the header.",
+      "explanation": "Values or variables written in the call are the arguments. The header variables are the parameters."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How are arguments matched to parameters?",
+      "options": [
+        "By position",
+        "By name",
+        "By alphabetical order",
+        "By data type only"
+      ],
+      "answer": "By position",
+      "hint": "First goes to first.",
+      "explanation": "The 1st argument is copied into the 1st parameter, the 2nd into the 2nd. The names do not matter."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint subtract(int a, int b) { return a - b; }\nint main() {\n    cout << subtract(9, 4) << \" \" << subtract(4, 9) << endl;\n    return 0;\n}",
+      "answer": "5 -5",
+      "hint": "Which number goes into a, and which into b?",
+      "explanation": "subtract(9, 4) = 9 - 4 = 5. subtract(4, 9) = 4 - 9 = -5."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint mul(int a, int b) { return a * b; }\nint main() {\n    int x = 3;\n    cout << mul(x + 1, x * 2) << endl;\n    return 0;\n}",
+      "answer": "24",
+      "hint": "Calculate each argument first.",
+      "explanation": "x + 1 = 4 and x * 2 = 6 are copied into a and b. mul returns 4 * 6 = 24."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint twice(int n) { return n * 2; }\nint plusOne(int n) { return n + 1; }\nint main() {\n    cout << twice(plusOne(4)) << \" \" << plusOne(twice(4)) << endl;\n    return 0;\n}",
+      "answer": "10 9",
+      "hint": "Work from the innermost call outwards.",
+      "explanation": "twice(plusOne(4)): plusOne(4) = 5, then twice(5) = 10. plusOne(twice(4)): twice(4) = 8, then plusOne(8) = 9."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "The program has an error in the function call. Rewrite the whole program correctly. It should print Total = 30.\n\n#include <iostream>\nusing namespace std;\nint add(int a, int b) { return a + b; }\nint main() {\n    cout << \"Total = \" << add(10) + 20 << endl;\n    return 0;\n}",
+      "answer": "#include <iostream>\nusing namespace std;\nint add(int a, int b) { return a + b; }\nint main() {\n    cout << \"Total = \" << add(10, 20) << endl;\n    return 0;\n}",
+      "hint": "How many parameters does add have?",
+      "explanation": "add has two parameters, so the call needs two arguments: add(10, 20) gives 30."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blanks. The function must return the average of two numbers with decimals, and main must print Average = 7.5 for 6 and 9.\n\n#include <iostream>\nusing namespace std;\n___ average(int a, int b) {\n    return (a + b) / ___;\n}\nint main() {\n    cout << \"Average = \" << average(___, 9) << endl;\n    return 0;\n}",
+      "answer": "#include <iostream>\nusing namespace std;\ndouble average(int a, int b) {\n    return (a + b) / 2.0;\n}\nint main() {\n    cout << \"Average = \" << average(6, 9) << endl;\n    return 0;\n}",
+      "hint": "The answer 7.5 has a decimal part.",
+      "explanation": "The return type is double and the divisor is 2.0, so no decimals are lost. The first argument is 6."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a function cube(n) that returns n * n * n and a function sumOfCubes(a, b) that uses cube twice. Read a and b in main and print the result. Input: 2 3 gives 35.",
+      "answer": "#include <iostream>\nusing namespace std;\nint cube(int n) {\n    return n * n * n;\n}\nint sumOfCubes(int a, int b) {\n    return cube(a) + cube(b);\n}\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sumOfCubes(a, b) << endl;\n    return 0;\n}",
+      "hint": "Same idea as sumOfSquares.",
+      "explanation": "cube(2) = 8 and cube(3) = 27, and 8 + 27 = 35."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Variables written in the function header are called:",
+      "options": [
+        "Parameters (formal)",
+        "Arguments (actual)",
+        "Constants",
+        "Return values"
+      ],
+      "answer": "Parameters (formal)",
+      "hint": "Header = formal.",
+      "explanation": "The variables in the header receive the values, so they are the parameters."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What happens to an argument when the function is called?",
+      "options": [
+        "Its value is copied into the parameter",
+        "The parameter is deleted",
+        "The function name changes",
+        "Nothing happens"
+      ],
+      "answer": "Its value is copied into the parameter",
+      "hint": "The function gets its own copy.",
+      "explanation": "The value is copied. That is why changing the parameter does not change the caller's variable."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Given int f(int a, int b) { return a - b; }, what is f(2, 7)?",
+      "options": [
+        "-5",
+        "5",
+        "9",
+        "14"
+      ],
+      "answer": "-5",
+      "hint": "a is 2 and b is 7.",
+      "explanation": "a - b = 2 - 7 = -5."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which call is correct for int add(int a, int b)?",
+      "options": [
+        "add(3, 4)",
+        "add(3)",
+        "add(3, 4, 5)",
+        "add(int 3, int 4)"
+      ],
+      "answer": "add(3, 4)",
+      "hint": "Count the parameters.",
+      "explanation": "The number of arguments must be equal to the number of parameters."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "If square(n) returns n * n, what is square(square(2))?",
+      "options": [
+        "16",
+        "4",
+        "8",
+        "2"
+      ],
+      "answer": "16",
+      "hint": "Inner call first.",
+      "explanation": "square(2) = 4, then square(4) = 16."
+    }
+  ],
+  "sources": [
+    "Arguments and parameters",
+    "Actual and formal parameters",
+    "Function call with values",
+    "Functions returning a value",
+    "Function calling another function"
+  ]
+}

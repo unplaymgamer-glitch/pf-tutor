@@ -1,0 +1,535 @@
+{
+  "slug": "nested-loops",
+  "week": 5,
+  "title": "Nested loops: a loop inside a loop",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "pattern",
+      "title": "Multiplication table: the outer loop picks the row, the inner loop fills the columns",
+      "shape": "multiplication-table",
+      "n": 5
+    },
+    {
+      "kind": "pipeline",
+      "title": "Anatomy of a nested loop",
+      "stages": [
+        {
+          "name": "Outer loop starts",
+          "detail": "i = 1. Check i <= rows. If true, go inside."
+        },
+        {
+          "name": "Inner loop starts fresh",
+          "detail": "j = 1. The inner variable always begins again at its first value."
+        },
+        {
+          "name": "Inner body runs",
+          "detail": "Do the work for the cell (i, j), for example print i * j."
+        },
+        {
+          "name": "Inner update and check",
+          "detail": "j++ then check j <= columns. If true, run the inner body again."
+        },
+        {
+          "name": "Inner loop ends",
+          "detail": "j is past the limit. Now run the code that follows the inner loop, usually endl."
+        },
+        {
+          "name": "Outer update and check",
+          "detail": "i++ then check i <= rows. If true, start the inner loop all over again."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can write a loop inside a loop, trace the values of i and j, and say how many times the inner body runs.",
+  "warmup": "Look at a clock. For every ONE hour, the minute hand goes around all 60 minutes. The hour changes slowly, the minutes change fast. Or think of a classroom: for every row of desks, the teacher checks every desk in that row. A nested loop is the same. The outer loop is the hours or the rows. The inner loop is the minutes or the desks, and it finishes completely before the outer loop moves on.",
+  "definition": "A nested loop is a loop placed inside the body of another loop. The outer loop controls how many times the inner loop is started. For every single iteration of the outer loop, the inner loop runs from start to finish. So if the outer loop runs R times and the inner loop runs C times each time, the inner body runs R x C times in total.",
+  "howItWorks": "Follow the order. 1) The outer loop sets i = 1 and checks its condition. 2) The inner loop sets j = 1, runs its body, does j++, and repeats until its condition is false. 3) The program leaves the inner loop and runs whatever comes next inside the outer loop, usually cout << endl;. 4) The outer loop does i++ and checks its condition. 5) If it is true, the inner loop starts AGAIN with j = 1. This is the key idea: the inner loop restarts for every outer iteration. The golden rule for printing: the outer loop is for rows (lines), the inner loop is for columns (what is printed on each line), and endl goes after the inner loop. Counting: inner body runs = (outer iterations) x (inner iterations). If the inner limit depends on i (for example j <= i), the inner count changes every row and you must add the row counts: 1 + 2 + 3 + ... Use different variable names (i and j) for the two loops. Use the Visualize tab to fill a multiplication table cell by cell.",
+  "syntax": "for (int i = 1; i <= rows; i++)          // outer loop: rows\n{\n    for (int j = 1; j <= cols; j++)      // inner loop: columns\n    {\n        // inner body: runs rows x cols times\n        cout << i * j << \"\\t\";\n    }\n    cout << endl;                        // after the inner loop: next row\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Print the pairs (i, j) for i = 1 to 2 and j = 1 to 3, one row per value of i. Trace the values of i and j.",
+      "pseudocode": [
+        "START",
+        "FOR i = 1 TO 2",
+        "    FOR j = 1 TO 3",
+        "        PRINT (i, j)",
+        "    PRINT new line",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[i = 1]\n  B --> C{i <= 2?}\n  C -->|Yes| D[j = 1]\n  D --> E{j <= 3?}\n  E -->|Yes| F[/Print i, j/]\n  F --> G[j = j + 1]\n  G --> E\n  E -->|No| H[/Print new line/]\n  H --> I[i = i + 1]\n  I --> C\n  C -->|No| J([End])",
+      "sample": {
+        "id": "i-and-j",
+        "title": "Two rows, three columns: tracing i and j",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    for (int i = 1; i <= 2; i++) {\n        for (int j = 1; j <= 3; j++) {\n            cout << \"(\" << i << \",\" << j << \") \";\n        }\n        cout << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "(1,1) (1,2) (1,3) \n(2,1) (2,2) (2,3) \n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Outer loop. i is the row number, 1 to 2."
+          },
+          {
+            "line": 6,
+            "text": "Inner loop. j is the column number, 1 to 3. It starts again at 1 for every row."
+          },
+          {
+            "line": 7,
+            "text": "The inner body. It runs 2 x 3 = 6 times in total."
+          },
+          {
+            "line": 9,
+            "text": "After the inner loop (still inside the outer loop): finish the row."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "i": "1"
+              },
+              "note": "Outer loop: i = 1. This is row 1.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "j": "1"
+              },
+              "note": "Inner loop starts: j = 1.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "j": "1"
+              },
+              "note": "i = 1, j = 1. Prints (1,1).",
+              "out": "(1,1) "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "j": "2"
+              },
+              "note": "i = 1, j = 2. Prints (1,2).",
+              "out": "(1,2) "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "j": "3"
+              },
+              "note": "i = 1, j = 3. Prints (1,3).",
+              "out": "(1,3) "
+            },
+            {
+              "line": 9,
+              "vars": {
+                "j": "4"
+              },
+              "note": "j became 4, the test j <= 3 is false, so the inner loop is finished. endl moves to the next line.",
+              "out": "\n"
+            },
+            {
+              "line": 5,
+              "vars": {
+                "i": "2"
+              },
+              "note": "Outer loop: i = 2. This is row 2. The inner loop will start again from the beginning.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "j": "1"
+              },
+              "note": "The inner loop RESTARTS: j goes back to 1.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "j": "1"
+              },
+              "note": "i = 2, j = 1. Prints (2,1).",
+              "out": "(2,1) "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "j": "2"
+              },
+              "note": "i = 2, j = 2. Prints (2,2).",
+              "out": "(2,2) "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "j": "3"
+              },
+              "note": "i = 2, j = 3. Prints (2,3).",
+              "out": "(2,3) "
+            },
+            {
+              "line": 9,
+              "vars": {
+                "j": "4"
+              },
+              "note": "j became 4, the test j <= 3 is false, so the inner loop is finished. endl moves to the next line.",
+              "out": "\n"
+            },
+            {
+              "line": 11,
+              "vars": {
+                "i": "3"
+              },
+              "note": "i became 3, so the outer loop stops too. The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "i": "int",
+            "j": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Print a multiplication table with 4 rows and 5 columns (row number times column number). Also count how many times the inner body runs.",
+      "pseudocode": [
+        "START",
+        "count = 0",
+        "FOR i = 1 TO 4",
+        "    FOR j = 1 TO 5: PRINT i * j, count = count + 1",
+        "    PRINT new line",
+        "PRINT count",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[count = 0, i = 1]\n  B --> C{i <= 4?}\n  C -->|Yes| D[j = 1]\n  D --> E{j <= 5?}\n  E -->|Yes| F[/Print i * j/]\n  F --> G[count++, j++]\n  G --> E\n  E -->|No| H[/Print new line/]\n  H --> I[i++]\n  I --> C\n  C -->|No| J[/Print count/]\n  J --> K([End])",
+      "sample": {
+        "id": "times-table",
+        "title": "A multiplication table and an iteration counter",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int count = 0;\n    for (int i = 1; i <= 4; i++) {\n        for (int j = 1; j <= 5; j++) {\n            cout << i * j << \"\\t\";\n            count++;\n        }\n        cout << endl;\n    }\n    cout << \"Inner body ran \" << count << \" times\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "1\t2\t3\t4\t5\t\n2\t4\t6\t8\t10\t\n3\t6\t9\t12\t15\t\n4\t8\t12\t16\t20\t\nInner body ran 20 times\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "count will record how many times the inner body runs."
+          },
+          {
+            "line": 6,
+            "text": "Outer loop: 4 rows."
+          },
+          {
+            "line": 7,
+            "text": "Inner loop: 5 columns in each row."
+          },
+          {
+            "line": 8,
+            "text": "Each cell is row times column. \\t prints a tab so the numbers line up in columns."
+          },
+          {
+            "line": 9,
+            "text": "Runs once per cell: 4 x 5 = 20 times."
+          },
+          {
+            "line": 11,
+            "text": "Goes after the inner loop, so it runs once per row."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a program with nested loops where the inner loop runs i times in row i (i = 1 to 4), printing a star each time. Print the total number of stars at the end.",
+      "pseudocode": [
+        "START",
+        "count = 0",
+        "FOR i = 1 TO 4",
+        "    FOR j = 1 TO i: PRINT *, count = count + 1",
+        "    PRINT new line",
+        "PRINT count",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[count = 0, i = 1]\n  B --> C{i <= 4?}\n  C -->|Yes| D[j = 1]\n  D --> E{j <= i?}\n  E -->|Yes| F[/Print star/]\n  F --> G[count++, j++]\n  G --> E\n  E -->|No| H[/Print new line/]\n  H --> I[i++]\n  I --> C\n  C -->|No| J[/Print count/]\n  J --> K([End])",
+      "sample": {
+        "id": "triangle-count",
+        "title": "Inner loop limit that depends on the outer variable",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int count = 0;\n    for (int i = 1; i <= 4; i++) {\n        for (int j = 1; j <= i; j++) {\n            cout << \"*\";\n            count++;\n        }\n        cout << endl;\n    }\n    cout << \"Total stars = \" << count << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "*\n**\n***\n****\nTotal stars = 10\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Four rows."
+          },
+          {
+            "line": 7,
+            "text": "The inner limit is i, not a fixed number. Row 1 has 1 star, row 2 has 2, row 3 has 3, row 4 has 4."
+          },
+          {
+            "line": 8,
+            "text": "One star per inner iteration."
+          },
+          {
+            "line": 9,
+            "text": "Counts all stars: 1 + 2 + 3 + 4 = 10."
+          },
+          {
+            "line": 11,
+            "text": "Ends each row after its stars."
+          },
+          {
+            "line": 13,
+            "text": "Printed once, after both loops have finished."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "for inside for",
+      "when": "Most common. Rows and columns, tables, patterns",
+      "example": "for (int i = 1; i <= 3; i++) for (int j = 1; j <= 4; j++) ..."
+    },
+    {
+      "way": "Fixed inner limit",
+      "when": "Every row has the same number of columns (rectangle)",
+      "example": "for (int j = 1; j <= 5; j++)"
+    },
+    {
+      "way": "Inner limit depends on i",
+      "when": "Rows get longer or shorter (triangle)",
+      "example": "for (int j = 1; j <= i; j++)"
+    },
+    {
+      "way": "while inside for",
+      "when": "The inner repeat is controlled by a condition",
+      "example": "for (...) { int j = 1; while (j <= 3) { ... j++; } }"
+    },
+    {
+      "way": "Counting the work",
+      "when": "Exam questions: how many times does the body run?",
+      "example": "rows x columns, or 1 + 2 + 3 + ... for a triangle"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "for (int i = 1; i <= 3; i++)\n    for (i = 1; i <= 4; i++)\n        cout << \"*\";",
+      "right": "for (int i = 1; i <= 3; i++)\n    for (int j = 1; j <= 4; j++)\n        cout << \"*\";",
+      "error": "No compiler error. Both loops use i, so the inner loop leaves i at 5 and the outer loop stops after one round. Only 4 stars print instead of 12. Use different names."
+    },
+    {
+      "wrong": "for (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= 3; j++) {\n        cout << \"*\" << endl;\n    }\n}",
+      "right": "for (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= 3; j++) {\n        cout << \"*\";\n    }\n    cout << endl;\n}",
+      "error": "No compiler error. endl inside the inner loop puts every star on its own line. Put endl after the inner loop."
+    },
+    {
+      "wrong": "int j = 1;\nfor (int i = 1; i <= 3; i++) {\n    while (j <= 3) {\n        cout << \"*\";\n        j++;\n    }\n    cout << endl;\n}",
+      "right": "for (int i = 1; i <= 3; i++) {\n    int j = 1;\n    while (j <= 3) {\n        cout << \"*\";\n        j++;\n    }\n    cout << endl;\n}",
+      "error": "No compiler error. j is never reset, so only the first row has stars. The inner variable must start again for every outer iteration."
+    },
+    {
+      "wrong": "for (int i = 1; i <= 2; i++) {\n    for (int j = 1; j <= 3; j++) {\n        cout << j;\n    }\n}\ncout << j;",
+      "right": "for (int i = 1; i <= 2; i++) {\n    for (int j = 1; j <= 3; j++) {\n        cout << j;\n    }\n}\n// j does not exist here",
+      "error": "g++ reports: error: 'j' was not declared in this scope. A variable declared in a for loop lives only inside that loop."
+    }
+  ],
+  "examTips": [
+    "Inner body runs = outer iterations x inner iterations. Write this multiplication first, then answer.",
+    "In a trace table, write i and j in columns. The inner variable goes back to its start value every time i changes.",
+    "If the inner limit is i (j <= i), the counts are 1, 2, 3, ... so add them up. Do not multiply.",
+    "Outer loop = rows, inner loop = columns, and endl goes after the inner loop.",
+    "Always use different variable names (i and j) for the two loops."
+  ],
+  "romanSummary": [
+    "Nested loop matlab loop ke andar loop. Bahar wala loop i hai aur andar wala loop j.",
+    "Bahar wale loop ki har ek iteration mein andar wala loop shuru se poora chalta hai, jaise clock mein ek hour mein 60 minutes.",
+    "Agar outer 3 dafa aur inner 4 dafa chalta hai to inner body 3 x 4 = 12 dafa chalti hai.",
+    "Rows outer loop control karta hai, columns inner loop, aur endl inner loop ke baad lagate hain.",
+    "Dono loops ke variable names alag rakho (i aur j), warna loop ghalat chalega."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "The outer loop runs 4 times and the inner loop runs 5 times for each outer iteration. How many times does the inner body run in total?",
+      "options": [
+        "20",
+        "9",
+        "5",
+        "4"
+      ],
+      "answer": "20",
+      "hint": "Rows times columns.",
+      "explanation": "The inner loop runs completely for every outer iteration: 4 x 5 = 20."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    for (int i = 1; i <= 3; i++) {\n        for (int j = 1; j <= 2; j++) {\n            cout << i * j << \" \";\n        }\n        cout << endl;\n    }\n    return 0;\n}",
+      "answer": "1 2 \n2 4 \n3 6 ",
+      "hint": "Fill the table: row 1 is 1x1, 1x2; row 2 is 2x1, 2x2 ...",
+      "explanation": "Each row has two numbers. Row 1: 1 2. Row 2: 2 4. Row 3: 3 6."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    for (int i = 1; i <= 3; i++) {\n        for (int j = 1; j <= i; j++) {\n            cout << j;\n        }\n        cout << endl;\n    }\n    return 0;\n}",
+      "answer": "1\n12\n123",
+      "hint": "The inner loop stops at i, so it is short in the first row.",
+      "explanation": "Row 1 has j from 1 to 1, row 2 from 1 to 2, row 3 from 1 to 3. The inner loop restarts at 1 every time."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    int count = 0;\n    for (int i = 0; i < 5; i++) {\n        for (int j = 0; j < 3; j++) {\n            count++;\n        }\n    }\n    cout << count << endl;\n    return 0;\n}",
+      "answer": "15",
+      "hint": "How many values does i take? How many does j take?",
+      "explanation": "i takes 5 values (0 to 4) and j takes 3 values (0 to 2). The body runs 5 x 3 = 15 times."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This should print a 3 x 3 square of stars, but it prints every star on its own line. Fix it.\n\nfor (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= 3; j++) {\n        cout << \"*\" << endl;\n    }\n}",
+      "answer": "for (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= 3; j++) {\n        cout << \"*\";\n    }\n    cout << endl;\n}",
+      "hint": "Where should the line break go: after each star or after each row?",
+      "explanation": "endl belongs after the inner loop (once per row), not inside it (once per star)."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Complete the code to print the 1 to 3 times table, 3 rows with 3 numbers each.\n\nfor (int i = 1; i <= 3; i++) {\n    for (int j = ____; j <= 3; j++) {\n        cout << ____ << \" \";\n    }\n    cout << endl;\n}",
+      "answer": "for (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= 3; j++) {\n        cout << i * j << \" \";\n    }\n    cout << endl;\n}",
+      "hint": "The inner variable starts at 1. Each cell is row times column.",
+      "explanation": "j starts at 1 and each cell prints i * j."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that reads n and prints the multiplication tables of 1 to n, one table per line, each up to 10. (For n = 2, line 1 is 1 2 3 ... 10 and line 2 is 2 4 6 ... 20.)",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= 10; j++) {\n            cout << i * j << \" \";\n        }\n        cout << endl;\n    }\n    return 0;\n}",
+      "hint": "Outer loop for the table number i, inner loop for j from 1 to 10, endl after the inner loop.",
+      "explanation": "The outer loop selects the table, the inner loop prints i * j for j = 1 to 10, and endl ends the line."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "In a nested loop, which variable changes faster?",
+      "options": [
+        "The inner loop variable",
+        "The outer loop variable",
+        "Both change at the same speed",
+        "Neither"
+      ],
+      "answer": "The inner loop variable",
+      "hint": "Think of the minute hand and the hour hand of a clock.",
+      "explanation": "The inner loop completes all of its iterations before the outer variable changes once, like minutes and hours."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is a nested loop?",
+      "options": [
+        "A loop inside another loop",
+        "Two loops one after another",
+        "A loop that never ends",
+        "A loop with no body"
+      ],
+      "answer": "A loop inside another loop",
+      "hint": "Nested means placed inside.",
+      "explanation": "The inner loop is part of the body of the outer loop."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Outer loop runs 3 times, inner loop runs 4 times. How many times does the inner body run?",
+      "options": [
+        "12",
+        "7",
+        "4",
+        "3"
+      ],
+      "answer": "12",
+      "hint": "Multiply.",
+      "explanation": "The inner loop runs fully (4 times) for each of the 3 outer iterations: 3 x 4 = 12."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What happens to the inner loop variable when the outer loop moves to its next iteration?",
+      "options": [
+        "It starts again from its initial value",
+        "It keeps its last value",
+        "It becomes 0 always",
+        "The inner loop is skipped"
+      ],
+      "answer": "It starts again from its initial value",
+      "hint": "The inner for loop is executed fresh each time.",
+      "explanation": "The initialisation part of the inner for loop runs again, so j restarts."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "In a pattern program, where do we usually put cout << endl; ?",
+      "options": [
+        "After the inner loop, inside the outer loop",
+        "Inside the inner loop",
+        "Before both loops",
+        "After both loops"
+      ],
+      "answer": "After the inner loop, inside the outer loop",
+      "hint": "Once per row.",
+      "explanation": "A new line is needed once per row, after the inner loop has printed all columns."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "for (int i = 1; i <= 4; i++) for (int j = 1; j <= i; j++) count++; What is count at the end?",
+      "options": [
+        "10",
+        "16",
+        "4",
+        "8"
+      ],
+      "answer": "10",
+      "hint": "Add 1 + 2 + 3 + 4.",
+      "explanation": "The inner loop runs 1, 2, 3 and 4 times, so count = 1 + 2 + 3 + 4 = 10."
+    }
+  ],
+  "sources": [
+    "Nested loops",
+    "Loop inside a loop",
+    "Tracing nested loops",
+    "Multiplication table with nested loops",
+    "Counting loop iterations"
+  ]
+}

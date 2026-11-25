@@ -1,0 +1,66 @@
+{
+ "hello": {
+  "out": "Hello UMT\n",
+  "exit": 0
+ },
+ "io": {
+  "out": "Enter two numbers: Sum = 20\n",
+  "exit": 0
+ },
+ "if-else": {
+  "out": "Pass\n",
+  "exit": 0
+ },
+ "switch": {
+  "out": "Wednesday\n",
+  "exit": 0
+ },
+ "for": {
+  "out": "5 x 1 = 5\n5 x 2 = 10\n5 x 3 = 15\n5 x 4 = 20\n5 x 5 = 25\n5 x 6 = 30\n5 x 7 = 35\n5 x 8 = 40\n5 x 9 = 45\n5 x 10 = 50\n",
+  "exit": 0
+ },
+ "array-max": {
+  "out": "Largest = 9\n",
+  "exit": 0
+ },
+ "bubble": {
+  "out": "1 2 4 5 8 \n",
+  "exit": 0
+ },
+ "matrix": {
+  "out": "Sum = 21\n",
+  "exit": 0
+ },
+ "function": {
+  "out": "49\n",
+  "exit": 0
+ },
+ "pass-ref": {
+  "out": "9 3\n",
+  "exit": 0
+ },
+ "pointer": {
+  "out": "15\n",
+  "exit": 0
+ },
+ "dynamic": {
+  "out": "0 1 4 9 \n",
+  "exit": 0
+ },
+ "recursion": {
+  "out": "120\n",
+  "exit": 0
+ },
+ "string": {
+  "out": "Hello Sara, length 4\n",
+  "exit": 0
+ },
+ "struct": {
+  "out": "Ali scored 85\n",
+  "exit": 0
+ },
+ "file": {
+  "out": "Read: Hello file\n",
+  "exit": 0
+ }
+}

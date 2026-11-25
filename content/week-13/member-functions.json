@@ -1,0 +1,1050 @@
+{
+  "slug": "member-functions",
+  "week": 13,
+  "title": "Member functions: a struct that can do things",
+  "defaultView": "visualize",
+  "order": 1,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match each idea to its meaning",
+      "pairs": [
+        {
+          "term": "Member function",
+          "meaning": "A function written inside a struct; it works on the members of one object"
+        },
+        {
+          "term": "s1.print()",
+          "meaning": "Call print on the object s1 using the dot operator"
+        },
+        {
+          "term": "name inside print()",
+          "meaning": "The name member of the object the function was called on (no dot needed)"
+        },
+        {
+          "term": "Two objects s1 and s2",
+          "meaning": "Each has its own data; the same function code works on whichever one you call"
+        },
+        {
+          "term": "struct members by default",
+          "meaning": "public: they can be used from outside the struct"
+        },
+        {
+          "term": "bool withdraw(double amount)",
+          "meaning": "A member function that returns true or false to tell if it worked"
+        }
+      ]
+    },
+    {
+      "kind": "pipeline",
+      "title": "What happens in s1.print()",
+      "stages": [
+        {
+          "name": "1. Pick the object",
+          "detail": "The part before the dot (s1) says WHICH object the function will work on."
+        },
+        {
+          "name": "2. Call the function",
+          "detail": "The name after the dot (print) says WHAT to do. Parameters, if any, are copied in."
+        },
+        {
+          "name": "3. Use the members",
+          "detail": "Inside the function, name and marks mean s1.name and s1.marks. No dot is needed."
+        },
+        {
+          "name": "4. Return",
+          "detail": "The function ends and control goes back to the line after the call. Changes to the members stay in s1."
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can write functions inside a struct, call them with the dot operator (s.print()), and explain why a member function can use the members without a dot.",
+  "warmup": "Think of a mobile phone. It stores data (your contacts, your balance) and it can do things (call, show balance, add contact). A SIM card record in Pakistan is similar: it holds a number and a balance, and you can ask it to show the balance or to add load. In C++ a struct can do the same: it keeps data together and also keeps the functions that work on that data.",
+  "definition": "A member function is a function that is declared INSIDE a struct. It belongs to the struct, so it can use the data members of the struct directly, without the dot operator. You call it on a variable of the struct (an object) with the dot operator: s1.print(). In a struct, all members are public by default, which means code outside can use them. (In a class they are private by default. That is the main difference, and you will learn classes in the next course.)",
+  "howItWorks": "Step through the first trace and watch the call stack panel. A member function is always called ON an object. In s1.set(\"Ali\", 80) the part before the dot, s1, is the object. Inside set, the words name and marks mean s1.name and s1.marks, because the function is working on s1. That is why no dot is needed inside. When we later call s2.set(\"Sara\", 92), the SAME code runs, but now name and marks mean s2.name and s2.marks. Each object keeps its own data; the functions are shared. Outside the struct, we still need the dot to reach a member: r.width, r.area(). A member function can have parameters (like set), can return a value (like area), and can return true or false (like withdraw). Look in the third trace: deposit changes the balance of acc and returns nothing, while withdraw checks first and returns a bool.",
+  "syntax": "struct Student {\n    string name;          // data member\n    int marks;            // data member (out of 200)\n\n    void set(string n, int m) {   // member function with parameters\n        name = n;         // name means this object's name\n        marks = m;\n    }\n\n    double percentage() { // member function that returns a value\n        return marks * 100.0 / 200;\n    }\n\n    void print() {        // member function with no parameters\n        cout << name << \" \" << marks << endl;\n    }\n};                        // semicolon after the closing brace\n\nStudent s1;                // create an object\ns1.set(\"Ali\", 80);         // object.function(arguments)\ns1.print();",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Make a struct Student with a name and marks. Add a member function set() that stores the values and print() that shows them. Use it for two students.",
+      "pseudocode": [
+        "START",
+        "DECLARE struct Student with name, marks",
+        "CREATE object s1",
+        "CALL s1.set(Ali, 80) : fills s1.name and s1.marks",
+        "CALL s1.print()",
+        "CREATE object s2 and do the same with Sara, 92",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Create s1]\n  B --> C[s1.set fills name and marks]\n  C --> D[/s1.print shows Ali scored 80/]\n  D --> E[Create s2]\n  E --> F[s2.set fills name and marks]\n  F --> G[/s2.print shows Sara scored 92/]\n  G --> H([End])",
+      "sample": {
+        "id": "member-basic",
+        "title": "A struct with set() and print()",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    string name;\n    int marks;\n\n    void set(string n, int m) {\n        name = n;\n        marks = m;\n    }\n\n    void print() {\n        cout << name << \" scored \" << marks << endl;\n    }\n};\n\nint main() {\n    Student s1;\n    s1.set(\"Ali\", 80);\n    s1.print();\n    Student s2;\n    s2.set(\"Sara\", 92);\n    s2.print();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Ali scored 80\nSara scored 92\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A structure with two data members."
+          },
+          {
+            "line": 6,
+            "text": "Data member: the student's name."
+          },
+          {
+            "line": 9,
+            "text": "A member function. It lives inside the struct, so it works with the members of one Student."
+          },
+          {
+            "line": 10,
+            "text": "No dot needed: name is the member of the object the function was called on."
+          },
+          {
+            "line": 14,
+            "text": "A second member function with no parameters."
+          },
+          {
+            "line": 15,
+            "text": "Reads the members of the same object and prints them."
+          },
+          {
+            "line": 20,
+            "text": "Create an object (a variable of the struct type)."
+          },
+          {
+            "line": 21,
+            "text": "Call the member function with the dot operator: object.function(arguments)."
+          },
+          {
+            "line": 22,
+            "text": "Prints the data of s1 only."
+          },
+          {
+            "line": 24,
+            "text": "The same function works on another object. Each object keeps its own data."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 19,
+              "vars": {},
+              "note": "The program starts at main(). No objects exist yet.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 20,
+              "vars": {
+                "s1.name": "\"\"",
+                "s1.marks": "?"
+              },
+              "note": "main creates the object s1. It has its own two boxes: name and marks. They are empty for now.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s1.name": "\"\"",
+                    "s1.marks": "?"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 21,
+              "vars": {
+                "n": "\"Ali\"",
+                "m": "80"
+              },
+              "note": "The call s1.set(...) runs the function set ON the object s1. The parameters n and m are new boxes holding copies of \"Ali\" and 80.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s1.name": "\"\"",
+                    "s1.marks": "?"
+                  }
+                },
+                {
+                  "fn": "s1.set(n, m)",
+                  "vars": {
+                    "n": "\"Ali\"",
+                    "m": "80"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {
+                "s1.name": "\"Ali\""
+              },
+              "note": "Inside set, plain name means s1.name, because set is running on s1. No dot is needed.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s1.name": "\"Ali\"",
+                    "s1.marks": "?"
+                  }
+                },
+                {
+                  "fn": "s1.set(n, m)",
+                  "vars": {
+                    "n": "\"Ali\"",
+                    "m": "80"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {
+                "s1.marks": "80"
+              },
+              "note": "marks means s1.marks, so s1.marks becomes 80.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s1.name": "\"Ali\"",
+                    "s1.marks": "80"
+                  }
+                },
+                {
+                  "fn": "s1.set(n, m)",
+                  "vars": {
+                    "n": "\"Ali\"",
+                    "m": "80"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 22,
+              "vars": {},
+              "note": "The function set has finished and its boxes are gone. Now s1.print() runs on the object s1.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s1.name": "\"Ali\"",
+                    "s1.marks": "80"
+                  }
+                },
+                {
+                  "fn": "s1.print()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "print reads name and marks of s1 and prints them.",
+              "out": "Ali scored 80\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s1.name": "\"Ali\"",
+                    "s1.marks": "80"
+                  }
+                },
+                {
+                  "fn": "s1.print()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 23,
+              "vars": {
+                "s2.name": "\"\"",
+                "s2.marks": "?"
+              },
+              "note": "main creates a second object s2. It has its OWN name and marks, separate from s1.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s1.name": "\"Ali\"",
+                    "s1.marks": "80",
+                    "s2.name": "\"\"",
+                    "s2.marks": "?"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 24,
+              "vars": {
+                "n": "\"Sara\"",
+                "m": "92"
+              },
+              "note": "The same function set now runs on s2. Inside it, name and marks mean s2.name and s2.marks.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s1.name": "\"Ali\"",
+                    "s1.marks": "80",
+                    "s2.name": "\"\"",
+                    "s2.marks": "?"
+                  }
+                },
+                {
+                  "fn": "s2.set(n, m)",
+                  "vars": {
+                    "n": "\"Sara\"",
+                    "m": "92"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {
+                "s2.name": "\"Sara\""
+              },
+              "note": "s2.name becomes Sara. s1 is untouched.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s1.name": "\"Ali\"",
+                    "s1.marks": "80",
+                    "s2.name": "\"Sara\"",
+                    "s2.marks": "?"
+                  }
+                },
+                {
+                  "fn": "s2.set(n, m)",
+                  "vars": {
+                    "n": "\"Sara\"",
+                    "m": "92"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {
+                "s2.marks": "92"
+              },
+              "note": "s2.marks becomes 92.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s1.name": "\"Ali\"",
+                    "s1.marks": "80",
+                    "s2.name": "\"Sara\"",
+                    "s2.marks": "92"
+                  }
+                },
+                {
+                  "fn": "s2.set(n, m)",
+                  "vars": {
+                    "n": "\"Sara\"",
+                    "m": "92"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 25,
+              "vars": {},
+              "note": "Now s2.print() runs on s2.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s1.name": "\"Ali\"",
+                    "s1.marks": "80",
+                    "s2.name": "\"Sara\"",
+                    "s2.marks": "92"
+                  }
+                },
+                {
+                  "fn": "s2.print()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "The same print code now prints s2's data, because the function runs on s2.",
+              "out": "Sara scored 92\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s1.name": "\"Ali\"",
+                    "s1.marks": "80",
+                    "s2.name": "\"Sara\"",
+                    "s2.marks": "92"
+                  }
+                },
+                {
+                  "fn": "s2.print()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 26,
+              "vars": {},
+              "note": "The program ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "s1.name": "\"Ali\"",
+                    "s1.marks": "80",
+                    "s2.name": "\"Sara\"",
+                    "s2.marks": "92"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "s1.name": "string",
+            "s1.marks": "int",
+            "s2.name": "string",
+            "s2.marks": "int",
+            "n": "string",
+            "m": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read the width and height of a rectangle. Use member functions to find its area and perimeter.",
+      "pseudocode": [
+        "START",
+        "READ width, height into r",
+        "area = width * height (member function)",
+        "perimeter = 2 * (width + height) (member function)",
+        "PRINT both",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read width and height/]\n  B --> C[Call r.area]\n  C --> D[Call r.perimeter]\n  D --> E[/Print area and perimeter/]\n  E --> F([End])",
+      "sample": {
+        "id": "member-returning",
+        "title": "Member functions that return a value",
+        "code": "#include <iostream>\nusing namespace std;\n\nstruct Rectangle {\n    double width;\n    double height;\n\n    double area() {\n        return width * height;\n    }\n\n    double perimeter() {\n        return 2 * (width + height);\n    }\n};\n\nint main() {\n    Rectangle r;\n    cin >> r.width >> r.height;\n    cout << \"Area = \" << r.area() << endl;\n    cout << \"Perimeter = \" << r.perimeter() << endl;\n    return 0;\n}\n",
+        "stdin": "5 3\n",
+        "graphics": false,
+        "expectedOutput": "Area = 15\nPerimeter = 16\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "Two data members: width and height."
+          },
+          {
+            "line": 8,
+            "text": "A member function that returns a double. It needs no parameters, because width and height are already inside the object."
+          },
+          {
+            "line": 9,
+            "text": "width and height are the members of the object r. No dot needed."
+          },
+          {
+            "line": 13,
+            "text": "Perimeter = 2 x (width + height)."
+          },
+          {
+            "line": 18,
+            "text": "One Rectangle object."
+          },
+          {
+            "line": 19,
+            "text": "Outside the struct we need the dot to reach a member."
+          },
+          {
+            "line": 20,
+            "text": "Calls area on r. The returned value is printed."
+          },
+          {
+            "line": 21,
+            "text": "Calls perimeter on r."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Study the BankAccount program. Write its exact output. Which member function returns a value, and what does acc.withdraw(10000) do?",
+      "pseudocode": [
+        "START",
+        "SET acc = Zainab, 5000",
+        "deposit 1500: balance 6500",
+        "withdraw 10000: too much, return false, print warning",
+        "withdraw 2000: balance 4500, return true",
+        "show prints the account",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[acc = Zainab, 5000]\n  B --> C[deposit 1500]\n  C --> D{withdraw 10000 ok?}\n  D -- No --> E[/Print Insufficient balance/]\n  D -- Yes --> F[Balance goes down]\n  E --> G[withdraw 2000]\n  F --> G\n  G --> H[/show prints the account/]\n  H --> I([End])",
+      "sample": {
+        "id": "member-bank",
+        "title": "Bank account with deposit, withdraw and show",
+        "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct BankAccount {\n    string owner;\n    double balance;\n\n    void deposit(double amount) {\n        if (amount > 0) balance += amount;\n    }\n\n    bool withdraw(double amount) {\n        if (amount > 0 && amount <= balance) {\n            balance -= amount;\n            return true;\n        }\n        return false;\n    }\n\n    void show() {\n        cout << owner << \": Rs. \" << balance << endl;\n    }\n};\n\nint main() {\n    BankAccount acc = {\"Zainab\", 5000};\n    acc.deposit(1500);\n    if (!acc.withdraw(10000))\n        cout << \"Insufficient balance\" << endl;\n    acc.withdraw(2000);\n    acc.show();\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Insufficient balance\nZainab: Rs. 4500\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Data (owner, balance) and behaviour (deposit, withdraw, show) live together."
+          },
+          {
+            "line": 9,
+            "text": "Adds money. It changes the balance of the object it is called on."
+          },
+          {
+            "line": 10,
+            "text": "Only a positive amount is accepted."
+          },
+          {
+            "line": 13,
+            "text": "Returns true if the money was taken, false if not."
+          },
+          {
+            "line": 14,
+            "text": "You cannot withdraw more than you have."
+          },
+          {
+            "line": 18,
+            "text": "The withdrawal was refused."
+          },
+          {
+            "line": 21,
+            "text": "Prints the account."
+          },
+          {
+            "line": 27,
+            "text": "Initialiser list fills owner and balance, as with any struct."
+          },
+          {
+            "line": 28,
+            "text": "Member functions are called with the dot: acc.deposit(1500)."
+          },
+          {
+            "line": 29,
+            "text": "The returned bool is used in an if. 10000 is too much, so the message is printed."
+          },
+          {
+            "line": 31,
+            "text": "This one succeeds. The returned true is not used."
+          },
+          {
+            "line": 32,
+            "text": "Prints Zainab: Rs. 4500."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 26,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 27,
+              "vars": {
+                "acc.owner": "\"Zainab\"",
+                "acc.balance": "5000"
+              },
+              "note": "Object acc is created and filled with the initialiser list: owner and balance.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "acc.owner": "\"Zainab\"",
+                    "acc.balance": "5000"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 28,
+              "vars": {
+                "amount": "1500"
+              },
+              "note": "acc.deposit(1500) runs deposit on acc. The parameter amount is 1500.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "acc.owner": "\"Zainab\"",
+                    "acc.balance": "5000"
+                  }
+                },
+                {
+                  "fn": "acc.deposit(amount)",
+                  "vars": {
+                    "amount": "1500"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 10,
+              "vars": {
+                "acc.balance": "6500"
+              },
+              "note": "1500 is positive, so balance (that is acc.balance) grows by 1500.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "acc.owner": "\"Zainab\"",
+                    "acc.balance": "6500"
+                  }
+                },
+                {
+                  "fn": "acc.deposit(amount)",
+                  "vars": {
+                    "amount": "1500"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 29,
+              "vars": {
+                "amount": "10000"
+              },
+              "note": "acc.withdraw(10000) runs on acc. 10000 is bigger than the balance 6500, so the inner if is false.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "acc.owner": "\"Zainab\"",
+                    "acc.balance": "6500"
+                  }
+                },
+                {
+                  "fn": "acc.withdraw(amount)",
+                  "vars": {
+                    "amount": "10000"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "The money is NOT taken. withdraw returns false to main.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "acc.owner": "\"Zainab\"",
+                    "acc.balance": "6500"
+                  }
+                },
+                {
+                  "fn": "acc.withdraw(amount)",
+                  "vars": {
+                    "amount": "10000"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 30,
+              "vars": {},
+              "note": "!false is true, so main prints the warning.",
+              "out": "Insufficient balance\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "acc.owner": "\"Zainab\"",
+                    "acc.balance": "6500"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 31,
+              "vars": {
+                "amount": "2000"
+              },
+              "note": "Now withdraw(2000): 2000 <= 6500, so it is allowed.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "acc.owner": "\"Zainab\"",
+                    "acc.balance": "6500"
+                  }
+                },
+                {
+                  "fn": "acc.withdraw(amount)",
+                  "vars": {
+                    "amount": "2000"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {
+                "acc.balance": "4500"
+              },
+              "note": "balance goes down by 2000.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "acc.owner": "\"Zainab\"",
+                    "acc.balance": "4500"
+                  }
+                },
+                {
+                  "fn": "acc.withdraw(amount)",
+                  "vars": {
+                    "amount": "2000"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "withdraw returns true. main ignores the result here.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "acc.owner": "\"Zainab\"",
+                    "acc.balance": "4500"
+                  }
+                },
+                {
+                  "fn": "acc.withdraw(amount)",
+                  "vars": {
+                    "amount": "2000"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 32,
+              "vars": {},
+              "note": "acc.show() runs on acc.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "acc.owner": "\"Zainab\"",
+                    "acc.balance": "4500"
+                  }
+                },
+                {
+                  "fn": "acc.show()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 22,
+              "vars": {},
+              "note": "show prints the owner and the balance of acc.",
+              "out": "Zainab: Rs. 4500\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "acc.owner": "\"Zainab\"",
+                    "acc.balance": "4500"
+                  }
+                },
+                {
+                  "fn": "acc.show()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 33,
+              "vars": {},
+              "note": "The program ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "acc.owner": "\"Zainab\"",
+                    "acc.balance": "4500"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "acc.owner": "string",
+            "acc.balance": "double",
+            "amount": "double"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Member function with no parameters",
+      "when": "The function only needs the data already inside the object.",
+      "example": "void print() { cout << name << endl; }\n// s1.print();"
+    },
+    {
+      "way": "Member function with parameters",
+      "when": "You want to put new values into the object.",
+      "example": "void set(string n, int m) { name = n; marks = m; }\n// s1.set(\"Ali\", 80);"
+    },
+    {
+      "way": "Member function that returns a value",
+      "when": "You want a result such as an area or a percentage.",
+      "example": "double area() { return width * height; }\n// double a = r.area();"
+    },
+    {
+      "way": "Member function that returns bool",
+      "when": "The action can succeed or fail (withdraw money, add an item).",
+      "example": "bool withdraw(double amount) { ... return true; ... return false; }\n// if (!acc.withdraw(500)) cout << \"Failed\";"
+    },
+    {
+      "way": "Normal function outside the struct",
+      "when": "The data is passed in as an argument, so you need the dot inside the function (see the next lesson).",
+      "example": "void print(Student s) { cout << s.name; }\n// print(s1);"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "Student s1 = {\"Ali\", 80};\nprint();",
+      "right": "Student s1 = {\"Ali\", 80};\ns1.print();",
+      "error": "error: 'print' was not declared in this scope"
+    },
+    {
+      "wrong": "struct Student {\n    string name;\n    void print() { cout << name; }\n}      // semicolon missing",
+      "right": "struct Student {\n    string name;\n    void print() { cout << name; }\n};",
+      "error": "error: expected ';' after struct definition"
+    },
+    {
+      "wrong": "Student.print();",
+      "right": "Student s1 = {\"Ali\", 80};\ns1.print();",
+      "error": "error: expected unqualified-id before '.' token"
+    },
+    {
+      "wrong": "void set(string name, int marks) {\n    name = name;\n    marks = marks;\n}",
+      "right": "void set(string n, int m) {\n    name = n;\n    marks = m;\n}",
+      "error": "The compiler accepts this, but the parameter hides the member, so the object is never changed. Give the parameters different names from the members."
+    }
+  ],
+  "examTips": [
+    "Always say ON which object a member function runs: in s1.print() it is s1. Inside the function, a plain member name means that object's member.",
+    "Inside a member function use name, not s1.name. Outside the struct, use the dot: s1.name.",
+    "A struct declaration ends with a semicolon after the closing brace. Forgetting it is a classic error.",
+    "In an output question, track each object's data separately. s1.set(...) does not change s2.",
+    "Remember the difference: in a struct, members are public by default; in a class they are private by default."
+  ],
+  "romanSummary": [
+    "Struct ke andar data ke saath functions bhi likh sakte hain. Inhein member functions kehte hain.",
+    "Member function struct ke members ko seedha use karta hai, dot ke baghair: balance += amount.",
+    "Call variable (object) ke saath hoti hai: acc.deposit(1500). Dot ke pehle wala object batata hai ke kis ka data use hoga.",
+    "Har object ka apna data hota hai, lekin function ka code sab ke liye ek hi hota hai.",
+    "struct mein members by default public hote hain, class mein private. Struct ke end par semicolon zaroor lagayen."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How do you call the member function deposit on an object acc?",
+      "options": [
+        "acc.deposit(1500);",
+        "deposit(acc, 1500);",
+        "acc->deposit = 1500;",
+        "BankAccount.deposit(1500);"
+      ],
+      "answer": "acc.deposit(1500);",
+      "hint": "Use the dot after the object name.",
+      "explanation": "A member function is called on an object with the dot operator: object.function(arguments)."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nstruct Counter {\n    int n;\n    void inc() { n++; }\n};\nint main() {\n    Counter c = {0};\n    c.inc();\n    c.inc();\n    c.inc();\n    cout << c.n;\n    return 0;\n}",
+      "answer": "3",
+      "hint": "inc adds 1 to c.n each time.",
+      "explanation": "inc runs three times on c and adds 1 each time, so c.n is 3."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nstruct Box {\n    int side;\n    int area() { return side * side; }\n};\nint main() {\n    Box a = {3};\n    Box b = {5};\n    cout << a.area() << \" \" << b.area() << endl;\n    return 0;\n}",
+      "answer": "9 25",
+      "hint": "Each object has its own side.",
+      "explanation": "a.area() is 3*3 = 9 and b.area() is 5*5 = 25. The same function runs on two different objects."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "The program does not compile. Fix the line in main only.\n\nstruct Student {\n    string name;\n    int marks;\n    void print() { cout << name << \" \" << marks << endl; }\n};\nint main() {\n    Student s1 = {\"Ali\", 80};\n    print();\n    return 0;\n}",
+      "answer": "s1.print();",
+      "hint": "A member function needs an object.",
+      "explanation": "print belongs to Student, so it must be called on an object: s1.print();"
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank so area() returns the area of a circle.\n\nstruct Circle {\n    double r;\n    double area() { return 3.14 * ____; }\n};",
+      "answer": "r * r",
+      "hint": "Area = pi x radius x radius.",
+      "explanation": "Inside the struct, r is the member. 3.14 * r * r is the area."
+    },
+    {
+      "id": "p6",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a struct Item with a string name and a double price, and a member function show() that prints the item like this: Pen: Rs. 30",
+      "answer": "struct Item {\n    string name;\n    double price;\n    void show() {\n        cout << name << \": Rs. \" << price << endl;\n    }\n};",
+      "hint": "Declare two members, then a function inside the braces.",
+      "explanation": "show uses name and price directly because it is a member function."
+    },
+    {
+      "id": "p7",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nstruct Wallet {\n    int cash;\n    bool spend(int a) {\n        if (a <= cash) {\n            cash -= a;\n            return true;\n        }\n        return false;\n    }\n};\nint main() {\n    Wallet w = {100};\n    cout << w.spend(30) << \" \";\n    cout << w.spend(80) << \" \";\n    cout << w.cash << endl;\n    return 0;\n}",
+      "answer": "1 0 70",
+      "hint": "bool prints as 1 or 0. Track cash after each call.",
+      "explanation": "spend(30) succeeds (prints 1, cash 70). spend(80) fails because 80 > 70 (prints 0). cash is still 70."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is a member function?",
+      "options": [
+        "A function written inside a struct",
+        "A function that must be named main",
+        "A function that cannot take parameters",
+        "A variable with two names"
+      ],
+      "answer": "A function written inside a struct",
+      "hint": "It belongs to the struct.",
+      "explanation": "A member function is declared inside the struct and works with that struct's data."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How do you call a member function print on an object s1?",
+      "options": [
+        "s1.print();",
+        "print.s1();",
+        "print(s1)();",
+        "s1 = print();"
+      ],
+      "answer": "s1.print();",
+      "hint": "Object, dot, function.",
+      "explanation": "The dot operator joins the object and the function: s1.print()."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Inside a member function, how do you use the data member balance of the same object?",
+      "options": [
+        "Just write balance",
+        "Write struct.balance",
+        "Write balance() with brackets",
+        "You cannot use it"
+      ],
+      "answer": "Just write balance",
+      "hint": "No dot is needed inside.",
+      "explanation": "The function runs on an object, so balance means that object's balance."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Two objects s1 and s2 use the same member function set. What is true?",
+      "options": [
+        "Each object keeps its own data",
+        "Both share one name and one marks",
+        "s2 changes when s1 changes",
+        "Only one object may call set"
+      ],
+      "answer": "Each object keeps its own data",
+      "hint": "Think of two separate students.",
+      "explanation": "The function code is shared but each object has its own members."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "In a struct, members are by default...",
+      "options": [
+        "public",
+        "private",
+        "protected only",
+        "hidden from main"
+      ],
+      "answer": "public",
+      "hint": "This differs from a class.",
+      "explanation": "In a struct members are public by default; in a class they are private by default."
+    }
+  ],
+  "sources": [
+    "Member functions in a structure",
+    "Calling a member function with the dot operator",
+    "Struct vs class (public by default)"
+  ]
+}

@@ -1,0 +1,610 @@
+{
+  "slug": "assignment-and-precedence",
+  "week": 1,
+  "title": "Assignment operators, precedence and parentheses",
+  "defaultView": "visualize",
+  "order": 9,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "How C++ evaluates 10 + 6 / 2 * 3 - 4 % 3",
+      "stages": [
+        {
+          "name": "Step 1: 6 / 2",
+          "detail": "/ * % come before + -. Working left to right, 6 / 2 = 3. Expression: 10 + 3 * 3 - 4 % 3"
+        },
+        {
+          "name": "Step 2: 3 * 3",
+          "detail": "Next * (same level as /, left to right) gives 9. Expression: 10 + 9 - 4 % 3"
+        },
+        {
+          "name": "Step 3: 4 % 3",
+          "detail": "% is also at the high level, so it is done before + and -. 4 % 3 = 1. Expression: 10 + 9 - 1"
+        },
+        {
+          "name": "Step 4: 10 + 9",
+          "detail": "Now + and - (same level, left to right). 10 + 9 = 19. Expression: 19 - 1"
+        },
+        {
+          "name": "Step 5: 19 - 1",
+          "detail": "The last step gives the final answer: 18"
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match the operator to its priority",
+      "pairs": [
+        {
+          "term": "( )",
+          "meaning": "Highest: always first"
+        },
+        {
+          "term": "++  --  unary -",
+          "meaning": "Next: act on a single value"
+        },
+        {
+          "term": "*  /  %",
+          "meaning": "Then multiply, divide, remainder (left to right)"
+        },
+        {
+          "term": "+  -",
+          "meaning": "Then add and subtract (left to right)"
+        },
+        {
+          "term": "=  +=  -=  *=  /=  %=",
+          "meaning": "Lowest: done last (right to left)"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can use = += -= *= /= %= and work out, step by step, the value of any expression with several operators.",
+  "warmup": "In maths class you learned that 2 + 3 x 4 is 14, not 20, because multiplication goes before addition. A canteen bill works the same way: 2 teas at Rs. 40 each plus 1 sandwich at Rs. 150 is 2 * 40 + 150 = 230. Nobody adds 2 + 40 first. C++ follows the same order rules, and you can use brackets to change them.",
+  "definition": "An assignment operator stores a value in a variable. The simple form is =. The compound forms (+= -= *= /= %=) change a variable using its own old value: x += 5 means x = x + 5. Precedence is the priority of operators: the higher one is done first. Associativity says which direction to go when operators have the same priority (usually left to right).",
+  "howItWorks": "Step through the trace. For every expression C++ looks for brackets first, then * / %, then + -, and works from left to right inside each level. Assignment is always the last operation: the whole right side is calculated first, then the answer is stored in the variable.",
+  "syntax": "x = 10;          // store 10 in x\nx += 5;          // x = x + 5\nx -= 5;          // x = x - 5\nx *= 5;          // x = x * 5\nx /= 5;          // x = x / 5\nx %= 5;          // x = x % 5\n\nx *= y + 2;      // means x = x * (y + 2), NOT (x * y) + 2\n\n// Priority, highest first:\n// ( )  then  ++ -- unary-  then  * / %  then  + -  then  = += -= ...\na = b = c = 4;   // = goes right to left",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "A mobile balance starts at Rs. 100. Add 50, subtract 30, double it, divide by 5, then keep the remainder after dividing by 10. Use compound assignment operators and print the result.",
+      "pseudocode": [
+        "START",
+        "SET balance = 100",
+        "balance += 50",
+        "balance -= 30",
+        "balance *= 2",
+        "balance /= 5",
+        "balance %= 10",
+        "PRINT balance",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[balance = 100]\n  B --> C[balance += 50]\n  C --> D[balance -= 30]\n  D --> E[balance *= 2]\n  E --> F[balance /= 5]\n  F --> G[balance %= 10]\n  G --> H[/Print balance/]\n  H --> I([End])",
+      "sample": {
+        "id": "compound-balance",
+        "title": "Mobile balance with compound assignment",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int balance = 100;\n    balance += 50;\n    balance -= 30;\n    balance *= 2;\n    balance /= 5;\n    balance %= 10;\n    cout << \"balance = \" << balance << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "balance = 8\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Start with Rs. 100."
+          },
+          {
+            "line": 6,
+            "text": "Same as balance = balance + 50. Now 150."
+          },
+          {
+            "line": 7,
+            "text": "Same as balance = balance - 30. Now 120."
+          },
+          {
+            "line": 8,
+            "text": "Same as balance = balance * 2. Now 240."
+          },
+          {
+            "line": 9,
+            "text": "Same as balance = balance / 5. Integer division: 240 / 5 = 48."
+          },
+          {
+            "line": 10,
+            "text": "Same as balance = balance % 10. The remainder of 48 / 10 is 8."
+          },
+          {
+            "line": 11,
+            "text": "Prints the final value."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "balance": "100"
+              },
+              "note": "balance holds 100.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "balance": "150"
+              },
+              "note": "balance = 100 + 50 = 150.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "balance": "120"
+              },
+              "note": "balance = 150 - 30 = 120.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "balance": "240"
+              },
+              "note": "balance = 120 * 2 = 240.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "balance": "48"
+              },
+              "note": "balance = 240 / 5 = 48.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "balance": "8"
+              },
+              "note": "balance = 48 % 10 = 8.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Print the final value.",
+              "out": "balance = 8\n"
+            }
+          ],
+          "types": {
+            "balance": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Evaluate 10 + 6 / 2 * 3 - 4 % 3 with and without a bracket around (10 + 6). Also show that / goes left to right and = goes right to left.",
+      "pseudocode": [
+        "START",
+        "r1 = 10 + 6 / 2 * 3 - 4 % 3",
+        "r2 = (10 + 6) / 2 * 3 - 4 % 3",
+        "r3 = 100 / 10 / 2",
+        "a = b = c = 4",
+        "PRINT r1, r2, r3",
+        "PRINT a, b, c",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Calculate r1, r2, r3]\n  B --> C[a = b = c = 4]\n  C --> D[/Print r1 r2 r3/]\n  D --> E[/Print a b c/]\n  E --> F([End])",
+      "sample": {
+        "id": "precedence-demo",
+        "title": "Same numbers, different order",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int r1 = 10 + 6 / 2 * 3 - 4 % 3;\n    int r2 = (10 + 6) / 2 * 3 - 4 % 3;\n    int r3 = 100 / 10 / 2;\n    int a, b, c;\n    a = b = c = 4;\n    cout << r1 << \" \" << r2 << \" \" << r3 << endl;\n    cout << a << \" \" << b << \" \" << c << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "18 23 5\n4 4 4\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "No brackets. First 6 / 2 = 3, then 3 * 3 = 9 (left to right), then 4 % 3 = 1. Now 10 + 9 - 1 = 18."
+          },
+          {
+            "line": 6,
+            "text": "The bracket goes first: 10 + 6 = 16. Then 16 / 2 = 8, 8 * 3 = 24, 4 % 3 = 1, and 24 - 1 = 23."
+          },
+          {
+            "line": 7,
+            "text": "/ is left to right: (100 / 10) / 2 = 10 / 2 = 5."
+          },
+          {
+            "line": 8,
+            "text": "Three empty boxes (not yet given a value)."
+          },
+          {
+            "line": 9,
+            "text": "= is right to left: c = 4 first, then b = c, then a = b. All three become 4."
+          },
+          {
+            "line": 10,
+            "text": "Prints the three results."
+          },
+          {
+            "line": 11,
+            "text": "Prints a, b and c."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "r1": "18"
+              },
+              "note": "6 / 2 = 3, 3 * 3 = 9, 4 % 3 = 1, then 10 + 9 - 1 = 18.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "r2": "23"
+              },
+              "note": "Bracket first: 16. Then 16 / 2 = 8, 8 * 3 = 24, 4 % 3 = 1, 24 - 1 = 23.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "r3": "5"
+              },
+              "note": "Same level, so left to right: 100 / 10 = 10, then 10 / 2 = 5.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "a, b and c are created but not yet set.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "c": "4",
+                "b": "4",
+                "a": "4"
+              },
+              "note": "Right to left: c = 4, then b = c, then a = b.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Print r1, r2, r3.",
+              "out": "18 23 5\n"
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Print a, b, c.",
+              "out": "4 4 4\n"
+            }
+          ],
+          "types": {
+            "r1": "int",
+            "r2": "int",
+            "r3": "int",
+            "a": "int",
+            "b": "int",
+            "c": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Find the output: x = 10, y = 3, then x += y * 2; y -= 1; x %= y + 3; print x and y.",
+      "pseudocode": [
+        "START",
+        "SET x = 10, y = 3",
+        "x = x + (y * 2)",
+        "y = y - 1",
+        "x = x % (y + 3)",
+        "PRINT x and y",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[x = 10, y = 3]\n  B --> C[\"x += y * 2\"]\n  C --> D[\"y -= 1\"]\n  D --> E[\"x %= y + 3\"]\n  E --> F[/Print x and y/]\n  F --> G([End])",
+      "sample": {
+        "id": "compound-exam",
+        "title": "Trace the values of x and y",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int x = 10, y = 3;\n    x += y * 2;\n    y -= 1;\n    x %= y + 3;\n    cout << x << \" \" << y << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "1 2\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "x is 10 and y is 3."
+          },
+          {
+            "line": 6,
+            "text": "The right side is worked out completely first: y * 2 = 6. Then x = x + 6 = 16."
+          },
+          {
+            "line": 7,
+            "text": "y = y - 1 = 2."
+          },
+          {
+            "line": 8,
+            "text": "The right side y + 3 = 5 is worked out first. Then x = 16 % 5 = 1."
+          },
+          {
+            "line": 9,
+            "text": "Prints x and y."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "x": "10",
+                "y": "3"
+              },
+              "note": "x = 10, y = 3.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "x": "16"
+              },
+              "note": "Right side first: y * 2 = 6. Then x = 10 + 6 = 16.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "y": "2"
+              },
+              "note": "y = 3 - 1 = 2.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "x": "1"
+              },
+              "note": "Right side first: y + 3 = 5. Then x = 16 % 5 = 1.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Print x and y.",
+              "out": "1 2\n"
+            }
+          ],
+          "types": {
+            "x": "int",
+            "y": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "x = x + 5;",
+      "when": "The long way to add 5 to x",
+      "example": "total = total + 5;"
+    },
+    {
+      "way": "x += 5;",
+      "when": "The short way, same result",
+      "example": "total += 5;"
+    },
+    {
+      "way": "x *= y + 2;",
+      "when": "The whole right side is calculated first",
+      "example": "x = 3, y = 4: x *= y + 2 gives x = 18"
+    },
+    {
+      "way": "a = b = c = 4;",
+      "when": "Chain assignment: = works right to left",
+      "example": "c = 4, then b = c, then a = b"
+    },
+    {
+      "way": "( ... )",
+      "when": "Force an operation to happen first",
+      "example": "(10 + 6) / 2   // 8, not 13"
+    },
+    {
+      "way": "Same level, left to right",
+      "when": "For * / % and + -, equal priority runs left to right",
+      "example": "100 / 10 / 2   // (100 / 10) / 2 = 5"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "x + = 5;",
+      "right": "x += 5;",
+      "error": "expected primary-expression before '=' token (no space allowed between + and =)"
+    },
+    {
+      "wrong": "x + 5 = y;",
+      "right": "y = x + 5;",
+      "error": "lvalue required as left operand of assignment (the left side of = must be a variable)"
+    },
+    {
+      "wrong": "int avg = a + b / 2;   // wants the average of a and b",
+      "right": "int avg = (a + b) / 2;",
+      "error": "No error, but / is done before +, so only b is halved. Use brackets."
+    },
+    {
+      "wrong": "x =+ 5;   // meant x += 5",
+      "right": "x += 5;",
+      "error": "No error! It means x = (+5), so x becomes 5 and the old value is lost."
+    }
+  ],
+  "examTips": [
+    "Order to remember: brackets, then * / %, then + -, then assignment last.",
+    "For equal priority, go left to right (but = and compound assignments go right to left).",
+    "Rewrite x op= expr as x = x op (expr), with brackets around the whole right side.",
+    "When unsure, add brackets. Extra brackets never hurt and often make your answer easier to mark.",
+    "In an exam, rewrite the expression after every step, like 10 + 3 * 3 - 4 % 3, so the marker can follow."
+  ],
+  "romanSummary": [
+    "x += 5 ka matlab x = x + 5. Isi tarah -=, *=, /= aur %= hain.",
+    "Precedence ka matlab priority: pehle brackets ( ), phir * / %, phir + -, aur assignment sab se aakhir mein.",
+    "Same priority wale operators left se right chalte hain, jaise 100 / 10 / 2 = 5.",
+    "Assignment (=) right se left chalta hai, isliye a = b = c = 4 mein pehle c ko 4 milta hai.",
+    "Shak ho to brackets laga do, answer saaf aur sahi rehta hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is x after: int x = 4; x += 6;",
+      "options": [
+        "4",
+        "6",
+        "10",
+        "24"
+      ],
+      "answer": "10",
+      "hint": "x += 6 means x = x + 6.",
+      "explanation": "4 + 6 is 10."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this print?\n\ncout << 2 + 3 * 4;",
+      "answer": "14",
+      "hint": "Which goes first, + or *?",
+      "explanation": "* has higher priority, so 3 * 4 = 12 and then 2 + 12 = 14."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\nint x = 3, y = 4;\nx *= y + 2;\ncout << x << \" \" << y;",
+      "answer": "18 4",
+      "hint": "Work out the whole right side first.",
+      "explanation": "y + 2 = 6, then x = 3 * 6 = 18. y never changes."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\ncout << 20 - 6 / 3 * 2 + 7 % 4;",
+      "answer": "19",
+      "hint": "Do / * % from left to right first.",
+      "explanation": "6 / 3 = 2, then 2 * 2 = 4, and 7 % 4 = 3. So 20 - 4 + 3 = 19."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "The programmer wants the average of marks m1, m2, m3 but the answer is wrong. Fix it:\n\ndouble avg = m1 + m2 + m3 / 3;",
+      "answer": "double avg = (m1 + m2 + m3) / 3.0;",
+      "hint": "Only m3 is divided by 3 here.",
+      "explanation": "/ happens before +, so you need brackets around the sum. Using 3.0 also avoids integer division when the marks are ints."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank so the line adds 10 to score: score ____ 10;",
+      "answer": "+=",
+      "hint": "Short form of score = score + 10.",
+      "explanation": "+= adds the right side to the variable and stores it back."
+    },
+    {
+      "id": "p7",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this print?\n\nint a = 2, b = 5, c = 3;\na += b -= c;\ncout << a << \" \" << b << \" \" << c;",
+      "answer": "4 2 3",
+      "hint": "= operators go right to left.",
+      "explanation": "b -= c first: b = 5 - 3 = 2. Then a += b: a = 2 + 2 = 4. c stays 3."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which operator has the HIGHEST priority?",
+      "options": [
+        "+",
+        "*",
+        "( )",
+        "="
+      ],
+      "answer": "( )",
+      "hint": "Brackets can change everything.",
+      "explanation": "Brackets are always evaluated first."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "x -= 3 is the same as:",
+      "options": [
+        "x = 3 - x",
+        "x = x - 3",
+        "x = x + 3",
+        "x == 3"
+      ],
+      "answer": "x = x - 3",
+      "hint": "The variable appears on both sides.",
+      "explanation": "x -= 3 subtracts 3 from the old value of x."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is 8 + 2 * 5 - 4 / 2?",
+      "options": [
+        "16",
+        "6",
+        "20",
+        "10"
+      ],
+      "answer": "16",
+      "hint": "Do * and / first.",
+      "explanation": "2 * 5 = 10, 4 / 2 = 2, so 8 + 10 - 2 = 16."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which direction does = work in a = b = 5?",
+      "options": [
+        "Left to right",
+        "Right to left",
+        "Both",
+        "Random"
+      ],
+      "answer": "Right to left",
+      "hint": "The value 5 starts on the right.",
+      "explanation": "b gets 5 first, then a gets the value of b."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "x = 2, y = 3. After x *= y + 1, x is:",
+      "options": [
+        "7",
+        "8",
+        "9",
+        "6"
+      ],
+      "answer": "8",
+      "hint": "Right side first.",
+      "explanation": "y + 1 = 4, then x = 2 * 4 = 8."
+    }
+  ],
+  "sources": [
+    "Operators",
+    "Assignment operators",
+    "Operator precedence and associativity",
+    "Evaluating expressions"
+  ]
+}

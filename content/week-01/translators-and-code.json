@@ -1,0 +1,512 @@
+{
+  "slug": "translators-and-code",
+  "week": 1,
+  "title": "Language translators, source code and object code",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "The journey of a C++ program: source to running",
+      "stages": [
+        {
+          "name": "Source code (program.cpp)",
+          "detail": "The C++ you type. Humans can read it, the CPU cannot run it."
+        },
+        {
+          "name": "Preprocessor",
+          "detail": "Adds the #include files. The result is expanded code."
+        },
+        {
+          "name": "Compiler",
+          "detail": "Translates the whole program and reports errors. Produces object code."
+        },
+        {
+          "name": "Object code (program.obj / .o)",
+          "detail": "Machine code for your file only. It cannot run yet because library code (like cout) is missing."
+        },
+        {
+          "name": "Linker",
+          "detail": "Joins your object code with library code, for example the code behind iostream."
+        },
+        {
+          "name": "Executable (program.exe)",
+          "detail": "The final machine code that the CPU can run directly."
+        },
+        {
+          "name": "Loader and run",
+          "detail": "The loader puts the program in RAM and the CPU executes it."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match the translator or code type to its meaning",
+      "pairs": [
+        {
+          "term": "Compiler",
+          "meaning": "Translates the whole program at once and makes an .exe"
+        },
+        {
+          "term": "Interpreter",
+          "meaning": "Translates and runs one line at a time, no .exe"
+        },
+        {
+          "term": "Assembler",
+          "meaning": "Converts assembly language into machine code"
+        },
+        {
+          "term": "Source code",
+          "meaning": "The human-readable C++ file (.cpp)"
+        },
+        {
+          "term": "Object code",
+          "meaning": "Compiler output that cannot run yet (.obj)"
+        },
+        {
+          "term": "Machine code / executable",
+          "meaning": "Final binary the CPU runs (.exe)"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can explain why translators are needed, compare a compiler, an interpreter and an assembler, describe source, object and machine code, and tell syntax, runtime and logical errors apart.",
+  "warmup": "Imagine you only speak Urdu and you must give directions to a driver who only understands Chinese. You need a translator. A computer's CPU understands only machine language (0s and 1s). Your C++ is written for humans. So we need a translator program in between.",
+  "definition": "A language translator is a program that converts code written in one language into machine language. There are three kinds. A compiler translates a whole high-level program at once and creates an executable file. An interpreter translates and runs the program one line at a time. An assembler converts assembly language into machine code. Source code is the program you write (.cpp). Object code is the compiler's machine-code output for your file only (.obj or .o). Machine code or the executable is the final code after linking (.exe) that the CPU can run.",
+  "howItWorks": "C++ is a compiled language. The path is: program.cpp (source code) goes through the preprocessor (which adds #include files), then the compiler translates it to object code (program.obj), then the linker joins the object code with library code (for example the code behind cout) to make program.exe, and finally the loader places it in RAM and the CPU runs it. The compiler reports all syntax errors after reading the whole program. An interpreter (Python, JavaScript) stops at the first error and creates no .exe, and it translates again every time, so it is usually slower. Three error kinds exist: a syntax error breaks a language rule and is caught at compile time; a runtime error happens while the program runs (for example dividing by zero); a logical error lets the program run but gives a wrong answer.",
+  "syntax": "// program.cpp   (source code, written by you)\n//    |  preprocessor adds #include files\n//    v  compiler translates (syntax errors appear here)\n// program.obj   (object code, not runnable yet)\n//    |  linker adds library code (like cout)\n//    v\n// program.exe   (machine code / executable)\n//    |  loader puts it in RAM, CPU runs it (runtime errors appear here)\n//    v\n// output on screen (wrong answer? a logical error)\n//\n// Compile with g++:  g++ program.cpp -o program",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Take a tiny C++ program through the journey: source code, compiling and running. What does the finished program print?",
+      "pseudocode": [
+        "START",
+        "DISPLAY \"Compiled and running!\"",
+        "END",
+        "(Behind the scenes: program.cpp -> compiler -> program.obj -> linker -> program.exe -> run)"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Display Compiled and running/]\n  B --> C([End])",
+      "sample": {
+        "id": "tr-compiled-running",
+        "title": "A compiled program",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << \"Compiled and running!\" << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Compiled and running!\n",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "The preprocessor replaces this line with the contents of the iostream library header."
+          },
+          {
+            "line": 4,
+            "text": "This is the source code the compiler reads. It will become object code, then an executable."
+          },
+          {
+            "line": 5,
+            "text": "At run time the CPU executes the machine instructions made from this line."
+          },
+          {
+            "line": 6,
+            "text": "return 0 tells the system the program ended successfully."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The loader has put the executable in RAM and the CPU begins at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "The message is sent to the screen.",
+              "out": "Compiled and running!\n"
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "The program ends successfully.",
+              "out": ""
+            }
+          ],
+          "types": {}
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "A logical error. This program is meant to find the average of 10 and 20 (it should print 15). It compiles and runs, but what does it print? Why is it wrong?",
+      "pseudocode": [
+        "START",
+        "SET a = 10, b = 20",
+        "average = a + b / 2   (WRONG: division first)",
+        "DISPLAY average",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Set a = 10, b = 20/]\n  B --> C[average = a + b / 2]\n  C --> D[/Display average/]\n  D --> E([End])",
+      "sample": {
+        "id": "tr-logical-error",
+        "title": "A logical error",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a = 10;\n    int b = 20;\n    int average = a + b / 2;\n    cout << \"Average = \" << average << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Average = 20\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "a is 10."
+          },
+          {
+            "line": 6,
+            "text": "b is 20."
+          },
+          {
+            "line": 7,
+            "text": "The bug is here. Division happens before addition, so this is a + (b / 2) = 10 + 10 = 20, not 15. The compiler cannot see this mistake because the line is valid C++."
+          },
+          {
+            "line": 8,
+            "text": "The wrong value is printed. Only testing reveals a logical error."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {
+                "a": "10"
+              },
+              "note": "a gets 10.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "b": "20"
+              },
+              "note": "b gets 20.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "average": "20"
+              },
+              "note": "b / 2 = 10 happens first, then 10 + 10 = 20. The expected 15 is not produced.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "A wrong average is printed.",
+              "out": "Average = 20\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "The program ends without any error message.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "a": "int",
+            "b": "int",
+            "average": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Debugging question: the program above has a logical error. Write the corrected program that reads two marks and prints their average correctly. (Test with 10 and 20: the answer must be 15.)",
+      "pseudocode": [
+        "START",
+        "INPUT a, b",
+        "average = (a + b) / 2.0",
+        "DISPLAY average",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Input a, b/]\n  B --> C[average = a + b in brackets, divided by 2]\n  C --> D[/Display average/]\n  D --> E([End])",
+      "sample": {
+        "id": "tr-fixed-average",
+        "title": "Corrected average",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b;\n    cout << \"Enter two marks: \";\n    cin >> a >> b;\n    double average = (a + b) / 2.0;\n    cout << \"Average = \" << average << endl;\n    return 0;\n}\n",
+        "stdin": "10 20\n",
+        "expectedOutput": "Enter two marks: Average = 15\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Two whole-number inputs."
+          },
+          {
+            "line": 7,
+            "text": "Read the two marks: 10 into a and 20 into b."
+          },
+          {
+            "line": 8,
+            "text": "Brackets make the addition happen first: (10 + 20) = 30. Dividing by 2.0 (a decimal) keeps any decimal part, so 30 / 2.0 = 15."
+          },
+          {
+            "line": 9,
+            "text": "Print the correct average."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Compiler",
+      "when": "Translates the whole program at once, reports all errors, makes an .exe (C, C++)",
+      "example": "g++ program.cpp -o program"
+    },
+    {
+      "way": "Interpreter",
+      "when": "Translates and runs line by line, stops at the first error, no .exe (Python, JavaScript)",
+      "example": "python hello.py"
+    },
+    {
+      "way": "Assembler",
+      "when": "Converts assembly language to machine code",
+      "example": "ADD A, B  ->  binary"
+    },
+    {
+      "way": "Syntax error",
+      "when": "A language rule is broken; found at compile time",
+      "example": "cout << \"Hi\"   (missing ;)"
+    },
+    {
+      "way": "Runtime error",
+      "when": "Found while the program runs; it may crash",
+      "example": "int c = a / 0;   (divide by zero)"
+    },
+    {
+      "way": "Logical error",
+      "when": "Program runs but gives a wrong answer",
+      "example": "avg = a + b / 2;"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "cout << \"Hi\"\nreturn 0;",
+      "right": "cout << \"Hi\";\nreturn 0;",
+      "error": "expected ';' before 'return' (a syntax error, found by the compiler)"
+    },
+    {
+      "wrong": "int a = 10;\nint b = 0;\ncout << a / b;",
+      "right": "if (b != 0) { cout << a / b; }",
+      "error": "Compiles without error, but the program crashes when run (a runtime error). The exact crash message depends on the system."
+    },
+    {
+      "wrong": "int average = a + b / 2;",
+      "right": "double average = (a + b) / 2.0;",
+      "error": "No message at all. It compiles and runs but prints a wrong answer (a logical error)."
+    },
+    {
+      "wrong": "x = 5;",
+      "right": "int x = 5;",
+      "error": "'x' was not declared in this scope"
+    }
+  ],
+  "examTips": [
+    "Compiler = whole program at once, creates an executable, reports all errors. Interpreter = line by line, no executable, stops at the first error. Assembler = assembly to machine code.",
+    "Source code (.cpp) is human-readable. Object code (.obj) is the compiler's output and cannot run alone. The executable (.exe) is machine code after linking.",
+    "Learn the journey: .cpp, preprocessor, compiler, .obj, linker, .exe, loader, execution.",
+    "Syntax error = at compile time. Runtime error = while running (for example dividing by zero). Logical error = wrong answer, no crash. Give one example of each.",
+    "Compiled programs run faster because they are already translated. Interpreters translate every time."
+  ],
+  "romanSummary": [
+    "CPU sirf machine language samajhta hai, is liye translator chahiye.",
+    "Compiler poora program ek saath translate karke .exe banata hai (C++). Interpreter ek ek line chalata hai (Python). Assembler assembly ko machine code banata hai.",
+    "Source code (.cpp) hum likhte hain, compiler usay object code (.obj) banata hai, linker library ke saath jor kar .exe banata hai.",
+    "Errors 3 qisam ke hain: syntax (compile pe), runtime (chalte waqt crash), logical (galat answer)."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which translator converts the whole program at once?",
+      "options": [
+        "Compiler",
+        "Interpreter",
+        "Assembler",
+        "Debugger"
+      ],
+      "answer": "Compiler",
+      "hint": "C++ uses it.",
+      "explanation": "A compiler translates the entire program and creates an executable."
+    },
+    {
+      "id": "p2",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank: the file you write in C++ is called ______ code.",
+      "answer": "source",
+      "hint": "It has the .cpp extension.",
+      "explanation": "Source code is the human-readable program written by the programmer."
+    },
+    {
+      "id": "p3",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which file can the CPU run directly?",
+      "options": [
+        "program.cpp",
+        "program.obj",
+        "program.exe",
+        "program.txt"
+      ],
+      "answer": "program.exe",
+      "hint": "It is the final result of linking.",
+      "explanation": "The executable (.exe) holds the final machine code."
+    },
+    {
+      "id": "p4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What does the linker do?",
+      "options": [
+        "Joins object code with library code",
+        "Reads user input",
+        "Finds logical errors",
+        "Types the program"
+      ],
+      "answer": "Joins object code with library code",
+      "hint": "It makes the object code complete.",
+      "explanation": "The linker adds library code (like the code behind cout) to your object code to make the executable."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"A\";\n    cout << \"B\" << endl;\n    cout << \"C\";\n    return 0;\n}",
+      "answer": "AB\nC",
+      "hint": "endl moves to a new line after B.",
+      "explanation": "A and B are printed on the same line because the first cout has no endl. Then endl starts a new line, and C is printed on the second line."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Name the error kind and fix it:\n\ncout << \"Hello\"\nreturn 0;",
+      "answer": "Syntax error. Fix: cout << \"Hello\";",
+      "hint": "The compiler will complain.",
+      "explanation": "A missing semicolon breaks a language rule, so it is a syntax error found during compilation."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write one-line examples of a syntax error, a runtime error and a logical error in C++.",
+      "answer": "Syntax error: cout << \"Hi\"   (missing ;)\nRuntime error: int c = a / 0;   (division by zero while running)\nLogical error: avg = a + b / 2;   (wrong answer, should be (a + b) / 2)",
+      "hint": "Think: compile time, run time, wrong answer.",
+      "explanation": "Each error kind appears at a different time: syntax at compile time, runtime while running, logical in the answer."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which statement about an interpreter is true?",
+      "options": [
+        "It stops at the first error and creates no .exe",
+        "It always creates an .exe",
+        "It translates only assembly",
+        "It is faster than a compiler at running"
+      ],
+      "answer": "It stops at the first error and creates no .exe",
+      "hint": "It works line by line.",
+      "explanation": "An interpreter translates and executes one line at a time, so it stops at the first error."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which translator is used for assembly language?",
+      "options": [
+        "Assembler",
+        "Compiler",
+        "Interpreter",
+        "Linker"
+      ],
+      "answer": "Assembler",
+      "hint": "The name is a hint.",
+      "explanation": "An assembler converts assembly mnemonics like ADD into binary."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Python is usually run with a(n):",
+      "options": [
+        "Interpreter",
+        "Compiler",
+        "Assembler",
+        "Linker"
+      ],
+      "answer": "Interpreter",
+      "hint": "It runs line by line.",
+      "explanation": "Python and JavaScript are interpreted languages."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which error appears during compilation?",
+      "options": [
+        "Syntax error",
+        "Runtime error",
+        "Logical error",
+        "Power error"
+      ],
+      "answer": "Syntax error",
+      "hint": "A language rule was broken.",
+      "explanation": "Syntax errors are caught by the compiler before the program runs."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is object code?",
+      "options": [
+        "Compiler output that is not yet runnable",
+        "The final .exe",
+        "The program you type",
+        "A library"
+      ],
+      "answer": "Compiler output that is not yet runnable",
+      "hint": "Library code is still missing.",
+      "explanation": "Object code (.obj) is made by the compiler and needs the linker to become an executable."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "The program runs and prints the wrong average. This is a:",
+      "options": [
+        "Logical error",
+        "Syntax error",
+        "Linker error",
+        "Compiler error"
+      ],
+      "answer": "Logical error",
+      "hint": "No crash, no message, wrong answer.",
+      "explanation": "When logic is wrong, the program runs normally but gives a wrong result."
+    }
+  ],
+  "sources": [
+    "Language Translators: compiler, interpreter, assembler",
+    "Computer Language: Source Code, Object Code and Machine Code",
+    "Compilation and Program Execution",
+    "Error types: syntax, runtime, logical"
+  ]
+}

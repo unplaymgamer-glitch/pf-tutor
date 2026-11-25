@@ -1,0 +1,887 @@
+{
+  "slug": "recursion-examples",
+  "week": 11,
+  "title": "Recursion examples: sum, power, Fibonacci, gcd and digits",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "recursion",
+      "title": "Fibonacci: one call makes two calls, so work repeats",
+      "fn": "fibonacci",
+      "n": 5
+    },
+    {
+      "kind": "recursion",
+      "title": "power(2, 5): the exponent shrinks to 0",
+      "fn": "power",
+      "n": 5,
+      "m": 2
+    },
+    {
+      "kind": "recursion",
+      "title": "gcd(8, 12): Euclid's method",
+      "fn": "gcd",
+      "n": 8,
+      "m": 12
+    },
+    {
+      "kind": "match",
+      "title": "Match each problem to its base case",
+      "pairs": [
+        {
+          "term": "sumTo(n)",
+          "meaning": "n == 0 returns 0"
+        },
+        {
+          "term": "power(base, exp)",
+          "meaning": "exp == 0 returns 1"
+        },
+        {
+          "term": "fib(n)",
+          "meaning": "n <= 1 returns n"
+        },
+        {
+          "term": "gcd(a, b)",
+          "meaning": "b == 0 returns a"
+        },
+        {
+          "term": "sumDigits(n)",
+          "meaning": "n == 0 returns 0"
+        },
+        {
+          "term": "Palindrome check idea",
+          "meaning": "length 0 or 1 is a palindrome"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can write and trace recursive functions for the sum of 1..n, power, Fibonacci, gcd and the digits of a number, say which version (loop or recursion) fits a problem, and explain why Fibonacci repeats work.",
+  "warmup": "A cousin gives you a Rs 500 note and says: \"Pay me back as follows: your Eid salami from tomorrow plus whatever you owe me after that.\" To know the total, you only need today's amount plus the total of the rest. You keep peeling off one piece and handing the smaller problem on, until nothing is left. Many problems about numbers, such as adding 1 to n or cutting off one digit at a time, look exactly like this.",
+  "definition": "A recursive solution always follows the same recipe. Step 1: find the smallest problem you can answer at once (the base case). Step 2: say how a big problem is made from a slightly smaller one (the recursive case). Step 3: check that every call gets smaller so that it must reach the base case. This lesson applies the recipe to six classic problems.",
+  "howItWorks": "1) Sum of 1..n: sumTo(n) = n + sumTo(n - 1), base sumTo(0) = 0. 2) Power: power(base, exp) = base * power(base, exp - 1), base power(base, 0) = 1. 3) Print a number backwards: print the last digit n % 10, then recurse on n / 10 (the number without its last digit); base n == 0. If you print the digit AFTER the recursive call you get the normal order instead. 4) Sum of digits: n % 10 + sumDigits(n / 10). 5) gcd by Euclid: the greatest common divisor of a and b equals the gcd of b and a % b; when b is 0 the answer is a. This is the same idea as Euclid's old method of dividing and keeping the remainder. 6) Fibonacci: the sequence 0, 1, 1, 2, 3, 5, 8 ... where each number is the sum of the previous two: fib(n) = fib(n - 1) + fib(n - 2), bases fib(0) = 0 and fib(1) = 1. WHY FIBONACCI REPEATS WORK: every call makes two more calls, so the same small values are calculated again and again. In the visual for fib(5), fib(3) is worked out twice and fib(2) three times. Our counter showed fib(6) needs 25 calls although it needs only 7 different values. For big n this becomes very slow (fib(40) makes over 300 million calls), so for Fibonacci a loop is much better. PALINDROME IDEA (a word that reads the same backwards, like level): compare the first and the last character. If they differ, the answer is no. If they match, check the smaller word in the middle. A word of length 0 or 1 is always a palindrome (base case). We use a simple loop for this in the strings lessons, but the recursive idea is the same peel-off pattern. TAIL-STYLE THINKING: in gcd the recursive call is the very LAST thing the function does, and nothing is waiting to be added or multiplied afterwards. Nothing important is left on the stack when the answer comes back, so such a function is easy to rewrite as a loop (while (b != 0) { ... }). Factorial and sumTo are different: after the call returns they still have to multiply or add, so each frame must wait. As a rule: use a loop for simple repeats, and use recursion when the problem is naturally defined by smaller copies of itself.",
+  "syntax": "// sum of 1..n\nint sumTo(int n) {\n    if (n == 0) return 0;               // base case\n    return n + sumTo(n - 1);            // recursive case\n}\n\n// power\nint power(int base, int exp) {\n    if (exp == 0) return 1;             // base case\n    return base * power(base, exp - 1);\n}\n\n// gcd (Euclid)\nint gcd(int a, int b) {\n    if (b == 0) return a;               // base case\n    return gcd(b, a % b);\n}\n\n// Fibonacci: two recursive calls\nint fib(int n) {\n    if (n <= 1) return n;               // base cases 0 and 1\n    return fib(n - 1) + fib(n - 2);\n}\n\n// digits: n % 10 = last digit, n / 10 = the rest\nint sumDigits(int n) {\n    if (n == 0) return 0;\n    return n % 10 + sumDigits(n / 10);\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write recursive functions to find the sum 1 + 2 + ... + n and the power of a number, and a function that prints the digits of a number backwards. Test them with n = 5, 2^5 and 472.",
+      "pseudocode": [
+        "START",
+        "sumTo(n): IF n == 0 return 0 ELSE return n + sumTo(n - 1)",
+        "power(base, exp): IF exp == 0 return 1 ELSE return base * power(base, exp - 1)",
+        "printReversed(n): IF n == 0 stop ELSE print n % 10, then call with n / 10",
+        "PRINT the results",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Call sumTo with n\"]\n  B --> C{\"n == 0?\"}\n  C -- Yes --> D[\"Return 0\"]\n  C -- No --> E[\"Return n + sumTo of n - 1\"]\n  D --> F([End])\n  E --> F",
+      "sample": {
+        "id": "sum-power-reverse",
+        "title": "Sum 1..n, power and printing a number backwards",
+        "code": "#include <iostream>\nusing namespace std;\n\nint sumTo(int n) {\n    if (n == 0) {\n        return 0;\n    }\n    return n + sumTo(n - 1);\n}\n\nint power(int base, int exp) {\n    if (exp == 0) {\n        return 1;\n    }\n    return base * power(base, exp - 1);\n}\n\nvoid printReversed(int n) {\n    if (n == 0) {\n        return;\n    }\n    cout << n % 10;\n    printReversed(n / 10);\n}\n\nint main() {\n    cout << \"Sum of 1..5 = \" << sumTo(5) << endl;\n    cout << \"2 to the power 5 = \" << power(2, 5) << endl;\n    cout << \"472 reversed = \";\n    printReversed(472);\n    cout << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Sum of 1..5 = 15\n2 to the power 5 = 32\n472 reversed = 274\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "sumTo(n) adds 1 + 2 + ... + n."
+          },
+          {
+            "line": 5,
+            "text": "BASE CASE: the sum of nothing is 0."
+          },
+          {
+            "line": 8,
+            "text": "RECURSIVE CASE: sum of 1..n is n plus the sum of 1..(n-1)."
+          },
+          {
+            "line": 11,
+            "text": "power(base, exp) means base multiplied by itself exp times."
+          },
+          {
+            "line": 12,
+            "text": "BASE CASE: any number to the power 0 is 1."
+          },
+          {
+            "line": 15,
+            "text": "RECURSIVE CASE: base^exp = base * base^(exp-1). Only exp gets smaller; base stays the same."
+          },
+          {
+            "line": 18,
+            "text": "Prints the digits of n from the last digit to the first."
+          },
+          {
+            "line": 22,
+            "text": "n % 10 is the last digit. It is printed BEFORE the recursive call, so the last digit comes out first."
+          },
+          {
+            "line": 23,
+            "text": "n / 10 removes the last digit (472 becomes 47, then 4, then 0)."
+          },
+          {
+            "line": 27,
+            "text": "Calls sumTo(5): 5 + 4 + 3 + 2 + 1 + 0 = 15."
+          },
+          {
+            "line": 28,
+            "text": "2 * 2 * 2 * 2 * 2 = 32."
+          },
+          {
+            "line": 30,
+            "text": "Prints 2, then 7, then 4 on the same line."
+          }
+        ]
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Write recursive functions for gcd (Euclid) and Fibonacci. Count how many calls fib(6) makes.",
+      "pseudocode": [
+        "START",
+        "gcd(a, b): IF b == 0 return a ELSE return gcd(b, a % b)",
+        "fib(n): count the call; IF n <= 1 return n",
+        "ELSE return fib(n - 1) + fib(n - 2)",
+        "PRINT gcd(8, 12), fib(6) and the number of calls",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Call fib with n\"]\n  B --> C{\"n <= 1?\"}\n  C -- Yes --> D[\"Return n\"]\n  C -- No --> E[\"Call fib of n - 1 and fib of n - 2\"]\n  E --> F[\"Return the two answers added\"]\n  D --> G([End])\n  F --> G",
+      "sample": {
+        "id": "gcd-and-fibonacci",
+        "title": "Euclid's gcd and Fibonacci (with a call counter)",
+        "code": "#include <iostream>\nusing namespace std;\n\nint calls = 0;\n\nint gcd(int a, int b) {\n    if (b == 0) {\n        return a;\n    }\n    return gcd(b, a % b);\n}\n\nint fib(int n) {\n    calls++;\n    if (n <= 1) {\n        return n;\n    }\n    return fib(n - 1) + fib(n - 2);\n}\n\nint main() {\n    cout << \"gcd(8, 12) = \" << gcd(8, 12) << endl;\n    cout << \"fib(6) = \" << fib(6) << endl;\n    cout << \"calls = \" << calls << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "gcd(8, 12) = 4\nfib(6) = 8\ncalls = 25\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "A global counter. fib adds 1 every time it is called, so we can see how much work it does."
+          },
+          {
+            "line": 6,
+            "text": "Greatest common divisor by Euclid's method: gcd(a, b) = gcd(b, a % b)."
+          },
+          {
+            "line": 7,
+            "text": "BASE CASE: when b is 0 the answer is a."
+          },
+          {
+            "line": 10,
+            "text": "RECURSIVE CASE: the remainder a % b is always smaller than b, so we get closer to 0. This call is the LAST thing the function does."
+          },
+          {
+            "line": 14,
+            "text": "Count this call."
+          },
+          {
+            "line": 15,
+            "text": "BASE CASES: fib(0) = 0 and fib(1) = 1 (covered together as n <= 1, the answer is n itself)."
+          },
+          {
+            "line": 18,
+            "text": "RECURSIVE CASE: two calls! Each fib call makes two more, so the same values are computed again and again."
+          },
+          {
+            "line": 22,
+            "text": "gcd(8,12) -> gcd(12,8) -> gcd(8,4) -> gcd(4,0) = 4."
+          },
+          {
+            "line": 23,
+            "text": "fib(6) = 8."
+          },
+          {
+            "line": 24,
+            "text": "The counter shows that finding fib(6) needed 25 calls, although it needs only 7 different values."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a recursive function that returns the sum of the digits of a positive integer. Show how sumDigits(472) is evaluated using the call stack.",
+      "pseudocode": [
+        "START",
+        "sumDigits(n): IF n == 0 return 0 (base case)",
+        "ELSE last digit = n % 10",
+        "Return last digit + sumDigits(n / 10) (recursive case)",
+        "PRINT the answer for 472",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"Call sumDigits with n\"]\n  B --> C{\"n == 0?\"}\n  C -- Yes --> D[\"Return 0\"]\n  C -- No --> E[\"Last digit = n % 10\"]\n  E --> F[\"Return last digit + sumDigits of n / 10\"]\n  D --> G([End])\n  F --> G",
+      "sample": {
+        "id": "sum-of-digits",
+        "title": "Sum of digits with a call-stack trace",
+        "code": "#include <iostream>\nusing namespace std;\n\nint sumDigits(int n) {\n    if (n == 0) {\n        return 0;\n    }\n    return n % 10 + sumDigits(n / 10);\n}\n\nint main() {\n    cout << \"sumDigits(472) = \" << sumDigits(472) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "sumDigits(472) = 13\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "Adds up the digits of a number: 4 + 7 + 2 = 13."
+          },
+          {
+            "line": 5,
+            "text": "BASE CASE: no digits left, so the sum is 0."
+          },
+          {
+            "line": 6,
+            "text": "Stops the recursion."
+          },
+          {
+            "line": 8,
+            "text": "RECURSIVE CASE: last digit (n % 10) plus the sum of the digits of the rest (n / 10)."
+          },
+          {
+            "line": 12,
+            "text": "Starts with 472, then 47, 4 and finally 0."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 12,
+              "vars": {
+                "n": "472"
+              },
+              "note": "main calls sumDigits(472). Frame with n = 472.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sumDigits(472)",
+                  "vars": {
+                    "n": "472"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "472 is not 0, so use the recursive case.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sumDigits(472)",
+                  "vars": {
+                    "n": "472"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {
+                "n": "47"
+              },
+              "note": "The last digit is 472 % 10 = 2. The rest is 472 / 10 = 47. This call waits for sumDigits(47) before it can add 2.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sumDigits(472)",
+                  "vars": {
+                    "n": "472",
+                    "waiting": "2 + sumDigits(47)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(47)",
+                  "vars": {
+                    "n": "47"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "47 is not 0.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sumDigits(472)",
+                  "vars": {
+                    "n": "472",
+                    "waiting": "2 + sumDigits(47)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(47)",
+                  "vars": {
+                    "n": "47"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {
+                "n": "4"
+              },
+              "note": "Last digit 7, rest 4. Waits for sumDigits(4).",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sumDigits(472)",
+                  "vars": {
+                    "n": "472",
+                    "waiting": "2 + sumDigits(47)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(47)",
+                  "vars": {
+                    "n": "47",
+                    "waiting": "7 + sumDigits(4)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(4)",
+                  "vars": {
+                    "n": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "4 is not 0.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sumDigits(472)",
+                  "vars": {
+                    "n": "472",
+                    "waiting": "2 + sumDigits(47)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(47)",
+                  "vars": {
+                    "n": "47",
+                    "waiting": "7 + sumDigits(4)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(4)",
+                  "vars": {
+                    "n": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {
+                "n": "0"
+              },
+              "note": "Last digit 4, rest 4 / 10 = 0 (integer division). Calls sumDigits(0).",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sumDigits(472)",
+                  "vars": {
+                    "n": "472",
+                    "waiting": "2 + sumDigits(47)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(47)",
+                  "vars": {
+                    "n": "47",
+                    "waiting": "7 + sumDigits(4)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(4)",
+                  "vars": {
+                    "n": "4",
+                    "waiting": "4 + sumDigits(0)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(0)",
+                  "vars": {
+                    "n": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "n is 0: BASE CASE, there are no digits left.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sumDigits(472)",
+                  "vars": {
+                    "n": "472",
+                    "waiting": "2 + sumDigits(47)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(47)",
+                  "vars": {
+                    "n": "47",
+                    "waiting": "7 + sumDigits(4)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(4)",
+                  "vars": {
+                    "n": "4",
+                    "waiting": "4 + sumDigits(0)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(0)",
+                  "vars": {
+                    "n": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "sumDigits(0) returns 0.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sumDigits(472)",
+                  "vars": {
+                    "n": "472",
+                    "waiting": "2 + sumDigits(47)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(47)",
+                  "vars": {
+                    "n": "47",
+                    "waiting": "7 + sumDigits(4)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(4)",
+                  "vars": {
+                    "n": "4",
+                    "waiting": "4 + sumDigits(0)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(0)",
+                  "vars": {
+                    "n": "0",
+                    "returns": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "sumDigits(4) gets 0 and returns 4 + 0 = 4.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sumDigits(472)",
+                  "vars": {
+                    "n": "472",
+                    "waiting": "2 + sumDigits(47)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(47)",
+                  "vars": {
+                    "n": "47",
+                    "waiting": "7 + sumDigits(4)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(4)",
+                  "vars": {
+                    "n": "4",
+                    "returns": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "sumDigits(47) gets 4 and returns 7 + 4 = 11.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sumDigits(472)",
+                  "vars": {
+                    "n": "472",
+                    "waiting": "2 + sumDigits(47)"
+                  }
+                },
+                {
+                  "fn": "sumDigits(47)",
+                  "vars": {
+                    "n": "47",
+                    "returns": "11"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "sumDigits(472) gets 11 and returns 2 + 11 = 13.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "sumDigits(472)",
+                  "vars": {
+                    "n": "472",
+                    "returns": "13"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "main prints the answer 13.",
+              "out": "sumDigits(472) = 13\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Done.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            }
+          ],
+          "types": {
+            "n": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Sum 1..n: recursion",
+      "when": "Shows the pattern clearly; one frame per number.",
+      "example": "return n + sumTo(n - 1);   // base: n == 0 returns 0"
+    },
+    {
+      "way": "Sum 1..n: loop",
+      "when": "Better in real programs: one variable, no stack.",
+      "example": "for (int i = 1; i <= n; i++) s += i;"
+    },
+    {
+      "way": "power: recursion",
+      "when": "Natural definition: base^exp = base * base^(exp-1).",
+      "example": "return base * power(base, exp - 1);"
+    },
+    {
+      "way": "power: loop",
+      "when": "Usually preferred; same result, less memory.",
+      "example": "int r = 1;\nfor (int i = 0; i < exp; i++) r *= base;"
+    },
+    {
+      "way": "Fibonacci: recursion",
+      "when": "Short and matches the definition, but repeats work (fib(6) makes 25 calls). Fine for small n only.",
+      "example": "return fib(n - 1) + fib(n - 2);"
+    },
+    {
+      "way": "Fibonacci: loop",
+      "when": "Fast: keep the last two values.",
+      "example": "int a = 0, b = 1;\nfor (int i = 0; i < n; i++) { int t = a + b; a = b; b = t; }   // a is fib(n)"
+    },
+    {
+      "way": "gcd: recursion (tail style)",
+      "when": "The recursive call is the last action, so it converts easily to a loop.",
+      "example": "return gcd(b, a % b);"
+    },
+    {
+      "way": "gcd: loop",
+      "when": "Same Euclid method without calls.",
+      "example": "while (b != 0) { int r = a % b; a = b; b = r; }   // answer is a"
+    },
+    {
+      "way": "Digits: recursion",
+      "when": "Peeling one digit off at a time; the order depends on where the cout is.",
+      "example": "cout << n % 10;   // before the call: reversed\nprintReversed(n / 10);"
+    },
+    {
+      "way": "Digits: loop",
+      "when": "Same peeling with while.",
+      "example": "while (n > 0) { s += n % 10; n /= 10; }"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int fib(int n) {\n    if (n == 0) return 0;   // forgot n == 1\n    return fib(n - 1) + fib(n - 2);\n}",
+      "right": "int fib(int n) {\n    if (n <= 1) return n;\n    return fib(n - 1) + fib(n - 2);\n}",
+      "error": "No compiler error. fib(1) calls fib(0) and fib(-1), and fib(-1) never reaches a base case, so the calls never stop (stack overflow). Fibonacci needs TWO base cases because it looks back two steps."
+    },
+    {
+      "wrong": "int sumDigits(int n) {\n    if (n == 0) return 0;\n    return n % 10 + sumDigits(n % 10);   // should be n / 10\n}",
+      "right": "int sumDigits(int n) {\n    if (n == 0) return 0;\n    return n % 10 + sumDigits(n / 10);\n}",
+      "error": "No compiler error. For 47 the call sumDigits(47 % 10) = sumDigits(7) and then sumDigits(7 % 10) = sumDigits(7) again, so n never gets smaller and the stack overflows. Use / to cut off the last digit."
+    },
+    {
+      "wrong": "void printReversed(int n) {\n    if (n == 0) return;\n    printReversed(n / 10);\n    cout << n % 10;        // after the call\n}",
+      "right": "void printReversed(int n) {\n    if (n == 0) return;\n    cout << n % 10;        // before the call\n    printReversed(n / 10);\n}",
+      "error": "No compiler error, but the output is wrong: printing AFTER the recursive call prints the digits in the original order (472), not reversed (274)."
+    },
+    {
+      "wrong": "int gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(a % b, b);   // arguments swapped\n}",
+      "right": "int gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}",
+      "error": "No compiler error. With the arguments in the wrong order, gcd(8, 12) becomes gcd(8, 12) again and again, so b never becomes 0 and the program ends in a stack overflow."
+    }
+  ],
+  "examTips": [
+    "For every recursive function write down: the base case, the recursive case, and what gets smaller (n - 1, exp - 1, n / 10, a % b).",
+    "n % 10 gives the last digit and n / 10 removes it. These two expressions solve most digit questions (sum, count, reverse).",
+    "Fibonacci needs two base cases (fib(0) and fib(1)). Say that it repeats work and that a loop is faster.",
+    "Where the cout is decides the order: before the recursive call = same order as the calls, after = reverse order.",
+    "When asked to compare, remember: recursion = short code, more memory, risk of stack overflow; iteration = fast, less memory, loop condition must be right."
+  ],
+  "romanSummary": [
+    "Har recursive function mein pehle base case likhein (sabse chhota masla), phir recursive case (chhote input ke saath dobara call).",
+    "sumTo(n) = n + sumTo(n - 1), power(b, e) = b * power(b, e - 1), sumDigits(n) = n % 10 + sumDigits(n / 10).",
+    "gcd mein gcd(a, b) = gcd(b, a % b) aur jab b == 0 ho to jawab a hota hai.",
+    "Fibonacci mein fib(n) = fib(n - 1) + fib(n - 2); isme ek hi kaam baar baar hota hai is liye bade n ke liye loop behtar hai.",
+    "Cout agar recursive call se pehle ho to tarteeb seedhi, call ke baad ho to ulti tarteeb aati hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is the base case of power(base, exp)?",
+      "options": [
+        "base == 0, return 0",
+        "exp == 0, return 1",
+        "exp == 1, return 0",
+        "base == 1, return exp"
+      ],
+      "answer": "exp == 0, return 1",
+      "hint": "Anything to the power 0.",
+      "explanation": "The exponent shrinks by 1 each call. When it reaches 0 the answer is 1, so no more calls are needed."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint power(int base, int exp) {\n    if (exp == 0) return 1;\n    return base * power(base, exp - 1);\n}\nint main() {\n    cout << power(3, 3) << endl;\n    return 0;\n}",
+      "answer": "27",
+      "hint": "3 * 3 * 3.",
+      "explanation": "power(3,3) = 3 * power(3,2) = 3 * 3 * power(3,1) = 3 * 3 * 3 * power(3,0) = 27."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\nint main() {\n    cout << gcd(18, 12) << endl;\n    return 0;\n}",
+      "answer": "6",
+      "hint": "Follow the pairs: (18,12), (12,6), (6,0).",
+      "explanation": "gcd(18,12) -> gcd(12,6) because 18 % 12 = 6 -> gcd(6,0) because 12 % 6 = 0 -> b is 0, so the answer is 6."
+    },
+    {
+      "id": "p4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Why is the recursive Fibonacci function slow for large n?",
+      "options": [
+        "It uses too many variables",
+        "Each call makes two calls, so the same values are calculated many times",
+        "The base case is missing",
+        "Recursion cannot add numbers"
+      ],
+      "answer": "Each call makes two calls, so the same values are calculated many times",
+      "hint": "Look at how many calls fib(n) makes.",
+      "explanation": "fib(n) calls fib(n - 1) and fib(n - 2), and those calls overlap. fib(3) alone is recomputed many times, so the number of calls grows very fast."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint calls = 0;\nint fib(int n) {\n    calls++;\n    if (n <= 1) return n;\n    return fib(n - 1) + fib(n - 2);\n}\nint main() {\n    int r = fib(4);\n    cout << r << \" \" << calls << endl;\n    return 0;\n}",
+      "answer": "3 9",
+      "hint": "Count every call, including the base-case calls.",
+      "explanation": "fib(4) = 3. Calls: fib(4) makes fib(3) and fib(2); fib(3) makes fib(2) and fib(1); each fib(2) makes fib(1) and fib(0). In total 9 calls."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Find the bug. fib(1) never ends.\n\nint fib(int n) {\n    if (n == 0) return 0;\n    return fib(n - 1) + fib(n - 2);\n}",
+      "answer": "Add the second base case: if (n <= 1) return n;",
+      "hint": "fib(1) calls fib(0) and fib(-1). What happens at -1?",
+      "explanation": "fib looks back two steps, so it needs two base cases (0 and 1). With only n == 0, the call fib(-1) goes to fib(-2), fib(-3) ... forever and the stack overflows."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Complete the recursive case of sumDigits:\n\nint sumDigits(int n) {\n    if (n == 0) return 0;\n    return n % 10 + sumDigits(______);\n}",
+      "answer": "n / 10",
+      "hint": "How do you remove the last digit?",
+      "explanation": "n / 10 is integer division and drops the last digit: 472 becomes 47."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a recursive function int countDigits(int n) that returns how many digits a positive integer has (countDigits(472) is 3).",
+      "answer": "int countDigits(int n) {\n    if (n < 10) return 1;\n    return 1 + countDigits(n / 10);\n}",
+      "hint": "A number below 10 has exactly one digit.",
+      "explanation": "Base case: n < 10 has one digit. Recursive case: one digit (the last) plus the digits of n / 10. For 472: 1 + (1 + 1) = 3."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is sumTo(3) if sumTo(n) = n + sumTo(n - 1) and sumTo(0) = 0?",
+      "options": [
+        "3",
+        "5",
+        "6",
+        "7"
+      ],
+      "answer": "6",
+      "hint": "3 + 2 + 1 + 0.",
+      "explanation": "sumTo(3) = 3 + sumTo(2) = 3 + 2 + sumTo(1) = 3 + 2 + 1 + 0 = 6."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which expression gives the LAST digit of n?",
+      "options": [
+        "n / 10",
+        "n % 10",
+        "n * 10",
+        "n - 10"
+      ],
+      "answer": "n % 10",
+      "hint": "Remainder after dividing by 10.",
+      "explanation": "n % 10 gives the last digit, and n / 10 removes it."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is gcd(12, 8) using gcd(a, b) = gcd(b, a % b)?",
+      "options": [
+        "2",
+        "4",
+        "8",
+        "12"
+      ],
+      "answer": "4",
+      "hint": "(12, 8) then (8, 4) then (4, 0).",
+      "explanation": "gcd(12,8) -> gcd(8,4) -> gcd(4,0) = 4."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "A recursive call that is the LAST thing a function does (like in gcd) is easy to...",
+      "options": [
+        "delete from the program",
+        "rewrite as a loop",
+        "turn into a pointer",
+        "run without a base case"
+      ],
+      "answer": "rewrite as a loop",
+      "hint": "Nothing is left waiting on the stack.",
+      "explanation": "Because nothing has to be done after the call returns, the same job can be done by a simple loop that updates the variables."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Which statement about recursive Fibonacci is true?",
+      "options": [
+        "It uses no stack memory",
+        "It repeats the same calculations many times",
+        "It needs only one base case",
+        "It is always faster than a loop"
+      ],
+      "answer": "It repeats the same calculations many times",
+      "hint": "Think about fib(3) inside fib(5).",
+      "explanation": "The recursive version recomputes small values again and again, so a loop is much faster for large n."
+    }
+  ],
+  "sources": [
+    "More recursive functions",
+    "Power using recursion",
+    "Fibonacci using recursion",
+    "Sum of digits using recursion",
+    "gcd using recursion",
+    "Recursion vs iteration"
+  ]
+}

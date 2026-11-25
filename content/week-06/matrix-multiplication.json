@@ -1,0 +1,628 @@
+{
+  "slug": "matrix-multiplication",
+  "week": 6,
+  "title": "Matrix multiplication: rows times columns with three loops",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "matrix",
+      "title": "Multiply a 2x3 matrix by a 3x2 matrix, one cell at a time",
+      "op": "multiply",
+      "a": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          6
+        ]
+      ],
+      "b": [
+        [
+          7,
+          8
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          11,
+          12
+        ]
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each part of the multiplication to its job",
+      "pairs": [
+        {
+          "term": "i loop",
+          "meaning": "Walks down the rows of A (and the rows of the answer C)"
+        },
+        {
+          "term": "j loop",
+          "meaning": "Walks across the columns of B (and the columns of C)"
+        },
+        {
+          "term": "k loop",
+          "meaning": "Runs along one row of A and down one column of B at the same time"
+        },
+        {
+          "term": "sum = 0",
+          "meaning": "Clears the accumulator before every new cell, so old totals do not leak in"
+        },
+        {
+          "term": "columns of A = rows of B",
+          "meaning": "The rule that says two matrices can be multiplied"
+        },
+        {
+          "term": "rows(A) x columns(B)",
+          "meaning": "The size of the answer matrix"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can say whether two matrices can be multiplied, find the size of the answer, and write the three nested loops that compute it with a sum that is reset for every cell.",
+  "warmup": "A canteen sells 3 items: samosa, roll and tea. Two shops sell them at different prices, and on Monday and Tuesday you buy different numbers of each item. To find what you pay at each shop each day, you do the same small job again and again: take one day's quantities, multiply each by that shop's price, and add them up. Matrix multiplication is exactly this job done for every day and every shop. One answer cell = one row of quantities times one column of prices, added together.",
+  "definition": "Matrix A can be multiplied by matrix B only if the number of COLUMNS of A equals the number of ROWS of B. If A has r1 rows and c1 columns, and B has r2 rows and c2 columns, we need c1 = r2. The answer matrix C has r1 rows and c2 columns. Each cell C[i][j] is a sum of products: take row i of A, take column j of B, multiply the pairs that line up, and add them. Note that A x B is not the same as B x A, and often only one of them is even possible.",
+  "howItWorks": "Use three loops. The loop i picks a row of A. The loop j picks a column of B. Together i and j choose ONE cell of the answer, C[i][j]. For that cell the loop k runs along the row i of A and down the column j of B at the same time, so A[i][k] and B[k][j] are always a matching pair. Inside the k loop we add A[i][k] * B[k][j] into a variable called sum. The most important line is sum = 0 BEFORE the k loop: every new cell must start counting from zero. If you forget it, the total of the previous cell is still inside sum and the new answer comes out too big. Press Play on the visual: watch the row of A and the column of B light up, then the sum grow one product at a time. Hand example with 2x2 matrices: A = [1 2; 3 4], B = [5 6; 7 8]. C[0][0] = 1x5 + 2x7 = 19. C[0][1] = 1x6 + 2x8 = 22. C[1][0] = 3x5 + 4x7 = 43. C[1][1] = 3x6 + 4x8 = 50.",
+  "syntax": "// A is r1 x c1, B is r2 x c2, and c1 must equal r2\n// C is r1 x c2\nfor (int i = 0; i < r1; i++) {          // each row of A\n    for (int j = 0; j < c2; j++) {      // each column of B\n        int sum = 0;                    // reset for EVERY cell\n        for (int k = 0; k < c1; k++) {  // c1 (same as r2) pairs to multiply\n            sum += A[i][k] * B[k][j];   // row i of A with column j of B\n        }\n        C[i][j] = sum;                  // store the finished cell\n    }\n}\n",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Multiply A = [1 2; 3 4] by B = [5 6; 7 8] and print the answer matrix.",
+      "pseudocode": [
+        "START",
+        "SET A and B (both 2 x 2)",
+        "FOR i = 0 to 1",
+        "  FOR j = 0 to 1",
+        "    SET C[i][j] = 0",
+        "    FOR k = 0 to 1: C[i][j] = C[i][j] + A[i][k] * B[k][j]",
+        "PRINT C row by row",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Set A and B]\n  B --> C[i = 0]\n  C --> D{i < 2?}\n  D -->|Yes| E[j = 0]\n  E --> F{j < 2?}\n  F -->|Yes| G[C i j = 0, k = 0]\n  G --> H{k < 2?}\n  H -->|Yes| I[\"C i j += A i k * B k j\"]\n  I --> H\n  H -->|No| J[j++]\n  J --> F\n  F -->|No| K[i++]\n  K --> D\n  D -->|No| L[/Print C/]\n  L --> M([End])",
+      "sample": {
+        "id": "mult-2x2",
+        "title": "Multiply two 2x2 matrices",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int A[2][2] = {{1, 2}, {3, 4}};\n    int B[2][2] = {{5, 6}, {7, 8}};\n    int C[2][2];\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 2; j++) {\n            C[i][j] = 0;\n            for (int k = 0; k < 2; k++) {\n                C[i][j] += A[i][k] * B[k][j];\n            }\n        }\n    }\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 2; j++) {\n            cout << C[i][j] << \" \";\n        }\n        cout << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "19 22 \n43 50 \n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Matrix A with 2 rows and 2 columns."
+          },
+          {
+            "line": 6,
+            "text": "Matrix B, also 2 x 2. Columns of A (2) equal rows of B (2), so multiplication is allowed."
+          },
+          {
+            "line": 7,
+            "text": "C will hold the answer. It has rows(A) x columns(B) = 2 x 2 cells."
+          },
+          {
+            "line": 8,
+            "text": "Loop i: one pass for each row of A."
+          },
+          {
+            "line": 9,
+            "text": "Loop j: one pass for each column of B. Now i and j point at one cell of C."
+          },
+          {
+            "line": 10,
+            "text": "Reset the cell to 0 before adding anything. This is the key line."
+          },
+          {
+            "line": 11,
+            "text": "Loop k: moves along row i of A and down column j of B."
+          },
+          {
+            "line": 12,
+            "text": "Multiply one matching pair and add it into the cell. For C[0][0] this adds 1x5 and then 2x7."
+          },
+          {
+            "line": 16,
+            "text": "A second pair of loops prints the answer, one row per line."
+          },
+          {
+            "line": 18,
+            "text": "Prints one cell followed by a space."
+          },
+          {
+            "line": 20,
+            "text": "endl moves to the next line after each row."
+          }
+        ]
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Show how ONE cell of the answer is built. A is 2 x 3 and B is 3 x 2. Compute C[0][1] with a sum variable and print the sum after each product.",
+      "pseudocode": [
+        "START",
+        "SET A (2 x 3) and B (3 x 2)",
+        "SET i = 0, j = 1, sum = 0",
+        "FOR k = 0 to 2",
+        "  sum = sum + A[i][k] * B[k][j]",
+        "  PRINT k and sum",
+        "PRINT C[0][1] = sum",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Set A and B]\n  B --> C[i = 0, j = 1, sum = 0]\n  C --> D[k = 0]\n  D --> E{k < 3?}\n  E -->|Yes| F[\"sum += A i k * B k j\"]\n  F --> G[/Print k and sum/]\n  G --> H[k++]\n  H --> E\n  E -->|No| I[/Print C 0 1 = sum/]\n  I --> J([End])",
+      "sample": {
+        "id": "mult-one-cell",
+        "title": "One cell: row of A times column of B",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int A[2][3] = {{1, 2, 3}, {4, 5, 6}};\n    int B[3][2] = {{7, 8}, {9, 10}, {11, 12}};\n    int i = 0, j = 1;\n    int sum = 0;\n    for (int k = 0; k < 3; k++) {\n        sum += A[i][k] * B[k][j];\n        cout << \"k=\" << k << \": sum = \" << sum << endl;\n    }\n    cout << \"C[0][1] = \" << sum << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "k=0: sum = 8\nk=1: sum = 28\nk=2: sum = 64\nC[0][1] = 64\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A has 2 rows and 3 columns."
+          },
+          {
+            "line": 6,
+            "text": "B has 3 rows and 2 columns. Columns of A (3) equal rows of B (3), so the answer C will be 2 x 2."
+          },
+          {
+            "line": 7,
+            "text": "We look at the cell in row 0, column 1 of the answer."
+          },
+          {
+            "line": 8,
+            "text": "The accumulator starts at 0. In the full program this reset happens for every cell."
+          },
+          {
+            "line": 9,
+            "text": "k runs 3 times because A has 3 columns (and B has 3 rows)."
+          },
+          {
+            "line": 10,
+            "text": "Row 0 of A is 1 2 3. Column 1 of B is 8 10 12. This line multiplies one pair and adds it: first 1x8, then 2x10, then 3x12."
+          },
+          {
+            "line": 11,
+            "text": "Prints the running total so you can see the sum grow."
+          },
+          {
+            "line": 13,
+            "text": "The final sum is the value of the cell: 8 + 20 + 36 = 64."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "A is created: row 0 is 1 2 3 and row 1 is 4 5 6.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "B is created: column 1 of B is 8, 10, 12.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "0",
+                "j": "1"
+              },
+              "note": "We will build the cell in row 0, column 1 of C.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {
+                "sum": "0"
+              },
+              "note": "sum starts at 0 before the k loop.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "k": "0"
+              },
+              "note": "k = 0 is less than 3, so the body runs.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "sum": "8"
+              },
+              "note": "A[0][0] * B[0][1] = 1 x 8 = 8. sum becomes 0 + 8 = 8.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Prints the running total.",
+              "out": "k=0: sum = 8\n"
+            },
+            {
+              "line": 9,
+              "vars": {
+                "k": "1"
+              },
+              "note": "k becomes 1 and is still less than 3.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "sum": "28"
+              },
+              "note": "A[0][1] * B[1][1] = 2 x 10 = 20. sum becomes 8 + 20 = 28.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Prints the running total.",
+              "out": "k=1: sum = 28\n"
+            },
+            {
+              "line": 9,
+              "vars": {
+                "k": "2"
+              },
+              "note": "k becomes 2 and is still less than 3.",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "sum": "64"
+              },
+              "note": "A[0][2] * B[2][1] = 3 x 12 = 36. sum becomes 28 + 36 = 64.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "Prints the running total.",
+              "out": "k=2: sum = 64\n"
+            },
+            {
+              "line": 9,
+              "vars": {
+                "k": "3"
+              },
+              "note": "k becomes 3. 3 < 3 is false, so the loop ends.",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "The finished cell is C[0][1] = 64.",
+              "out": "C[0][1] = 64\n"
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "i": "int",
+            "j": "int",
+            "sum": "int",
+            "k": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Write a program that reads the sizes and the elements of two matrices A and B (each at most 3 x 3). If they cannot be multiplied print Multiplication not possible. Otherwise print the product matrix.",
+      "pseudocode": [
+        "START",
+        "READ r1, c1 and the elements of A",
+        "READ r2, c2 and the elements of B",
+        "IF c1 != r2 THEN PRINT \"Multiplication not possible\" and STOP",
+        "FOR each row i of A (r1 rows)",
+        "  FOR each column j of B (c2 columns)",
+        "    sum = 0",
+        "    FOR k = 0 to c1 - 1: sum = sum + A[i][k] * B[k][j]",
+        "    C[i][j] = sum",
+        "PRINT C",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read r1 c1 and A/]\n  B --> C[/Read r2 c2 and B/]\n  C --> D{c1 != r2?}\n  D -->|Yes| E[/Print not possible/]\n  D -->|No| F[\"For i, j: sum = 0\"]\n  F --> G[\"For k: sum += A i k * B k j\"]\n  G --> H[C i j = sum]\n  H --> I[/Print C/]\n  E --> J([End])\n  I --> J",
+      "sample": {
+        "id": "mult-with-input",
+        "title": "Multiply matrices read from the keyboard",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int A[3][3], B[3][3], C[3][3];\n    int r1, c1, r2, c2;\n    cin >> r1 >> c1;\n    for (int i = 0; i < r1; i++)\n        for (int j = 0; j < c1; j++)\n            cin >> A[i][j];\n    cin >> r2 >> c2;\n    for (int i = 0; i < r2; i++)\n        for (int j = 0; j < c2; j++)\n            cin >> B[i][j];\n    if (c1 != r2) {\n        cout << \"Multiplication not possible\" << endl;\n        return 0;\n    }\n    for (int i = 0; i < r1; i++) {\n        for (int j = 0; j < c2; j++) {\n            int sum = 0;\n            for (int k = 0; k < c1; k++) {\n                sum += A[i][k] * B[k][j];\n            }\n            C[i][j] = sum;\n        }\n    }\n    for (int i = 0; i < r1; i++) {\n        for (int j = 0; j < c2; j++) {\n            cout << C[i][j] << \" \";\n        }\n        cout << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "2 3\n1 2 3\n4 5 6\n3 2\n7 8\n9 10\n11 12\n",
+        "expectedOutput": "58 64 \n139 154 \n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Room for up to 3 x 3 in each matrix. We only use the part we need."
+          },
+          {
+            "line": 7,
+            "text": "Reads the size of A: r1 rows and c1 columns."
+          },
+          {
+            "line": 8,
+            "text": "Two nested loops read A row by row. The loop bounds are the sizes just read, not 3."
+          },
+          {
+            "line": 11,
+            "text": "Reads the size of B."
+          },
+          {
+            "line": 15,
+            "text": "The rule check: columns of A must equal rows of B."
+          },
+          {
+            "line": 16,
+            "text": "If the rule fails, print the message and stop with return 0."
+          },
+          {
+            "line": 19,
+            "text": "i goes over the r1 rows of A."
+          },
+          {
+            "line": 20,
+            "text": "j goes over the c2 columns of B."
+          },
+          {
+            "line": 21,
+            "text": "sum is declared inside the j loop, so it starts at 0 for every cell."
+          },
+          {
+            "line": 22,
+            "text": "k goes c1 times, along the row of A and down the column of B."
+          },
+          {
+            "line": 25,
+            "text": "Stores the finished cell in C."
+          },
+          {
+            "line": 30,
+            "text": "Prints each cell of C. The loops use r1 and c2, the size of the answer."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "sum variable, then C[i][j] = sum",
+      "when": "Clearest style, and the one to use in exams",
+      "example": "int sum = 0; for (int k = 0; k < c1; k++) sum += A[i][k] * B[k][j]; C[i][j] = sum;"
+    },
+    {
+      "way": "Accumulate straight into C[i][j]",
+      "when": "Shorter, but you must write C[i][j] = 0 first",
+      "example": "C[i][j] = 0; for (int k = 0; k < c1; k++) C[i][j] += A[i][k] * B[k][j];"
+    },
+    {
+      "way": "Square matrices (n x n)",
+      "when": "All three sizes are the same, so one constant N works everywhere",
+      "example": "const int N = 3; for (int k = 0; k < N; k++) ..."
+    },
+    {
+      "way": "Non-square matrices",
+      "when": "i uses r1, j uses c2, k uses c1 (equal to r2)",
+      "example": "A is 2x3, B is 3x4: i < 2, j < 4, k < 3, answer is 2x4"
+    },
+    {
+      "way": "Check compatibility first",
+      "when": "When the sizes come from the user",
+      "example": "if (c1 != r2) cout << \"Multiplication not possible\";"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "for (int j = 0; j < 2; j++) {\n    int sum;               // never set to 0\n    for (int k = 0; k < 2; k++) sum += A[i][k] * B[k][j];\n}",
+      "right": "for (int j = 0; j < 2; j++) {\n    int sum = 0;           // reset for every cell\n    for (int k = 0; k < 2; k++) sum += A[i][k] * B[k][j];\n}",
+      "error": "No compiler error. The program compiles, but sum starts with a garbage value (or keeps the previous cell's total), so the answers are wrong."
+    },
+    {
+      "wrong": "for (int k = 0; k < c2; k++)   // A is 2 x 3, B is 3 x 2\n    sum += A[i][k] * B[k][j];",
+      "right": "for (int k = 0; k < c1; k++)   // k runs over the columns of A\n    sum += A[i][k] * B[k][j];",
+      "error": "No compiler error. Using the wrong bound makes k stop too early or run past the end of the array, so the sums are wrong or garbage."
+    },
+    {
+      "wrong": "int C[2][2];\nC = A * B;",
+      "right": "for (int i = 0; i < 2; i++)\n    for (int j = 0; j < 2; j++) {\n        int sum = 0;\n        for (int k = 0; k < 3; k++) sum += A[i][k] * B[k][j];\n        C[i][j] = sum;\n    }",
+      "error": "invalid operands of types 'int [2][3]' and 'int [2][3]' to binary 'operator*'"
+    },
+    {
+      "wrong": "sum += A[i][k] * B[j][k];",
+      "right": "sum += A[i][k] * B[k][j];",
+      "error": "No compiler error. The column of B is walked the wrong way (row j instead of column j), so the answer is wrong. Remember: B[k][j], where k is the ROW of B."
+    }
+  ],
+  "examTips": [
+    "First write the sizes: A is r1 x c1, B is r2 x c2. Check c1 = r2 and state the answer size r1 x c2. Examiners give marks for this.",
+    "Always draw the three loops in the order i (rows of A), j (columns of B), k (the pairs). Say what each one does.",
+    "Write sum = 0 (or C[i][j] = 0) before the k loop. Missing it is the most common way to lose marks.",
+    "The element formula is C[i][j] = A[i][0]*B[0][j] + A[i][1]*B[1][j] + ... Show one cell by hand when the question says 'show your working'.",
+    "Matrix addition needs the SAME size and two loops. Multiplication needs c1 = r2 and three loops. Do not mix them up."
+  ],
+  "romanSummary": [
+    "Do matrices ko multiply karne ke liye pehli matrix ke columns dusri matrix ki rows ke barabar hone chahiye (c1 = r2).",
+    "Answer ka size hota hai rows(A) x columns(B). Misal: 2x3 aur 3x2 ka answer 2x2 hoga.",
+    "Har cell C[i][j] ke liye A ki row i aur B ka column j ke products ka sum lete hain.",
+    "Is ke liye teen loops lagte hain: i, j aur k. Har naye cell se pehle sum = 0 zaroor karo, warna answer galat aayega."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "A is a 2 x 3 matrix and B is a 3 x 4 matrix. What is the size of A x B?",
+      "options": [
+        "2 x 4",
+        "3 x 3",
+        "2 x 3",
+        "4 x 2"
+      ],
+      "answer": "2 x 4",
+      "hint": "The answer has rows(A) and columns(B).",
+      "explanation": "The middle numbers (3 and 3) match, so multiplication is allowed. The outer numbers give the answer size: 2 x 4."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which pair of matrices CANNOT be multiplied as A x B?",
+      "options": [
+        "A is 2 x 3 and B is 2 x 3",
+        "A is 2 x 3 and B is 3 x 2",
+        "A is 3 x 3 and B is 3 x 3",
+        "A is 1 x 4 and B is 4 x 1"
+      ],
+      "answer": "A is 2 x 3 and B is 2 x 3",
+      "hint": "Compare the columns of A with the rows of B.",
+      "explanation": "A has 3 columns but B has only 2 rows, so the middle numbers do not match."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint A[2][2] = {{1, 2}, {0, 1}};\nint B[2][2] = {{3, 0}, {1, 4}};\nint C[2][2];\nfor (int i = 0; i < 2; i++)\n    for (int j = 0; j < 2; j++) {\n        C[i][j] = 0;\n        for (int k = 0; k < 2; k++)\n            C[i][j] += A[i][k] * B[k][j];\n        cout << C[i][j] << \" \";\n    }",
+      "answer": "5 8 1 4",
+      "hint": "Work out C[0][0], C[0][1], C[1][0], C[1][1] in that order.",
+      "explanation": "C[0][0] = 1x3 + 2x1 = 5. C[0][1] = 1x0 + 2x4 = 8. C[1][0] = 0x3 + 1x1 = 1. C[1][1] = 0x0 + 1x4 = 4."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint A[2][3] = {{1, 2, 3}, {4, 5, 6}};\nint B[3][2] = {{1, 0}, {0, 1}, {1, 1}};\nint sum = 0;\nfor (int k = 0; k < 3; k++)\n    sum += A[1][k] * B[k][0];\ncout << sum << endl;",
+      "answer": "10",
+      "hint": "This is row 1 of A times column 0 of B.",
+      "explanation": "Row 1 of A is 4 5 6. Column 0 of B is 1 0 1. So 4x1 + 5x0 + 6x1 = 10."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This code gives bigger and bigger numbers in each cell of C. Fix it.\n\nint sum = 0;\nfor (int i = 0; i < 2; i++)\n    for (int j = 0; j < 2; j++) {\n        for (int k = 0; k < 2; k++)\n            sum += A[i][k] * B[k][j];\n        C[i][j] = sum;\n    }",
+      "answer": "for (int i = 0; i < 2; i++)\n    for (int j = 0; j < 2; j++) {\n        int sum = 0;\n        for (int k = 0; k < 2; k++)\n            sum += A[i][k] * B[k][j];\n        C[i][j] = sum;\n    }",
+      "hint": "Where is sum set back to zero?",
+      "explanation": "sum is set to 0 only once, so each cell keeps the total of all earlier cells. Move int sum = 0; inside the j loop, before the k loop."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "A is 2 x 3 and B is 3 x 2. Fill in the blank for the k loop.\n\nfor (int k = 0; k < ____; k++)\n    sum += A[i][k] * B[k][j];",
+      "answer": "for (int k = 0; k < 3; k++)\n    sum += A[i][k] * B[k][j];",
+      "hint": "k counts the columns of A, which equal the rows of B.",
+      "explanation": "A has 3 columns (and B has 3 rows), so k must run 3 times: 0, 1 and 2."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "A is 2 x 3 and B is 3 x 2 (already filled). Write the loops that store A x B in C[2][2].",
+      "answer": "for (int i = 0; i < 2; i++) {\n    for (int j = 0; j < 2; j++) {\n        int sum = 0;\n        for (int k = 0; k < 3; k++) {\n            sum += A[i][k] * B[k][j];\n        }\n        C[i][j] = sum;\n    }\n}",
+      "hint": "i < rows of A, j < columns of B, k < columns of A.",
+      "explanation": "The answer is 2 x 2, so i and j run to 2. The k loop runs 3 times (the common size) and sum is reset for each cell."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "When can A be multiplied by B?",
+      "options": [
+        "Columns of A = rows of B",
+        "Rows of A = rows of B",
+        "Columns of A = columns of B",
+        "Both are square"
+      ],
+      "answer": "Columns of A = rows of B",
+      "hint": "Look at the two middle numbers.",
+      "explanation": "The row of A and the column of B must have the same number of elements to be paired up."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "How many nested loops are needed to multiply two matrices?",
+      "options": [
+        "3",
+        "1",
+        "2",
+        "4"
+      ],
+      "answer": "3",
+      "hint": "Rows, columns and the pairs inside one cell.",
+      "explanation": "Loop i, loop j and loop k."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Where must sum = 0 be written?",
+      "options": [
+        "Before the k loop, inside the j loop",
+        "Once at the top of main",
+        "After the k loop",
+        "Inside the k loop, after the addition"
+      ],
+      "answer": "Before the k loop, inside the j loop",
+      "hint": "Every cell starts from zero.",
+      "explanation": "The reset must run once for each cell, just before the k loop begins."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What is the size of the product of a 4 x 2 matrix and a 2 x 5 matrix?",
+      "options": [
+        "4 x 5",
+        "2 x 2",
+        "5 x 4",
+        "4 x 2"
+      ],
+      "answer": "4 x 5",
+      "hint": "rows(A) x columns(B).",
+      "explanation": "The inner 2 and 2 match and disappear. The outer numbers 4 and 5 remain."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "In C[i][j] += A[i][k] * B[k][j], which variable moves down the column of B?",
+      "options": [
+        "k",
+        "i",
+        "j",
+        "None of them"
+      ],
+      "answer": "k",
+      "hint": "Look at which index is in the ROW position of B.",
+      "explanation": "k is the first index of B, so as k grows we move down column j of B."
+    }
+  ],
+  "sources": [
+    "Matrix multiplication",
+    "Two-dimensional arrays",
+    "Nested loops with arrays"
+  ]
+}

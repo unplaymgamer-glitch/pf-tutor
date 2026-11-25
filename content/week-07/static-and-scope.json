@@ -1,0 +1,1036 @@
+{
+  "slug": "static-and-scope",
+  "week": 7,
+  "title": "Scope and static variables: where a variable lives and how long",
+  "defaultView": "visualize",
+  "order": 5,
+  "visuals": [
+    {
+      "kind": "pipeline",
+      "title": "The life of a variable: ordinary local vs static local",
+      "stages": [
+        {
+          "name": "1. The function is called",
+          "detail": "A new frame appears on the call stack."
+        },
+        {
+          "name": "2. The variable is created",
+          "detail": "An ordinary local is created every call. A static local is created only on the FIRST call, in static memory."
+        },
+        {
+          "name": "3. The function runs",
+          "detail": "Both are used the same way inside the function. Only code inside the function can see them."
+        },
+        {
+          "name": "4. The function returns",
+          "detail": "The ordinary local is destroyed and loses its value. The static local stays alive and keeps its value."
+        },
+        {
+          "name": "5. The next call",
+          "detail": "The ordinary local starts fresh again. The static local still has its old value and its initial value is not set a second time."
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "Match each term to its meaning",
+      "pairs": [
+        {
+          "term": "Local variable",
+          "meaning": "Declared inside a function or block, usable only there"
+        },
+        {
+          "term": "Global variable",
+          "meaning": "Declared outside all functions, visible everywhere below it"
+        },
+        {
+          "term": "Scope",
+          "meaning": "The part of the program where a name can be used"
+        },
+        {
+          "term": "Lifetime",
+          "meaning": "How long the variable's box exists in memory"
+        },
+        {
+          "term": "Shadowing",
+          "meaning": "An inner variable with the same name hides the outer one"
+        },
+        {
+          "term": "static local",
+          "meaning": "Created once, keeps its value between calls, visible only in its function"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can say where a variable can be used (scope) and how long it lives (lifetime), explain why globals are risky, and use a static local variable to remember a value between function calls.",
+  "warmup": "Think of a hostel. A notice stuck inside your room is read only by people in your room: that is a local variable. A notice on the main gate is read by everybody: that is a global variable, and everybody can also scribble on it, so it gets messy. Now think of a canteen token counter. The cashier does not restart from 1 for every customer. The counter remembers the last number. A static variable gives a function that kind of memory.",
+  "definition": "Scope is the part of the program where a variable name can be used. A local variable is declared inside a function or inside a { } block. It can be used only there (block scope). A global variable is declared outside all functions and can be used by every function below it. Lifetime is how long the variable's box exists. An ordinary local variable is created each time the block runs and destroyed when it ends. A static local variable is created and set up only once, and keeps its value for the whole program, although only its own function can see it.",
+  "howItWorks": "Open the scope trace and look at the call stack panel. The global total sits in its own area outside every function. When the { } block starts, a new x appears and hides the outer x. When the block ends, it disappears. Inside main, a local total hides the global total, but the function show() has no total of its own, so it uses the global one. This is called shadowing: the nearest declaration wins. Now open the counter trace. The ordinary variable normal is created again from 0 on every call, so it is always 1. The static variable calls is created once. The line static int calls = 0; runs only the first time. On later calls it is skipped and calls keeps counting. Why avoid globals? Any function can change them, so when a value is wrong you do not know who changed it. It is also hard to reuse a function that depends on a global. Prefer local variables and pass values with parameters and return.",
+  "syntax": "int total = 100;            // global: declared outside all functions\n\nvoid counter() {\n    int normal = 0;         // ordinary local: new on every call\n    static int calls = 0;   // static local: created ONCE, keeps its value\n    normal++;\n    calls++;\n}\n\nint main() {\n    int x = 5;              // local to main\n    {\n        int x = 50;         // block scope: hides the outer x inside { }\n    }                       // inner x is destroyed here\n    return 0;\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write a function counter() that has an ordinary local variable normal and a static local variable calls. Both start at 0 and are increased by 1 on each call. Call it twice and print both variables each time.",
+      "pseudocode": [
+        "START",
+        "CALL counter() the first time",
+        "  normal = 0 (new), calls = 0 (created once)",
+        "  normal = 1, calls = 1, PRINT both",
+        "CALL counter() the second time",
+        "  normal = 0 (new again), calls keeps its value",
+        "  normal = 1, calls = 2, PRINT both",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Call counter]\n  B --> C[normal = 0 every call]\n  C --> D{First call?}\n  D -->|Yes| E[Create calls = 0]\n  D -->|No| F[Keep old calls]\n  E --> G[normal++ and calls++]\n  F --> G\n  G --> H[/Print normal and calls/]\n  H --> I{Call again?}\n  I -->|Yes| B\n  I -->|No| J([End])",
+      "sample": {
+        "id": "static-counter",
+        "title": "Ordinary local vs static local",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid counter() {\n    int normal = 0;\n    static int calls = 0;\n    normal++;\n    calls++;\n    cout << \"normal = \" << normal << \", calls = \" << calls << endl;\n}\n\nint main() {\n    counter();\n    counter();\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "normal = 1, calls = 1\nnormal = 1, calls = 2\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "counter takes no input and returns nothing. Its only job is to count and print."
+          },
+          {
+            "line": 5,
+            "text": "An ordinary local: created at 0 on EVERY call."
+          },
+          {
+            "line": 6,
+            "text": "A static local: the = 0 happens only once, on the first call. After that the line is skipped."
+          },
+          {
+            "line": 7,
+            "text": "normal goes 0 to 1 on every call."
+          },
+          {
+            "line": 8,
+            "text": "calls goes up and remembers its value."
+          },
+          {
+            "line": 9,
+            "text": "Prints both so you can compare them."
+          },
+          {
+            "line": 13,
+            "text": "First call: both are 1."
+          },
+          {
+            "line": 14,
+            "text": "Second call: normal is 1 again, calls is 2."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 12,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "main calls counter() for the first time. A new stack frame is made for it.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "counter()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {
+                "normal": "0"
+              },
+              "note": "normal is a normal local variable. A fresh box is made and set to 0.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "counter()",
+                  "vars": {
+                    "normal": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "vars": {
+                "calls": "0"
+              },
+              "note": "calls is static. It is created and set to 0 ONLY NOW, the first time this line runs. It lives in static memory, not in the function's frame.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "static memory (lives until the program ends)",
+                  "vars": {
+                    "calls": "0"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "counter()",
+                  "vars": {
+                    "normal": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "normal": "1"
+              },
+              "note": "normal becomes 1.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "static memory (lives until the program ends)",
+                  "vars": {
+                    "calls": "0"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "counter()",
+                  "vars": {
+                    "normal": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {
+                "calls": "1"
+              },
+              "note": "calls becomes 1.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "static memory (lives until the program ends)",
+                  "vars": {
+                    "calls": "1"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "counter()",
+                  "vars": {
+                    "normal": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Prints both values. The function now ends: normal is destroyed, but calls survives.",
+              "out": "normal = 1, calls = 1\n",
+              "stack": [
+                {
+                  "fn": "static memory (lives until the program ends)",
+                  "vars": {
+                    "calls": "1"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "counter()",
+                  "vars": {
+                    "normal": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Second call. The stack shows only main plus the new counter() frame, but calls is still sitting in static memory with the value 1.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "static memory (lives until the program ends)",
+                  "vars": {
+                    "calls": "1"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "counter()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {
+                "normal": "0"
+              },
+              "note": "normal is created again from scratch and set to 0. Its old value is gone.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "static memory (lives until the program ends)",
+                  "vars": {
+                    "calls": "1"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "counter()",
+                  "vars": {
+                    "normal": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "normal": "1"
+              },
+              "note": "Line 6 was skipped: calls already exists, so it is NOT set to 0 again. normal becomes 1.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "static memory (lives until the program ends)",
+                  "vars": {
+                    "calls": "1"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "counter()",
+                  "vars": {
+                    "normal": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 8,
+              "vars": {
+                "calls": "2"
+              },
+              "note": "calls continues from the old value 1 and becomes 2.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "static memory (lives until the program ends)",
+                  "vars": {
+                    "calls": "2"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "counter()",
+                  "vars": {
+                    "normal": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Prints normal = 1 (always) and calls = 2 (it remembered).",
+              "out": "normal = 1, calls = 2\n",
+              "stack": [
+                {
+                  "fn": "static memory (lives until the program ends)",
+                  "vars": {
+                    "calls": "2"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {}
+                },
+                {
+                  "fn": "counter()",
+                  "vars": {
+                    "normal": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "static memory (lives until the program ends)",
+                  "vars": {
+                    "calls": "2"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            }
+          ],
+          "types": {
+            "normal": "int",
+            "calls": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Show scope and shadowing: a global total, a local x inside a { } block that hides another x, and a local total in main that hides the global one. Print each value and show that the function show() still sees the global.",
+      "pseudocode": [
+        "START",
+        "GLOBAL total = 100",
+        "x = 5",
+        "OPEN block: new x = 50, PRINT x",
+        "CLOSE block: inner x dies",
+        "PRINT x (5)",
+        "local total = 1, PRINT total",
+        "CALL show(): PRINT global total",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Global total = 100]\n  B --> C[x = 5]\n  C --> D[Block: new x = 50]\n  D --> E[/Print inner x/]\n  E --> F[Block ends]\n  F --> G[/Print outer x/]\n  G --> H[Local total = 1]\n  H --> I[/Print main total/]\n  I --> J[Call show]\n  J --> K[/Print global total/]\n  K --> L([End])",
+      "sample": {
+        "id": "scope-shadowing",
+        "title": "Global, local and block scope",
+        "code": "#include <iostream>\nusing namespace std;\n\nint total = 100;\n\nvoid show() {\n    cout << \"show sees total = \" << total << endl;\n}\n\nint main() {\n    int x = 5;\n    {\n        int x = 50;\n        cout << \"inner x = \" << x << endl;\n    }\n    cout << \"outer x = \" << x << endl;\n    int total = 1;\n    cout << \"main total = \" << total << endl;\n    show();\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "inner x = 50\nouter x = 5\nmain total = 1\nshow sees total = 100\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "A global variable: declared outside every function."
+          },
+          {
+            "line": 7,
+            "text": "show has no total of its own, so this is the global total."
+          },
+          {
+            "line": 11,
+            "text": "Local to main."
+          },
+          {
+            "line": 13,
+            "text": "A new x with block scope. It hides the outer x until the closing brace."
+          },
+          {
+            "line": 14,
+            "text": "Uses the nearest x, the inner one: 50."
+          },
+          {
+            "line": 16,
+            "text": "The block is over, so x is the outer one again: 5."
+          },
+          {
+            "line": 17,
+            "text": "A local total in main. It shadows the global total, which is still 100."
+          },
+          {
+            "line": 19,
+            "text": "show() cannot see main's local total, so it prints the global 100."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 10,
+              "vars": {
+                "total (global)": "100"
+              },
+              "note": "The global total (100) already exists before main starts. It is created outside every function.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "global area (outside every function)",
+                  "vars": {
+                    "total": "100"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 11,
+              "vars": {
+                "x": "5"
+              },
+              "note": "main creates its local x = 5.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "global area (outside every function)",
+                  "vars": {
+                    "total": "100"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {
+                "x (inner)": "50"
+              },
+              "note": "The { } block opens and makes a NEW x = 50. It hides (shadows) the outer x while we are inside the block.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "global area (outside every function)",
+                  "vars": {
+                    "total": "100"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "5"
+                  }
+                },
+                {
+                  "fn": "{ } block",
+                  "vars": {
+                    "x": "50"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Inside the block, x means the inner x: 50.",
+              "out": "inner x = 50\n",
+              "stack": [
+                {
+                  "fn": "global area (outside every function)",
+                  "vars": {
+                    "total": "100"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "5"
+                  }
+                },
+                {
+                  "fn": "{ } block",
+                  "vars": {
+                    "x": "50"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "The block ends. The inner x dies. The outer x was never changed.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "global area (outside every function)",
+                  "vars": {
+                    "total": "100"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "Back to the outer x: 5.",
+              "out": "outer x = 5\n",
+              "stack": [
+                {
+                  "fn": "global area (outside every function)",
+                  "vars": {
+                    "total": "100"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "5"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 17,
+              "vars": {
+                "total (main)": "1"
+              },
+              "note": "main declares its own local total = 1. In main this name now hides the global total. The global one is still 100.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "global area (outside every function)",
+                  "vars": {
+                    "total": "100"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "5",
+                    "total": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 18,
+              "vars": {},
+              "note": "Inside main, total means the local one: 1.",
+              "out": "main total = 1\n",
+              "stack": [
+                {
+                  "fn": "global area (outside every function)",
+                  "vars": {
+                    "total": "100"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "5",
+                    "total": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "main calls show(). show has no total of its own, so it uses the global one.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "global area (outside every function)",
+                  "vars": {
+                    "total": "100"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "5",
+                    "total": "1"
+                  }
+                },
+                {
+                  "fn": "show()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "show prints the global total: 100. A local variable of main is not visible inside show.",
+              "out": "show sees total = 100\n",
+              "stack": [
+                {
+                  "fn": "global area (outside every function)",
+                  "vars": {
+                    "total": "100"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "5",
+                    "total": "1"
+                  }
+                },
+                {
+                  "fn": "show()",
+                  "vars": {}
+                }
+              ]
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "global area (outside every function)",
+                  "vars": {
+                    "total": "100"
+                  }
+                },
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "x": "5",
+                    "total": "1"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "total (global)": "int",
+            "x": "int",
+            "x (inner)": "int",
+            "total (main)": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "A canteen gives a token number to each customer. Write nextToken() using a static variable so the numbers continue 101, 102, 103. Then compare it with plainToken(), which uses an ordinary variable. Write the exact output.",
+      "pseudocode": [
+        "START",
+        "a = nextToken()  (static last: 101)",
+        "b = nextToken()  (static last: 102)",
+        "c = nextToken()  (static last: 103)",
+        "p = plainToken() (new last = 100, then 101)",
+        "q = plainToken() (new last = 100, then 101)",
+        "PRINT a b c",
+        "PRINT p q",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[3 calls to nextToken]\n  B --> C[static last grows 101, 102, 103]\n  C --> D[2 calls to plainToken]\n  D --> E[last restarts at 100 each time: 101, 101]\n  E --> F[/Print both lines/]\n  F --> G([End])",
+      "sample": {
+        "id": "token-counter",
+        "title": "Token numbers: static vs ordinary",
+        "code": "#include <iostream>\nusing namespace std;\n\nint nextToken() {\n    static int last = 100;\n    last = last + 1;\n    return last;\n}\n\nint plainToken() {\n    int last = 100;\n    last = last + 1;\n    return last;\n}\n\nint main() {\n    int a = nextToken();\n    int b = nextToken();\n    int c = nextToken();\n    int p = plainToken();\n    int q = plainToken();\n    cout << a << \" \" << b << \" \" << c << endl;\n    cout << p << \" \" << q << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "101 102 103\n101 101\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "static: set to 100 only on the first call."
+          },
+          {
+            "line": 6,
+            "text": "Adds 1 to the remembered value."
+          },
+          {
+            "line": 7,
+            "text": "Returns it. The static variable keeps the new value for the next call."
+          },
+          {
+            "line": 11,
+            "text": "Ordinary local: becomes 100 again on every call."
+          },
+          {
+            "line": 12,
+            "text": "Always 100 + 1 = 101."
+          },
+          {
+            "line": 17,
+            "text": "First token: 101."
+          },
+          {
+            "line": 18,
+            "text": "Second token: 102, because last remembered 101."
+          },
+          {
+            "line": 19,
+            "text": "Third token: 103."
+          },
+          {
+            "line": 20,
+            "text": "plainToken gives 101."
+          },
+          {
+            "line": 21,
+            "text": "plainToken gives 101 again: it forgot."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Local variable",
+      "when": "Inside a function. It is created at each call and dies on return. Use it for almost everything.",
+      "example": "void f() { int n = 0; }"
+    },
+    {
+      "way": "Block-scope variable",
+      "when": "Declared inside { } such as a loop body or an if block. It dies at the closing brace.",
+      "example": "if (x > 0) { int y = x * 2; }  // y is gone after }"
+    },
+    {
+      "way": "Global variable",
+      "when": "Declared outside all functions. Seen by every function below it. Avoid it except for fixed constants.",
+      "example": "int total = 100;"
+    },
+    {
+      "way": "static local variable",
+      "when": "A function must remember a value between calls (counters, token numbers).",
+      "example": "static int calls = 0;"
+    },
+    {
+      "way": "Shadowing",
+      "when": "An inner variable with the same name hides the outer one. It works but confuses readers. Prefer different names.",
+      "example": "int x = 5; { int x = 50; }"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int main() {\n    { int x = 5; }\n    cout << x;\n}",
+      "right": "int main() {\n    int x = 5;\n    cout << x;\n}",
+      "error": "error: 'x' was not declared in this scope"
+    },
+    {
+      "wrong": "int count() { static int c = 0; c++; return c; }\nint main() {\n    cout << c;\n}",
+      "right": "int count() { static int c = 0; c++; return c; }\nint main() {\n    cout << count();\n}",
+      "error": "error: 'c' was not declared in this scope"
+    },
+    {
+      "wrong": "void hit() {\n    int n = 0;      // expects to remember\n    n++;\n    cout << n;\n}",
+      "right": "void hit() {\n    static int n = 0;\n    n++;\n    cout << n;\n}",
+      "error": "No compiler error. hit() always prints 1 because an ordinary local starts from 0 on every call. Use static when the value must be remembered."
+    },
+    {
+      "wrong": "int total = 0;\nvoid add(int v) {\n    int total = 0;   // new local, hides the global\n    total = total + v;\n}",
+      "right": "int total = 0;\nvoid add(int v) {\n    total = total + v;\n}",
+      "error": "No compiler error. The declaration creates a new local total that hides the global one, so the global never changes. Remove the type word to use the global."
+    }
+  ],
+  "examTips": [
+    "Local = only inside its function or { } block. Global = outside all functions. Say 'scope' for where, 'lifetime' for how long.",
+    "static local: created and initialised ONCE, keeps its value between calls, still visible only inside its function.",
+    "In output questions, mark which variable is ordinary (restarts every call) and which is static (keeps counting).",
+    "When two variables have the same name, the one in the nearest enclosing block wins (shadowing).",
+    "Reason to avoid globals: any function can change them, so bugs are hard to find. Use parameters and return values instead."
+  ],
+  "romanSummary": [
+    "Local variable sirf apne function ya { } block ke andar chalta hai. Global variable sab functions mein nazar aata hai.",
+    "Scope ka matlab hai variable kahan use ho sakta hai, aur lifetime ka matlab hai wo kitni der memory mein rehta hai.",
+    "Normal local variable har call par naya banta hai aur return par khatam ho jata hai.",
+    "static local variable sirf ek dafa banta hai aur calls ke darmiyan apni value yaad rakhta hai, jaise counter.",
+    "Globals kam se kam use karein, kyunke koi bhi function unhein badal sakta hai aur bug dhoondna mushkil ho jata hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Where can a local variable declared inside main() be used?",
+      "options": [
+        "Only inside main()",
+        "In every function",
+        "Only in other functions",
+        "Outside the program"
+      ],
+      "answer": "Only inside main()",
+      "hint": "Local means private to its function.",
+      "explanation": "A local variable is visible only in the function or block where it is declared."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nvoid hit() {\n    static int n = 0;\n    n++;\n    cout << n << \" \";\n}\nint main() {\n    hit();\n    hit();\n    hit();\n    return 0;\n}",
+      "answer": "1 2 3",
+      "hint": "static keeps its value.",
+      "explanation": "n is created once and keeps growing: 1, 2, 3."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print? (It is the same as before, but without static.)\n\n#include <iostream>\nusing namespace std;\nvoid hit() {\n    int n = 0;\n    n++;\n    cout << n << \" \";\n}\nint main() {\n    hit();\n    hit();\n    hit();\n    return 0;\n}",
+      "answer": "1 1 1",
+      "hint": "An ordinary local restarts at 0 on each call.",
+      "explanation": "n is created as 0 on each call and becomes 1, so 1 is printed three times."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint x = 10;\nint main() {\n    int x = 20;\n    {\n        int x = 30;\n        cout << x << \" \";\n    }\n    cout << x;\n    return 0;\n}",
+      "answer": "30 20",
+      "hint": "The nearest x wins.",
+      "explanation": "Inside the block the inner x (30) hides the others. After the block, main's x (20) is visible. The global 10 is hidden everywhere in main."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This code gives an error 'result was not declared in this scope'. Fix it.\n\nif (marks > 50) {\n    int result = 1;\n}\ncout << result;",
+      "answer": "int result = 0;\nif (marks > 50) {\n    result = 1;\n}\ncout << result;",
+      "hint": "A variable declared inside { } dies at the }.",
+      "explanation": "Declare result before the if so that it lives long enough to be printed."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank so the function remembers the number of calls between calls.\n\nvoid visit() {\n    ____ int count = 0;\n    count++;\n    cout << count;\n}",
+      "answer": "static",
+      "hint": "A keyword that keeps the value.",
+      "explanation": "static int count = 0; creates the variable once and keeps its value."
+    },
+    {
+      "id": "p7",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\nint f() {\n    static int s = 5;\n    int l = 5;\n    s = s + 2;\n    l = l + 2;\n    return s + l;\n}\nint main() {\n    cout << f() << \" \";\n    cout << f();\n    return 0;\n}",
+      "answer": "14 16",
+      "hint": "Track s and l separately.",
+      "explanation": "First call: s = 7, l = 7, result 14. Second call: s = 9 (remembered), l = 7 (fresh), result 16."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a function int nextId() that returns 1 the first time, 2 the second time, and so on, using a static variable. In main call it three times and print the three numbers on one line separated by spaces.",
+      "answer": "#include <iostream>\nusing namespace std;\nint nextId() {\n    static int id = 0;\n    id++;\n    return id;\n}\nint main() {\n    int a = nextId();\n    int b = nextId();\n    int c = nextId();\n    cout << a << \" \" << b << \" \" << c << endl;\n    return 0;\n}",
+      "hint": "static int id = 0; then increase and return.",
+      "explanation": "The static id remembers its value, so the three calls give 1, 2, 3."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is the main property of a static local variable?",
+      "options": [
+        "It keeps its value between function calls",
+        "It is visible in every function",
+        "It cannot be changed",
+        "It is created on every call"
+      ],
+      "answer": "It keeps its value between function calls",
+      "hint": "Think of the token counter.",
+      "explanation": "A static local is created once and keeps its value for the whole program."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Where is a global variable declared?",
+      "options": [
+        "Outside all functions",
+        "Inside main only",
+        "Inside a loop",
+        "Inside a parameter list"
+      ],
+      "answer": "Outside all functions",
+      "hint": "Look at where total = 100 is written.",
+      "explanation": "Globals are declared outside every function."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "What happens to an ordinary local variable when its function returns?",
+      "options": [
+        "It is destroyed",
+        "It keeps its value",
+        "It becomes global",
+        "It becomes static"
+      ],
+      "answer": "It is destroyed",
+      "hint": "Think about lifetime.",
+      "explanation": "Ordinary locals live only while the function runs."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Why should we avoid global variables?",
+      "options": [
+        "Any function can change them, so bugs are hard to find",
+        "They use the wrong type",
+        "They cannot be printed",
+        "They make the code faster"
+      ],
+      "answer": "Any function can change them, so bugs are hard to find",
+      "hint": "Think about who can modify them.",
+      "explanation": "Shared changeable data makes it hard to see which function caused a wrong value."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "int x = 5; { int x = 9; } cout << x;  What is printed?",
+      "options": [
+        "5",
+        "9",
+        "14",
+        "Error"
+      ],
+      "answer": "5",
+      "hint": "The inner x dies at the closing brace.",
+      "explanation": "The inner x belongs to the block only. After the block the outer x (5) is used."
+    }
+  ],
+  "sources": [
+    "Scope of variables (local and global)",
+    "Static variables in a function",
+    "Block scope and lifetime"
+  ]
+}

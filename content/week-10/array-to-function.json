@@ -1,0 +1,850 @@
+{
+  "slug": "array-to-function",
+  "week": 10,
+  "title": "Passing an array to a function",
+  "defaultView": "visualize",
+  "order": 2,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match each idea about array parameters",
+      "pairs": [
+        {
+          "term": "void f(int a[], int n)",
+          "meaning": "Same as void f(int *a, int n): a is a pointer to the first element"
+        },
+        {
+          "term": "f(data, 5)",
+          "meaning": "Call with the array NAME only, no [ ] and no &"
+        },
+        {
+          "term": "What is copied?",
+          "meaning": "Only the address of the first element; the array itself is NOT copied"
+        },
+        {
+          "term": "Changing a[i] inside f",
+          "meaning": "Changes the caller's original array"
+        },
+        {
+          "term": "int n parameter",
+          "meaning": "The function cannot know the array size, so the size is passed separately"
+        },
+        {
+          "term": "const int a[]",
+          "meaning": "The function may read the array but cannot change it"
+        }
+      ]
+    },
+    {
+      "kind": "array",
+      "title": "A function that reverses the ORIGINAL array",
+      "mode": "reverse",
+      "values": [
+        4,
+        9,
+        2,
+        7,
+        5,
+        1
+      ]
+    }
+  ],
+  "goal": "After this you can pass an array to a function, explain why the function changes the original array, pass the size as a second parameter, protect an array with const, and write sum, maximum, reverse and fill functions.",
+  "warmup": "Your class teacher wants the marks of 40 students checked. She does not photocopy all 40 papers for each helper. She just tells the helper 'the papers are in the box on my desk'. The helper goes to that same box. If he writes a correction on a paper, it is corrected in the original. A function receiving an array is the same: it receives the location of the array, not a copy.",
+  "definition": "When you write the array name in a function call, C++ does not copy the array. It sends the address of the first element (the array 'decays' into a pointer). So the parameter int a[] is really a pointer, and int a[] and int *a mean exactly the same thing in a parameter list. Two big results: (1) the function works on the ORIGINAL array, so any change it makes stays after the function returns; (2) the function only gets an address, so it does not know how many elements there are. You must send the size as another parameter, for example int n.",
+  "howItWorks": "Step through the first trace and look at the call stack. main owns the array marks. When main calls sumArray(marks, 4), a new frame for sumArray appears on the stack. It holds a (a pointer that points INTO main's array) and n (a normal copy of the number 4). The loop reads a[i], which is really marks[i]. When the function returns, its frame is removed, but the array is still there because it belongs to main. In the second trace doubleAll writes a[i] = a[i] * 2 and you see data change in main: that is the proof that no copy was made. Because the function cannot change its own copy, a function that only needs to look at the numbers (sum, maximum, print) should say const int a[]. Then the compiler stops you if you try to write a[i] = ... by mistake. A function that must change the array (fill, reverse, sort, input) uses plain int a[]. In the call you write only the name: sumArray(marks, 4), never sumArray(marks[], 4) and never sumArray(marks[4], 4). Finally, remember that inside the function sizeof(a) is only the size of a pointer, so it cannot give you the element count: always pass n. For a 2-D array the column size must be written in the parameter, for example void show(int m[][3], int rows); (you will see more in the notes).",
+  "syntax": "// the array parameter is really a pointer: the two headers are the same\nvoid f(int a[], int n);\nvoid f(int *a, int n);\n\n// read-only: the function cannot change the array\nint sumArray(const int a[], int n);\n\n// can change the original array\nvoid fillArray(int a[], int n, int value);\n\nint data[5] = {4, 9, 2, 7, 5};\nsumArray(data, 5);        // call: name only, no [ ] and no &\nfillArray(data, 5, 0);    // data is now all zeros\n\n// inside a function: a[i] and *(a + i) both work",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Write a function sumArray that receives an array of ints and its size and returns the sum of all elements. Call it from main for the marks {70, 80, 90, 60}.",
+      "pseudocode": [
+        "START",
+        "main: CREATE marks = {70, 80, 90, 60}",
+        "CALL sumArray(marks, 4): the function receives the address of marks and n = 4",
+        "In sumArray: SET s = 0",
+        "REPEAT i from 0 to n - 1: s = s + a[i]",
+        "RETURN s",
+        "main: PRINT the returned sum",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"main: marks = {70,80,90,60}\"]\n  B --> C[\"Call sumArray(marks, 4)\"]\n  C --> D[\"s = 0, i = 0\"]\n  D --> E{\"i < n ?\"}\n  E -- Yes --> F[\"s = s + a[i]\"]\n  F --> G[\"i++\"]\n  G --> E\n  E -- No --> H[Return s]\n  H --> I[/Print the sum/]\n  I --> J([End])",
+      "sample": {
+        "id": "sum-array-function",
+        "title": "sumArray: a function that reads an array",
+        "code": "#include <iostream>\nusing namespace std;\n\nint sumArray(const int a[], int n) {\n    int s = 0;\n    for (int i = 0; i < n; i++) {\n        s += a[i];\n    }\n    return s;\n}\n\nint main() {\n    int marks[4] = {70, 80, 90, 60};\n    cout << \"Sum = \" << sumArray(marks, 4) << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Sum = 300\n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "const int a[] means: an array of ints that this function may only READ. n is the number of elements, passed separately."
+          },
+          {
+            "line": 5,
+            "text": "s is the running total."
+          },
+          {
+            "line": 6,
+            "text": "The loop uses n, because the function cannot find the size by itself."
+          },
+          {
+            "line": 7,
+            "text": "a[i] reads the i-th element of the caller's array."
+          },
+          {
+            "line": 9,
+            "text": "Return the total to the caller."
+          },
+          {
+            "line": 13,
+            "text": "The array lives in main."
+          },
+          {
+            "line": 14,
+            "text": "Only the name marks is written in the call. It sends the address of marks[0]; the 4 is the size."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 13,
+              "vars": {
+                "marks": "{70,80,90,60}"
+              },
+              "note": "main creates the array marks with 4 numbers.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "{70,80,90,60}"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {
+                "a": "-> marks",
+                "n": "4"
+              },
+              "note": "The call sumArray(marks, 4) sends only the ADDRESS of marks[0] and the number 4. The function's a is a pointer to the caller's array: no copy of the 4 numbers is made.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "{70,80,90,60}"
+                  }
+                },
+                {
+                  "fn": "sumArray(a, n)",
+                  "vars": {
+                    "a": "-> marks (same array, not a copy)",
+                    "n": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 5,
+              "vars": {
+                "s": "0"
+              },
+              "note": "s is the running total.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "{70,80,90,60}"
+                  }
+                },
+                {
+                  "fn": "sumArray(a, n)",
+                  "vars": {
+                    "a": "-> marks",
+                    "n": "4",
+                    "s": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "0",
+                "s": "70"
+              },
+              "note": "a[0] reads marks[0] = 70 through the pointer.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "{70,80,90,60}"
+                  }
+                },
+                {
+                  "fn": "sumArray(a, n)",
+                  "vars": {
+                    "a": "-> marks",
+                    "n": "4",
+                    "i": "0",
+                    "s": "70"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "1",
+                "s": "150"
+              },
+              "note": "a[1] is marks[1] = 80. Total 150.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "{70,80,90,60}"
+                  }
+                },
+                {
+                  "fn": "sumArray(a, n)",
+                  "vars": {
+                    "a": "-> marks",
+                    "n": "4",
+                    "i": "1",
+                    "s": "150"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "2",
+                "s": "240"
+              },
+              "note": "a[2] is marks[2] = 90. Total 240.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "{70,80,90,60}"
+                  }
+                },
+                {
+                  "fn": "sumArray(a, n)",
+                  "vars": {
+                    "a": "-> marks",
+                    "n": "4",
+                    "i": "2",
+                    "s": "240"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "vars": {
+                "i": "3",
+                "s": "300"
+              },
+              "note": "a[3] is marks[3] = 60. Total 300. The loop stops because n tells it where the array ends.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "{70,80,90,60}"
+                  }
+                },
+                {
+                  "fn": "sumArray(a, n)",
+                  "vars": {
+                    "a": "-> marks",
+                    "n": "4",
+                    "i": "3",
+                    "s": "300"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "return s sends 300 back. The function's frame (a, n, s, i) is removed from the stack; the array marks belongs to main and stays.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "{70,80,90,60}"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "main prints the returned value.",
+              "out": "Sum = 300\n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "marks": "{70,80,90,60}"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "marks": "int[4]",
+            "a": "const int*",
+            "n": "int",
+            "s": "int",
+            "i": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Write printArray (read only, with const) and doubleAll (changes the array). Print the array, double every element, and print it again, to prove that the function changed the ORIGINAL array.",
+      "pseudocode": [
+        "START",
+        "main: CREATE data = {1, 2, 3}",
+        "CALL printArray(data, 3)",
+        "CALL doubleAll(data, 3): for each i, a[i] = a[i] * 2",
+        "CALL printArray(data, 3) again",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"data = {1,2,3}\"]\n  B --> C[\"printArray(data, 3)\"]\n  C --> D[\"doubleAll(data, 3)\"]\n  D --> E[\"printArray(data, 3)\"]\n  E --> F[/Show doubled values/]\n  F --> G([End])",
+      "sample": {
+        "id": "double-all-original",
+        "title": "doubleAll changes the original array",
+        "code": "#include <iostream>\nusing namespace std;\n\nvoid printArray(const int a[], int n) {\n    for (int i = 0; i < n; i++) {\n        cout << a[i] << \" \";\n    }\n    cout << endl;\n}\n\nvoid doubleAll(int a[], int n) {\n    for (int i = 0; i < n; i++) {\n        a[i] = a[i] * 2;\n    }\n}\n\nint main() {\n    int data[3] = {1, 2, 3};\n    printArray(data, 3);\n    doubleAll(data, 3);\n    printArray(data, 3);\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "1 2 3 \n2 4 6 \n",
+        "explanation": [
+          {
+            "line": 4,
+            "text": "printArray only reads, so the parameter is const int a[]."
+          },
+          {
+            "line": 6,
+            "text": "Print each element followed by a space."
+          },
+          {
+            "line": 8,
+            "text": "endl moves to the next line after the last element."
+          },
+          {
+            "line": 11,
+            "text": "doubleAll has no const, because it is allowed to change the array."
+          },
+          {
+            "line": 13,
+            "text": "This writes into the caller's array, not into a copy."
+          },
+          {
+            "line": 18,
+            "text": "The array data is created in main."
+          },
+          {
+            "line": 19,
+            "text": "First print: 1 2 3."
+          },
+          {
+            "line": 20,
+            "text": "doubleAll receives the address of data and doubles every element in place."
+          },
+          {
+            "line": 21,
+            "text": "Second print: 2 4 6. The change was kept after the function returned."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 18,
+              "vars": {
+                "data": "{1,2,3}"
+              },
+              "note": "main creates data = {1, 2, 3}.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "data": "{1,2,3}"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 19,
+              "vars": {},
+              "note": "printArray gets the address of data. It only reads (const), so nothing changes. It prints the three numbers.",
+              "out": "1 2 3 \n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "data": "{1,2,3}"
+                  }
+                },
+                {
+                  "fn": "printArray(a, n)",
+                  "vars": {
+                    "a": "-> data",
+                    "n": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 20,
+              "vars": {
+                "a": "-> data",
+                "n": "3"
+              },
+              "note": "doubleAll(data, 3): again only the address is sent. The function's a points at main's array.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "data": "{1,2,3}"
+                  }
+                },
+                {
+                  "fn": "doubleAll(a, n)",
+                  "vars": {
+                    "a": "-> data (same array)",
+                    "n": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {
+                "i": "0"
+              },
+              "note": "a[0] = 1 * 2. This writes into the ORIGINAL array: data is now {2, 2, 3}.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "data": "{2,2,3}"
+                  }
+                },
+                {
+                  "fn": "doubleAll(a, n)",
+                  "vars": {
+                    "a": "-> data",
+                    "n": "3",
+                    "i": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {
+                "i": "1"
+              },
+              "note": "a[1] = 2 * 2: data is {2, 4, 3}.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "data": "{2,4,3}"
+                  }
+                },
+                {
+                  "fn": "doubleAll(a, n)",
+                  "vars": {
+                    "a": "-> data",
+                    "n": "3",
+                    "i": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 13,
+              "vars": {
+                "i": "2"
+              },
+              "note": "a[2] = 3 * 2: data is {2, 4, 6}.",
+              "out": "",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "data": "{2,4,6}"
+                  }
+                },
+                {
+                  "fn": "doubleAll(a, n)",
+                  "vars": {
+                    "a": "-> data",
+                    "n": "3",
+                    "i": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "line": 21,
+              "vars": {},
+              "note": "doubleAll has returned, and its frame is gone, but the change stays because it was made in main's array. printArray shows the new values.",
+              "out": "2 4 6 \n",
+              "stack": [
+                {
+                  "fn": "main()",
+                  "vars": {
+                    "data": "{2,4,6}"
+                  }
+                },
+                {
+                  "fn": "printArray(a, n)",
+                  "vars": {
+                    "a": "-> data",
+                    "n": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "types": {
+            "data": "int[3]",
+            "a": "int*",
+            "n": "int",
+            "i": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Exam style: write three functions that take an array and its size: maxArray (returns the largest element), reverseArray (reverses the array in place) and fillArray (sets every element to a given value). Test them in main with {4, 9, 2, 7, 5} and write the output.",
+      "pseudocode": [
+        "START",
+        "main: CREATE a = {4, 9, 2, 7, 5}",
+        "maxArray: m = a[0]; for i from 1 to n - 1: if a[i] > m then m = a[i]; return m",
+        "PRINT the maximum",
+        "reverseArray: for i from 0 to n/2 - 1 swap a[i] with a[n - 1 - i]",
+        "PRINT the array",
+        "fillArray(a, 5, 0): set every element to 0",
+        "PRINT first and last elements",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"a = {4,9,2,7,5}\"]\n  B --> C[\"m = maxArray(a, 5)\"]\n  C --> D[/Print max/]\n  D --> E[\"reverseArray(a, 5)\"]\n  E --> F[/Print the array/]\n  F --> G[\"fillArray(a, 5, 0)\"]\n  G --> H[/\"Print a[0] and a[4]\"/]\n  H --> I([End])",
+      "sample": {
+        "id": "max-reverse-fill",
+        "title": "maxArray, reverseArray and fillArray (exam question)",
+        "code": "#include <iostream>\nusing namespace std;\n\nint maxArray(const int a[], int n) {\n    int m = a[0];\n    for (int i = 1; i < n; i++) {\n        if (a[i] > m) {\n            m = a[i];\n        }\n    }\n    return m;\n}\n\nvoid reverseArray(int a[], int n) {\n    for (int i = 0; i < n / 2; i++) {\n        int t = a[i];\n        a[i] = a[n - 1 - i];\n        a[n - 1 - i] = t;\n    }\n}\n\nvoid fillArray(int a[], int n, int value) {\n    for (int i = 0; i < n; i++) {\n        a[i] = value;\n    }\n}\n\nint main() {\n    int a[5] = {4, 9, 2, 7, 5};\n    cout << \"Max = \" << maxArray(a, 5) << endl;\n    reverseArray(a, 5);\n    cout << a[0] << \" \" << a[1] << \" \" << a[2] << \" \" << a[3] << \" \" << a[4] << endl;\n    fillArray(a, 5, 0);\n    cout << a[0] << \" \" << a[4] << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "graphics": false,
+        "expectedOutput": "Max = 9\n5 7 2 9 4\n0 0\n",
+        "explanation": [
+          {
+            "line": 1,
+            "text": "Only the standard header and the std namespace are needed."
+          },
+          {
+            "line": 4,
+            "text": "maxArray only reads the array, so it uses const."
+          },
+          {
+            "line": 5,
+            "text": "Start with the first element as the largest so far."
+          },
+          {
+            "line": 7,
+            "text": "If a[i] is bigger than the best so far, remember it."
+          },
+          {
+            "line": 14,
+            "text": "reverseArray changes the array, so no const."
+          },
+          {
+            "line": 15,
+            "text": "Only half of the elements are walked: each round swaps one element from the front with one from the back."
+          },
+          {
+            "line": 17,
+            "text": "a[n - 1 - i] is the mirror element of a[i]."
+          },
+          {
+            "line": 23,
+            "text": "fillArray receives the value to store as a third parameter."
+          },
+          {
+            "line": 31,
+            "text": "The array has 5 elements, so n is 5."
+          },
+          {
+            "line": 33,
+            "text": "reverseArray changed the original, so main now sees 5 7 2 9 4."
+          },
+          {
+            "line": 36,
+            "text": "After fillArray every element is 0, so the first and last are 0 and 0."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "int a[] (array style)",
+      "when": "Reads naturally: 'an array of ints'. Same as int *a.",
+      "example": "void printArray(int a[], int n);"
+    },
+    {
+      "way": "int *a (pointer style)",
+      "when": "Exactly the same parameter. Shows what really arrives: an address.",
+      "example": "int sumArray(int *a, int n) { ... *(a + i) ... }"
+    },
+    {
+      "way": "const int a[]",
+      "when": "The function only reads the array (sum, maximum, search, print). The compiler blocks writes.",
+      "example": "int maxArray(const int a[], int n);"
+    },
+    {
+      "way": "Separate size parameter int n",
+      "when": "ALWAYS, because the function cannot find the length of an array it receives.",
+      "example": "sumArray(data, 5);   // or sizeof(data)/sizeof(data[0]) in main"
+    },
+    {
+      "way": "Function that changes the array",
+      "when": "Fill, input, reverse, sort. Use plain int a[] so changes are allowed and kept.",
+      "example": "void fillArray(int a[], int n, int value);"
+    },
+    {
+      "way": "2-D array parameter",
+      "when": "The column size must be written in the header; the row count is passed separately.",
+      "example": "void printMatrix(int m[][3], int rows);"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "cout << sumArray(a[], 4);",
+      "right": "cout << sumArray(a, 4);",
+      "error": "error: expected primary-expression before ']' token. In the call write only the array name, with no brackets."
+    },
+    {
+      "wrong": "cout << sumArray(a[4], 4);",
+      "right": "cout << sumArray(a, 4);",
+      "error": "error: invalid conversion from 'int' to 'const int*'. a[4] is ONE element (and index 4 is outside a 4-element array), not the whole array. Send the name a."
+    },
+    {
+      "wrong": "void f(const int a[]) {\n    a[0] = 5;\n}",
+      "right": "void f(int a[]) {\n    a[0] = 5;\n}   // remove const if the function must change the array",
+      "error": "error: assignment of read-only location '* a'. const promised not to change the array, so the write is refused."
+    },
+    {
+      "wrong": "int count(int a[]) {\n    return sizeof(a) / sizeof(a[0]);   // wanted the number of elements\n}",
+      "right": "int count(int a[], int n) {\n    return n;   // the caller sends the size\n}",
+      "error": "No compiler error, but the answer is wrong. Inside the function a is only a pointer, so sizeof(a) is the size of an address (not of the array). Pass the size as a parameter."
+    }
+  ],
+  "examTips": [
+    "Remember the two consequences in one line: 'the function can change the original array, and it does not know the size, so the size is passed separately'.",
+    "int a[] and int *a are the same parameter. In the call, write the array name only: f(data, n).",
+    "Use const int a[] for functions that only read (sum, maximum, print). It is a marks-earning sign of good style.",
+    "To reverse or fill an array the function must NOT have const, and it changes the caller's array without returning anything.",
+    "A trace question: draw main's array once. Every function that gets the array points at that same array, so changes appear in main."
+  ],
+  "romanSummary": [
+    "Function ko array bhejte waqt array ki copy nahi banti, sirf pehle element ka address jata hai.",
+    "Is liye function original array badal sakta hai, aur change function khatam hone ke baad bhi rehta hai.",
+    "Function ko array ki size nahi pata hoti, is liye size alag parameter n mein bhejte hain.",
+    "Call mein sirf array ka naam likhte hain (sumArray(data, 5)), brackets ya & nahi lagate.",
+    "Agar function ne array sirf parhna hai to const int a[] likho, taake galti se change na ho."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "When you pass an array to a function, what is actually passed?",
+      "options": [
+        "A copy of every element",
+        "The address of the first element",
+        "Only the first element's value",
+        "The size of the array"
+      ],
+      "answer": "The address of the first element",
+      "hint": "Think of 'the papers are in the box on my desk'.",
+      "explanation": "The array is not copied. The function receives the address of the first element, so it can reach every element through it."
+    },
+    {
+      "id": "p2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Why does a function that receives an array usually also receive an int n?",
+      "options": [
+        "Because n is the array name",
+        "It cannot find out the array size by itself",
+        "To make the array bigger",
+        "Because C++ requires two parameters"
+      ],
+      "answer": "It cannot find out the array size by itself",
+      "hint": "A pointer does not remember how many boxes follow.",
+      "explanation": "The parameter is only an address. Nothing in it says how long the array is, so the caller sends the size."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nvoid inc(int a[], int n) {\n    for (int i = 0; i < n; i++) {\n        a[i]++;\n    }\n}\n\nint main() {\n    int x[3] = {1, 2, 3};\n    inc(x, 3);\n    cout << x[0] << \" \" << x[1] << \" \" << x[2];\n    return 0;\n}\n",
+      "answer": "2 3 4",
+      "hint": "Does the function change a copy or the original?",
+      "explanation": "The function works on the original array, so each element grows by 1: 2 3 4."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nvoid f(int a[], int v) {\n    a[0] = 99;\n    v = 99;\n}\n\nint main() {\n    int arr[2] = {1, 2};\n    int n = 5;\n    f(arr, n);\n    cout << arr[0] << \" \" << n;\n    return 0;\n}\n",
+      "answer": "99 5",
+      "hint": "One parameter is an array, the other is an ordinary int.",
+      "explanation": "The array is shared with the function, so arr[0] becomes 99. The int v is a copy, so n stays 5."
+    },
+    {
+      "id": "p5",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\n#include <iostream>\nusing namespace std;\n\nvoid show(int a[]) {\n    cout << (sizeof(a) == sizeof(int*)) << endl;\n}\n\nint main() {\n    int arr[10];\n    cout << (sizeof(arr) == 10 * sizeof(int)) << endl;\n    show(arr);\n    return 0;\n}\n",
+      "answer": "1\n1",
+      "hint": "Inside show, what is a really?",
+      "explanation": "In main arr is a real array of 10 ints, so sizeof(arr) is 10 ints. In show, a is just a pointer, so sizeof(a) equals the size of a pointer. Both comparisons are true: 1 and 1."
+    },
+    {
+      "id": "p6",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "The compiler rejects this function. Fix the header so the function is allowed to change the array.\n\nvoid zeroAll(const int a[], int n) {\n    for (int i = 0; i < n; i++) {\n        a[i] = 0;\n    }\n}",
+      "answer": "void zeroAll(int a[], int n) {\n    for (int i = 0; i < n; i++) {\n        a[i] = 0;\n    }\n}",
+      "hint": "The function writes to the array. What does const forbid?",
+      "explanation": "const makes the array read-only. A function that sets elements to 0 must take int a[] without const."
+    },
+    {
+      "id": "p7",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank so the whole array of 6 numbers is reversed.\n\nint marks[6] = {1, 2, 3, 4, 5, 6};\nreverseArray(marks, ____);",
+      "answer": "6",
+      "hint": "How many elements does the array have?",
+      "explanation": "The second argument is the number of elements, which is 6. The function cannot work it out alone."
+    },
+    {
+      "id": "p8",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a function countEven that receives a read-only array of ints and its size and returns how many elements are even.",
+      "answer": "int countEven(const int a[], int n) {\n    int count = 0;\n    for (int i = 0; i < n; i++) {\n        if (a[i] % 2 == 0) {\n            count++;\n        }\n    }\n    return count;\n}",
+      "hint": "Use const because the function only reads. Loop to n - 1 and test a[i] % 2.",
+      "explanation": "The function loops over all n elements, counts those with a[i] % 2 == 0 and returns the count. It does not change the array, so const is right."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "z1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which call is correct for void show(int a[], int n) with an array named data of 5 ints?",
+      "options": [
+        "show(data[], 5);",
+        "show(data, 5);",
+        "show(data[5], 5);",
+        "show(&data, 5);"
+      ],
+      "answer": "show(data, 5);",
+      "hint": "Write only the name in the call.",
+      "explanation": "In a call you write the array name only, then the size."
+    },
+    {
+      "id": "z2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "The function changes a[0]. What does main see afterwards?",
+      "options": [
+        "Nothing changes",
+        "The original array is changed",
+        "A new array is made",
+        "The program stops"
+      ],
+      "answer": "The original array is changed",
+      "hint": "The array is not copied.",
+      "explanation": "The function works on the original array through its address, so the change is kept."
+    },
+    {
+      "id": "z3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which header means exactly the same as void f(int a[], int n)?",
+      "options": [
+        "void f(int a, int n)",
+        "void f(int *a, int n)",
+        "void f(int &a, int n)",
+        "void f(int a[5][5], int n)"
+      ],
+      "answer": "void f(int *a, int n)",
+      "hint": "An array parameter is a pointer.",
+      "explanation": "int a[] and int *a are identical in a parameter list."
+    },
+    {
+      "id": "z4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Why write const int a[] in a sum function?",
+      "options": [
+        "So the function runs faster",
+        "So the array is copied",
+        "So the function cannot change the array by mistake",
+        "So the size is not needed"
+      ],
+      "answer": "So the function cannot change the array by mistake",
+      "hint": "Think about what const forbids.",
+      "explanation": "const makes the array read-only inside the function. The compiler reports an error if the function tries to write a[i]."
+    },
+    {
+      "id": "z5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "Inside void f(int a[]) what does sizeof(a) give?",
+      "options": [
+        "The whole array in bytes",
+        "The number of elements",
+        "The size of a pointer",
+        "Always 0"
+      ],
+      "answer": "The size of a pointer",
+      "hint": "Is a an array or an address inside f?",
+      "explanation": "Inside the function a is only a pointer, so sizeof(a) is the size of an address, not the size of the whole array."
+    }
+  ],
+  "sources": [
+    "Passing an array to a function",
+    "Array parameters decay to pointers",
+    "Passing the size separately",
+    "const array parameters",
+    "Array functions: input, display, sum, modify"
+  ]
+}

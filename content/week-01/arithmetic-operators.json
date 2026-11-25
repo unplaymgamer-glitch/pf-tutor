@@ -1,0 +1,590 @@
+{
+  "slug": "arithmetic-operators",
+  "week": 1,
+  "title": "Arithmetic operators: + - * / % and ++ --",
+  "defaultView": "visualize",
+  "order": 8,
+  "visuals": [
+    {
+      "kind": "match",
+      "title": "Match each operator to what it does",
+      "pairs": [
+        {
+          "term": "+  -  *",
+          "meaning": "Add, subtract, multiply"
+        },
+        {
+          "term": "/ with two ints",
+          "meaning": "Division that drops the decimal part (7 / 2 is 3)"
+        },
+        {
+          "term": "%",
+          "meaning": "The remainder after division (17 % 5 is 2)"
+        },
+        {
+          "term": "x++",
+          "meaning": "Use x first, then add 1"
+        },
+        {
+          "term": "++x",
+          "meaning": "Add 1 to x first, then use it"
+        },
+        {
+          "term": "-x",
+          "meaning": "Changes the sign of x"
+        }
+      ]
+    },
+    {
+      "kind": "match",
+      "title": "If x is 5, what do you get?",
+      "pairs": [
+        {
+          "term": "x++ (value of the expression)",
+          "meaning": "5, and x becomes 6 afterwards"
+        },
+        {
+          "term": "++x (value of the expression)",
+          "meaning": "6, and x is 6"
+        },
+        {
+          "term": "x-- (value of the expression)",
+          "meaning": "5, and x becomes 4 afterwards"
+        },
+        {
+          "term": "--x (value of the expression)",
+          "meaning": "4, and x is 4"
+        }
+      ]
+    }
+  ],
+  "goal": "After this you can use + - * / % correctly, avoid the integer-division trap, and explain the difference between x++ and ++x.",
+  "warmup": "A canteen splits 17 samosas between 5 students. Each student gets 3 samosas (that is division) and 2 samosas are left over (that is the remainder). Add, subtract, multiply, divide and remainder are the five basic calculations, and C++ has a symbol for each one.",
+  "definition": "An operator is a symbol that does a calculation. The values it works on are called operands. In 17 + 5, the symbol + is the operator and 17 and 5 are the operands. Binary operators need two operands (+ - * / %). Unary operators need only one operand (-x, x++, ++x, x--, --x).",
+  "howItWorks": "Press Play and watch the memory boxes. Binary operators calculate a new value but do not change the boxes they read from. The operators ++ and -- are special: they change the box itself by adding or subtracting 1. When ++ is written after the variable (x++) the old value is used first. When it is written before (++x) the new value is used.",
+  "syntax": "a + b      // addition\na - b      // subtraction\na * b      // multiplication\na / b      // division (int / int gives an int, decimal part is dropped)\na % b      // remainder (works only with whole numbers)\n-x         // unary minus: changes the sign\nx++        // postfix: use x, then add 1\n++x        // prefix: add 1, then use x\nx--  --x   // same idea, but subtract 1",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Two integers a = 17 and b = 5 are given. Print their sum, difference, product, quotient and remainder.",
+      "pseudocode": [
+        "START",
+        "SET a = 17, b = 5",
+        "PRINT a + b",
+        "PRINT a - b",
+        "PRINT a * b",
+        "PRINT a / b (integer division)",
+        "PRINT a % b",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[a = 17, b = 5]\n  B --> C[/Print a + b, a - b, a * b/]\n  C --> D[/Print a / b and a % b/]\n  D --> E([End])",
+      "sample": {
+        "id": "binary-operators",
+        "title": "Five binary operators on two numbers",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a = 17;\n    int b = 5;\n    cout << \"a + b = \" << a + b << endl;\n    cout << \"a - b = \" << a - b << endl;\n    cout << \"a * b = \" << a * b << endl;\n    cout << \"a / b = \" << a / b << endl;\n    cout << \"a % b = \" << a % b << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "a + b = 22\na - b = 12\na * b = 85\na / b = 3\na % b = 2\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Create a box called a and store 17 in it."
+          },
+          {
+            "line": 6,
+            "text": "Create a box called b and store 5 in it."
+          },
+          {
+            "line": 7,
+            "text": "Addition: 17 + 5 is 22."
+          },
+          {
+            "line": 8,
+            "text": "Subtraction: 17 - 5 is 12."
+          },
+          {
+            "line": 9,
+            "text": "Multiplication uses the star symbol: 17 * 5 is 85."
+          },
+          {
+            "line": 10,
+            "text": "Both numbers are int, so the answer is an int too. 17 divided by 5 is 3.4, but the .4 is thrown away, so we get 3."
+          },
+          {
+            "line": 11,
+            "text": "% gives the remainder. 5 goes into 17 three times (15), and 2 is left over."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "a": "17"
+              },
+              "note": "a is created and holds 17.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "b": "5"
+              },
+              "note": "b is created and holds 5.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "17 + 5 = 22. cout prints it.",
+              "out": "a + b = 22\n"
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "17 - 5 = 12.",
+              "out": "a - b = 12\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "17 * 5 = 85.",
+              "out": "a * b = 85\n"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "Integer division: 17 / 5 = 3 (the decimal part .4 is dropped).",
+              "out": "a / b = 3\n"
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "17 % 5 = 2 (the remainder). a and b never changed.",
+              "out": "a % b = 2\n"
+            }
+          ],
+          "types": {
+            "a": "int",
+            "b": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Show what x++ and ++x do. Start with x = 5, copy x++ into y, then copy ++x into z, and print x each time.",
+      "pseudocode": [
+        "START",
+        "SET x = 5",
+        "SET y = x, THEN x = x + 1",
+        "PRINT x and y",
+        "SET x = x + 1, THEN z = x",
+        "PRINT x and z",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[x = 5]\n  B --> C[\"y = x++ : y gets 5, x becomes 6\"]\n  C --> D[/Print x and y/]\n  D --> E[\"z = ++x : x becomes 7, z gets 7\"]\n  E --> F[/Print x and z/]\n  F --> G([End])",
+      "sample": {
+        "id": "prefix-postfix",
+        "title": "x++ versus ++x",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int x = 5;\n    int y = x++;\n    cout << \"x = \" << x << \", y = \" << y << endl;\n    int z = ++x;\n    cout << \"x = \" << x << \", z = \" << z << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "x = 6, y = 5\nx = 7, z = 7\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "x starts at 5."
+          },
+          {
+            "line": 6,
+            "text": "Postfix: y takes the OLD value of x (5) first, then x goes up to 6."
+          },
+          {
+            "line": 7,
+            "text": "Prints x = 6 and y = 5. The two are different on purpose."
+          },
+          {
+            "line": 8,
+            "text": "Prefix: x goes up first (6 to 7), then z takes the NEW value 7."
+          },
+          {
+            "line": 9,
+            "text": "Prints x = 7 and z = 7. Here both are the same."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "x": "5"
+              },
+              "note": "x holds 5.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "y": "5",
+                "x": "6"
+              },
+              "note": "Postfix: use the old value 5 for y, THEN add 1 to x. So y = 5 and x = 6.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Print the current values of x and y.",
+              "out": "x = 6, y = 5\n"
+            },
+            {
+              "line": 8,
+              "vars": {
+                "x": "7",
+                "z": "7"
+              },
+              "note": "Prefix: add 1 to x first (it becomes 7), THEN copy it into z. So z = 7.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "Print x and z.",
+              "out": "x = 7, z = 7\n"
+            }
+          ],
+          "types": {
+            "x": "int",
+            "y": "int",
+            "z": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "A lecture lasted 135 minutes. Convert it into hours and minutes using / and %. Also show the difference between 135 / 60 and 135 / 60.0.",
+      "pseudocode": [
+        "START",
+        "SET totalMinutes = 135",
+        "hours = totalMinutes / 60",
+        "minutes = totalMinutes % 60",
+        "PRINT hours and minutes",
+        "PRINT totalMinutes / 60 (int)",
+        "PRINT totalMinutes / 60.0 (decimal)",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[totalMinutes = 135]\n  B --> C[hours = totalMinutes / 60]\n  C --> D[minutes = totalMinutes % 60]\n  D --> E[/Print hours and minutes/]\n  E --> F[/Print totalMinutes / 60 and totalMinutes / 60.0/]\n  F --> G([End])",
+      "sample": {
+        "id": "minutes-converter",
+        "title": "Convert minutes to hours and minutes",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int totalMinutes = 135;\n    int hours = totalMinutes / 60;\n    int minutes = totalMinutes % 60;\n    cout << hours << \" hour(s) \" << minutes << \" minute(s)\" << endl;\n    cout << totalMinutes / 60 << endl;\n    cout << totalMinutes / 60.0 << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "2 hour(s) 15 minute(s)\n2\n2.25\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A lecture lasted 135 minutes."
+          },
+          {
+            "line": 6,
+            "text": "Integer division throws away the remainder, so this counts full hours only: 135 / 60 = 2."
+          },
+          {
+            "line": 7,
+            "text": "% keeps only the remainder: 135 % 60 = 15 minutes left over."
+          },
+          {
+            "line": 8,
+            "text": "Prints the two answers together."
+          },
+          {
+            "line": 9,
+            "text": "Both are int, so the answer is the whole number 2."
+          },
+          {
+            "line": 10,
+            "text": "60.0 is a decimal number, so the division is a decimal division: 2.25."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {
+                "totalMinutes": "135"
+              },
+              "note": "Store 135 minutes.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "hours": "2"
+              },
+              "note": "135 / 60 = 2 (whole hours only).",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "minutes": "15"
+              },
+              "note": "135 % 60 = 15 (the leftover minutes).",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Print hours and minutes.",
+              "out": "2 hour(s) 15 minute(s)\n"
+            },
+            {
+              "line": 9,
+              "vars": {},
+              "note": "int / int gives int: 2.",
+              "out": "2\n"
+            },
+            {
+              "line": 10,
+              "vars": {},
+              "note": "int / double gives double: 2.25.",
+              "out": "2.25\n"
+            }
+          ],
+          "types": {
+            "totalMinutes": "int",
+            "hours": "int",
+            "minutes": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "a / b with two ints",
+      "when": "You want the whole-number quotient (how many full groups)",
+      "example": "17 / 5   // 3"
+    },
+    {
+      "way": "a / b with a decimal operand",
+      "when": "You want the exact answer with a decimal part",
+      "example": "17 / 5.0   // 3.4"
+    },
+    {
+      "way": "a % b",
+      "when": "You want the remainder, or to test even/odd and divisibility",
+      "example": "n % 2 == 0   // true for even n"
+    },
+    {
+      "way": "x++ (postfix)",
+      "when": "Use the old value, then add 1",
+      "example": "y = x++;   // x = 5 gives y = 5, x = 6"
+    },
+    {
+      "way": "++x (prefix)",
+      "when": "Add 1 first, then use the new value",
+      "example": "y = ++x;   // x = 5 gives y = 6, x = 6"
+    },
+    {
+      "way": "x++; or ++x; alone on a line",
+      "when": "Just add 1. On its own line both do the same thing",
+      "example": "count++;   // same as count = count + 1;"
+    },
+    {
+      "way": "% with negative numbers",
+      "when": "The result takes the sign of the left operand (checked with a real run)",
+      "example": "-7 % 3   // -1,   7 % -3   // 1"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "double half = 1 / 2;",
+      "right": "double half = 1 / 2.0;",
+      "error": "No error, but half becomes 0 because 1 / 2 is integer division. The compiler does not warn you."
+    },
+    {
+      "wrong": "double a = 7.5;\ncout << a % 2;",
+      "right": "int a = 7;\ncout << a % 2;",
+      "error": "invalid operands of types 'double' and 'int' to binary 'operator%'"
+    },
+    {
+      "wrong": "int z = 5++;",
+      "right": "int x = 5;\nx++;",
+      "error": "lvalue required as increment operand (++ needs a variable, not a plain number)"
+    },
+    {
+      "wrong": "int x = 5;\ncout << x++;   // student expects 6",
+      "right": "int x = 5;\ncout << ++x;   // prints 6",
+      "error": "No error. x++ prints the OLD value 5 and only then increases x to 6."
+    }
+  ],
+  "examTips": [
+    "int / int always gives an int. 7 / 2 is 3, never 3.5.",
+    "% works only with integers. n % 2 == 0 means n is even. n % 10 gives the last digit.",
+    "x++ uses the old value; ++x uses the new value. On a line by themselves they are the same.",
+    "Do not use x++ and x (or ++x) twice in the same expression. The result is confusing and exams avoid it.",
+    "Show your working: write quotient and remainder separately, for example 17 / 5 is 3 and 17 % 5 is 2."
+  ],
+  "romanSummary": [
+    "Arithmetic operators ye hain: + - * / %. % remainder deta hai, jaise 17 % 5 = 2.",
+    "Jab do int ka division hota hai to jawab bhi int aata hai, decimal hissa kat jata hai. 7 / 2 = 3.",
+    "Agar decimal chahiye to ek number decimal likho, jaise 7 / 2.0 = 3.5.",
+    "x++ pehle purani value use karta hai phir 1 barhata hai. ++x pehle 1 barhata hai phir value use karta hai.",
+    "% sirf integers ke saath chalta hai, double ke saath error aata hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is the value of 17 % 5?",
+      "options": [
+        "3",
+        "2",
+        "3.4",
+        "12"
+      ],
+      "answer": "2",
+      "hint": "Think: how much is left after taking out groups of 5?",
+      "explanation": "5 fits into 17 three times (15). The leftover is 2."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this print?\n\nint a = 9, b = 4;\ncout << a / b << \" \" << a % b;",
+      "answer": "2 1",
+      "hint": "Integer division, then remainder.",
+      "explanation": "9 / 4 is 2 (decimal dropped) and 9 % 4 is 1."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\nint x = 8;\nint y = x--;\nint z = --x;\ncout << x << \" \" << y << \" \" << z;",
+      "answer": "6 8 6",
+      "hint": "y takes the old x. Then x goes down again before z takes it.",
+      "explanation": "y = x-- gives y = 8 and x = 7. Then --x makes x = 6 first, so z = 6. Final: x 6, y 8, z 6."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "A student wants the average of 7 and 2 as 4.5 but gets 4. Fix the code:\n\nint a = 7, b = 2;\ndouble avg = (a + b) / 2;",
+      "answer": "double avg = (a + b) / 2.0;",
+      "hint": "Both operands of / are int.",
+      "explanation": "(a + b) is 9 and 2 is an int, so 9 / 2 is cut to 4 before it is stored. Using 2.0 makes it a decimal division: 4.5."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "easy",
+      "prompt": "Fill in the blank to test whether n is even: if (n ____ 2 == 0)",
+      "answer": "%",
+      "hint": "Even numbers leave no remainder when divided by 2.",
+      "explanation": "n % 2 is the remainder after dividing by 2. It is 0 for even numbers."
+    },
+    {
+      "id": "p6",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this print?\n\ncout << -7 % 3 << \" \" << 7 % -3 << \" \" << -7 / 2;",
+      "answer": "-1 1 -3",
+      "hint": "The remainder takes the sign of the left number, and division drops the decimal part toward zero.",
+      "explanation": "Checked on a real run. -7 % 3 is -1 and 7 % -3 is 1 (the sign follows the left number). -7 / 2 is -3 because the .5 is simply dropped."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "medium",
+      "prompt": "Write a program that stores 4825 seconds in an int and prints it as hours, minutes and seconds.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int total = 4825;\n    int hours = total / 3600;\n    int minutes = (total % 3600) / 60;\n    int seconds = total % 60;\n    cout << hours << \" h \" << minutes << \" m \" << seconds << \" s\" << endl;\n    return 0;\n}",
+      "hint": "Use / for full units and % for what is left.",
+      "explanation": "4825 / 3600 = 1 hour, 4825 % 3600 = 1225 seconds left, 1225 / 60 = 20 minutes, 4825 % 60 = 25 seconds. It prints 1 h 20 m 25 s."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What does 7 / 2 give when both are int?",
+      "options": [
+        "3.5",
+        "3",
+        "4",
+        "1"
+      ],
+      "answer": "3",
+      "hint": "Both operands are integers.",
+      "explanation": "int / int is integer division, so the decimal part is dropped."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which operator gives the remainder?",
+      "options": [
+        "/",
+        "%",
+        "*",
+        "#"
+      ],
+      "answer": "%",
+      "hint": "Think of the percent sign.",
+      "explanation": "The % operator returns the remainder of a division."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "int x = 5; int y = x++; What are x and y?",
+      "options": [
+        "x = 6, y = 5",
+        "x = 6, y = 6",
+        "x = 5, y = 6",
+        "x = 5, y = 5"
+      ],
+      "answer": "x = 6, y = 5",
+      "hint": "Postfix uses the old value first.",
+      "explanation": "y copies 5 first, then x increases to 6."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "int x = 5; int y = ++x; What are x and y?",
+      "options": [
+        "x = 5, y = 6",
+        "x = 6, y = 5",
+        "x = 6, y = 6",
+        "x = 5, y = 5"
+      ],
+      "answer": "x = 6, y = 6",
+      "hint": "Prefix adds 1 first.",
+      "explanation": "x becomes 6 first, then y copies 6."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which statement is an error?",
+      "options": [
+        "int r = 9 % 4;",
+        "double r = 9.0 / 4;",
+        "double r = 9.5 % 2;",
+        "int r = 9 / 4;"
+      ],
+      "answer": "double r = 9.5 % 2;",
+      "hint": "% has a restriction.",
+      "explanation": "% works only with integers, so a double operand causes a compile error."
+    }
+  ],
+  "sources": [
+    "Operators",
+    "Arithmetic operators",
+    "Unary operators",
+    "Increment and decrement operators"
+  ]
+}

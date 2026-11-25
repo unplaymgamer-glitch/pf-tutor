@@ -1,0 +1,514 @@
+{
+  "slug": "nested-if",
+  "week": 2,
+  "title": "Nested if: a decision inside a decision",
+  "defaultView": "visualize",
+  "order": 5,
+  "visuals": [
+    {
+      "kind": "decision",
+      "title": "Login check: ID first, then PIN (correct ID is 101, correct PIN is 1234)",
+      "vars": [
+        {
+          "name": "id",
+          "label": "ID typed",
+          "min": 100,
+          "max": 103,
+          "value": 101
+        },
+        {
+          "name": "pin",
+          "label": "PIN typed",
+          "min": 1230,
+          "max": 1240,
+          "value": 1234
+        }
+      ],
+      "branches": [
+        {
+          "expr": "id == 101 && pin == 1234",
+          "label": "Welcome"
+        },
+        {
+          "expr": "id == 101",
+          "label": "Wrong PIN"
+        }
+      ],
+      "elseLabel": "Unknown user"
+    },
+    {
+      "kind": "decision",
+      "title": "Largest of three numbers",
+      "vars": [
+        {
+          "name": "a",
+          "label": "a",
+          "min": 0,
+          "max": 30,
+          "value": 4
+        },
+        {
+          "name": "b",
+          "label": "b",
+          "min": 0,
+          "max": 30,
+          "value": 19
+        },
+        {
+          "name": "c",
+          "label": "c",
+          "min": 0,
+          "max": 30,
+          "value": 11
+        }
+      ],
+      "branches": [
+        {
+          "expr": "a >= b && a >= c",
+          "label": "Largest is a"
+        },
+        {
+          "expr": "b >= c && b > a",
+          "label": "Largest is b"
+        }
+      ],
+      "elseLabel": "Largest is c"
+    }
+  ],
+  "goal": "After this you can write an if inside another if, read nested code by its braces, avoid the dangling-else trap, and know when && is the simpler choice.",
+  "warmup": "At the university gate the guard asks two questions, one after the other. First: 'Do you have a student card?' Only if the answer is yes does he ask the second question: 'Is it for this semester?' If you have no card, he never asks the second question. The second decision exists only inside the first yes. That is a nested if.",
+  "definition": "A nested if is an if statement placed inside the block of another if (or else). The inner condition is tested only when the outer condition lets the program reach it. Use nesting when the second decision depends on the first one.",
+  "howItWorks": "Press Play and follow the flowchart. The outer condition is tested first. If it is true, the computer enters that block and meets the inner if. If the outer condition is false, the whole inner if is skipped, and the else of the outer if runs instead. Indentation helps humans to read, but the computer only listens to braces and to this rule: an else always belongs to the nearest if above it that has no else yet. This is called the dangling else. Always use { } to make the pairing you want clear.",
+  "syntax": "if (outer_condition) {\n    // the outer condition is true: now ask the next question\n    if (inner_condition) {\n        // outer AND inner are both true\n    } else {\n        // outer is true, inner is false\n    }\n} else {\n    // outer is false: the inner if was never tested\n}",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Login check: the correct ID is 101 and the correct PIN is 1234. Read an ID and a PIN. If the ID is wrong print Unknown user. If the ID is right, check the PIN: print Welcome if it is right and Wrong PIN if not.",
+      "pseudocode": [
+        "START",
+        "READ id, pin",
+        "IF id == 101 THEN",
+        "    IF pin == 1234 THEN PRINT \"Welcome\"",
+        "    ELSE PRINT \"Wrong PIN\"",
+        "ELSE PRINT \"Unknown user\"",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read id, pin/]\n  B --> C{id == 101?}\n  C -->|No| D[/Print Unknown user/]\n  C -->|Yes| E{pin == 1234?}\n  E -->|Yes| F[/Print Welcome/]\n  E -->|No| G[/Print Wrong PIN/]\n  D --> H([End])\n  F --> H\n  G --> H",
+      "sample": {
+        "id": "login-check",
+        "title": "Login: ID then PIN",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int id, pin;\n    cin >> id >> pin;\n    if (id == 101) {\n        if (pin == 1234) {\n            cout << \"Welcome\" << endl;\n        } else {\n            cout << \"Wrong PIN\" << endl;\n        }\n    } else {\n        cout << \"Unknown user\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "101 9999",
+        "expectedOutput": "Wrong PIN\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "Two whole numbers: the ID and the PIN."
+          },
+          {
+            "line": 6,
+            "text": "Reads both values typed by the user."
+          },
+          {
+            "line": 7,
+            "text": "Outer if: is the ID correct? The PIN is not looked at yet."
+          },
+          {
+            "line": 8,
+            "text": "Inner if: reached only when the ID was correct."
+          },
+          {
+            "line": 9,
+            "text": "Both ID and PIN are right."
+          },
+          {
+            "line": 11,
+            "text": "ID is right but PIN is wrong. This else belongs to the inner if."
+          },
+          {
+            "line": 14,
+            "text": "This else belongs to the outer if: the ID was wrong."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "id": "101",
+                "pin": "9999"
+              },
+              "note": "cin reads 101 into id and 9999 into pin.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Outer test: is id == 101? Yes. Enter the block.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Inner test: is pin == 1234? 9999 is not 1234, so false.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "The inner else runs and prints Wrong PIN. The outer else is skipped.",
+              "out": "Wrong PIN\n"
+            },
+            {
+              "line": 16,
+              "vars": {},
+              "note": "return 0 ends the program.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "id": "int",
+            "pin": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read three different or equal numbers and print the largest of them using nested if statements.",
+      "pseudocode": [
+        "START",
+        "READ a, b, c",
+        "IF a >= b THEN",
+        "    IF a >= c THEN largest = a ELSE largest = c",
+        "ELSE",
+        "    IF b >= c THEN largest = b ELSE largest = c",
+        "PRINT largest",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read a, b, c/]\n  B --> C{a >= b?}\n  C -->|Yes| D{a >= c?}\n  C -->|No| E{b >= c?}\n  D -->|Yes| F[/Print a/]\n  D -->|No| G[/Print c/]\n  E -->|Yes| H[/Print b/]\n  E -->|No| G\n  F --> I([End])\n  G --> I\n  H --> I",
+      "sample": {
+        "id": "largest-of-three",
+        "title": "Largest of three numbers",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b, c;\n    cin >> a >> b >> c;\n    if (a >= b) {\n        if (a >= c) {\n            cout << \"Largest = \" << a << endl;\n        } else {\n            cout << \"Largest = \" << c << endl;\n        }\n    } else {\n        if (b >= c) {\n            cout << \"Largest = \" << b << endl;\n        } else {\n            cout << \"Largest = \" << c << endl;\n        }\n    }\n    return 0;\n}\n",
+        "stdin": "4 19 11",
+        "expectedOutput": "Largest = 19\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Reads the three numbers separated by spaces."
+          },
+          {
+            "line": 7,
+            "text": "First compare a and b. The loser of this match cannot be the largest."
+          },
+          {
+            "line": 8,
+            "text": "a beat b, so a only has to beat c."
+          },
+          {
+            "line": 11,
+            "text": "a lost to c, so c is the largest."
+          },
+          {
+            "line": 14,
+            "text": "b beat or equalled a, so b only has to beat c."
+          },
+          {
+            "line": 17,
+            "text": "c is larger than b, which was already larger than a."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts at main().",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "a": "4",
+                "b": "19",
+                "c": "11"
+              },
+              "note": "cin reads three numbers into a, b and c.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {},
+              "note": "Is a >= b? Is 4 >= 19? No. Go to the else part.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Inner test in the else: is b >= c? Is 19 >= 11? Yes.",
+              "out": ""
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "b is the largest. Print it.",
+              "out": "Largest = 19\n"
+            },
+            {
+              "line": 20,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "a": "int",
+            "b": "int",
+            "c": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "A student passes the course only if marks are 50 or more AND attendance is 75 or more. If marks are below 50 print Fail. If marks are fine but attendance is low, print Detained: short attendance. Read marks and attendance and print the result.",
+      "pseudocode": [
+        "START",
+        "READ marks, attendance",
+        "IF marks >= 50 THEN",
+        "    IF attendance >= 75 THEN PRINT \"Pass\"",
+        "    ELSE PRINT \"Detained: short attendance\"",
+        "ELSE PRINT \"Fail\"",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read marks, attendance/]\n  B --> C{marks >= 50?}\n  C -->|No| D[/Print Fail/]\n  C -->|Yes| E{attendance >= 75?}\n  E -->|Yes| F[/Print Pass/]\n  E -->|No| G[/Print Detained/]\n  D --> H([End])\n  F --> H\n  G --> H",
+      "sample": {
+        "id": "pass-attendance",
+        "title": "Marks and attendance",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int marks, attendance;\n    cin >> marks >> attendance;\n    if (marks >= 50) {\n        if (attendance >= 75) {\n            cout << \"Pass\" << endl;\n        } else {\n            cout << \"Detained: short attendance\" << endl;\n        }\n    } else {\n        cout << \"Fail\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "65 70",
+        "expectedOutput": "Detained: short attendance\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "Reads marks and attendance percentage."
+          },
+          {
+            "line": 7,
+            "text": "Outer test on marks. Low marks mean Fail whatever the attendance is."
+          },
+          {
+            "line": 8,
+            "text": "Reached only when marks are fine. Now check attendance."
+          },
+          {
+            "line": 9,
+            "text": "Both conditions are satisfied."
+          },
+          {
+            "line": 11,
+            "text": "Marks are fine but attendance is low."
+          },
+          {
+            "line": 14,
+            "text": "Marks below 50, so the student fails."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Nested if (dependent decisions)",
+      "when": "The second question makes sense only after the first answer is yes, or you need different messages for each failure",
+      "example": "if (id == 101) { if (pin == 1234) cout << \"OK\"; else cout << \"Wrong PIN\"; }"
+    },
+    {
+      "way": "Combined condition with &&",
+      "when": "Both must be true and one single message is enough",
+      "example": "if (id == 101 && pin == 1234) cout << \"OK\";"
+    },
+    {
+      "way": "if inside else",
+      "when": "Extra decision only on the false side",
+      "example": "else { if (b >= c) cout << b; else cout << c; }"
+    },
+    {
+      "way": "else if ladder",
+      "when": "Choices are on the same level, not dependent",
+      "example": "if (m >= 85) ... else if (m >= 70) ... else ..."
+    },
+    {
+      "way": "Braces around every block",
+      "when": "Always, to stop the dangling else problem",
+      "example": "if (a > 0) { if (b > 0) cout << \"X\"; } else cout << \"Y\";"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "if (a > 0)\n    if (b > 0) cout << \"X\";\nelse cout << \"Y\";",
+      "right": "if (a > 0) {\n    if (b > 0) cout << \"X\";\n} else cout << \"Y\";",
+      "error": "No compiler error. The else pairs with the nearest if (b > 0), not with a > 0, even though the indentation suggests otherwise."
+    },
+    {
+      "wrong": "if (x > 0) {\n    if (x > 5) cout << \"A\"; else cout << \"B\";\nreturn 0;\n}",
+      "right": "if (x > 0) {\n    if (x > 5) cout << \"A\"; else cout << \"B\";\n}\nreturn 0;\n}",
+      "error": "expected '}' at end of input (one opening brace was never closed)"
+    },
+    {
+      "wrong": "if (a > b) cout << \"A\"; cout << \"X\"; else cout << \"B\";",
+      "right": "if (a > b) { cout << \"A\"; cout << \"X\"; } else cout << \"B\";",
+      "error": "'else' without a previous 'if'"
+    }
+  ],
+  "examTips": [
+    "An else belongs to the NEAREST unmatched if above it, whatever the indentation shows.",
+    "Use braces { } on every nested block. It removes the dangling else problem completely.",
+    "If both conditions must be true and you print one message, a single if with && is shorter than a nested if.",
+    "Choose nesting when each failure needs its own message (Unknown user vs Wrong PIN).",
+    "To trace nested code, test the outer condition first and ignore the inner block if the outer one is false."
+  ],
+  "romanSummary": [
+    "Nested if ka matlab hai if ke andar dosra if.",
+    "Andar wali condition tabhi check hoti hai jab bahar wali true ho.",
+    "else hamesha sab se qareebi if ke saath judta hai, indentation se farq nahi parta.",
+    "Braces { } hamesha lagao taake dangling else ka masla na aaye.",
+    "Agar dono conditions ek saath chahiye aur ek hi message hai to && use karna aasan hai."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "When is the inner condition of a nested if tested?",
+      "options": [
+        "Only when the outer condition is true",
+        "Always, before the outer condition",
+        "Only when the outer condition is false",
+        "Never"
+      ],
+      "answer": "Only when the outer condition is true",
+      "hint": "The guard asks the second question only after the first yes.",
+      "explanation": "The inner if lives inside the outer if block, so it is reached only if the outer condition is true."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint x = 10, y = 20;\nif (x > 5) {\n    if (y < 15) cout << \"P\";\n    else cout << \"Q\";\n    cout << \"R\";\n}",
+      "answer": "QR",
+      "hint": "y < 15 is false, then the line after the inner if still runs because it is inside the outer block.",
+      "explanation": "x > 5 is true, so we enter. y < 15 is false, so the inner else prints Q. Then R prints, because it is a separate statement inside the outer block."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this program print?\n\nint a = 5, b = 0;\nif (a > 0)\n    if (b > 0) cout << \"X\";\nelse\n    cout << \"Y\";",
+      "answer": "Y",
+      "hint": "Ignore the indentation. Which if does the else belong to?",
+      "explanation": "The else pairs with the nearest if, which is if (b > 0). a > 0 is true, b > 0 is false, so the else runs and prints Y. If a were -1, nothing would print at all."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "The programmer wants Y printed whenever a is not positive. Fix the code with braces.\n\nint a = 5, b = 0;\nif (a > 0)\n    if (b > 0) cout << \"X\";\nelse cout << \"Y\";",
+      "answer": "if (a > 0) {\n    if (b > 0) cout << \"X\";\n} else cout << \"Y\";",
+      "hint": "Close the inner if with braces so the else cannot join it.",
+      "explanation": "With braces around the inner if, the else pairs with the outer if (a > 0) as intended."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank to make this single if mean the same as a nested if with ID and PIN:\n\nif (id == 101 ____ pin == 1234) cout << \"Welcome\";",
+      "answer": "&&",
+      "hint": "Both conditions must be true.",
+      "explanation": "&& is true only when both sides are true, just like entering the outer if and then passing the inner if."
+    },
+    {
+      "id": "p6",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Read an integer n. If n is positive, print Positive even or Positive odd. If it is not positive, print Not positive. Use a nested if.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int n;\n    cin >> n;\n    if (n > 0) {\n        if (n % 2 == 0) {\n            cout << \"Positive even\" << endl;\n        } else {\n            cout << \"Positive odd\" << endl;\n        }\n    } else {\n        cout << \"Not positive\" << endl;\n    }\n    return 0;\n}",
+      "hint": "First test n > 0, then test n % 2 == 0 inside.",
+      "explanation": "The even/odd check makes sense only for positive numbers, so it lives inside the outer if."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "What is a nested if?",
+      "options": [
+        "An if inside another if",
+        "Two if statements one after another",
+        "An if without braces",
+        "An if with no else"
+      ],
+      "answer": "An if inside another if",
+      "hint": "Nested means placed inside.",
+      "explanation": "A nested if is placed in the block of another if or else."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "An else always belongs to which if?",
+      "options": [
+        "The nearest unmatched if above it",
+        "The first if in the program",
+        "The outermost if",
+        "The if with the biggest condition"
+      ],
+      "answer": "The nearest unmatched if above it",
+      "hint": "This is the dangling else rule.",
+      "explanation": "C++ pairs each else with the closest earlier if that does not have an else yet."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "How can you avoid the dangling else problem?",
+      "options": [
+        "Use braces { } around blocks",
+        "Use more indentation",
+        "Write else in capital letters",
+        "Remove the else"
+      ],
+      "answer": "Use braces { } around blocks",
+      "hint": "The computer ignores spaces.",
+      "explanation": "Braces state clearly which if the else belongs to. Indentation does not change the meaning."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "Which single line is equal to: if (a > 0) { if (b > 0) { cout << \"OK\"; } }",
+      "options": [
+        "if (a > 0 && b > 0) cout << \"OK\";",
+        "if (a > 0 || b > 0) cout << \"OK\";",
+        "if (a > 0, b > 0) cout << \"OK\";",
+        "if (!(a > 0)) cout << \"OK\";"
+      ],
+      "answer": "if (a > 0 && b > 0) cout << \"OK\";",
+      "hint": "Both conditions must be true.",
+      "explanation": "A nested if without else is the same as combining the two conditions with &&."
+    }
+  ],
+  "sources": [
+    "Nested if statements",
+    "Dangling else",
+    "Selection statements"
+  ]
+}

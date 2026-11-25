@@ -1,0 +1,24 @@
+{
+ "when": "2026-11-25T04:42:09.049Z",
+ "mode": "tier0",
+ "pass": 1,
+ "total": 1,
+ "costUSD": 0,
+ "byKind": {
+  "concept": [
+   1,
+   1
+  ]
+ },
+ "results": [
+  {
+   "id": "w1-pdlc-stages",
+   "kind": "concept",
+   "pass": true,
+   "tier": 0,
+   "costMicros": 0,
+   "reasons": [],
+   "answer": "**Program Development Life Cycle (PDLC)** (Week 1)\n\nThe Program Development Life Cycle (PDLC) is the set of stages a programmer follows to turn a problem into a working program. The stages are: Problem Analysis, Algorithm Design, Coding, Translation and Debugging, Execution and Testing, and Implementation and Maintenance. An algorithm is a finite, ordered list of clear steps that solves a problem. Pseudocode is an algorithm written in simple English-like lines. A flowchart is a diagram of the algorithm made with standard symbols and arrows.\n\nFull lesson: /week-1/pdlc\n\n_Ask a follow-up or press \"Answer more deeply\" for an AI explanation._"
+  }
+ ]
+}

@@ -1,0 +1,560 @@
+{
+  "slug": "if-else-statement",
+  "week": 2,
+  "title": "The if-else statement: choose between two paths",
+  "defaultView": "visualize",
+  "order": 3,
+  "visuals": [
+    {
+      "kind": "decision",
+      "title": "if (n % 2 == 0): even or odd?",
+      "vars": [
+        {
+          "name": "n",
+          "label": "n",
+          "min": 0,
+          "max": 30,
+          "value": 7
+        }
+      ],
+      "branches": [
+        {
+          "expr": "n % 2 == 0",
+          "label": "TRUE: the if block runs and prints \"n is even.\""
+        }
+      ],
+      "elseLabel": "FALSE: the else block runs and prints \"n is odd.\""
+    },
+    {
+      "kind": "decision",
+      "title": "if (marks >= 50) Pass, else Fail",
+      "vars": [
+        {
+          "name": "marks",
+          "label": "marks",
+          "min": 0,
+          "max": 100,
+          "value": 45
+        }
+      ],
+      "branches": [
+        {
+          "expr": "marks >= 50",
+          "label": "TRUE: prints Pass"
+        }
+      ],
+      "elseLabel": "FALSE (else): prints Fail"
+    }
+  ],
+  "goal": "After this you can write an if-else statement that runs one block when a condition is true and another block when it is false.",
+  "warmup": "Exam result: IF your marks are 50 or more, you pass; OTHERWISE you fail. Login: IF the password is correct, the door opens; OTHERWISE it says wrong password. In both cases something happens, and exactly one of the two actions is chosen. Voting is the same: IF age is 18 or more you may vote, otherwise you must wait.",
+  "definition": "An if-else statement chooses between two paths using one condition. If the condition is true, the if block runs. If it is false, the else block runs. Exactly one of the two blocks always runs, never both and never none.",
+  "howItWorks": "Move the slider. The condition is checked once. True sends the program down the if path; false sends it down the else path. After the chosen block finishes, the program continues with the line after the whole if-else.",
+  "syntax": "if (condition)\n{\n    statementA;     // runs when the condition is TRUE\n}\nelse                // no condition and no semicolon after else\n{\n    statementB;     // runs when the condition is FALSE\n}\nnextStatement;      // runs after either block\n\n// One statement each: braces optional\nif (condition)\n    statementA;\nelse\n    statementB;",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "Read a number n. Print whether it is even or odd (input: 7). A number is even if the remainder after dividing by 2 is 0.",
+      "pseudocode": [
+        "START",
+        "READ n",
+        "IF n % 2 == 0 THEN",
+        "    PRINT n is even",
+        "ELSE",
+        "    PRINT n is odd",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read n/]\n  B --> C{\"n % 2 == 0?\"}\n  C -- True --> D[/Print even/]\n  C -- False --> E[/Print odd/]\n  D --> F([End])\n  E --> F",
+      "sample": {
+        "id": "even-odd",
+        "title": "Even or odd",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cout << \"Enter a number: \";\n    cin >> n;\n    if (n % 2 == 0)\n        cout << n << \" is even.\" << endl;\n    else\n        cout << n << \" is odd.\" << endl;\n    return 0;\n}\n",
+        "stdin": "7\n",
+        "expectedOutput": "Enter a number: 7 is odd.\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A variable for the number."
+          },
+          {
+            "line": 7,
+            "text": "Reads the number."
+          },
+          {
+            "line": 8,
+            "text": "n % 2 is the remainder after dividing by 2. If it is 0, the number is even."
+          },
+          {
+            "line": 9,
+            "text": "Runs only when the condition is true."
+          },
+          {
+            "line": 10,
+            "text": "Everything else (condition false) comes here."
+          },
+          {
+            "line": 11,
+            "text": "Runs only when the condition is false."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts.",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "n is created.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "The prompt is shown.",
+              "out": "Enter a number: "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "n": "7"
+              },
+              "note": "The user types 7.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "7 % 2 is 1, and 1 == 0 is false. So we go to else.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "The else block runs and prints the message.",
+              "out": "7 is odd.\n"
+            },
+            {
+              "line": 12,
+              "vars": {},
+              "note": "The program ends. The if block was skipped.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "n": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read the marks. Print Pass if marks are 50 or more, otherwise print Fail (input: 45).",
+      "pseudocode": [
+        "START",
+        "READ marks",
+        "IF marks >= 50 THEN",
+        "    PRINT \"Pass\"",
+        "ELSE",
+        "    PRINT \"Fail\"",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read marks/]\n  B --> C{marks >= 50?}\n  C -- True --> D[/Print Pass/]\n  C -- False --> E[/Print Fail/]\n  D --> F([End])\n  E --> F",
+      "sample": {
+        "id": "pass-fail",
+        "title": "Pass or fail",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int marks;\n    cout << \"Enter marks: \";\n    cin >> marks;\n    if (marks >= 50) {\n        cout << \"Pass\" << endl;\n    } else {\n        cout << \"Fail\" << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "45\n",
+        "expectedOutput": "Enter marks: Fail\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A variable for the marks."
+          },
+          {
+            "line": 7,
+            "text": "Reads the marks."
+          },
+          {
+            "line": 8,
+            "text": "True for 50 or more."
+          },
+          {
+            "line": 9,
+            "text": "Runs when the condition is true."
+          },
+          {
+            "line": 10,
+            "text": "Runs when the condition is false. Here the else sits on the same line as the closing brace; this style is also correct."
+          },
+          {
+            "line": 11,
+            "text": "Runs when marks are below 50."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts.",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "marks is created.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "The prompt is shown.",
+              "out": "Enter marks: "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "marks": "45"
+              },
+              "note": "The user types 45.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Is 45 >= 50? No: false. Jump to else.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "The else block runs.",
+              "out": "Fail\n"
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "marks": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "Read a person's age. If it is 18 or more, print \"You can vote.\". Otherwise print \"You cannot vote yet.\" and also print how many years remain until 18 (input: 16).",
+      "pseudocode": [
+        "START",
+        "READ age",
+        "IF age >= 18 THEN",
+        "    PRINT \"You can vote.\"",
+        "ELSE",
+        "    PRINT \"You cannot vote yet.\"",
+        "    SET wait = 18 - age",
+        "    PRINT wait",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read age/]\n  B --> C{age >= 18?}\n  C -- True --> D[/Print You can vote/]\n  C -- False --> E[/Print You cannot vote yet/]\n  E --> G[wait = 18 - age]\n  G --> H[/Print wait/]\n  D --> F([End])\n  H --> F",
+      "sample": {
+        "id": "vote-age",
+        "title": "Voting age",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int age;\n    cout << \"Enter age: \";\n    cin >> age;\n    if (age >= 18) {\n        cout << \"You can vote.\" << endl;\n    } else {\n        cout << \"You cannot vote yet.\" << endl;\n        int wait = 18 - age;\n        cout << \"Years to wait: \" << wait << endl;\n    }\n    return 0;\n}\n",
+        "stdin": "16\n",
+        "expectedOutput": "Enter age: You cannot vote yet.\nYears to wait: 2\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "A variable for the age."
+          },
+          {
+            "line": 7,
+            "text": "Reads the age."
+          },
+          {
+            "line": 8,
+            "text": "True when age is 18 or more."
+          },
+          {
+            "line": 9,
+            "text": "Runs only for true."
+          },
+          {
+            "line": 10,
+            "text": "The else block starts here: it has two statements, so braces are needed."
+          },
+          {
+            "line": 12,
+            "text": "How many more years until 18."
+          },
+          {
+            "line": 13,
+            "text": "Prints the number of years."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 4,
+              "vars": {},
+              "note": "The program starts.",
+              "out": ""
+            },
+            {
+              "line": 5,
+              "vars": {},
+              "note": "age is created.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {},
+              "note": "The prompt is shown.",
+              "out": "Enter age: "
+            },
+            {
+              "line": 7,
+              "vars": {
+                "age": "16"
+              },
+              "note": "The user types 16.",
+              "out": ""
+            },
+            {
+              "line": 8,
+              "vars": {},
+              "note": "Is 16 >= 18? No: false. Go to else.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {},
+              "note": "First statement of the else block.",
+              "out": "You cannot vote yet.\n"
+            },
+            {
+              "line": 12,
+              "vars": {
+                "wait": "2"
+              },
+              "note": "wait = 18 - 16 = 2.",
+              "out": ""
+            },
+            {
+              "line": 13,
+              "vars": {},
+              "note": "Prints the waiting time.",
+              "out": "Years to wait: 2\n"
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "age": "int",
+            "wait": "int"
+          }
+        }
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "if (c) { A } else { B }",
+      "when": "Normal form with braces (best habit)",
+      "example": "if (marks >= 50) {\n    cout << \"Pass\";\n} else {\n    cout << \"Fail\";\n}"
+    },
+    {
+      "way": "if (c) A; else B;",
+      "when": "One statement in each part; braces optional",
+      "example": "if (n % 2 == 0)\n    cout << \"Even\";\nelse\n    cout << \"Odd\";"
+    },
+    {
+      "way": "if (c) ... (no else)",
+      "when": "Nothing to do when false: use a plain if",
+      "example": "if (balance < 50)\n    cout << \"Buy load\";"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "if (n > 1) cout << 1; ; else cout << 2;",
+      "right": "if (n > 1) cout << 1; else cout << 2;",
+      "error": "'else' without a previous 'if' (an extra ; ended the if)"
+    },
+    {
+      "wrong": "else (n > 1) cout << 2;",
+      "right": "else cout << 2;",
+      "error": "'else' without a previous 'if' (else never has its own condition)"
+    },
+    {
+      "wrong": "if (n % 2 = 0)",
+      "right": "if (n % 2 == 0)",
+      "error": "lvalue required as left operand of assignment"
+    },
+    {
+      "wrong": "if (marks >= 50)\n    cout << \"Pass\";\n    cout << \"Well done\";\nelse\n    cout << \"Fail\";",
+      "right": "if (marks >= 50) {\n    cout << \"Pass\";\n    cout << \"Well done\";\n} else\n    cout << \"Fail\";",
+      "error": "'else' without a previous 'if' (two statements need braces before else)"
+    }
+  ],
+  "examTips": [
+    "Exactly one of the two blocks runs. Say this in every theory answer.",
+    "else has no condition and no semicolon after it.",
+    "Use braces when a block has two or more statements.",
+    "Even number test: n % 2 == 0. Odd: the else part, or n % 2 != 0.",
+    "In the flowchart, the diamond has two exits (True and False) which join again at the end."
+  ],
+  "romanSummary": [
+    "if-else do raaston mein se ek raasta chunta hai.",
+    "Condition true ho to if wala block chalta hai, false ho to else wala block.",
+    "Dono mein se hamesha sirf ek block chalta hai, kabhi dono nahi.",
+    "else ke sath condition ya semicolon nahi lagta; zyada statements ho to braces { } lagayen."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "In an if-else statement, how many of the two blocks run?",
+      "options": [
+        "Both",
+        "Exactly one",
+        "None",
+        "It depends on the compiler"
+      ],
+      "answer": "Exactly one",
+      "hint": "Think of pass or fail: can you do both?",
+      "explanation": "The condition is checked once and exactly one of the two blocks runs."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this print?\n\nint n = 8;\nif (n % 2 == 0)\n    cout << \"Even\";\nelse\n    cout << \"Odd\";",
+      "answer": "Even",
+      "hint": "8 % 2 is the remainder of 8 divided by 2.",
+      "explanation": "8 % 2 is 0, so the condition is true and Even is printed."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this print?\n\nint x = 10;\nif (x > 10)\n    cout << \"A\";\nelse\n    cout << \"B\";\ncout << \"C\";",
+      "answer": "BC",
+      "hint": "Is 10 greater than 10?",
+      "explanation": "10 > 10 is false, so the else part prints B. C is after the if-else, so it always prints."
+    },
+    {
+      "id": "p4",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "Fix the bug:\n\nif (age >= 18)\n    cout << \"Adult\";\nelse (age < 18)\n    cout << \"Minor\";",
+      "answer": "if (age >= 18)\n    cout << \"Adult\";\nelse\n    cout << \"Minor\";",
+      "hint": "Does else take a condition?",
+      "explanation": "else has no condition. It runs when the if condition is false."
+    },
+    {
+      "id": "p5",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blank to test for an odd number:\n\nif (n % 2 ___ 1)\n    cout << \"Odd\";",
+      "answer": "==",
+      "hint": "You want to compare, not assign.",
+      "explanation": "== compares the remainder with 1. (Note: for negative numbers n % 2 can be -1, so n % 2 != 0 is safer.)"
+    },
+    {
+      "id": "p6",
+      "type": "output",
+      "difficulty": "hard",
+      "prompt": "What does this print?\n\nint a = 5, b = 8;\nif (a > b)\n    cout << \"X\";\nelse {\n    cout << \"Y\";\n    cout << \"Z\";\n}",
+      "answer": "YZ",
+      "hint": "The else block has two statements.",
+      "explanation": "a > b is false, so the whole else block runs: Y then Z."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "medium",
+      "prompt": "Write a program that reads the price of a ticket and the money you have. Print \"Buy\" if money is enough, otherwise \"Not enough\".",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int price, money;\n    cin >> price >> money;\n    if (money >= price) {\n        cout << \"Buy\" << endl;\n    } else {\n        cout << \"Not enough\" << endl;\n    }\n    return 0;\n}",
+      "hint": "Compare money with price using >=.",
+      "explanation": "Equal money is enough, so >= is used. Else covers the not-enough case."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which part of if-else runs when the condition is false?",
+      "options": [
+        "The if block",
+        "The else block",
+        "Both blocks",
+        "Neither block"
+      ],
+      "answer": "The else block",
+      "hint": "Pass or fail: what is the 'otherwise' part?",
+      "explanation": "The else block is the false path."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which is correct?",
+      "options": [
+        "else (x > 5) cout << \"No\";",
+        "else; cout << \"No\";",
+        "else cout << \"No\";",
+        "else if cout << \"No\";"
+      ],
+      "answer": "else cout << \"No\";",
+      "hint": "else never has a condition.",
+      "explanation": "else is followed directly by its statement or block."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "int n = 9; if (n % 2 == 0) cout << \"E\"; else cout << \"O\"; prints:",
+      "options": [
+        "E",
+        "O",
+        "EO",
+        "Nothing"
+      ],
+      "answer": "O",
+      "hint": "What is 9 % 2?",
+      "explanation": "9 % 2 is 1, not 0, so the condition is false and the else part runs."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "When must you use braces in an else block?",
+      "options": [
+        "Never",
+        "Always, or the compiler fails",
+        "When it has two or more statements",
+        "Only when the if has braces"
+      ],
+      "answer": "When it has two or more statements",
+      "hint": "Without braces, how many statements belong to else?",
+      "explanation": "Without braces only the first statement after else belongs to it."
+    }
+  ],
+  "sources": [
+    "The if-else statement",
+    "Two-way selection"
+  ]
+}

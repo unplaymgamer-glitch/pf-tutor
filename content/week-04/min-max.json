@@ -1,0 +1,517 @@
+{
+  "slug": "min-max",
+  "week": 4,
+  "title": "Finding the minimum and maximum of an array",
+  "defaultView": "visualize",
+  "order": 4,
+  "visuals": [
+    {
+      "kind": "array",
+      "title": "Running minimum and maximum over a list",
+      "mode": "minmax",
+      "values": [
+        34,
+        12,
+        78,
+        5,
+        66,
+        41
+      ]
+    },
+    {
+      "kind": "array",
+      "title": "All values negative: why max must start from a[0]",
+      "mode": "minmax",
+      "values": [
+        -8,
+        -3,
+        -15,
+        -6,
+        -20
+      ]
+    }
+  ],
+  "goal": "After this you can find the smallest and largest value in an array and their positions, explain why we start from a[0], and understand the idea of the second largest.",
+  "warmup": "Five cricketers finish an innings. The scorer wants the top scorer. He looks at the first player's score and says 'best so far'. Then he checks each next player: if the score is higher, that player becomes the new best. At the end, whoever is 'best so far' is the top scorer. He never needs to look at anyone twice. Finding the maximum in an array is exactly this, and the minimum is the same story with 'lower' instead of 'higher'.",
+  "definition": "The maximum is the largest value and the minimum is the smallest value in an array. We find them with one loop and a variable that remembers the best value seen so far. We start that variable with the first element a[0] and then compare it with each remaining element. If a new element beats it, we replace it. We often also remember the position (index) of the best value.",
+  "howItWorks": "Watch the minmax visual. First maxVal is set to a[0], because before looking at anything the first element is the only candidate. The loop then starts from i = 1 (there is no need to compare a[0] with itself). At every step: if a[i] > maxVal then maxVal = a[i] and maxPos = i. For the minimum, the test is a[i] < minVal. After the loop, maxVal holds the largest value and maxPos its index. Important: never start maxVal at 0. If every value is negative (for example -8, -3, -15) then 0 would beat them all and you would report 0, a number that is not even in the array. Starting with a[0] is always correct. Second largest idea: first find the position of the maximum, then run a second loop that finds the largest among the other positions.",
+  "syntax": "int maxVal = a[0];            // start from the FIRST element, not 0\nint maxPos = 0;               // its index\nfor (int i = 1; i < n; i++) { // from the second element\n    if (a[i] > maxVal) {      // found a bigger one\n        maxVal = a[i];\n        maxPos = i;\n    }\n}\n// minimum: same code, but test a[i] < minVal",
+  "worked": [
+    {
+      "level": "basic",
+      "problem": "The array is 34, 12, 78, 5, 66, 41. Find the largest value and the index where it is stored.",
+      "pseudocode": [
+        "START",
+        "SET maxVal = a[0] and maxPos = 0",
+        "FOR i = 1 TO 5: IF a[i] > maxVal THEN maxVal = a[i], maxPos = i",
+        "PRINT maxVal and maxPos",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"maxVal = a[0], maxPos = 0, i = 1\"]\n  B --> C{i < 6?}\n  C -->|Yes| D{\"a[i] > maxVal?\"}\n  D -->|Yes| E[\"maxVal = a[i], maxPos = i\"]\n  D -->|No| F[\"i = i + 1\"]\n  E --> F\n  F --> C\n  C -->|No| G[/Print maxVal and maxPos/]\n  G --> H([End])",
+      "sample": {
+        "id": "find-max",
+        "title": "Largest value and its index",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[6] = {34, 12, 78, 5, 66, 41};\n    int maxVal = a[0];\n    int maxPos = 0;\n    for (int i = 1; i < 6; i++) {\n        if (a[i] > maxVal) {\n            maxVal = a[i];\n            maxPos = i;\n        }\n    }\n    cout << \"Max = \" << maxVal << \" at index \" << maxPos << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Max = 78 at index 2\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "The data. Its indexes are 0 to 5."
+          },
+          {
+            "line": 6,
+            "text": "The first element is our first candidate for the maximum."
+          },
+          {
+            "line": 7,
+            "text": "Its index is 0."
+          },
+          {
+            "line": 8,
+            "text": "Starts at 1, because a[0] is already the candidate."
+          },
+          {
+            "line": 9,
+            "text": "Is the current element bigger than the best one so far?"
+          },
+          {
+            "line": 10,
+            "text": "Yes: it becomes the new best value."
+          },
+          {
+            "line": 11,
+            "text": "Remember where it lives."
+          },
+          {
+            "line": 14,
+            "text": "Prints the final answer after the loop."
+          }
+        ],
+        "trace": {
+          "steps": [
+            {
+              "line": 5,
+              "vars": {},
+              "note": "The array holds 34, 12, 78, 5, 66, 41.",
+              "out": ""
+            },
+            {
+              "line": 6,
+              "vars": {
+                "maxVal": "34"
+              },
+              "note": "First candidate: a[0] = 34.",
+              "out": ""
+            },
+            {
+              "line": 7,
+              "vars": {
+                "maxPos": "0"
+              },
+              "note": "Its position is 0.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "1"
+              },
+              "note": "i = 1: is 12 > 34? No. maxVal stays 34.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "2"
+              },
+              "note": "i = 2: is 78 > 34? Yes!",
+              "out": ""
+            },
+            {
+              "line": 10,
+              "vars": {
+                "maxVal": "78"
+              },
+              "note": "maxVal becomes 78.",
+              "out": ""
+            },
+            {
+              "line": 11,
+              "vars": {
+                "maxPos": "2"
+              },
+              "note": "maxPos becomes 2.",
+              "out": ""
+            },
+            {
+              "line": 9,
+              "vars": {
+                "i": "5"
+              },
+              "note": "i = 3, 4 and 5: 5, 66 and 41 are all smaller than 78. Nothing changes.",
+              "out": ""
+            },
+            {
+              "line": 14,
+              "vars": {},
+              "note": "Prints the result.",
+              "out": "Max = 78 at index 2\n"
+            },
+            {
+              "line": 15,
+              "vars": {},
+              "note": "The program ends.",
+              "out": ""
+            }
+          ],
+          "types": {
+            "maxVal": "int",
+            "maxPos": "int",
+            "i": "int"
+          }
+        }
+      }
+    },
+    {
+      "level": "intermediate",
+      "problem": "Read n values (at most 20), which may be negative. Print the maximum, the minimum and the range (maximum minus minimum).",
+      "pseudocode": [
+        "START",
+        "READ n and the n values",
+        "SET maxVal = a[0], minVal = a[0]",
+        "FOR i = 1 TO n - 1: IF a[i] > maxVal THEN maxVal = a[i]; IF a[i] < minVal THEN minVal = a[i]",
+        "PRINT maxVal, minVal and maxVal - minVal",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[/Read n and the values/]\n  B --> C[\"maxVal = a[0], minVal = a[0], i = 1\"]\n  C --> D{i < n?}\n  D -->|Yes| E{\"a[i] > maxVal?\"}\n  E -->|Yes| F[\"maxVal = a[i]\"]\n  E -->|No| G{\"a[i] < minVal?\"}\n  F --> G\n  G -->|Yes| H[\"minVal = a[i]\"]\n  G -->|No| I[\"i = i + 1\"]\n  H --> I\n  I --> D\n  D -->|No| J[/Print max, min, range/]\n  J --> K([End])",
+      "sample": {
+        "id": "max-min-range",
+        "title": "Max, min and range with negative numbers",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    int a[20];\n    cin >> n;\n    for (int i = 0; i < n; i++) {\n        cin >> a[i];\n    }\n    int maxVal = a[0];\n    int minVal = a[0];\n    for (int i = 1; i < n; i++) {\n        if (a[i] > maxVal) {\n            maxVal = a[i];\n        }\n        if (a[i] < minVal) {\n            minVal = a[i];\n        }\n    }\n    cout << \"Max = \" << maxVal << endl;\n    cout << \"Min = \" << minVal << endl;\n    cout << \"Range = \" << maxVal - minVal << endl;\n    return 0;\n}\n",
+        "stdin": "5 -8 -3 -15 -6 -20",
+        "expectedOutput": "Max = -3\nMin = -20\nRange = 17\n",
+        "explanation": [
+          {
+            "line": 5,
+            "text": "How many numbers will be typed."
+          },
+          {
+            "line": 6,
+            "text": "Room for up to 20 numbers."
+          },
+          {
+            "line": 8,
+            "text": "Fills the array with the typed numbers."
+          },
+          {
+            "line": 11,
+            "text": "Both variables start from the first element. With 0 the maximum of negative numbers would be wrong."
+          },
+          {
+            "line": 13,
+            "text": "Starts from the second element."
+          },
+          {
+            "line": 14,
+            "text": "Is this element a new largest value?"
+          },
+          {
+            "line": 17,
+            "text": "Is this element a new smallest value? This is a separate if, because one element can only beat one of them."
+          },
+          {
+            "line": 23,
+            "text": "The range is the distance between the largest and the smallest value."
+          }
+        ]
+      }
+    },
+    {
+      "level": "exam",
+      "problem": "The array is 45, 90, 72, 38, 15, 63. Print the largest value with its index, then the second largest value with its index.",
+      "pseudocode": [
+        "START",
+        "FIND maxPos: the index of the largest value",
+        "SET secondPos = -1",
+        "FOR every index i except maxPos: IF secondPos = -1 OR a[i] > a[secondPos] THEN secondPos = i",
+        "PRINT a[maxPos], maxPos, a[secondPos], secondPos",
+        "END"
+      ],
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"maxPos = index of largest\"]\n  B --> C[\"secondPos = -1, i = 0\"]\n  C --> D{i < 6?}\n  D -->|Yes| E{\"i != maxPos and (secondPos == -1 or a[i] > a[secondPos])?\"}\n  E -->|Yes| F[\"secondPos = i\"]\n  E -->|No| G[\"i = i + 1\"]\n  F --> G\n  G --> D\n  D -->|No| H[/Print both values and indexes/]\n  H --> I([End])",
+      "sample": {
+        "id": "second-largest",
+        "title": "Largest and second largest",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[6] = {45, 90, 72, 38, 15, 63};\n    int maxPos = 0;\n    for (int i = 1; i < 6; i++) {\n        if (a[i] > a[maxPos]) {\n            maxPos = i;\n        }\n    }\n    int secondPos = -1;\n    for (int i = 0; i < 6; i++) {\n        if (i != maxPos && (secondPos == -1 || a[i] > a[secondPos])) {\n            secondPos = i;\n        }\n    }\n    cout << \"Largest = \" << a[maxPos] << \" at index \" << maxPos << endl;\n    cout << \"Second largest = \" << a[secondPos] << \" at index \" << secondPos << endl;\n    return 0;\n}\n",
+        "stdin": "",
+        "expectedOutput": "Largest = 90 at index 1\nSecond largest = 72 at index 2\n",
+        "explanation": [
+          {
+            "line": 6,
+            "text": "maxPos stores the INDEX of the best value. We read the value with a[maxPos]."
+          },
+          {
+            "line": 7,
+            "text": "First loop: standard maximum search, starting from index 1."
+          },
+          {
+            "line": 8,
+            "text": "Compares the current element with the best one so far."
+          },
+          {
+            "line": 12,
+            "text": "secondPos starts at -1: no second candidate yet."
+          },
+          {
+            "line": 13,
+            "text": "Second loop: looks at all positions."
+          },
+          {
+            "line": 14,
+            "text": "Skip the maximum itself. Accept the first other element, or any element bigger than the current second candidate."
+          },
+          {
+            "line": 19,
+            "text": "Prints both answers. If the array had two equal maximum values, this program would report the second copy as the second largest."
+          }
+        ]
+      }
+    }
+  ],
+  "variations": [
+    {
+      "way": "Max only, start from a[0]",
+      "when": "You need the largest value",
+      "example": "int maxVal = a[0]; for (i = 1; i < n; i++) if (a[i] > maxVal) maxVal = a[i];"
+    },
+    {
+      "way": "Min only, start from a[0]",
+      "when": "You need the smallest value",
+      "example": "int minVal = a[0]; for (i = 1; i < n; i++) if (a[i] < minVal) minVal = a[i];"
+    },
+    {
+      "way": "Value and index together",
+      "when": "The question asks WHERE the max is",
+      "example": "if (a[i] > maxVal) { maxVal = a[i]; maxPos = i; }"
+    },
+    {
+      "way": "Keep only the index",
+      "when": "You want to read the value as a[maxPos]",
+      "example": "if (a[i] > a[maxPos]) maxPos = i;"
+    },
+    {
+      "way": "Strict > versus >=",
+      "when": "Choose which of two equal maximums is reported",
+      "example": "> keeps the FIRST maximum, >= moves to the LAST"
+    }
+  ],
+  "mistakes": [
+    {
+      "wrong": "int maxVal = 0;\nfor (int i = 0; i < n; i++)\n    if (a[i] > maxVal) maxVal = a[i];",
+      "right": "int maxVal = a[0];\nfor (int i = 1; i < n; i++)\n    if (a[i] > maxVal) maxVal = a[i];",
+      "error": "No compiler error. With values -4, -9, -2 the program prints 0, a number that is not in the array."
+    },
+    {
+      "wrong": "int minVal = 0;\nfor (int i = 0; i < n; i++)\n    if (a[i] < minVal) minVal = a[i];",
+      "right": "int minVal = a[0];\nfor (int i = 1; i < n; i++)\n    if (a[i] < minVal) minVal = a[i];",
+      "error": "No compiler error. With values 5, 8, 3 the answer would be 0, because no value is smaller than 0."
+    },
+    {
+      "wrong": "int maxVal;\nfor (int i = 0; i < n; i++)\n    if (a[i] > maxVal) maxVal = a[i];",
+      "right": "int maxVal = a[0];\nfor (int i = 1; i < n; i++)\n    if (a[i] > maxVal) maxVal = a[i];",
+      "error": "No compiler error, but maxVal is used before it has a value, so the answer may be garbage."
+    },
+    {
+      "wrong": "int maxVal = a[0];\nfor (int i = 1; i < n; i++)\n    if (a[i] < maxVal) maxVal = a[i];",
+      "right": "int maxVal = a[0];\nfor (int i = 1; i < n; i++)\n    if (a[i] > maxVal) maxVal = a[i];",
+      "error": "No compiler error. The sign is the wrong way round, so the program finds the MINIMUM while you wanted the maximum."
+    },
+    {
+      "wrong": "int maxPos = 0;\nfor (int i = 1; i < n; i++)\n    if (a[i] > maxVal) maxPos = i;",
+      "right": "int maxVal = a[0];\nint maxPos = 0;\nfor (int i = 1; i < n; i++)\n    if (a[i] > maxVal) { maxVal = a[i]; maxPos = i; }",
+      "error": "'maxVal' was not declared in this scope"
+    }
+  ],
+  "examTips": [
+    "Always initialise max and min with a[0], never with 0 (values may be negative).",
+    "The loop can start from i = 1, because a[0] is already the first candidate.",
+    "Max uses >, min uses <. Use two separate if statements to find both in one loop.",
+    "To report the position, update the index in the same block as the value.",
+    "With strict > the FIRST maximum is kept; with >= the LAST one is kept."
+  ],
+  "romanSummary": [
+    "Maximum ya minimum nikalne ke liye pehle a[0] ko best maan lo, phir baaki elements se compare karo.",
+    "max ko kabhi 0 se shuru mat karo, kyun ke agar sab numbers negative hon to 0 galat jawab ban jata hai.",
+    "Jab a[i] > maxVal ho to maxVal = a[i] aur maxPos = i kar do. Minimum ke liye a[i] < minVal.",
+    "Second largest ke liye pehle max ki position nikalo, phir baaki elements mein se sab se bara dhoondo."
+  ],
+  "practice": [
+    {
+      "id": "p1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Why do we start maxVal with a[0] and not with 0?",
+      "options": [
+        "Because all the values may be negative",
+        "Because arrays start at 0",
+        "Because 0 is faster",
+        "Because a[0] is always the largest"
+      ],
+      "answer": "Because all the values may be negative",
+      "hint": "What if every element is below zero?",
+      "explanation": "If all values are negative, 0 would beat them all and be reported as the maximum even though it is not in the array."
+    },
+    {
+      "id": "p2",
+      "type": "output",
+      "difficulty": "easy",
+      "prompt": "What does this program print?\n\nint a[5] = {4, 9, 2, 9, 6};\nint m = a[0];\nfor (int i = 1; i < 5; i++)\n    if (a[i] > m) m = a[i];\ncout << m;",
+      "answer": "9",
+      "hint": "m always holds the best value so far.",
+      "explanation": "m grows from 4 to 9 and stays 9 because the second 9 and 6 are not bigger."
+    },
+    {
+      "id": "p3",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "What does this program print?\n\nint a[5] = {4, 9, 2, 9, 6};\nint p = 0;\nfor (int i = 1; i < 5; i++)\n    if (a[i] > a[p]) p = i;\ncout << p;",
+      "answer": "1",
+      "hint": "9 appears twice. Does a strict > move p for the second 9?",
+      "explanation": "p becomes 1 when 9 is met. At index 3 the test 9 > 9 is false, so p stays 1: the first maximum is kept."
+    },
+    {
+      "id": "p4",
+      "type": "output",
+      "difficulty": "medium",
+      "prompt": "Now the test is changed to >=. What does this program print?\n\nint a[5] = {4, 9, 2, 9, 6};\nint p = 0;\nfor (int i = 1; i < 5; i++)\n    if (a[i] >= a[p]) p = i;\ncout << p;",
+      "answer": "3",
+      "hint": "With >=, an equal value also replaces the old one.",
+      "explanation": "p becomes 1, then at index 3 the test 9 >= 9 is true, so p becomes 3: the last maximum."
+    },
+    {
+      "id": "p5",
+      "type": "bug",
+      "difficulty": "medium",
+      "prompt": "This program should print the maximum of -4, -9, -2 but prints something wrong. Fix it.\n\nint a[3] = {-4, -9, -2};\nint mx = 0;\nfor (int i = 0; i < 3; i++)\n    if (a[i] > mx) mx = a[i];\ncout << mx;",
+      "answer": "int a[3] = {-4, -9, -2};\nint mx = a[0];\nfor (int i = 1; i < 3; i++)\n    if (a[i] > mx) mx = a[i];\ncout << mx;",
+      "hint": "Is there any number in this array that is bigger than 0?",
+      "explanation": "The original prints 0 because no element is above 0. Starting from a[0] gives the correct answer, -2."
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "difficulty": "medium",
+      "prompt": "Fill in the blanks to find the smallest value in a (n elements).\n\nint minVal = ____;\nfor (int i = ____; i < n; i++) {\n    if (a[i] ____ minVal) {\n        minVal = a[i];\n    }\n}",
+      "answer": "int minVal = a[0];\nfor (int i = 1; i < n; i++) {\n    if (a[i] < minVal) {\n        minVal = a[i];\n    }\n}",
+      "hint": "Start from the first element. The smaller one wins.",
+      "explanation": "minVal starts at a[0], the loop starts at index 1, and the test is a[i] < minVal."
+    },
+    {
+      "id": "p7",
+      "type": "write",
+      "difficulty": "hard",
+      "prompt": "Write a program that reads 5 integers and prints the minimum value and its index.",
+      "answer": "#include <iostream>\nusing namespace std;\nint main() {\n    int a[5];\n    for (int i = 0; i < 5; i++) {\n        cin >> a[i];\n    }\n    int minVal = a[0];\n    int minPos = 0;\n    for (int i = 1; i < 5; i++) {\n        if (a[i] < minVal) {\n            minVal = a[i];\n            minPos = i;\n        }\n    }\n    cout << \"Min = \" << minVal << \" at index \" << minPos << endl;\n    return 0;\n}",
+      "hint": "Read first with one loop, then search with a second loop that starts at 1.",
+      "explanation": "Keep both the value and the index. Update both in the same block when a smaller element appears."
+    },
+    {
+      "id": "p8",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "In the max loop for (int i = 1; ...) why can i start at 1?",
+      "options": [
+        "a[0] is already the first candidate",
+        "Index 0 does not exist",
+        "Arrays start at 1",
+        "The first element is never needed"
+      ],
+      "answer": "a[0] is already the first candidate",
+      "hint": "What does maxVal hold before the loop?",
+      "explanation": "maxVal = a[0] was set before the loop, so comparing a[0] with itself is a waste."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which variable keeps the best value found so far?",
+      "options": [
+        "maxVal",
+        "n",
+        "i",
+        "key"
+      ],
+      "answer": "maxVal",
+      "hint": "It changes during the loop.",
+      "explanation": "maxVal is updated every time a bigger element is found."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "difficulty": "easy",
+      "prompt": "Which comparison finds the minimum?",
+      "options": [
+        "a[i] < minVal",
+        "a[i] > minVal",
+        "a[i] == minVal",
+        "a[i] != minVal"
+      ],
+      "answer": "a[i] < minVal",
+      "hint": "The minimum is the smallest.",
+      "explanation": "A new element becomes the minimum when it is smaller than the current one."
+    },
+    {
+      "id": "q3",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "int a[3] = {-5, -2, -9}; int mx = 0; (loop as usual). What does mx hold at the end?",
+      "options": [
+        "0",
+        "-2",
+        "-5",
+        "-9"
+      ],
+      "answer": "0",
+      "hint": "No element is greater than 0.",
+      "explanation": "Nothing beats 0, so mx stays 0: a wrong answer. Starting from a[0] would give -2."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "difficulty": "medium",
+      "prompt": "To get the POSITION of the maximum, what must change in the same block as maxVal = a[i]?",
+      "options": [
+        "maxPos = i",
+        "maxPos = a[i]",
+        "maxPos = maxVal",
+        "i = maxPos"
+      ],
+      "answer": "maxPos = i",
+      "hint": "The position is the index.",
+      "explanation": "The index i is the position of the new best value."
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "difficulty": "hard",
+      "prompt": "To find the second largest value, what is a safe approach?",
+      "options": [
+        "Find the position of the max, then search the largest among the other positions",
+        "Take a[1]",
+        "Take maxVal - 1",
+        "Sort in your head"
+      ],
+      "answer": "Find the position of the max, then search the largest among the other positions",
+      "hint": "Remove the first winner from the contest.",
+      "explanation": "A second loop that skips the maximum's index finds the next best value."
+    }
+  ],
+  "sources": [
+    "Minimum and maximum of an array",
+    "Position of the maximum",
+    "Second largest element",
+    "Initialising max and min from the first element"
+  ]
+}
