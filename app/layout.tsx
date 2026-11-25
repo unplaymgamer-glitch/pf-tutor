@@ -14,6 +14,8 @@ import { TutorProvider } from "@/components/tutor/TutorProvider";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
 import { Footer } from "@/components/Footer";
 import { HideOnAdmin } from "@/components/HideOnAdmin";
+import { BottomNav } from "@/components/BottomNav";
+import { CodeMotif } from "@/components/CodeMotif";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: { type: "website", siteName: SITE_NAME, title: `${SITE_NAME}: ${SITE_TAGLINE}`, description: SITE_DESCRIPTION },
   twitter: { card: "summary_large_image", title: `${SITE_NAME}: ${SITE_TAGLINE}`, description: SITE_DESCRIPTION },
 };
-export const viewport: Viewport = { themeColor: "#0b1020", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#070b16", width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -36,12 +38,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SettingsProvider>
           <SiteStateProvider>
             <TutorProvider>
+              <HideOnAdmin><CodeMotif /></HideOnAdmin>
               <HideOnAdmin><Header /></HideOnAdmin>
               <HideOnAdmin><AnnouncementBanner /></HideOnAdmin>
-              <main id="main" className="mx-auto w-full max-w-4xl flex-1 px-4 py-6">
+              <main id="main" className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
                 {children}
               </main>
               <HideOnAdmin><Footer /></HideOnAdmin>
+              <HideOnAdmin><BottomNav /></HideOnAdmin>
             </TutorProvider>
             <HideOnAdmin><Toasts /></HideOnAdmin>
             <LeaderboardSync />

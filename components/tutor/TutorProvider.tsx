@@ -20,7 +20,7 @@ export function TutorProvider({ children }: { children: React.ReactNode }) {
     <Ctx.Provider value={{ open }}>
       {children}
       {!isOpen && !onAdmin && (
-        <button className="btn btn-primary fixed bottom-4 right-4 z-40 !min-h-12 rounded-full px-5 shadow-lg" onClick={() => open()} aria-label="Open the CC111 tutor chat">💬 Tutor</button>
+        <button className="btn btn-primary fixed bottom-20 right-4 z-40 md:bottom-4 !min-h-12 rounded-full px-5 shadow-lg" onClick={() => open()} aria-label="Open the CC111 tutor chat">💬 Tutor</button>
       )}
       {isOpen && <Panel onClose={() => setOpen(false)} initial={ctx} />}
     </Ctx.Provider>

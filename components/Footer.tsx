@@ -11,6 +11,9 @@ export function Footer() {
           <Link className={a} href="/revision/mid">Mid-term hub</Link>
           <Link className={a} href="/revision/final">Final hub</Link>
           <Link className={a} href="/playground">Playground</Link>
+          <Link className={a} href="/how-to-study">How to study</Link>
+          <Link className={a} href="/faq">FAQ</Link>
+          <Link className={a} href="/about">About</Link>
           <Link className={a} href="/privacy">Privacy</Link>
         </nav>
       </div>
