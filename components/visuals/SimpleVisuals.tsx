@@ -18,7 +18,7 @@ export function Pipeline({ v }: { v: V<"pipeline"> }) {
               aria-current={k === i ? "step" : undefined}
               onClick={() => setI(k)}
             >
-              <strong>{k + 1}. {s.name}</strong>
+              <strong>{k + 1}. {s.name.replace(/^\d+[.)]\s*/, "")}</strong>
             </button>
           </li>
         ))}

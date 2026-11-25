@@ -56,7 +56,7 @@ test("live walk-through (student + admin)", async ({ browser }) => {
   });
   await check("Open lesson renders (Week 1: Hello World) with all sections", async () => {
     await page.goto("/week-1/hello-world", { waitUntil: "networkidle" });
-    for (const h of ["Learning goal", "Definition", "Worked examples", "Common mistakes", "Exam tips", "Roman Urdu summary"]) await expect(page.getByRole("heading", { name: new RegExp(h) }).first()).toBeVisible();
+    for (const h of ["What you will be able to do", "Definition", "Worked examples", "Common mistakes", "Exam tips", "Roman Urdu summary"]) await expect(page.getByRole("heading", { name: new RegExp(h) }).first()).toBeVisible();
     await shot(page, "student-lesson-top");
     return "13-section lesson page";
   });
@@ -96,7 +96,6 @@ test("live walk-through (student + admin)", async ({ browser }) => {
     await page.goto("/week-2/if-else-if-ladder", { waitUntil: "networkidle" });
     const xp = page.getByRole("link", { name: /My progress/ });
     const before = await xp.getAttribute("aria-label");
-    await page.getByRole("heading", { name: /Mini-quiz/ }).click();
     await page.getByRole("group", { name: "Choices" }).first().getByRole("button").first().click();
     await expect.poll(async () => await xp.getAttribute("aria-label")).not.toBe(before);
     const after = await xp.getAttribute("aria-label");
@@ -199,7 +198,7 @@ test("live walk-through (student + admin)", async ({ browser }) => {
     await shot(admin, "admin-week3-unlocked");
     const sp = await student.newPage(); watch(sp);
     await sp.goto("/week-3/for-loop", { waitUntil: "networkidle" });
-    await expect(sp.getByRole("heading", { name: /Learning goal/ })).toBeVisible();
+    await expect(sp.getByRole("heading", { name: /What you will be able to do/ })).toBeVisible();
     await sp.screenshot({ path: `${DIR}/${String(++n).padStart(2, "0")}-student-week3-now-open.png` });
     await sp.close();
     return "Week 3 lesson opened for students";

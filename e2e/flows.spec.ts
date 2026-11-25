@@ -9,7 +9,6 @@ test("progress persists after reload and backup code is offered", async ({ page 
   const xpLink = page.getByRole("link", { name: /My progress/ });
   const before = await xpLink.getAttribute("aria-label");
   // open the (collapsed) mini-quiz and answer its first question
-  await page.getByRole("heading", { name: /Mini-quiz/ }).click();
   await page.getByRole("group", { name: "Choices" }).first().getByRole("button").first().click();
   await expect.poll(async () => await xpLink.getAttribute("aria-label")).not.toBe(before);
   const after = await xpLink.getAttribute("aria-label");

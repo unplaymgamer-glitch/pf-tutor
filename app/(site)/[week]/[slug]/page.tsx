@@ -52,17 +52,12 @@ export default async function TopicPage({ params }: PageProps<"/[week]/[slug]">)
   return (
     <div className="grid gap-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <p className="flex flex-wrap items-center gap-x-2 text-sm text-muted"><Link className="inline-flex min-h-11 items-center" href="/">Home</Link> / <Link className="inline-flex min-h-11 items-center" href={`/week-${w}`}>Week {w}{ch ? `: ${ch.title}` : ""}</Link></p>
-      <TopicView topic={topic} weekTopics={weekTopics} nextHref={next ? `/week-${next.week}/${next.slug}` : undefined} />
+      <p className="hidden flex-wrap items-center gap-x-2 text-sm text-muted sm:flex"><Link className="inline-flex min-h-11 items-center" href="/">Home</Link> / <Link className="inline-flex min-h-11 items-center" href={`/week-${w}`}>Week {w}{ch ? `: ${ch.title}` : ""}</Link></p>
+      <TopicView topic={topic} weekTopics={weekTopics} nextHref={next ? `/week-${next.week}/${next.slug}` : undefined} related={related.map((t) => ({ title: t.title, href: `/week-${t.week}/${t.slug}` }))} />
       <nav aria-label="Previous and next lesson" className="grid gap-2 sm:grid-cols-2">
         {prev ? <Link className="btn flex items-center" href={`/week-${prev.week}/${prev.slug}`}>◀ {prev.title}</Link> : <span />}
         {next ? <Link className="btn btn-primary flex items-center justify-end" href={`/week-${next.week}/${next.slug}`}>{next.title} ▶</Link> : null}
       </nav>
-      {related.length > 0 && (
-        <aside className="box"><h2 className="font-semibold">Related topics</h2>
-          <ul className="list-disc ps-6">{related.map((t) => <li key={t.slug}><Link className="inline-flex min-h-11 items-center" href={`/week-${t.week}/${t.slug}`}>{t.title}</Link></li>)}</ul>
-        </aside>
-      )}
     </div>
   );
 }
