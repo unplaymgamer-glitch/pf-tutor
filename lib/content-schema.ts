@@ -59,6 +59,11 @@ export const Visual = z.discriminatedUnion("kind", [
       points: z.record(z.string(), z.string()).default({}), // pointer cell name -> name of the cell it points to
     })).min(2).max(16) }),
   z.object({ kind: z.literal("recursion"), title: z.string(), fn: z.enum(["factorial", "fibonacci", "sum", "power", "gcd", "countdown"]), n: z.number().int().min(1).max(8).default(4), m: z.number().int().min(1).max(12).optional() }),
+  z.object({ kind: z.literal("loop"), title: z.string(), loop: z.enum(["for", "while", "do-while"]), start: z.number().int().min(-50).max(50).default(1), end: z.number().int().min(-50).max(50).default(5),
+    step: z.number().int().min(-10).max(10).refine((n) => n !== 0, "step cannot be 0").default(1), cmp: z.enum(["<", "<=", ">", ">="]).default("<="),
+    jump: z.object({ type: z.enum(["break", "continue"]), at: z.number().int().min(-50).max(50) }).optional() }),
+  z.object({ kind: z.literal("scene3d"), title: z.string(), scene: z.enum(["array-layers", "stack-heap", "call-stack"]),
+    dims: z.tuple([z.number().int().min(1).max(4), z.number().int().min(1).max(4), z.number().int().min(1).max(5)]).optional(), depth: z.number().int().min(2).max(6).optional() }),
   z.object({ kind: z.literal("canvas"), title: z.string(), sampleId: z.string() }), // draws the graphics.h sample with that id
   z.object({ kind: z.literal("resolver"), title: z.string(), overloads: z.array(z.object({ sig: z.string(), params: z.array(z.enum(["int", "double", "char", "string", "bool"])) })).min(2).max(5), argTypes: z.array(z.enum(["int", "double", "char", "string", "bool"])).min(1).max(3) }),
 ]);

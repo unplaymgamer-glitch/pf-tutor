@@ -6,6 +6,131 @@
   "order": 3,
   "visuals": [
     {
+      "kind": "memory",
+      "title": "Reading a file: the read position moves forward after every >> (made-up file layout)",
+      "cells": [
+        {
+          "name": "head",
+          "type": "read position",
+          "addr": "cursor"
+        },
+        {
+          "name": "t0",
+          "type": "file: 1st number",
+          "addr": "byte 0"
+        },
+        {
+          "name": "t1",
+          "type": "file: 2nd number",
+          "addr": "byte 2"
+        },
+        {
+          "name": "t2",
+          "type": "file: 3rd number",
+          "addr": "byte 5"
+        },
+        {
+          "name": "eof",
+          "type": "end of file",
+          "addr": "byte 8"
+        },
+        {
+          "name": "x",
+          "type": "int",
+          "addr": "0x1000"
+        },
+        {
+          "name": "sum",
+          "type": "int",
+          "addr": "0x1004"
+        }
+      ],
+      "steps": [
+        {
+          "code": "ifstream in(\"data.txt\");",
+          "note": "The file is opened for reading. It holds the text 5 10 15. The read position starts at the first number.",
+          "values": {
+            "t0": "5",
+            "t1": "10",
+            "t2": "15",
+            "eof": "(end)",
+            "head": "cursor"
+          },
+          "points": {
+            "head": "t0"
+          }
+        },
+        {
+          "code": "int x, sum = 0;",
+          "note": "Two variables are created. sum starts at 0.",
+          "values": {
+            "sum": "0"
+          },
+          "points": {}
+        },
+        {
+          "code": "while (in >> x)  // 1st time",
+          "note": "in >> x reads the number at the cursor into x and moves the cursor forward. The read worked, so the condition is true.",
+          "values": {
+            "x": "5"
+          },
+          "points": {
+            "head": "t1"
+          }
+        },
+        {
+          "code": "sum += x;",
+          "note": "sum becomes 5.",
+          "values": {
+            "sum": "5"
+          },
+          "points": {}
+        },
+        {
+          "code": "while (in >> x)  // 2nd time",
+          "note": "The next number, 10, is read. The cursor moves again.",
+          "values": {
+            "x": "10"
+          },
+          "points": {
+            "head": "t2"
+          }
+        },
+        {
+          "code": "sum += x;",
+          "note": "sum becomes 15.",
+          "values": {
+            "sum": "15"
+          },
+          "points": {}
+        },
+        {
+          "code": "while (in >> x)  // 3rd time",
+          "note": "The last number, 15, is read. The cursor now sits at the end of the file.",
+          "values": {
+            "x": "15"
+          },
+          "points": {
+            "head": "eof"
+          }
+        },
+        {
+          "code": "sum += x;",
+          "note": "sum becomes 30.",
+          "values": {
+            "sum": "30"
+          },
+          "points": {}
+        },
+        {
+          "code": "while (in >> x)  // 4th time",
+          "note": "There is nothing left to read, so in >> x FAILS and the condition is false. The loop stops. This is why while (in >> x) is the correct loop and while (!in.eof()) can read one value too many.",
+          "values": {},
+          "points": {}
+        }
+      ]
+    },
+    {
       "kind": "pipeline",
       "title": "The correct reading loop: the read IS the condition",
       "stages": [

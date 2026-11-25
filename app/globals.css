@@ -197,3 +197,10 @@ html[data-motion="reduce"] .code-motif { display: none; }
   :root:not([data-theme]) .ti-to-light { display: none; }
   :root:not([data-theme]) .ti-to-dark { display: inline; }
 }
+
+/* Week mind map: branches draw in, nodes pop in (animations are zeroed in reduce-motion by the global rule) */
+@keyframes mm-draw { from { stroke-dashoffset: 700; } to { stroke-dashoffset: 0; } }
+.mm-line { stroke-dasharray: 700; stroke-dashoffset: 700; animation: mm-draw .9s ease-out forwards; }
+@keyframes mm-pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.mm-node { opacity: 0; animation: mm-pop .45s ease-out forwards; }
+.mm-node:hover rect:first-of-type { fill: var(--wk-soft); }

@@ -6,6 +6,75 @@
   "order": 5,
   "visuals": [
     {
+      "kind": "memory",
+      "title": "Scope: which box does the name x mean? (addresses are made up)",
+      "cells": [
+        {
+          "name": "g",
+          "type": "global int",
+          "addr": "0x0100"
+        },
+        {
+          "name": "x_main",
+          "type": "x in main",
+          "addr": "0x1000"
+        },
+        {
+          "name": "x_block",
+          "type": "x in inner { }",
+          "addr": "0x1008"
+        }
+      ],
+      "steps": [
+        {
+          "code": "int g = 1;",
+          "note": "A global variable lives for the whole program and every function can see it.",
+          "values": {
+            "g": "1"
+          },
+          "points": {}
+        },
+        {
+          "code": "int main() { int x = 10;",
+          "note": "x is local to main. It is created here.",
+          "values": {
+            "x_main": "10"
+          },
+          "points": {}
+        },
+        {
+          "code": "{ int x = 20;",
+          "note": "A new x is created in the inner braces. It HIDES the outer x (shadowing): inside the braces the name x means this new box.",
+          "values": {
+            "x_block": "20"
+          },
+          "points": {}
+        },
+        {
+          "code": "cout << x;",
+          "note": "Prints 20, the inner x.",
+          "values": {},
+          "points": {}
+        },
+        {
+          "code": "}  // end of the inner block",
+          "note": "The block ends and the inner x is destroyed. The outer x is visible again.",
+          "values": {
+            "x_block": "(gone)"
+          },
+          "points": {}
+        },
+        {
+          "code": "cout << x; g++;",
+          "note": "Prints 10, the outer x. The global g changes to 2 and keeps that value.",
+          "values": {
+            "g": "2"
+          },
+          "points": {}
+        }
+      ]
+    },
+    {
       "kind": "pipeline",
       "title": "The life of a variable: ordinary local vs static local",
       "stages": [

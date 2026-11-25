@@ -6,6 +6,32 @@
   "order": 5,
   "visuals": [
     {
+      "kind": "loop",
+      "title": "Loop Lab: break leaves the loop at i = 4",
+      "loop": "for",
+      "start": 1,
+      "end": 8,
+      "step": 1,
+      "cmp": "<=",
+      "jump": {
+        "type": "break",
+        "at": 4
+      }
+    },
+    {
+      "kind": "loop",
+      "title": "Loop Lab: continue skips one turn (i = 3)",
+      "loop": "for",
+      "start": 1,
+      "end": 6,
+      "step": 1,
+      "cmp": "<=",
+      "jump": {
+        "type": "continue",
+        "at": 3
+      }
+    },
+    {
       "kind": "match",
       "title": "Match each statement with what it does",
       "pairs": [

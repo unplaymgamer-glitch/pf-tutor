@@ -6,6 +6,15 @@
   "order": 3,
   "visuals": [
     {
+      "kind": "loop",
+      "title": "Loop Lab: do-while runs once even when the condition is false",
+      "loop": "do-while",
+      "start": 10,
+      "end": 5,
+      "step": 1,
+      "cmp": "<="
+    },
+    {
       "kind": "match",
       "title": "Which loop fits which situation?",
       "pairs": [

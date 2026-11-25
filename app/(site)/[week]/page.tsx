@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { chapterByWeek, weekFromSlug } from "@/lib/course";
 import { getTopics } from "@/lib/content";
+import { WEEK_HUES, WEEK_ICONS } from "@/lib/course";
+import { WeekMindMap } from "@/components/home/WeekMindMap";
 import { topicAccess } from "@/lib/gate-logic";
 import { getSiteState } from "@/lib/server/store";
 import { ProgressBadge } from "@/components/topic/ProgressBadge";
@@ -32,6 +34,11 @@ export default async function ChapterPage({ params }: PageProps<"/[week]">) {
       <p className="flex items-center gap-x-2 text-sm text-muted"><Link className="inline-flex min-h-11 items-center" href="/">Home</Link> / Week {c.week}</p>
       <h1 className="text-3xl font-semibold">Week {c.week}: {c.title}</h1>
       <p className="text-muted">{c.summary}{c.assessment ? ` · ${c.assessment}` : ""}</p>
+      {topics.length > 0 && (
+        <div className="wk card hidden sm:block" style={{ ["--wk-h" as string]: WEEK_HUES[w - 1] }}>
+          <WeekMindMap week={w} title={c.title} icon={WEEK_ICONS[w - 1]} topics={topics.map((t) => ({ slug: t.slug, title: t.title }))} />
+        </div>
+      )}
       {topics.length === 0 ? (
         <p className="box box-definition">Lessons for this week are coming soon.</p>
       ) : (

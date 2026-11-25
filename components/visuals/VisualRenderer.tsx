@@ -14,6 +14,8 @@ const RecursionVisual = dynamic(() => import("./RecursionVisual").then((m) => m.
 const MatrixVisual = dynamic(() => import("./MatrixVisual").then((m) => m.MatrixVisual), { loading });
 const PatternVisual = dynamic(() => import("./PatternVisual").then((m) => m.PatternVisual), { loading });
 const ResolverVisual = dynamic(() => import("./ResolverVisual").then((m) => m.ResolverVisual), { loading });
+const LoopVisual = dynamic(() => import("./LoopVisual").then((m) => m.LoopVisual), { loading });
+const Scene3DVisual = dynamic(() => import("./Scene3DVisual").then((m) => m.Scene3DVisual), { loading });
 const SortVisual = dynamic(() => import("./SortVisual").then((m) => m.SortVisual), { loading });
 
 export function VisualRenderer({ visual, samples }: { visual: Visual; samples: CodeSample[] }) {
@@ -33,6 +35,8 @@ export function VisualRenderer({ visual, samples }: { visual: Visual; samples: C
       {visual.kind === "memory" && <MemoryVisual title={visual.title} cells={visual.cells} steps={visual.steps} />}
       {visual.kind === "recursion" && <RecursionVisual title={visual.title} fn={visual.fn} n={visual.n} m={visual.m} />}
       {visual.kind === "canvas" && (() => { const sm = samples.find((x) => x.id === visual.sampleId); return sm ? <CanvasVisual title={visual.title} sample={sm} /> : <p className="box box-error">Missing sample {visual.sampleId}.</p>; })()}
+      {visual.kind === "loop" && <LoopVisual title={visual.title} init={{ loop: visual.loop, start: visual.start, end: visual.end, step: visual.step, cmp: visual.cmp, jump: visual.jump }} />}
+      {visual.kind === "scene3d" && <Scene3DVisual title={visual.title} scene={visual.scene} dims={visual.dims} depth={visual.depth} />}
       {visual.kind === "resolver" && <ResolverVisual title={visual.title} overloads={visual.overloads} argTypes={visual.argTypes} />}
     </SafeBoundary>
   );

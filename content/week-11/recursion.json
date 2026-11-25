@@ -6,6 +6,12 @@
   "order": 1,
   "visuals": [
     {
+      "kind": "scene3d",
+      "title": "3D view: the call stack as a tower (call deeper, then return)",
+      "scene": "call-stack",
+      "depth": 4
+    },
+    {
       "kind": "recursion",
       "title": "Countdown: the call stack grows to the base case, then unwinds",
       "fn": "countdown",

@@ -283,3 +283,68 @@ describe("graphics rasteriser", () => {
     expect(buf[100 * SCREEN_W + 100]).toBe(0);
   });
 });
+
+import { loopCode, loopProgram, loopSteps, type LoopParams } from "@/lib/visuals/loops";
+describe("loop lab steps", () => {
+  const base = { start: 1, end: 5, step: 1, cmp: "<=" } as const;
+  const cases: LoopParams[] = [];
+  for (const loop of ["for", "while", "do-while"] as const) {
+    cases.push({ loop, ...base }, { loop, start: 5, end: 1, step: -1, cmp: ">=" }, { loop, start: 0, end: 10, step: 3, cmp: "<" }, { loop, start: 10, end: 5, step: 1, cmp: "<=" },
+      { loop, ...base, jump: { type: "break", at: 3 } }, { loop, ...base, jump: { type: "continue", at: 3 } }, { loop, start: 2, end: 20, step: 4, cmp: "<", jump: { type: "continue", at: 6 } });
+  }
+  it("every generated step points at a real code line and the run is consistent", () => {
+    for (const p of cases) {
+      const { code } = loopCode(p), n = code.split("\n").length;
+      const g = loopSteps(p);
+      expect(g.endless).toBe(false);
+      for (const s of g.steps) expect(s.line >= 1 && s.line <= n, `${p.loop} line ${s.line} of ${n}`).toBe(true);
+      expect(g.steps.at(-1)!.phase).toBe("exit");
+    }
+  });
+  it("do-while runs its body once even when the condition starts false; for and while run it zero times", () => {
+    expect(loopSteps({ loop: "do-while", start: 10, end: 5, step: 1, cmp: "<=" }).bodyRuns).toBe(1);
+    expect(loopSteps({ loop: "for", start: 10, end: 5, step: 1, cmp: "<=" }).bodyRuns).toBe(0);
+    expect(loopSteps({ loop: "while", start: 10, end: 5, step: 1, cmp: "<=" }).bodyRuns).toBe(0);
+  });
+  it("a condition that never becomes false is cut off and flagged as endless", () => {
+    const g = loopSteps({ loop: "while", start: 1, end: 5, step: -1, cmp: "<=" });
+    expect(g.endless).toBe(true);
+    expect(g.steps.length).toBeLessThan(200);
+  });
+  it("output and number of body runs equal a real g++ run for every loop kind", () => {
+    if (!have) return;
+    for (const p of cases) {
+      const r = compileRun(loopProgram(p));
+      expect(r.compiled, `${p.loop} compiled\n${loopProgram(p)}`).toBe(true);
+      const g = loopSteps(p);
+      expect(r.out.trim(), JSON.stringify(p)).toBe(`${g.output}|${g.bodyRuns}`);
+    }
+  });
+});
+
+import { arrayCells, callFrames, cellCount, factorialOf, flatIndex, type Dims } from "@/lib/visuals/scene3d";
+describe("3-D scene helpers", () => {
+  it("a 3-D array has layers x rows x columns cells, numbered row-major like real C++ memory", () => {
+    const d: Dims = [2, 3, 4];
+    const cells = arrayCells(d);
+    expect(cells).toHaveLength(24);
+    expect(cellCount(d)).toBe(24);
+    cells.forEach((c, i) => { expect(c.flat).toBe(i); expect(flatIndex(d, c.l, c.r, c.c)).toBe(i); });
+    expect(flatIndex(d, 1, 0, 0)).toBe(12);
+    expect(flatIndex(d, 0, 2, 3)).toBe(11);
+  });
+  it("flat index equals the address offset a real compiler uses (g++ checks &a[l][r][c] - &a[0][0][0])", () => {
+    if (!have) return;
+    const d: Dims = [2, 3, 4];
+    const probes = [[0, 0, 0], [0, 0, 3], [0, 2, 1], [1, 0, 0], [1, 2, 3]];
+    const prog = `#include <iostream>\nusing namespace std;\nint main(){ int a[2][3][4]; int* b = &a[0][0][0];\n${probes.map(([l, r, c]) => `cout << (&a[${l}][${r}][${c}] - b) << " ";`).join("\n")}\nreturn 0; }\n`;
+    const r = compileRun(prog);
+    expect(r.compiled).toBe(true);
+    expect(r.out.trim().split(/\s+/).map(Number)).toEqual(probes.map(([l, rr, c]) => flatIndex(d, l, rr, c)));
+  });
+  it("call frames list the newest call last and factorial values are right", () => {
+    expect(callFrames(4, 3).map((f) => f.label)).toEqual(["factorial(4)", "factorial(3)", "factorial(2)"]);
+    expect(callFrames(4, 99)).toHaveLength(4);
+    expect([1, 2, 3, 4, 5, 6].map(factorialOf)).toEqual([1, 2, 6, 24, 120, 720]);
+  });
+});

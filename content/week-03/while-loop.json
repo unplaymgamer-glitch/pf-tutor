@@ -6,6 +6,15 @@
   "order": 2,
   "visuals": [
     {
+      "kind": "loop",
+      "title": "Loop Lab: the while loop (the check comes first)",
+      "loop": "while",
+      "start": 1,
+      "end": 5,
+      "step": 1,
+      "cmp": "<="
+    },
+    {
       "kind": "pipeline",
       "title": "How while (condition) { ... } runs",
       "stages": [

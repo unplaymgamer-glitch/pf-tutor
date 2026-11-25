@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { Topic, allSamples } from "../lib/content-schema";
 import { CHAPTERS } from "../lib/course";
 
-const INTERACTIVE = new Set(["array", "sort", "pattern", "matrix", "resolver", "recursion", "memory", "canvas", "decision", "switch", "truth", "match"]);
+const INTERACTIVE = new Set(["array", "sort", "pattern", "matrix", "resolver", "recursion", "memory", "canvas", "decision", "switch", "truth", "match", "loop", "scene3d"]);
 const rows: string[] = [];
 const gapRows: string[] = [];
 let n = 0, samples = 0, traced = 0, noVisual = 0, noInteractive = 0, noTable = 0;

@@ -6,6 +6,15 @@
   "order": 1,
   "visuals": [
     {
+      "kind": "loop",
+      "title": "Loop Lab: the for loop (change start, end and step)",
+      "loop": "for",
+      "start": 1,
+      "end": 5,
+      "step": 1,
+      "cmp": "<="
+    },
+    {
       "kind": "pipeline",
       "title": "Anatomy of for (int i = 1; i <= 3; i++)",
       "stages": [

@@ -6,6 +6,152 @@
   "order": 4,
   "visuals": [
     {
+      "kind": "memory",
+      "title": "Pass by value: the function works on COPIES (addresses are made up)",
+      "cells": [
+        {
+          "name": "x",
+          "type": "int (in main)",
+          "addr": "0x1000"
+        },
+        {
+          "name": "y",
+          "type": "int (in main)",
+          "addr": "0x1004"
+        },
+        {
+          "name": "a",
+          "type": "int (in swap)",
+          "addr": "0x2000"
+        },
+        {
+          "name": "b",
+          "type": "int (in swap)",
+          "addr": "0x2004"
+        }
+      ],
+      "steps": [
+        {
+          "code": "int x = 10, y = 20;",
+          "note": "main creates two boxes, x and y.",
+          "values": {
+            "x": "10",
+            "y": "20"
+          },
+          "points": {}
+        },
+        {
+          "code": "swapByValue(x, y);",
+          "note": "The call COPIES the values into two NEW boxes, a and b. They live at different addresses from x and y.",
+          "values": {
+            "a": "10",
+            "b": "20"
+          },
+          "points": {}
+        },
+        {
+          "code": "int t = a; a = b; b = t;",
+          "note": "Inside the function the copies are swapped: a is 20 and b is 10. x and y are not touched.",
+          "values": {
+            "a": "20",
+            "b": "10"
+          },
+          "points": {}
+        },
+        {
+          "code": "}  // swapByValue ends",
+          "note": "The function ends and its boxes a and b are thrown away.",
+          "values": {
+            "a": "(gone)",
+            "b": "(gone)"
+          },
+          "points": {}
+        },
+        {
+          "code": "cout << x << y;",
+          "note": "Back in main, x is still 10 and y is still 20. The swap was lost. This is the classic mistake.",
+          "values": {},
+          "points": {}
+        }
+      ]
+    },
+    {
+      "kind": "memory",
+      "title": "Pass by reference: a and b are the SAME boxes as x and y",
+      "cells": [
+        {
+          "name": "x",
+          "type": "int (in main)",
+          "addr": "0x1000"
+        },
+        {
+          "name": "y",
+          "type": "int (in main)",
+          "addr": "0x1004"
+        },
+        {
+          "name": "a",
+          "type": "int (in swap)",
+          "addr": "0x2000"
+        },
+        {
+          "name": "b",
+          "type": "int (in swap)",
+          "addr": "0x2004"
+        }
+      ],
+      "steps": [
+        {
+          "code": "int x = 10, y = 20;",
+          "note": "main creates two boxes, x and y.",
+          "values": {
+            "x": "10",
+            "y": "20"
+          },
+          "points": {}
+        },
+        {
+          "code": "swapByRef(x, y);",
+          "note": "With int &a, int &b no copy is made. a is just another name for the box x, and b another name for y.",
+          "values": {
+            "a": "= x",
+            "b": "= y"
+          },
+          "points": {
+            "a": "x",
+            "b": "y"
+          }
+        },
+        {
+          "code": "int t = a; a = b; b = t;",
+          "note": "Changing a changes the real box x. The swap happens in main's own boxes: x is 20 and y is 10.",
+          "values": {
+            "x": "20",
+            "y": "10"
+          },
+          "points": {}
+        },
+        {
+          "code": "}  // swapByRef ends",
+          "note": "The names a and b disappear, but the boxes x and y keep the new values.",
+          "values": {
+            "a": "(gone)",
+            "b": "(gone)"
+          },
+          "points": {
+            "a": "",
+            "b": ""
+          }
+        },
+        {
+          "code": "cout << x << y;",
+          "note": "main prints 20 and 10. The swap worked because the function used the caller's own boxes.",
+          "values": {},
+          "points": {}
+        }
+      ]
+    },
+    {
       "kind": "pipeline",
       "title": "What happens when you call a function: value vs reference",
       "stages": [

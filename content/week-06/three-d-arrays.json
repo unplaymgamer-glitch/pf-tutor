@@ -6,6 +6,16 @@
   "order": 5,
   "visuals": [
     {
+      "kind": "scene3d",
+      "title": "3D view: a 3-D array as layers of tables (pick a layer, row and column)",
+      "scene": "array-layers",
+      "dims": [
+        2,
+        3,
+        4
+      ]
+    },
+    {
       "kind": "match",
       "title": "Read int a[2][3][4] one size at a time",
       "pairs": [

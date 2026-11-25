@@ -56,6 +56,7 @@ function SubNav() {
       <ul className="scroll-quiet mx-auto flex max-w-5xl items-center gap-1 overflow-x-auto px-4">
         <li className={hideOnPhone}><Link className={link} href="/">Home</Link></li>
         <li className={hideOnPhone}><Link className={link} href="/#roadmap">Learn</Link></li>
+        <li className={hideOnPhone}><Link className={link} href="/visual-lab">Visual Lab</Link></li>
         <li className={hideOnPhone}><Link className={link} href="/practice">Practice</Link></li>
         <li className={hideOnPhone}><Link className={link} href="/playground">Playground</Link></li>
         <li className={hideOnPhone}><Link className={link} href="/review">Review{due > 0 && <span className="ms-1 rounded-full bg-primary px-2 text-xs text-onprimary" aria-label={`${due} cards due`}>{due}</span>}</Link></li>
@@ -69,7 +70,7 @@ function SubNav() {
 }
 
 function SettingsPanel({ onClose }: { onClose: () => void }) {
-  const { settings: s, update } = useSettings();
+  const { settings: s, update, tier } = useSettings();
   return (
     <section id="settings-panel" aria-label="Settings" className="border-t border-border bg-surface px-4 py-4">
       <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2">
@@ -91,7 +92,13 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
           <input type="range" min={0.9} max={1.5} step={0.05} value={s.fontScale}
             onChange={(e) => update({ fontScale: Number(e.target.value) })} />
         </label>
-        {/* The "3D scenes" control returns together with real 3D scenes (V2 phase D). It is not shown while it would change nothing. */}
+        <label className="grid gap-1">3D scenes (now using: {tier === "low" ? "2D" : tier} view)
+          <select className="btn" value={s.threeD} onChange={(e) => update({ threeD: e.target.value as typeof s.threeD })}>
+            <option value="auto">Automatic (3D on laptops, 2D on phones)</option>
+            <option value="on">Always 3D when possible</option>
+            <option value="off">Off (simple 2D)</option>
+          </select>
+        </label>
         <Toggle label="Reduce motion (pause animations)" checked={s.reduceMotion} onChange={(v) => update({ reduceMotion: v })} />
         <Toggle label="Low-data mode" checked={s.lowData} onChange={(v) => update({ lowData: v })} />
         <Toggle label="Dyslexia-friendly text" checked={s.dyslexia} onChange={(v) => update({ dyslexia: v })} />

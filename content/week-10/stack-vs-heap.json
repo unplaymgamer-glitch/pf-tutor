@@ -6,6 +6,11 @@
   "order": 3,
   "visuals": [
     {
+      "kind": "scene3d",
+      "title": "3D view: the stack grows and shrinks by itself; the heap is yours to manage",
+      "scene": "stack-heap"
+    },
+    {
       "kind": "match",
       "title": "Match each memory area to its job",
       "pairs": [

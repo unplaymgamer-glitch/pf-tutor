@@ -35,7 +35,7 @@ export default function Home() {
           <p className="text-lg text-muted">Pictures and animations first, then simple words, real code and practice. Built for UMT CC111 students.</p>
           <div className="flex flex-wrap gap-3">
             <Link href="/week-1" className="btn btn-primary inline-flex items-center px-6 no-underline">Start learning</Link>
-            <Link href="/playground" className="btn inline-flex items-center px-6 no-underline">▶ Try the Playground</Link>
+            <Link href="/visual-lab" className="btn inline-flex items-center px-6 no-underline">🎬 Open Visual Lab</Link>
           </div>
         </div>
         <div className="rise" style={{ animationDelay: ".12s" }}><HeroDemo /></div>
