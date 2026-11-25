@@ -131,7 +131,8 @@ export async function* runTutor(d: Deps, req: TutorRequest): AsyncGenerator<Tuto
     // Server log only, never sent to the student: the provider's status and message (neither contains the key).
     const err = e as { status?: number; message?: string };
     console.error(`[tutor] provider error status=${err.status ?? "?"} model=${MODELS[model].id} message=${String(err.message ?? e).slice(0, 300)}`);
-    if (!answered) { yield fail("provider"); return; }
+    // The AI account itself is out of credit: say so plainly (the instructor tops it up in the Anthropic console) instead of a vague retry message.
+    if (!answered) { yield fail(/credit balance/i.test(String(err.message)) ? "budget" : "provider"); return; }
     yield { type: "delta", text: "\n\n(The answer was cut short. Ask again if you need the rest.)" };
   }
 
