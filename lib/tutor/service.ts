@@ -127,7 +127,10 @@ export async function* runTutor(d: Deps, req: TutorRequest): AsyncGenerator<Tuto
       else if (c.type === "usage") usage = c.usage;
       else if (c.type === "refusal") { yield fail("refused"); }
     }
-  } catch {
+  } catch (e) {
+    // Server log only, never sent to the student: the provider's status and message (neither contains the key).
+    const err = e as { status?: number; message?: string };
+    console.error(`[tutor] provider error status=${err.status ?? "?"} model=${MODELS[model].id} message=${String(err.message ?? e).slice(0, 300)}`);
     if (!answered) { yield fail("provider"); return; }
     yield { type: "delta", text: "\n\n(The answer was cut short. Ask again if you need the rest.)" };
   }
