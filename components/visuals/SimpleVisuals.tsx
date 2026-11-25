@@ -1,32 +1,53 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Visual } from "@/lib/content-schema";
 import { truthy } from "@/lib/expr";
+import { useSettings } from "../SettingsProvider";
 
 type V<K extends Visual["kind"]> = Extract<Visual, { kind: K }>;
 
+const ICONS: [RegExp, string][] = [
+  [/analy|problem|understand/i, "🔎"], [/design|algorithm|plan/i, "✏️"], [/source|write the code|^coding|^code/i, "⌨️"], [/assembl/i, "🧩"], [/object/i, "⚙️"], [/machine/i, "💻"],
+  [/transl|debug|compil|interpret/i, "🛠️"], [/exec|test|run|output/i, "✅"], [/implement|maint|release|deploy/i, "🚀"], [/input/i, "📥"], [/process/i, "🧮"],
+];
+const iconFor = (name: string, k: number) => ICONS.find(([re]) => re.test(name))?.[1] ?? ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣"][k] ?? "🔹";
+
+/** A process diagram: connected stage cards with icons and arrows. The highlight walks left to right by itself (until you click) unless motion is reduced; click any stage to open its example. */
 export function Pipeline({ v }: { v: V<"pipeline"> }) {
+  const { settings } = useSettings();
+  const calm = settings.reduceMotion || settings.lowData;
   const [i, setI] = useState(0);
+  const [auto, setAuto] = useState(true);
+  useEffect(() => {
+    if (!auto || calm) return;
+    const t = setTimeout(() => setI((x) => (x + 1) % v.stages.length), 2600);
+    return () => clearTimeout(t);
+  }, [auto, calm, i, v.stages.length]);
+  const pick = (k: number) => { setAuto(false); setI(k); };
   return (
     <div className="grid gap-3">
       <h3 className="font-semibold">{v.title}</h3>
-      <ol className="grid gap-2" aria-label="Stages">
+      <ol className="flex flex-col items-stretch md:flex-row" aria-label="Stages">
         {v.stages.map((s, k) => (
-          <li key={s.name}>
+          <li key={s.name} className="flex flex-col items-center md:flex-1 md:flex-row">
             <button
-              className={`btn w-full text-start ${k === i ? "border-primary" : ""} ${k < i ? "opacity-70" : ""}`}
+              className={`btn flex w-full flex-1 flex-col items-center gap-1 !py-3 text-center ${k === i ? "border-primary" : ""}`}
+              style={k === i ? { background: "var(--surface-2)", boxShadow: "0 0 0 2px color-mix(in srgb, var(--primary) 45%, transparent), 0 10px 26px -14px var(--primary)" } : undefined}
               aria-current={k === i ? "step" : undefined}
-              onClick={() => setI(k)}
+              onClick={() => pick(k)}
             >
-              <strong>{k + 1}. {s.name.replace(/^\d+[.)]\s*/, "")}</strong>
+              <span aria-hidden className="text-2xl">{iconFor(s.name, k)}</span>
+              <strong className="text-sm leading-snug">{k + 1}. {s.name.replace(/^\d+[.)]\s*/, "")}</strong>
             </button>
+            {k < v.stages.length - 1 && <span aria-hidden className={`px-1 py-0.5 text-lg md:px-1.5 ${k < i ? "text-primary" : "text-muted"}`}><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></span>}
           </li>
         ))}
       </ol>
       <p role="status" className="box box-definition">{v.stages[i].detail}</p>
-      <div className="flex gap-2">
-        <button className="btn" disabled={i === 0} onClick={() => setI(i - 1)}>◀ Back</button>
-        <button className="btn btn-primary" disabled={i === v.stages.length - 1} onClick={() => setI(i + 1)}>Next ▶</button>
+      <div className="flex flex-wrap gap-2">
+        <button className="btn" disabled={i === 0} onClick={() => pick(i - 1)}>◀ Back</button>
+        <button className="btn btn-primary" disabled={i === v.stages.length - 1} onClick={() => pick(i + 1)}>Next ▶</button>
+        {!calm && <button className="btn" aria-pressed={auto} onClick={() => setAuto(!auto)}>{auto ? "⏸ Pause" : "▶ Play"}</button>}
       </div>
     </div>
   );

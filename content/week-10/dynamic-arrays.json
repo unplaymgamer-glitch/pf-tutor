@@ -113,7 +113,7 @@
   "goal": "After this you can create an array whose size the user types at run time, use it like a normal array, free it with delete[], and grow it by copying into a bigger array.",
   "warmup": "A canteen owner does not know how many students will come to lunch today. A fixed list of 100 plates wastes space, and 20 plates may be too few. A smart owner counts the class first, then lays out exactly that many plates. A dynamic array does the same: it waits until the program knows the size, then allocates exactly that many boxes.",
   "definition": "A normal array needs its size written in the code, for example int a[10]. A dynamic array gets its size while the program runs: int *a = new int[n]; where n can come from cin. new[] makes n boxes in a row on the heap and returns the address of the first box. You keep it in a pointer. You use a[i] exactly like a normal array. When you are finished you free the whole array with delete[] a; (the brackets are required for arrays).",
-  "howItWorks": "Read the size n first. Then write int *a = new int[n];. The pointer a is a small variable on the stack. The n boxes are on the heap, side by side, so a[0] is the first, a[1] the second, and a[i] means the same as *(a + i). Fill and print the array with ordinary for loops. Always stay inside the range 0 to n-1. At the end free it with delete[] a; and set a = nullptr;. Important pair: new goes with delete, new[] goes with delete[]. Mixing them is undefined behaviour. A heap array cannot grow in place. To make it bigger: (1) allocate a new bigger array, (2) copy the old values, (3) delete[] the old array, (4) make the pointer point to the new array. A two-dimensional dynamic array is only a variation: allocate an array of pointers (int **g = new int*[rows];), then give each row its own int array with new int[cols], and free every row first, then the array of pointers.",
+  "howItWorks": "Read the size n first. Then write int *a = new int[n];. The pointer a is a small variable on the stack. The n boxes are on the heap, side by side, so a[0] is the first, a[1] the second, and a[i] means the same as *(a + i). Fill and print the array with ordinary for loops. Always stay inside the range 0 to n-1. At the end free it with delete[] a; and set a = nullptr;. Important pair: new goes with delete, new[] goes with delete[]. Mixing them is undefined behavior. A heap array cannot grow in place. To make it bigger: (1) allocate a new bigger array, (2) copy the old values, (3) delete[] the old array, (4) make the pointer point to the new array. A two-dimensional dynamic array is only a variation: allocate an array of pointers (int **g = new int*[rows];), then give each row its own int array with new int[cols], and free every row first, then the array of pointers.",
   "syntax": "int n;\ncin >> n;                    // size known only now\nint *a = new int[n];         // n boxes on the heap, values not set\n\nfor (int i = 0; i < n; i++)\n    cin >> a[i];             // use like a normal array\n\ndelete[] a;                  // free the whole array (brackets!)\na = nullptr;\n\nint *z = new int[n]();       // all elements start at 0\n\n// 2-D variation (array of pointers)\nint **g = new int*[rows];\nfor (int r = 0; r < rows; r++) g[r] = new int[cols];\n// free: delete[] g[r] for every row, then delete[] g;",
   "worked": [
     {
@@ -441,7 +441,7 @@
     {
       "wrong": "int *a = new int[5];\ndelete a;      // missing []",
       "right": "int *a = new int[5];\ndelete[] a;",
-      "error": "No compiler message in most cases. new[] must be paired with delete[]. Plain delete on an array is undefined behaviour: it may leak, corrupt memory or crash."
+      "error": "No compiler message in most cases. new[] must be paired with delete[]. Plain delete on an array is undefined behavior: it may leak, corrupt memory or crash."
     },
     {
       "wrong": "int *a = new int[5];\n// ... use a ...\n// forgot delete[] a;",
@@ -451,7 +451,7 @@
     {
       "wrong": "int *a = new int[3];\nfor (int i = 0; i <= 3; i++) a[i] = i;",
       "right": "int *a = new int[3];\nfor (int i = 0; i < 3; i++) a[i] = i;",
-      "error": "No compiler message. a[3] is outside the array (valid indexes are 0 to 2). The write damages other memory: undefined behaviour, maybe a crash later."
+      "error": "No compiler message. a[3] is outside the array (valid indexes are 0 to 2). The write damages other memory: undefined behavior, maybe a crash later."
     },
     {
       "wrong": "int n;\ncin >> n;\nint a[n];   // size from user on the stack",

@@ -128,8 +128,8 @@
   "goal": "After this you can declare an array of structs, fill it with a loop, print a table, search by a member, find the highest value and sort the records by one member.",
   "warmup": "The class attendance register at UMT is a table. Each row is one student with roll number, name and CGPA. One struct variable is one row. An array of structs is the whole register: row 0, row 1, row 2, and so on. To find a student you look down the roll-number column. To make a merit list you sort the rows by the CGPA column.",
   "definition": "An array of structures is an array whose elements are structs. Student list[50]; makes 50 Student records. list[i] is the whole record number i (counting from 0). list[i].name is one member of that record. Everything you learned about arrays (index from 0, loops, searching, sorting) still works. The only change is that you compare or print a member, such as list[i].cgpa.",
-  "howItWorks": "Declare the struct first, then the array: Student list[N];. Fill it in one of three ways: an initialiser list with one brace group per record, a loop with cin >> list[i].id >> list[i].name >> list[i].cgpa, or assignments one member at a time. Print a table with a loop and \\t (tab) between the members. To search by id, loop through the records and test list[i].id == target. Keep the index of the match in a variable and start it at -1, which means not found. To find the highest CGPA, do the same as the max of an array (Week 4): assume record 0 is best, then compare list[i].cgpa with list[best].cgpa and remember the index. To sort, use bubble sort or selection sort from Week 5, but compare the member you sort by, for example list[j].cgpa < list[j + 1].cgpa. Swap the WHOLE records: Student t = list[j]; list[j] = list[j + 1]; list[j + 1] = t;. One swap moves the id, the name and the cgpa together, so the student's data never gets mixed up. That is the big win over parallel arrays. Remember: you cannot write list.name, because list is the whole array. And you cannot compare two records with < or ==, so always name the member.",
-  "syntax": "struct Student { int id; string name; double cgpa; };\n\nconst int N = 3;\nStudent list[N];                          // 3 records\n\n// fill with a loop\nfor (int i = 0; i < N; i++) {\n    cin >> list[i].id >> list[i].name >> list[i].cgpa;\n}\n\n// or with an initialiser list (one brace group per record)\nStudent top[2] = { {1, \"Ali\", 3.5}, {2, \"Sana\", 3.9} };\n\n// use one member of one record\ncout << list[0].name;\n\n// sort by cgpa: swap whole records\nStudent t = list[j]; list[j] = list[j + 1]; list[j + 1] = t;",
+  "howItWorks": "Declare the struct first, then the array: Student list[N];. Fill it in one of three ways: an initializer list with one brace group per record, a loop with cin >> list[i].id >> list[i].name >> list[i].cgpa, or assignments one member at a time. Print a table with a loop and \\t (tab) between the members. To search by id, loop through the records and test list[i].id == target. Keep the index of the match in a variable and start it at -1, which means not found. To find the highest CGPA, do the same as the max of an array (Week 4): assume record 0 is best, then compare list[i].cgpa with list[best].cgpa and remember the index. To sort, use bubble sort or selection sort from Week 5, but compare the member you sort by, for example list[j].cgpa < list[j + 1].cgpa. Swap the WHOLE records: Student t = list[j]; list[j] = list[j + 1]; list[j + 1] = t;. One swap moves the id, the name and the cgpa together, so the student's data never gets mixed up. That is the big win over parallel arrays. Remember: you cannot write list.name, because list is the whole array. And you cannot compare two records with < or ==, so always name the member.",
+  "syntax": "struct Student { int id; string name; double cgpa; };\n\nconst int N = 3;\nStudent list[N];                          // 3 records\n\n// fill with a loop\nfor (int i = 0; i < N; i++) {\n    cin >> list[i].id >> list[i].name >> list[i].cgpa;\n}\n\n// or with an initializer list (one brace group per record)\nStudent top[2] = { {1, \"Ali\", 3.5}, {2, \"Sana\", 3.9} };\n\n// use one member of one record\ncout << list[0].name;\n\n// sort by cgpa: swap whole records\nStudent t = list[j]; list[j] = list[j + 1]; list[j + 1] = t;",
   "worked": [
     {
       "level": "basic",
@@ -293,7 +293,7 @@
     },
     {
       "level": "intermediate",
-      "problem": "Four students are stored with an initialiser list. Search for the student with id 3 and print the name, then find and print the student with the highest CGPA.",
+      "problem": "Four students are stored with an initializer list. Search for the student with id 3 and print the name, then find and print the student with the highest CGPA.",
       "pseudocode": [
         "START",
         "SET list with 4 students, target = 3, found = -1",
@@ -315,7 +315,7 @@
         "explanation": [
           {
             "line": 13,
-            "text": "Initialiser list for an array of structs: an outer brace, then one inner brace per record."
+            "text": "Initializer list for an array of structs: an outer brace, then one inner brace per record."
           },
           {
             "line": 14,
@@ -357,7 +357,7 @@
               "vars": {
                 "N": "4"
               },
-              "note": "Four records are created by the initialiser list: one brace group per student.",
+              "note": "Four records are created by the initializer list: one brace group per student.",
               "out": ""
             },
             {
@@ -455,7 +455,7 @@
         "explanation": [
           {
             "line": 13,
-            "text": "Array of three records, initialised with braces."
+            "text": "Array of three records, initialized with braces."
           },
           {
             "line": 15,
@@ -601,7 +601,7 @@
   ],
   "variations": [
     {
-      "way": "Initialiser list",
+      "way": "Initializer list",
       "when": "You know the records in advance. One inner brace per record.",
       "example": "Student list[2] = { {1, \"Ali\", 3.5}, {2, \"Sana\", 3.9} };"
     },
@@ -621,7 +621,7 @@
       "example": "list[1] = list[0];"
     },
     {
-      "way": "Partial initialiser list",
+      "way": "Partial initializer list",
       "when": "Fewer records than the size. The rest are set to zero or empty.",
       "example": "Student list[5] = { {1, \"Ali\", 3.5} };"
     },
@@ -645,7 +645,7 @@
     {
       "wrong": "for (int i = 0; i <= N; i++) {\n    cin >> list[i].id;   // list[N] does not exist\n}",
       "right": "for (int i = 0; i < N; i++) {\n    cin >> list[i].id;\n}",
-      "error": "No compiler error. Reading past the end of the array is undefined behaviour and may crash or corrupt data."
+      "error": "No compiler error. Reading past the end of the array is undefined behavior and may crash or corrupt data."
     },
     {
       "wrong": "// sorting by cgpa but swapping only that member\nswap(list[j].cgpa, list[j + 1].cgpa);",
@@ -656,7 +656,7 @@
   "examTips": [
     "list[i] is a whole record; list[i].member is one value. Write index first, then the dot.",
     "To sort or search by a member, compare that member only; swap the whole record using a Student temporary.",
-    "Initialiser list for an array of structs: one inner brace for each record.",
+    "Initializer list for an array of structs: one inner brace for each record.",
     "Start a search index at -1 so you can tell 'not found' from a real index.",
     "Loop bounds: i < N, never i <= N."
   ],
@@ -818,7 +818,7 @@
       "id": "q5",
       "type": "mcq",
       "difficulty": "medium",
-      "prompt": "Which is a correct initialiser for an array of two Student records?",
+      "prompt": "Which is a correct initializer for an array of two Student records?",
       "options": [
         "Student s[2] = { {1, \"Ali\", 3.5}, {2, \"Sana\", 3.9} };",
         "Student s[2] = 1, \"Ali\", 3.5;",
@@ -834,6 +834,6 @@
     "Array of structures",
     "Searching an array of structures",
     "Sorting an array of structures",
-    "Initialising an array of structures"
+    "Initializing an array of structures"
   ]
 }

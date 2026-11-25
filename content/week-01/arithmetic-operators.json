@@ -58,8 +58,8 @@
       ]
     }
   ],
-  "goal": "After this you can use + - * / % correctly, avoid the integer-division trap, and explain the difference between x++ and ++x.",
-  "warmup": "A canteen splits 17 samosas between 5 students. Each student gets 3 samosas (that is division) and 2 samosas are left over (that is the remainder). Add, subtract, multiply, divide and remainder are the five basic calculations, and C++ has a symbol for each one.",
+  "goal": "After this you can use + - * / % correctly. You can avoid the integer-division trap. You can also explain the difference between x++ and ++x.",
+  "warmup": "A canteen splits 17 samosas between 5 students. Each student gets 3 samosas. That is division. Two samosas are left over. That is the remainder. Add, subtract, multiply, divide and remainder are the five basic calculations. C++ has a symbol for each one.",
   "definition": "An operator is a symbol that does a calculation. The values it works on are called operands. In 17 + 5, the symbol + is the operator and 17 and 5 are the operands. Binary operators need two operands (+ - * / %). Unary operators need only one operand (-x, x++, ++x, x--, --x).",
   "howItWorks": "Press Play and watch the memory boxes. Binary operators calculate a new value but do not change the boxes they read from. The operators ++ and -- are special: they change the box itself by adding or subtracting 1. When ++ is written after the variable (x++) the old value is used first. When it is written before (++x) the new value is used.",
   "syntax": "a + b      // addition\na - b      // subtraction\na * b      // multiplication\na / b      // division (int / int gives an int, decimal part is dropped)\na % b      // remainder (works only with whole numbers)\n-x         // unary minus: changes the sign\nx++        // postfix: use x, then add 1\n++x        // prefix: add 1, then use x\nx--  --x   // same idea, but subtract 1",

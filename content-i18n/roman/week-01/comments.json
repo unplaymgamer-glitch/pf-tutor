@@ -1,0 +1,6 @@
+{
+  "goal": "Is ke baad aap single-line aur multi-line comments likh sakein ge, code ko comment out kar sakein ge, aur aise comments likh sakein ge jo parhne wale ke sach mein kaam aayein.",
+  "warmup": "Jab aap kisi dost ki copy udhaar lete hain to margin mein chhote chhote notes jaise 'exam ke liye important' ya 'yeh formula check karo' samajhna aasaan bana dete hain. Teacher un notes ko jawab ka hissa samajh kar marks nahi detay. Code mein comments insaanon ke liye margin notes hote hain. Computer unhein bilkul ignore kar deta hai.",
+  "definition": "Comment program ke andar woh text hota hai jise compiler ignore karta hai. Yeh un logon ke liye likha jata hai jo code parhte hain (aap khud bhi agle mahine). C++ mein do tarah ke comments hote hain: single-line comment jo // se shuru hota hai aur line ke end tak chalta hai, aur multi-line comment jo /* se shuru hota hai aur */ par khatam hota hai.",
+  "howItWorks": "Play dabayein aur dekhein ke comment wali lines skip ho jaati hain aur kuch nahi karti. Sirf asli statements chalte hain. Comments se batayein ke koi block kya karta hai aur kyun karta hai. Har aasaan line par comment na likhein. Aap kisi statement ke aage // laga kar usay delete kiye baghair kuch der ke liye band bhi kar sakte hain. Isay code ko comment out karna kehte hain."
+}

@@ -221,7 +221,7 @@
     },
     {
       "level": "intermediate",
-      "problem": "Print a pyramid of stars with 4 rows. Each row is centred, so it needs spaces before the stars. Row i has n - i spaces and 2i - 1 stars.",
+      "problem": "Print a pyramid of stars with 4 rows. Each row is centered, so it needs spaces before the stars. Row i has n - i spaces and 2i - 1 stars.",
       "pseudocode": [
         "START",
         "SET n = 4",
@@ -372,7 +372,7 @@
     {
       "wrong": "// pyramid without the spaces loop\nfor (int j = 1; j <= 2 * i - 1; j++) cout << \"*\";",
       "right": "Print n - i spaces BEFORE the stars.",
-      "error": "No compiler error. Without spaces the shape is not centred; for n = 3 it prints * / *** / *****."
+      "error": "No compiler error. Without spaces the shape is not centered; for n = 3 it prints * / *** / *****."
     },
     {
       "wrong": "for (int j = 1, j <= i, j++)",

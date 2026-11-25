@@ -501,7 +501,7 @@
   ],
   "examTips": [
     "Define a struct in one line: a user-defined data type that groups related variables of different types under one name.",
-    "Array vs struct is a favourite question: array = same type, access by index; struct = different types, access by member name with the dot.",
+    "Array vs struct is a favorite question: array = same type, access by index; struct = different types, access by member name with the dot.",
     "Say 'declaring a struct creates a new type and reserves no memory; the variable reserves memory'.",
     "Give a real example: CNIC card, student record, book, employee, bank account.",
     "Never forget the semicolon after the closing brace of a struct."

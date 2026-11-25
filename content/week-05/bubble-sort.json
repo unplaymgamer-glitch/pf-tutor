@@ -422,7 +422,7 @@
     {
       "wrong": "for (int j = 0; j < N; j++) {\n    if (a[j] > a[j + 1]) { ... }   // reads a[N]",
       "right": "for (int j = 0; j < N - 1 - pass; j++)",
-      "error": "Usually no compiler error. When j = N - 1 the program reads a[N], which is outside the array (undefined behaviour). It may print garbage or give a wrong order."
+      "error": "Usually no compiler error. When j = N - 1 the program reads a[N], which is outside the array (undefined behavior). It may print garbage or give a wrong order."
     },
     {
       "wrong": "// only ONE pass, no outer loop\nfor (int j = 0; j < N - 1; j++) {\n    if (a[j] > a[j + 1]) { swap }\n}",

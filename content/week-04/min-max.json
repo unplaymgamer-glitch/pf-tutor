@@ -333,7 +333,7 @@
     }
   ],
   "examTips": [
-    "Always initialise max and min with a[0], never with 0 (values may be negative).",
+    "Always initialize max and min with a[0], never with 0 (values may be negative).",
     "The loop can start from i = 1, because a[0] is already the first candidate.",
     "Max uses >, min uses <. Use two separate if statements to find both in one loop.",
     "To report the position, update the index in the same block as the value.",
@@ -512,6 +512,6 @@
     "Minimum and maximum of an array",
     "Position of the maximum",
     "Second largest element",
-    "Initialising max and min from the first element"
+    "Initializing max and min from the first element"
   ]
 }

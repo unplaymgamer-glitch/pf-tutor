@@ -1,0 +1,6 @@
+{
+  "goal": "Is ke baad aap do values ko ==, !=, >, <, >= aur <= se compare kar sakenge, true/false (1/0) result parh sakenge, aur = ko == se kabhi confuse nahi karenge.",
+  "warmup": "Rozmarra zindagi mein hum hamesha compare karte rehte hain. Kya mere mobile ka balance Rs. 100 se zyada hai? Kya rickshaw ka kiraya meri jeb ke paison ke barabar hai? Kya mere exam ke marks kam az kam 50 hain? In sab sawalon ke sirf do possible jawab hote hain: haan ya nahi. Program bhi isi tarah ke sawal puchta hai, aur jawab true ya false hota hai.",
+  "definition": "Relational operator do values ko compare karta hai. Result ek Boolean value hoti hai: true ya false. C++ true ko 1 aur false ko 0 print karta hai. Aisi value store karne wali type ko bool kehte hain. Misaal: a = 10 aur b = 20 ho, to expression a < b true hai, is liye woh 1 deta hai.",
+  "howItWorks": "Sliders hilayein. Computer a aur b ko dekhta hai, phir har operator test karta hai. Teen cheezon mein se hamesha bilkul ek cheez true hoti hai: a, b se chhota hai, a, b ke barabar hai, ya a, b se bara hai. Chhe operators bas in teen surtoon ke baare mein poochne ke mukhtalif tareeqe hain. Agle lessons mein if statement is true/false jawab ko use karke faisla karega ke kya karna hai."
+}

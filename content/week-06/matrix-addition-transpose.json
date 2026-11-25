@@ -380,7 +380,7 @@
     {
       "wrong": "int M[2][3];\nint T[2][3];\nT[j][i] = M[i][j];",
       "right": "int M[2][3];\nint T[3][2];\nT[j][i] = M[i][j];",
-      "error": "No compiler error. T needs 3 rows and 2 columns. With T[2][3], j can reach 2 and the program writes outside the array (undefined behaviour)."
+      "error": "No compiler error. T needs 3 rows and 2 columns. With T[2][3], j can reach 2 and the program writes outside the array (undefined behavior)."
     },
     {
       "wrong": "for (int j = 0; j < 3; j++)\n    cout << T[i][j] << \" \";\n/* no endl after the loop */",

@@ -7,7 +7,7 @@
   "visuals": [
     {
       "kind": "match",
-      "title": "Match the project idea to the concepts it practises",
+      "title": "Match the project idea to the concepts it practices",
       "pairs": [
         {
           "term": "Student Result Management System",
@@ -394,7 +394,7 @@
       "id": "p1",
       "type": "mcq",
       "difficulty": "easy",
-      "prompt": "Which project idea mainly practises 2-D arrays and win checking?",
+      "prompt": "Which project idea mainly practices 2-D arrays and win checking?",
       "options": [
         "Tic-Tac-Toe",
         "Bank Account System",
@@ -429,7 +429,7 @@
         "Deposit and withdraw with validation",
         "Drawing a 3 by 3 board",
         "Counting vowels only",
-        "Sorting colours"
+        "Sorting colors"
       ],
       "answer": "Deposit and withdraw with validation",
       "hint": "Money goes in and out.",

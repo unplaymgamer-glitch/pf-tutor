@@ -22,7 +22,7 @@
           "meaning": "Tells what kind of value the box can hold"
         },
         {
-          "term": "Initialisation",
+          "term": "Initialization",
           "meaning": "Giving a variable its first value"
         },
         {
@@ -44,7 +44,7 @@
           "detail": "Choose a type and a name: int marks; The computer reserves a box."
         },
         {
-          "name": "Initialise",
+          "name": "Initialize",
           "detail": "Put the first value in the box: marks = 85;"
         },
         {
@@ -58,11 +58,11 @@
       ]
     }
   ],
-  "goal": "After this you can declare and initialise variables of the basic types, choose valid names, use const, and check sizes with sizeof.",
+  "goal": "After this you can declare and initialize variables of the basic types, choose valid names, use const, and check sizes with sizeof.",
   "warmup": "Think of the steel boxes (dabbay) in a canteen. One box has a label 'Samosa' and holds 5 pieces. Another is labelled 'Price' and holds 30 rupees. You can open a box, look inside, or replace what is in it. A variable is exactly this: a labelled box in the computer's memory. The label is the name, and what you put inside is the value.",
   "definition": "A variable is a named place in memory that stores a value, and the value can change. Every variable has a data type, which says what kind of value it can hold (whole number, decimal number, one character, true or false, or text). The name you give it is called an identifier. A constant is like a variable, but its value can never change after you set it.",
   "howItWorks": "Press Play and watch the Visualize tab. Each variable appears as a labelled box showing its type and value. Declaring a variable makes a new box. An assignment puts a value into the box. Reading a variable does not change it, but a new assignment replaces the old value. Remember: you must declare a variable (type + name) before you use it.",
-  "syntax": "// type name;                 -> declare (make the box)\nint marks;\n\n// type name = value;          -> declare and initialise\nint age = 20;\ndouble price = 99.5;\nchar grade = 'A';            // one character: single quotes\nbool passed = true;          // true or false\nstring name = \"Ali\";        // text: double quotes (#include <string>)\n\n// const type NAME = value;    -> constant, cannot change\nconst double PI = 3.14159;\n\n// sizeof tells the size in bytes\ncout << sizeof(int);         // prints 4\n\n// Identifier rules: letters, digits, _ only;\n// cannot start with a digit; cannot be a keyword.",
+  "syntax": "// type name;                 -> declare (make the box)\nint marks;\n\n// type name = value;          -> declare and initialize\nint age = 20;\ndouble price = 99.5;\nchar grade = 'A';            // one character: single quotes\nbool passed = true;          // true or false\nstring name = \"Ali\";        // text: double quotes (#include <string>)\n\n// const type NAME = value;    -> constant, cannot change\nconst double PI = 3.14159;\n\n// sizeof tells the size in bytes\ncout << sizeof(int);         // prints 4\n\n// Identifier rules: letters, digits, _ only;\n// cannot start with a digit; cannot be a keyword.",
   "worked": [
     {
       "level": "basic",
@@ -74,7 +74,7 @@
         "PRINT price, passed",
         "END"
       ],
-      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Declare and initialise variables]\n  B --> C[/Print name, marks, grade/]\n  C --> D[/Print price, passed/]\n  D --> E([End])",
+      "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[Declare and initialize variables]\n  B --> C[/Print name, marks, grade/]\n  C --> D[/Print price, passed/]\n  D --> E([End])",
       "sample": {
         "id": "types-demo",
         "title": "The five basic types",
@@ -454,7 +454,7 @@
     "C++ is case-sensitive: marks, Marks and MARKS are three different variables.",
     "Single quotes are for one char ('A'). Double quotes are for strings (\"Ali\").",
     "int drops the decimal part: int n = 3.7; stores 3. Use double when you need decimals.",
-    "Know the sizes: char 1 byte, int 4, float 4, double 8. Declaration makes the box; initialisation fills it the first time."
+    "Know the sizes: char 1 byte, int 4, float 4, double 8. Declaration makes the box; initialization fills it the first time."
   ],
   "romanSummary": [
     "Variable memory mein ek naam wali jagah hai jis mein value store hoti hai, aur value badal sakti hai.",
@@ -625,6 +625,6 @@
     "Identifiers",
     "Data types",
     "Constants",
-    "Declaration and initialisation"
+    "Declaration and initialization"
   ]
 }

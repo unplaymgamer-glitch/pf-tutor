@@ -95,11 +95,11 @@
       ]
     }
   ],
-  "goal": "After this you can read the three sizes of a 3-D array, say how many elements it holds, initialise it, and visit every element with three nested loops.",
+  "goal": "After this you can read the three sizes of a 3-D array, say how many elements it holds, initialize it, and visit every element with three nested loops.",
   "warmup": "Your university keeps the marks of students for two terms. For one term you can draw a table: one row per student, one column per subject. That is a 2-D table. Now put the second term's table behind the first one, like pages in a notebook. To find one mark you need three things: which term (page), which student (row), which subject (column). A 3-D array is exactly a stack of such tables.",
   "definition": "A 3-D array is an array whose every element is a 2-D array. It is declared with three sizes: type name[layers][rows][columns];. For example int a[2][3][4]; has 2 layers, each layer has 3 rows, and each row has 4 columns. The total number of elements is the product of the three sizes: 2 x 3 x 4 = 24. An element is reached with three indexes in the same order: a[layer][row][column]. Every index starts from 0.",
-  "howItWorks": "There is no 3-D model to look at in memory. Think of the layers as pages: the first index chooses the page, the second index chooses the row on that page, and the third chooses the column. The computer actually stores all elements in one long line, layer after layer, row after row (see the flattened array visual). For initialisation use nested braces: one pair for the whole array, one pair for each layer, one pair for each row. To visit every element use three nested loops, one for each index. The outer loop is the layer, the middle loop is the row, the inner loop is the column. The loop limits must be the three sizes in the same order as the declaration, and each loop uses < (never <=), because the last valid index is size - 1. Total elements = layers x rows x columns, so int a[2][3][4] holds 24 values and the innermost statement runs 24 times.",
-  "syntax": "// type name[layers][rows][columns];\nint a[2][3][4];                 // 2 layers, 3 rows, 4 columns = 24 elements\n\n// initialisation: one brace pair per layer, one per row\nint b[2][2][3] = {\n    {{1, 2, 3}, {4, 5, 6}},     // layer 0\n    {{7, 8, 9}, {10, 11, 12}}   // layer 1\n};\n\n// access: a[layer][row][column]\nb[1][0][2] = 99;               // layer 1, row 0, column 2\n\n// visit every element with three nested loops\nfor (int l = 0; l < 2; l++)            // layers\n    for (int r = 0; r < 2; r++)        // rows\n        for (int c = 0; c < 3; c++)    // columns\n            cout << b[l][r][c] << \" \";\n",
+  "howItWorks": "There is no 3-D model to look at in memory. Think of the layers as pages: the first index chooses the page, the second index chooses the row on that page, and the third chooses the column. The computer actually stores all elements in one long line, layer after layer, row after row (see the flattened array visual). For initialization use nested braces: one pair for the whole array, one pair for each layer, one pair for each row. To visit every element use three nested loops, one for each index. The outer loop is the layer, the middle loop is the row, the inner loop is the column. The loop limits must be the three sizes in the same order as the declaration, and each loop uses < (never <=), because the last valid index is size - 1. Total elements = layers x rows x columns, so int a[2][3][4] holds 24 values and the innermost statement runs 24 times.",
+  "syntax": "// type name[layers][rows][columns];\nint a[2][3][4];                 // 2 layers, 3 rows, 4 columns = 24 elements\n\n// initialization: one brace pair per layer, one per row\nint b[2][2][3] = {\n    {{1, 2, 3}, {4, 5, 6}},     // layer 0\n    {{7, 8, 9}, {10, 11, 12}}   // layer 1\n};\n\n// access: a[layer][row][column]\nb[1][0][2] = 99;               // layer 1, row 0, column 2\n\n// visit every element with three nested loops\nfor (int l = 0; l < 2; l++)            // layers\n    for (int r = 0; r < 2; r++)        // rows\n        for (int c = 0; c < 3; c++)    // columns\n            cout << b[l][r][c] << \" \";\n",
   "worked": [
     {
       "level": "basic",
@@ -431,7 +431,7 @@
       "example": "int a[2][3][4];"
     },
     {
-      "way": "Full nested-brace initialisation",
+      "way": "Full nested-brace initialization",
       "when": "Small tables written by hand",
       "example": "int a[2][2][2] = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};"
     },

@@ -410,7 +410,7 @@
     },
     {
       "way": "Length by loop",
-      "when": "To practise, or when you cannot use <cstring>",
+      "when": "To practice, or when you cannot use <cstring>",
       "example": "while (name[len] != '\\0') len++;"
     },
     {

@@ -67,11 +67,11 @@
       ]
     }
   ],
-  "goal": "After this you can write a while loop when you do not know in advance how many times to repeat, read input until a stop value, work with digits of a number, and spot an infinite loop.",
+  "goal": "After this you can write a while loop when you do not know in advance how many times to repeat. You can read input until a stop value, work with the digits of a number, and spot an infinite loop.",
   "warmup": "A cashier at the canteen keeps taking items from your tray until the tray is empty. She does not know in advance whether you bought two items or ten. She just asks the same question again and again: 'Is there anything left on the tray?' While the answer is yes, she scans one more item. Another example: you keep adding mobile load until your balance reaches Rs 100. The number of rounds depends on the data, not on a fixed count.",
   "definition": "A while loop repeats its body as long as its condition is true. The condition is checked BEFORE every round, so the loop is called a pre-test (entry-controlled) loop, and the body can run zero times. Use while when the number of repetitions is not known in advance and depends on data, such as input from the user or the digits left in a number.",
-  "howItWorks": "Follow the pipeline. The check comes first. If the condition is true the body runs, then the program checks again. Unlike a for loop, a while loop has no built-in update. You must put the initialisation BEFORE the loop (int i = 1;) and the update INSIDE the body (i++). If you forget the update the condition never becomes false and the loop runs forever. This is an infinite loop. In a console, press Ctrl + C to stop it. Two classic uses: (1) a sentinel loop: read a number, and keep processing until the user types a special value like -1 (the sentinel). Read once before the loop and read again at the end of the body. (2) digits: num % 10 gives the last digit and num /= 10 removes it, so while (num > 0) visits every digit.",
-  "syntax": "initialisation;            // before the loop\nwhile (condition) {\n    // body\n    update;               // must move toward a false condition\n}\n// no semicolon after while (condition) here\n\n// sentinel loop:\n//   cin >> x;\n//   while (x != -1) { ...use x...; cin >> x; }",
+  "howItWorks": "Follow the pipeline. The check comes first. If the condition is true the body runs, then the program checks again. Unlike a for loop, a while loop has no built-in update. You must put the initialization BEFORE the loop (int i = 1;) and the update INSIDE the body (i++). If you forget the update the condition never becomes false and the loop runs forever. This is an infinite loop. In a console, press Ctrl + C to stop it. Two classic uses: (1) a sentinel loop: read a number, and keep processing until the user types a special value like -1 (the sentinel). Read once before the loop and read again at the end of the body. (2) digits: num % 10 gives the last digit and num /= 10 removes it, so while (num > 0) visits every digit.",
+  "syntax": "initialization;            // before the loop\nwhile (condition) {\n    // body\n    update;               // must move toward a false condition\n}\n// no semicolon after while (condition) here\n\n// sentinel loop:\n//   cin >> x;\n//   while (x != -1) { ...use x...; cin >> x; }",
   "worked": [
     {
       "level": "basic",
@@ -95,7 +95,7 @@
         "explanation": [
           {
             "line": 5,
-            "text": "Initialisation: i starts at 1. It is written before the loop, not inside it."
+            "text": "Initialization: i starts at 1. It is written before the loop, not inside it."
           },
           {
             "line": 6,
@@ -478,7 +478,7 @@
     }
   ],
   "examTips": [
-    "A while loop needs three things: initialise before, a condition, and an update inside. Check that all three are present.",
+    "A while loop needs three things: initialize before, a condition, and an update inside. Check that all three are present.",
     "Whenever you see a while loop with no change to the condition variable, write 'infinite loop'.",
     "The body may run zero times because the condition is tested first.",
     "For digits remember: % 10 gets the last digit, / 10 removes it, loop while num > 0.",

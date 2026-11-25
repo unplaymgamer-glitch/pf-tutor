@@ -928,7 +928,7 @@
   ],
   "examTips": [
     "Local = only inside its function or { } block. Global = outside all functions. Say 'scope' for where, 'lifetime' for how long.",
-    "static local: created and initialised ONCE, keeps its value between calls, still visible only inside its function.",
+    "static local: created and initialized ONCE, keeps its value between calls, still visible only inside its function.",
     "In output questions, mark which variable is ordinary (restarts every call) and which is static (keeps counting).",
     "When two variables have the same name, the one in the nearest enclosing block wins (shadowing).",
     "Reason to avoid globals: any function can change them, so bugs are hard to find. Use parameters and return values instead."

@@ -492,7 +492,7 @@
       ],
       "answer": "It starts again from its initial value",
       "hint": "The inner for loop is executed fresh each time.",
-      "explanation": "The initialisation part of the inner for loop runs again, so j restarts."
+      "explanation": "The initialization part of the inner for loop runs again, so j restarts."
     },
     {
       "id": "q4",

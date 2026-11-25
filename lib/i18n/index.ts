@@ -1,12 +1,13 @@
 import { shortTitle } from "../short-titles";
 import { CHAT } from "./chat";
 import { pick, type Entry, type Lang } from "./core";
+import { START } from "./start";
 import { TITLES } from "./titles";
 import { UI } from "./ui";
 
 export type { Entry, Lang } from "./core";
 export { hasUrdu } from "./core";
-export const STRINGS: Record<string, Entry> = { ...UI, ...CHAT };
+export const STRINGS: Record<string, Entry> = { ...UI, ...CHAT, ...START };
 
 /** Interface text in the chosen language ("{n}" placeholders filled from vars). */
 export const tr = (lang: Lang, key: string, vars?: Record<string, string | number>) => pick(STRINGS, lang, key, vars);

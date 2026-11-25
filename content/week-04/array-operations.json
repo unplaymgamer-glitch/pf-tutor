@@ -512,7 +512,7 @@
     }
   ],
   "examTips": [
-    "Start sum at 0 and counters at 0. An uninitialised variable holds garbage.",
+    "Start sum at 0 and counters at 0. An uninitialized variable holds garbage.",
     "Average of integers: write (double)sum / N. Writing sum / N is the most common lost mark.",
     "To reverse or copy, draw two small tables (before and after) and trace three indexes. Examiners like this.",
     "Insert shifts RIGHT from the end. Delete shifts LEFT from the position. Do not forget n++ or n--.",

@@ -66,3 +66,11 @@ test("a lesson page and the workspace follow the language, with Urdu text set ri
   await expect(page.getByRole("region", { name: "نوٹس" })).toBeVisible();
   await expect(page.getByRole("heading", { name: /کوڈ اور ڈرائی رن/ })).toBeVisible();
 });
+
+test("Start here works in Roman Urdu and Urdu too", async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem("cc111.settings.v1", JSON.stringify({ lang: "ur" })));
+  await page.goto("/start", { waitUntil: "networkidle" });
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("یہاں سے شروع کریں");
+  await expect(page.getByText("سوال 1 / 8")).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
+});

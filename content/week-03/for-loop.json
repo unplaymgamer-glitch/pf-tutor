@@ -19,7 +19,7 @@
       "title": "Anatomy of for (int i = 1; i <= 3; i++)",
       "stages": [
         {
-          "name": "1. Initialise (once)",
+          "name": "1. Initialize (once)",
           "detail": "int i = 1; runs only one time, at the very start. The loop variable i is born with value 1."
         },
         {
@@ -36,7 +36,7 @@
         },
         {
           "name": "5. Check again",
-          "detail": "Go back to step 2 with the new i. Steps 2, 3, 4 repeat until the condition becomes false. Initialise is never repeated."
+          "detail": "Go back to step 2 with the new i. Steps 2, 3, 4 repeat until the condition becomes false. Initialize is never repeated."
         }
       ]
     },
@@ -45,7 +45,7 @@
       "title": "Match each part of the for loop with its job",
       "pairs": [
         {
-          "term": "Initialisation",
+          "term": "Initialization",
           "meaning": "Gives the loop variable its starting value. Runs once."
         },
         {
@@ -69,9 +69,9 @@
   ],
   "goal": "After this you can write a for loop that repeats a block a known number of times, count up or down in any step, and trace it round by round.",
   "warmup": "Your teacher says: 'Write your name five times.' You do not stop to think each time. You count: one, two, three, four, five, and you stop at five. You started from a number (1), you asked 'have I reached the end?', you did the work, and you moved the count up. A for loop is exactly this counting routine written for the computer. Printing 'Welcome to PF' 100 times would need 100 lines without a loop. With a loop it needs three.",
-  "definition": "A loop repeats a block of code. A for loop is the loop you use when you know in advance how many times to repeat. It keeps its three control parts together in one line: initialisation (where to start), condition (when to continue) and update (how to move). One run of the body is called an iteration.",
-  "howItWorks": "Step through the pipeline above. The order is always: initialise ONCE, then check the condition, then run the body, then update, then check again, and so on. The update never runs before the first body. When the condition becomes false, the loop stops and the program continues with the line after the closing brace. Because the check comes first, a for loop can run zero times: for (int i = 10; i < 5; i++) never enters the body, since 10 < 5 is false from the start. Tip: i <= 5 starting at 1 gives 5 rounds. i < 5 starting at 1 gives only 4. Mixing up < and <= is the most common off-by-one mistake. In the dry-run table, write one row per iteration with the value of i and the result of the condition. Examiners love this.",
-  "syntax": "for (initialisation; condition; update) {\n    // body: runs once per iteration\n}\n\n// count up:      for (int i = 1; i <= 5; i++)\n// count down:    for (int i = 5; i >= 1; i--)\n// step of 2:     for (int i = 0; i <= 10; i += 2)\n// two variables: for (int i = 0, j = 10; i < j; i++, j--)\n// note: no semicolon after the closing parenthesis ) of the for",
+  "definition": "A loop repeats a block of code. A for loop is the loop you use when you know in advance how many times to repeat. It keeps its three control parts together in one line: initialization (where to start), condition (when to continue) and update (how to move). One run of the body is called an iteration.",
+  "howItWorks": "Step through the pipeline above. The order is always: initialize ONCE, then check the condition, then run the body, then update, then check again, and so on. The update never runs before the first body. When the condition becomes false, the loop stops and the program continues with the line after the closing brace. Because the check comes first, a for loop can run zero times: for (int i = 10; i < 5; i++) never enters the body, since 10 < 5 is false from the start. Tip: i <= 5 starting at 1 gives 5 rounds. i < 5 starting at 1 gives only 4. Mixing up < and <= is the most common off-by-one mistake. In the dry-run table, write one row per iteration with the value of i and the result of the condition. Examiners love this.",
+  "syntax": "for (initialization; condition; update) {\n    // body: runs once per iteration\n}\n\n// count up:      for (int i = 1; i <= 5; i++)\n// count down:    for (int i = 5; i >= 1; i--)\n// step of 2:     for (int i = 0; i <= 10; i += 2)\n// two variables: for (int i = 0, j = 10; i < j; i++, j--)\n// note: no semicolon after the closing parenthesis ) of the for",
   "worked": [
     {
       "level": "basic",
@@ -129,7 +129,7 @@
               "vars": {
                 "i": "1"
               },
-              "note": "Initialisation runs once: i = 1. Condition 1 <= 5 is true, so we enter the body.",
+              "note": "Initialization runs once: i = 1. Condition 1 <= 5 is true, so we enter the body.",
               "out": ""
             },
             {
@@ -502,7 +502,7 @@
     }
   ],
   "examTips": [
-    "Always write the order: initialise once, condition, body, update, condition again.",
+    "Always write the order: initialize once, condition, body, update, condition again.",
     "Make a dry-run table: one row per iteration with i, the condition result and the other variables.",
     "Count the iterations: for i = a; i <= b; i++ runs b - a + 1 times. With i < b it runs b - a times.",
     "Put a running total or product starting value BEFORE the loop: 0 for a sum, 1 for a product.",
@@ -528,8 +528,8 @@
         "Every iteration"
       ],
       "answer": "Once",
-      "hint": "Initialisation is the 'start' of the loop.",
-      "explanation": "Initialisation runs once, before the first check. Only the condition, body and update repeat."
+      "hint": "Initialization is the 'start' of the loop.",
+      "explanation": "Initialization runs once, before the first check. Only the condition, body and update repeat."
     },
     {
       "id": "p2",
@@ -617,14 +617,14 @@
       "difficulty": "easy",
       "prompt": "Which part of a for loop runs only once?",
       "options": [
-        "Initialisation",
+        "Initialization",
         "Condition",
         "Update",
         "Body"
       ],
-      "answer": "Initialisation",
+      "answer": "Initialization",
       "hint": "It sets the starting value.",
-      "explanation": "Initialisation runs once at the start. The others repeat."
+      "explanation": "Initialization runs once at the start. The others repeat."
     },
     {
       "id": "q3",
@@ -674,7 +674,7 @@
   ],
   "sources": [
     "The for loop",
-    "Loops: initialisation, condition, update",
+    "Loops: initialization, condition, update",
     "Counting loops",
     "Dry run of loops"
   ]

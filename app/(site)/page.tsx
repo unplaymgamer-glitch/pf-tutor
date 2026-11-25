@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { CHAPTERS, MODULES } from "@/lib/course";
 import { allSamples } from "@/lib/content-schema";
 import { getTopics } from "@/lib/content";
@@ -7,6 +6,7 @@ import { DailyChallenge } from "@/components/game/DailyChallenge";
 import { HeroDemo } from "@/components/home/HeroDemo";
 import { ModuleGrid, type ModuleCard } from "@/components/home/ModuleGrid";
 import { T } from "@/components/I18n";
+import { HeroStart } from "@/components/home/HeroStart";
 import { StatCounters } from "@/components/home/StatCounters";
 import { SITE_DESCRIPTION } from "@/lib/site";
 
@@ -40,10 +40,7 @@ export default function Home() {
         <p className="rise font-mono text-2xl sm:text-4xl" style={{ color: "var(--warning)" }} aria-hidden>cout &lt;&lt; &quot;Hello, UMT!&quot;;<span className="caret" /></p>
         <div className="rise h-0.5 w-40 rounded-full" style={{ background: "linear-gradient(90deg, transparent, var(--warning), transparent)" }} aria-hidden />
         <p className="rise max-w-2xl text-lg text-muted sm:text-xl"><T k="home.desc" /></p>
-        <div className="rise flex flex-wrap justify-center gap-3">
-          <Link href="/chat" className="pill-btn pill-btn-solid"><T k="home.start" /></Link>
-          <Link href="/visual-lab" className="pill-btn pill-btn-line"><T k="home.openLab" /></Link>
-        </div>
+        <HeroStart />
         <div className="mt-4 w-full max-w-3xl text-start"><HeroDemo /></div>
       </section>
 

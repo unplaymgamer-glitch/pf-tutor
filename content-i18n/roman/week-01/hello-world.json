@@ -1,0 +1,6 @@
+{
+  "goal": "Is ke baad aap ek mukammal C++ program likh sakein ge, parh sakein ge aur samjha sakein ge jo ek message print karta hai.",
+  "warmup": "Ek rickshaw driver ka sochein jo sirf bilkul theek directions follow karta hai: 'Seedha jao, left mudo, ruk jao.' Agar aap steps ghalat order mein batayein ya koi step chhor dein to woh kisi aur jagah pahunch jata hai. Computer bhi aisa hi hai: woh aap ke steps ko bilkul waise hi, ek ek karke, usi order mein follow karta hai jis mein aap ne likhe.",
+  "definition": "Program un instructions ki list hota hai jinhein computer ek ke baad ek follow karta hai. C++ mein har program mein ek khaas hissa hota hai jise main() kehte hain. Computer hamesha main() se chalna shuru karta hai.",
+  "howItWorks": "Play dabayein aur dekhein ke computer program mein kaise aage barhta hai. Woh main() se shuru karta hai, har statement ko upar se neeche chalata hai, cout se text print karta hai, aur return 0 par ruk jata hai."
+}

@@ -13,7 +13,7 @@
     {
       "kind": "canvas",
       "title": "A rectangle from (100, 50) to (400, 250) with its diagonals",
-      "sampleId": "rect-centre"
+      "sampleId": "rect-center"
     },
     {
       "kind": "match",
@@ -42,11 +42,11 @@
       ]
     }
   ],
-  "goal": "After this you can say where any point (x, y) appears on the screen, and work out the width, height and centre of a shape from its coordinates.",
+  "goal": "After this you can say where any point (x, y) appears on the screen, and work out the width, height and center of a shape from its coordinates.",
   "warmup": "Think of the seating plan of a cricket stadium stand: seat A1 is in the top-left corner, you count seats to the right along the row, and rows go DOWN the stand. To tell a friend where to sit you say 'column 40, row 12'. The computer screen is the same: every tiny dot has a column number (x) and a row number (y), and counting starts at the top-left.",
   "definition": "The screen is a grid of tiny dots called pixels. A point is named by two numbers (x, y). x counts pixels from the left edge, y counts pixels from the TOP edge. The origin (0, 0) is the top-left corner. In the classic VGA mode the screen is 640 pixels wide and 480 pixels tall, so x runs from 0 to 639 and y runs from 0 to 479. The functions getmaxx() and getmaxy() give the largest x and the largest y. graphics.h is not standard C++. It runs only on a lab PC with Turbo C++ (DOSBox) or Code::Blocks/Dev-C++ plus the WinBGIm library, so the in-page compiler cannot run these programs. The canvas on this page is a simulation that draws what the same calls would draw.",
-  "howItWorks": "Step 1: forget the maths graph from school: there, y goes UP. On the screen y goes DOWN, so a bigger y means LOWER on the screen. Step 2: a point (x, y) is x pixels from the left and y pixels from the top. Step 3: the centre of the 640 x 480 screen is about (320, 240). Step 4: for any rectangle with corners (left, top) and (right, bottom), width = right - left, height = bottom - top, and the centre is ((left + right) / 2, (top + bottom) / 2). That is plain arithmetic, so the console sample below really runs. The two drawing samples use putpixel, line and rectangle, and the canvas simulates them.",
-  "syntax": "// point (x, y): x = pixels from the LEFT, y = pixels from the TOP\n// origin (0, 0) = top-left;  VGA screen = 640 x 480\n\nputpixel(x, y, color);                // one dot at (x, y)\nint maxX = getmaxx();                 // 639 on a 640 x 480 screen\nint maxY = getmaxy();                 // 479 on a 640 x 480 screen\n\n// rectangle with top-left (left, top) and bottom-right (right, bottom)\nint width  = right - left;            // how wide\nint height = bottom - top;            // how tall\nint cx = (left + right) / 2;          // centre x\nint cy = (top + bottom) / 2;          // centre y",
+  "howItWorks": "Step 1: forget the maths graph from school: there, y goes UP. On the screen y goes DOWN, so a bigger y means LOWER on the screen. Step 2: a point (x, y) is x pixels from the left and y pixels from the top. Step 3: the center of the 640 x 480 screen is about (320, 240). Step 4: for any rectangle with corners (left, top) and (right, bottom), width = right - left, height = bottom - top, and the center is ((left + right) / 2, (top + bottom) / 2). That is plain arithmetic, so the console sample below really runs. The two drawing samples use putpixel, line and rectangle, and the canvas simulates them.",
+  "syntax": "// point (x, y): x = pixels from the LEFT, y = pixels from the TOP\n// origin (0, 0) = top-left;  VGA screen = 640 x 480\n\nputpixel(x, y, color);                // one dot at (x, y)\nint maxX = getmaxx();                 // 639 on a 640 x 480 screen\nint maxY = getmaxy();                 // 479 on a 640 x 480 screen\n\n// rectangle with top-left (left, top) and bottom-right (right, bottom)\nint width  = right - left;            // how wide\nint height = bottom - top;            // how tall\nint cx = (left + right) / 2;          // center x\nint cy = (top + bottom) / 2;          // center y",
   "worked": [
     {
       "level": "basic",
@@ -88,7 +88,7 @@
           },
           {
             "line": 9,
-            "text": "100 pixels from the left, 50 pixels down from the top. The third argument is the colour."
+            "text": "100 pixels from the left, 50 pixels down from the top. The third argument is the color."
           },
           {
             "line": 10,
@@ -115,7 +115,7 @@
     },
     {
       "level": "intermediate",
-      "problem": "A rectangle has its top-left corner at (100, 50) and its bottom-right corner at (400, 250). Print its width, height and centre point. (This is the arithmetic you need before drawing; it is a normal console program that really runs.)",
+      "problem": "A rectangle has its top-left corner at (100, 50) and its bottom-right corner at (400, 250). Print its width, height and center point. (This is the arithmetic you need before drawing; it is a normal console program that really runs.)",
       "pseudocode": [
         "START",
         "left = 100, top = 50, right = 400, bottom = 250",
@@ -123,17 +123,17 @@
         "height = bottom - top",
         "cx = (left + right) / 2",
         "cy = (top + bottom) / 2",
-        "PRINT width, height and the centre (cx, cy)",
+        "PRINT width, height and the center (cx, cy)",
         "END"
       ],
-      "flowchartMermaid": "flowchart TD\n  N0([\"Start\"])\n  N1[\"left=100, top=50, right=400, bottom=250\"]\n  N2[\"width = right - left\"]\n  N3[\"height = bottom - top\"]\n  N4[\"cx = (left + right) / 2\"]\n  N5[\"cy = (top + bottom) / 2\"]\n  N6[/\"Print width, height, centre\"/]\n  N7([\"End\"])\n  N0 --> N1\n  N1 --> N2\n  N2 --> N3\n  N3 --> N4\n  N4 --> N5\n  N5 --> N6\n  N6 --> N7",
+      "flowchartMermaid": "flowchart TD\n  N0([\"Start\"])\n  N1[\"left=100, top=50, right=400, bottom=250\"]\n  N2[\"width = right - left\"]\n  N3[\"height = bottom - top\"]\n  N4[\"cx = (left + right) / 2\"]\n  N5[\"cy = (top + bottom) / 2\"]\n  N6[/\"Print width, height, center\"/]\n  N7([\"End\"])\n  N0 --> N1\n  N1 --> N2\n  N2 --> N3\n  N3 --> N4\n  N4 --> N5\n  N5 --> N6\n  N6 --> N7",
       "sample": {
         "id": "rect-measure",
-        "title": "Width, height and centre from coordinates",
-        "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int left = 100, top = 50, right = 400, bottom = 250;\n    int width = right - left;\n    int height = bottom - top;\n    int cx = (left + right) / 2;\n    int cy = (top + bottom) / 2;\n    cout << \"Width  = \" << width << endl;\n    cout << \"Height = \" << height << endl;\n    cout << \"Centre = (\" << cx << \", \" << cy << \")\" << endl;\n    return 0;\n}\n",
+        "title": "Width, height and center from coordinates",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int left = 100, top = 50, right = 400, bottom = 250;\n    int width = right - left;\n    int height = bottom - top;\n    int cx = (left + right) / 2;\n    int cy = (top + bottom) / 2;\n    cout << \"Width  = \" << width << endl;\n    cout << \"Height = \" << height << endl;\n    cout << \"Center = (\" << cx << \", \" << cy << \")\" << endl;\n    return 0;\n}\n",
         "stdin": "",
         "graphics": false,
-        "expectedOutput": "Width  = 300\nHeight = 200\nCentre = (250, 150)\n",
+        "expectedOutput": "Width  = 300\nHeight = 200\nCenter = (250, 150)\n",
         "explanation": [
           {
             "line": 6,
@@ -149,11 +149,11 @@
           },
           {
             "line": 9,
-            "text": "Centre x is halfway between left and right: (100 + 400) / 2 = 250. Both numbers are int, so this is integer division."
+            "text": "Center x is halfway between left and right: (100 + 400) / 2 = 250. Both numbers are int, so this is integer division."
           },
           {
             "line": 10,
-            "text": "Centre y: (50 + 250) / 2 = 150."
+            "text": "Center y: (50 + 250) / 2 = 150."
           },
           {
             "line": 11,
@@ -165,7 +165,7 @@
           },
           {
             "line": 13,
-            "text": "Prints the centre as a point in brackets."
+            "text": "Prints the center as a point in brackets."
           }
         ],
         "trace": {
@@ -228,8 +228,8 @@
             {
               "line": 13,
               "vars": {},
-              "note": "Prints the centre point.",
-              "out": "Centre = (250, 150)\n"
+              "note": "Prints the center point.",
+              "out": "Center = (250, 150)\n"
             }
           ],
           "types": {
@@ -251,18 +251,18 @@
       "pseudocode": [
         "START",
         "Switch to graphics mode",
-        "Set colour WHITE, draw the rectangle (100, 50) to (400, 250)",
-        "Set colour LIGHTCYAN",
+        "Set color WHITE, draw the rectangle (100, 50) to (400, 250)",
+        "Set color LIGHTCYAN",
         "Draw diagonal from (100, 50) to (400, 250)",
         "Draw diagonal from (400, 50) to (100, 250)",
-        "Put a YELLOW pixel at the centre (250, 150)",
+        "Put a YELLOW pixel at the center (250, 150)",
         "Wait for a key, then close graphics",
         "END"
       ],
-      "flowchartMermaid": "flowchart TD\n  N0([\"Start\"])\n  N1[\"Switch to graphics mode\"]\n  N2[\"Colour WHITE, rectangle (100,50)-(400,250)\"]\n  N3[\"Colour LIGHTCYAN, two diagonals\"]\n  N4[\"Yellow pixel at centre (250,150)\"]\n  N5[\"Wait for key, close graphics\"]\n  N6([\"End\"])\n  N0 --> N1\n  N1 --> N2\n  N2 --> N3\n  N3 --> N4\n  N4 --> N5\n  N5 --> N6",
+      "flowchartMermaid": "flowchart TD\n  N0([\"Start\"])\n  N1[\"Switch to graphics mode\"]\n  N2[\"Color WHITE, rectangle (100,50)-(400,250)\"]\n  N3[\"Color LIGHTCYAN, two diagonals\"]\n  N4[\"Yellow pixel at center (250,150)\"]\n  N5[\"Wait for key, close graphics\"]\n  N6([\"End\"])\n  N0 --> N1\n  N1 --> N2\n  N2 --> N3\n  N3 --> N4\n  N4 --> N5\n  N5 --> N6",
       "sample": {
-        "id": "rect-centre",
-        "title": "Rectangle, diagonals and centre point",
+        "id": "rect-center",
+        "title": "Rectangle, diagonals and center point",
         "code": "#include <graphics.h>\n#include <conio.h>\n\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    setcolor(WHITE);\n    rectangle(100, 50, 400, 250);\n    setcolor(LIGHTCYAN);\n    line(100, 50, 400, 250);\n    line(400, 50, 100, 250);\n    putpixel(250, 150, YELLOW);\n    getch();\n    closegraph();\n    return 0;\n}\n",
         "stdin": "",
         "graphics": true,
@@ -282,7 +282,7 @@
           },
           {
             "line": 8,
-            "text": "Choose the colour BEFORE drawing; the next shape uses it."
+            "text": "Choose the color BEFORE drawing; the next shape uses it."
           },
           {
             "line": 9,
@@ -290,7 +290,7 @@
           },
           {
             "line": 10,
-            "text": "A new colour for the two diagonals."
+            "text": "A new color for the two diagonals."
           },
           {
             "line": 11,
@@ -302,7 +302,7 @@
           },
           {
             "line": 13,
-            "text": "The diagonals cross at the centre: ((100 + 400) / 2, (50 + 250) / 2) = (250, 150)."
+            "text": "The diagonals cross at the center: ((100 + 400) / 2, (50 + 250) / 2) = (250, 150)."
           },
           {
             "line": 14,
@@ -338,12 +338,12 @@
       "example": "250 - 50 = 200"
     },
     {
-      "way": "centre = ((left + right) / 2, (top + bottom) / 2)",
+      "way": "center = ((left + right) / 2, (top + bottom) / 2)",
       "when": "Placing a circle or text in the middle of a shape",
       "example": "(250, 150)"
     },
     {
-      "way": "Screen centre",
+      "way": "Screen center",
       "when": "Centring something on a 640 x 480 screen",
       "example": "circle(320, 240, 50);"
     }
@@ -374,14 +374,14 @@
     "Always write 'origin = top-left, y increases downwards' first; examiners check this.",
     "Argument order is left, top, right, bottom for rectangle, and x1, y1, x2, y2 for line. Draw the points on a small grid before coding.",
     "VGA is 640 x 480, so the largest x is 639 and the largest y is 479 (counting starts at 0).",
-    "Centre of a shape: add the two coordinates and divide by 2. Width and height: subtract.",
+    "Center of a shape: add the two coordinates and divide by 2. Width and height: subtract.",
     "If asked whether graphics.h is standard C++, answer no: it needs Turbo C++ or WinBGIm."
   ],
   "romanSummary": [
     "Screen chhote chhote dots (pixels) ki grid hai. Origin (0, 0) UPAR-LEFT corner hai.",
     "x right ki taraf barhta hai aur y NEECHE ki taraf barhta hai, maths ke graph se ulta.",
     "VGA mode 640 x 480 hai: x 0 se 639 aur y 0 se 479. getmaxx() aur getmaxy() sab se bara x aur y dete hain.",
-    "Width = right - left, height = bottom - top, centre = (left + right) / 2 aur (top + bottom) / 2.",
+    "Width = right - left, height = bottom - top, center = (left + right) / 2 aur (top + bottom) / 2.",
     "graphics.h standard C++ nahi hai, Turbo C++ ya WinBGIm chahiye. Is page ka canvas sirf simulation hai."
   ],
   "practice": [
@@ -393,7 +393,7 @@
       "options": [
         "Top-left corner",
         "Bottom-left corner",
-        "Centre of the screen",
+        "Center of the screen",
         "Top-right corner"
       ],
       "answer": "Top-left corner",
@@ -452,7 +452,7 @@
       "id": "p6",
       "type": "mcq",
       "difficulty": "medium",
-      "prompt": "A rectangle goes from (100, 50) to (400, 250). What is its centre point?",
+      "prompt": "A rectangle goes from (100, 50) to (400, 250). What is its center point?",
       "options": [
         "(250, 150)",
         "(300, 200)",
@@ -467,10 +467,10 @@
       "id": "p7",
       "type": "write",
       "difficulty": "hard",
-      "prompt": "Write a graphics program that draws a rectangle with corners (50, 60) and (250, 160) and marks its centre (150, 110) with a yellow pixel. Use initgraph with DETECT and close graphics at the end.",
+      "prompt": "Write a graphics program that draws a rectangle with corners (50, 60) and (250, 160) and marks its center (150, 110) with a yellow pixel. Use initgraph with DETECT and close graphics at the end.",
       "answer": "#include <graphics.h>\n#include <conio.h>\n\nint main()\n{\n    int gd = DETECT, gm;\n    initgraph(&gd, &gm, (char*)\"\");\n    rectangle(50, 60, 250, 160);\n    putpixel(150, 110, YELLOW);\n    getch();\n    closegraph();\n    return 0;\n}",
-      "hint": "Centre = ((left + right) / 2, (top + bottom) / 2).",
-      "explanation": "The rectangle call takes left, top, right, bottom. The centre is (50 + 250) / 2 = 150 and (60 + 160) / 2 = 110. This runs on a lab PC with graphics.h, not in the page compiler."
+      "hint": "Center = ((left + right) / 2, (top + bottom) / 2).",
+      "explanation": "The rectangle call takes left, top, right, bottom. The center is (50 + 250) / 2 = 150 and (60 + 160) / 2 = 110. This runs on a lab PC with graphics.h, not in the page compiler."
     }
   ],
   "quiz": [

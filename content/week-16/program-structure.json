@@ -571,7 +571,7 @@
           },
           {
             "line": 13,
-            "text": "Three records filled with an initialiser list, so the example needs no typing."
+            "text": "Three records filled with an initializer list, so the example needs no typing."
           },
           {
             "line": 17,
@@ -720,7 +720,7 @@
     {
       "wrong": "list[n].id = 5;   // n may already be MAX\nn++;",
       "right": "if (n >= MAX) {\n    cout << \"List is full\";\n    return;\n}\nlist[n].id = 5;\nn++;",
-      "error": "No compiler error. Writing past the end of the array is undefined behaviour and can crash the program or damage other data."
+      "error": "No compiler error. Writing past the end of the array is undefined behavior and can crash the program or damage other data."
     },
     {
       "wrong": "int main() {\n    // all 300 lines of the project here\n}",

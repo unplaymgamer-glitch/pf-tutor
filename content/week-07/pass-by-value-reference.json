@@ -793,7 +793,7 @@
   "examTips": [
     "Pass by value = copy, original safe. Pass by reference (&) = same variable, original changes. Write this in one line in the exam.",
     "In 'find the output' questions, ask for every call: is the parameter a copy or a reference? Only references change the caller's variable.",
-    "The swap function is a favourite. It works only with int &a, int &b.",
+    "The swap function is a favorite. It works only with int &a, int &b.",
     "An argument for a reference parameter must be a variable. swap(5, 10) is an error.",
     "A function can return only one value. Use reference parameters when it must give back several."
   ],

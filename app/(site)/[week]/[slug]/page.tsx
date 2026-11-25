@@ -6,6 +6,8 @@ import { allTopics, getTopic, getTopics } from "@/lib/content";
 import { topicAccess, redactForExamMode } from "@/lib/gate-logic";
 import { getSiteState } from "@/lib/server/store";
 import { TopicView } from "@/components/topic/TopicView";
+import { lessonSeo } from "@/lib/seo";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 import { Locked } from "@/components/topic/Locked";
 
 // Rendered on the server for every request (cached at the edge for a few seconds, see next.config.ts) so that
@@ -21,7 +23,8 @@ export async function generateMetadata({ params }: PageProps<"/[week]/[slug]">):
   // Do not reveal the title/goal of a locked lesson in metadata either.
   if (!topicAccess(state, t.week, t.slug, new Date()).allowed) return { title: "Coming soon", robots: { index: false } };
   const path = `/week-${t.week}/${t.slug}`;
-  return { title: `${t.title} (Week ${t.week})`, description: t.goal, alternates: { canonical: path }, openGraph: { type: "article", url: path, title: `${t.title} (Week ${t.week})`, description: t.goal } };
+  const seo = lessonSeo(t.week, t.slug, t.title); // 60-character title, 120 to 155 character description
+  return { title: seo.title, description: seo.description, alternates: { canonical: path }, openGraph: { type: "article", url: path, title: `${seo.title} | ${SITE_NAME}`, description: seo.description } };
 }
 
 export default async function TopicPage({ params }: PageProps<"/[week]/[slug]">) {
@@ -44,6 +47,14 @@ export default async function TopicPage({ params }: PageProps<"/[week]/[slug]">)
   const weekTopics: Record<number, string[]> = { [w]: getTopics(w).filter((t) => topicAccess(state, w, t.slug, now).allowed).map((t) => `w${w}/${t.slug}`) };
   const related = getTopics(w).filter((t) => t.slug !== slug && topicAccess(state, t.week, t.slug, now).allowed).slice(0, 3);
 
+  const breadcrumb = {
+    "@context": "https://schema.org", "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: `Week ${w}${ch ? `: ${ch.title}` : ""}`, item: `${SITE_URL}/week-${w}` },
+      { "@type": "ListItem", position: 3, name: topic.title, item: `${SITE_URL}/week-${w}/${slug}` },
+    ],
+  };
   const jsonLd = {
     "@context": "https://schema.org", "@type": "LearningResource", name: topic.title, description: topic.goal, inLanguage: "en",
     learningResourceType: "lesson", educationalLevel: "Beginner", teaches: topic.title, isAccessibleForFree: true,
@@ -52,6 +63,7 @@ export default async function TopicPage({ params }: PageProps<"/[week]/[slug]">)
   return (
     <div className="grid gap-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb).replace(/</g, "\\u003c") }} />
       <p className="hidden flex-wrap items-center gap-x-2 text-sm text-muted sm:flex"><Link className="inline-flex min-h-11 items-center" href="/">Home</Link> / <Link className="inline-flex min-h-11 items-center" href={`/week-${w}`}>Week {w}{ch ? `: ${ch.title}` : ""}</Link></p>
       <TopicView topic={topic} weekTopics={weekTopics} nextHref={next ? `/week-${next.week}/${next.slug}` : undefined} related={related.map((t) => ({ title: t.title, href: `/week-${t.week}/${t.slug}` }))} />
       <nav aria-label="Previous and next lesson" className="grid gap-2 sm:grid-cols-2">

@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = { title: "More", description: "Every page of the site in one list." };
 
 const GROUPS: { title: string; items: [string, string, string][] }[] = [
-  { title: "Learn", items: [["/#roadmap", "🗺️", "Course map (16 weeks)"], ["/visual-lab", "🎬", "Visual Lab (all animations)"], ["/chat", "💬", "AI Chat (full page)"],["/search", "🔍", "Search lessons"], ["/how-to-study", "🧭", "How to study"]] },
+  { title: "Learn", items: [["/#roadmap", "🗺️", "Course map (16 weeks)"], ["/visual-lab", "🎬", "Visual Lab (all animations)"], ["/start", "🚀", "Start here (crash path and placement quiz)"], ["/chat", "💬", "AI Chat (full page)"], ["/search", "🔍", "Search lessons"], ["/how-to-study", "🧭", "How to study"]] },
   { title: "Practise", items: [["/practice", "✍️", "Practice questions"], ["/review", "🔁", "Daily review"], ["/mock", "⏱️", "Mock exams"], ["/playground", "▶️", "Playground (run C++)"]] },
   { title: "Revise", items: [["/revision/mid", "🏁", "Mid-term hub (Weeks 1–8)"], ["/revision/final", "🏆", "Final hub (Weeks 1–16)"], ["/progress", "📈", "My progress and badges"]] },
   { title: "About", items: [["/faq", "❓", "FAQ"], ["/about", "ℹ️", "About this site"], ["/privacy", "🔒", "Privacy"]] },

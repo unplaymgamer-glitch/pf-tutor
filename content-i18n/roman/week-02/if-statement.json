@@ -1,0 +1,6 @@
+{
+  "goal": "Is ke baad aap one-way if statement likh sakenge, bata sakenge ke us ki body kab run hoti hai, aur brace aur semicolon ki ghaltiyon se bach sakenge.",
+  "warmup": "Mausam ke baare mein sochein. AGAR baarish ho rahi hai, to aap chhatri le lete hain. Agar baarish nahi ho rahi, to aap kuch khaas nahi karte aur seedha bahar nikal jate hain. Aik aur misaal: AGAR aap ke mobile ka balance Rs. 50 se kam hai, to aap load khareed lete hain. Warna kuch nahi karte. Yahan ek condition hai aur ek action jo sirf tab hota hai jab condition true ho.",
+  "definition": "If statement code ka block sirf tab run karta hai jab us ki condition true ho. Agar condition false ho, to block skip ho jata hai aur program us ke baad wali agli statement se aage chalta hai. Condition ek expression hoti hai jo true ya false deti hai, aksar relational operator se bani hoti hai jaise marks >= 50.",
+  "howItWorks": "Value ko slide karein aur decision ko dekhein. Computer pehle brackets ke andar wali condition check karta hai. Agar woh true ho, to woh braces { } ke andar wali statements run karta hai. Agar false ho, to woh un ke upar se jump kar jata hai. Dono surtoon mein, if block ke baad wali agli line hamesha run hoti hai."
+}

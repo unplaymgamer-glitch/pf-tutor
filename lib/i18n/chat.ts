@@ -194,4 +194,7 @@ export const CHAT: Record<string, Entry> = {
   "l.answered": { en: "{a} of {b} answered · +XP for every answer", roman: "{b} mein se {a} ke jawab diye · har jawab par +XP", ur: "{b} میں سے {a} کے جواب دیے · ہر جواب پر +XP" },
   "l.steps": { en: "Steps: {s}", roman: "Steps: {s}", ur: "مراحل: {s}" },
   "l.outputLabel": { en: "Verified output", roman: "Verified output", ur: "تصدیق شدہ آؤٹ پٹ" },
+  "lab.count": { en: "Count from 1 up to", roman: "1 se is tak ginein:", ur: "1 سے یہاں تک گنیں:" },
+  "lab.advanced": { en: "Advanced controls", roman: "Advanced controls", ur: "ایڈوانسڈ کنٹرولز" },
+  "lab.simple": { en: "Back to the simple view", roman: "Simple view par wapas", ur: "سادہ منظر پر واپس" },
 };

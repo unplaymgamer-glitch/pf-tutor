@@ -341,12 +341,12 @@
       "example": "int m[3][4];   // 3 rows, 4 columns, 12 elements"
     },
     {
-      "way": "Initialise with nested braces",
+      "way": "Initialize with nested braces",
       "when": "One inner pair of braces per row. This is the clearest way.",
       "example": "int m[2][3] = {{1, 2, 3}, {4, 5, 6}};"
     },
     {
-      "way": "Initialise with one flat list",
+      "way": "Initialize with one flat list",
       "when": "Also legal. The values fill the table row by row.",
       "example": "int m[2][3] = {1, 2, 3, 4, 5, 6};"
     },
@@ -395,7 +395,7 @@
     {
       "wrong": "int m[3][4];\nfor (int i = 0; i < 4; i++)\n    for (int j = 0; j < 3; j++)\n        cin >> m[i][j];",
       "right": "int m[3][4];\nfor (int i = 0; i < 3; i++)\n    for (int j = 0; j < 4; j++)\n        cin >> m[i][j];",
-      "error": "No compiler error. The row loop must stop at the number of rows (3) and the column loop at the number of columns (4). With the bounds swapped, the program writes outside the array (undefined behaviour)."
+      "error": "No compiler error. The row loop must stop at the number of rows (3) and the column loop at the number of columns (4). With the bounds swapped, the program writes outside the array (undefined behavior)."
     }
   ],
   "examTips": [
@@ -583,7 +583,7 @@
   ],
   "sources": [
     "Two-dimensional arrays",
-    "Declaration and initialisation of 2-D arrays",
+    "Declaration and initialization of 2-D arrays",
     "Accessing elements with row and column indexes",
     "Reading and printing a matrix with nested loops",
     "Row sums and column sums"

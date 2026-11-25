@@ -517,7 +517,7 @@
         "explanation": [
           {
             "line": 5,
-            "text": "Data (owner, balance) and behaviour (deposit, withdraw, show) live together."
+            "text": "Data (owner, balance) and behavior (deposit, withdraw, show) live together."
           },
           {
             "line": 9,
@@ -545,7 +545,7 @@
           },
           {
             "line": 27,
-            "text": "Initialiser list fills owner and balance, as with any struct."
+            "text": "Initializer list fills owner and balance, as with any struct."
           },
           {
             "line": 28,
@@ -584,7 +584,7 @@
                 "acc.owner": "\"Zainab\"",
                 "acc.balance": "5000"
               },
-              "note": "Object acc is created and filled with the initialiser list: owner and balance.",
+              "note": "Object acc is created and filled with the initializer list: owner and balance.",
               "out": "",
               "stack": [
                 {

@@ -314,7 +314,7 @@
     },
     {
       "way": "Viva question practice",
-      "when": "Practise answering with your own project.",
+      "when": "Practice answering with your own project.",
       "example": "What does this loop do? Why pass by reference? What if the file is missing?"
     }
   ],

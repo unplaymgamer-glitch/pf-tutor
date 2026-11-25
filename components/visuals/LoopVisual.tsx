@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { MAX_ITER, loopCode, loopSteps, type Cmp, type LoopKind, type LoopParams } from "@/lib/visuals/loops";
 import { CodeBlock } from "../topic/CodeBlock";
 import { StepperControls, useStepper } from "./Stepper";
+import { Txt, useT } from "../I18n";
 
 const PHASE: Record<string, { label: string; tone: string }> = {
   init: { label: "Start", tone: "var(--info)" }, check: { label: "Check the condition", tone: "var(--warning)" }, body: { label: "Run the body", tone: "var(--success)" },
@@ -13,7 +14,11 @@ const KINDS: LoopKind[] = ["for", "while", "do-while"];
 
 /** Loop Lab: choose the loop, the start, end and step, and watch every check, body run and update. A comparison table shows the three loops side by side. */
 export function LoopVisual({ title, init }: { title: string; init: LoopParams }) {
-  const [p, setP] = useState<LoopParams>(init);
+  const { t } = useT();
+  // Beginner mode (default): one control, "count from 1 up to N". Advanced shows start, condition, step and jump.
+  const simple: LoopParams = { ...init, start: 1, cmp: "<=", end: 5, step: 1, jump: undefined };
+  const [adv, setAdv] = useState(false);
+  const [p, setP] = useState<LoopParams>(simple);
   const g = useMemo(() => loopSteps(p), [p]);
   const { code } = useMemo(() => loopCode(p), [p]);
   const s = useStepper(g.steps.length, 750);
@@ -29,17 +34,27 @@ export function LoopVisual({ title, init }: { title: string; init: LoopParams })
         <div role="group" aria-label="Loop kind" className="flex flex-wrap gap-2">
           {KINDS.map((k) => <button key={k} className={`btn ${p.loop === k ? "btn-primary" : ""}`} aria-pressed={p.loop === k} onClick={() => change({ loop: k })}>{k}</button>)}
         </div>
+        {!adv && (
+          <label className="grid gap-1 text-sm">
+            <span><Txt>{t("lab.count")}</Txt> <strong>{p.end}</strong></span>
+            <input type="range" min={1} max={10} value={clamp(p.end, 1, 10)} onChange={(e) => change({ end: Number(e.target.value) })} />
+          </label>
+        )}
+        {adv && (
         <div className="flex flex-wrap items-end gap-3 text-sm">
-          <label className="grid gap-1">Start<input className="btn w-20 text-center" inputMode="numeric" value={p.start} onChange={(e) => change({ start: num(e.target.value, -50, 50, 0) })} /></label>
-          <label className="grid gap-1">Condition<select className="btn" value={p.cmp} onChange={(e) => change({ cmp: e.target.value as Cmp })}>{["<", "<=", ">", ">="].map((c) => <option key={c} value={c}>i {c} end</option>)}</select></label>
-          <label className="grid gap-1">End<input className="btn w-20 text-center" inputMode="numeric" value={p.end} onChange={(e) => change({ end: num(e.target.value, -50, 50, 0) })} /></label>
-          <label className="grid gap-1">Step<input className="btn w-20 text-center" inputMode="numeric" value={p.step} onChange={(e) => change({ step: num(e.target.value, -10, 10, 1) || 1 })} /></label>
-          <label className="grid gap-1">Jump
-            <select className="btn" value={p.jump?.type ?? "none"} onChange={(e) => change({ jump: e.target.value === "none" ? undefined : { type: e.target.value as "break" | "continue", at: p.jump?.at ?? p.start + p.step * 2 } })}>
-              <option value="none">none</option><option value="break">break</option><option value="continue">continue</option>
-            </select></label>
-          {p.jump && <label className="grid gap-1">when i is<input className="btn w-20 text-center" inputMode="numeric" value={p.jump.at} onChange={(e) => change({ jump: { type: p.jump!.type, at: num(e.target.value, -50, 50, 0) } })} /></label>}
-        </div>
+            <label className="grid gap-1">Start<input className="btn w-20 text-center" inputMode="numeric" value={p.start} onChange={(e) => change({ start: num(e.target.value, -50, 50, 0) })} /></label>
+            <label className="grid gap-1">Condition<select className="btn" value={p.cmp} onChange={(e) => change({ cmp: e.target.value as Cmp })}>{["<", "<=", ">", ">="].map((c) => <option key={c} value={c}>i {c} end</option>)}</select></label>
+            <label className="grid gap-1">End<input className="btn w-20 text-center" inputMode="numeric" value={p.end} onChange={(e) => change({ end: num(e.target.value, -50, 50, 0) })} /></label>
+            <label className="grid gap-1">Step<input className="btn w-20 text-center" inputMode="numeric" value={p.step} onChange={(e) => change({ step: num(e.target.value, -10, 10, 1) || 1 })} /></label>
+            <label className="grid gap-1">Jump
+              <select className="btn" value={p.jump?.type ?? "none"} onChange={(e) => change({ jump: e.target.value === "none" ? undefined : { type: e.target.value as "break" | "continue", at: p.jump?.at ?? p.start + p.step * 2 } })}>
+                <option value="none">none</option><option value="break">break</option><option value="continue">continue</option>
+              </select></label>
+            {p.jump && <label className="grid gap-1">when i is<input className="btn w-20 text-center" inputMode="numeric" value={p.jump.at} onChange={(e) => change({ jump: { type: p.jump!.type, at: num(e.target.value, -50, 50, 0) } })} /></label>}
+          </div>
+  
+        )}
+        <button className="btn btn-sm w-fit" aria-expanded={adv} onClick={() => { setP(adv ? simple : init); s.reset(); setAdv(!adv); }}><Txt>{t(adv ? "lab.simple" : "lab.advanced")}</Txt></button>
       </div>
       {g.endless && <p role="alert" className="box box-error">This loop never ends: the condition stays true for ever. The demo stops it after {MAX_ITER} turns. Change the step or the end value.</p>}
       <StepperControls s={s} label="loop" />
@@ -51,7 +66,7 @@ export function LoopVisual({ title, init }: { title: string; init: LoopParams })
       </div>
       <p role="status" aria-live="polite" className="box box-definition">{st.note}</p>
       <div><div className="text-sm text-muted">Output so far</div><pre tabIndex={0} className="code" dir="ltr">{st.out || " "}</pre></div>
-      <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="The three loops with the same numbers">
+      {adv && <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="The three loops with the same numbers">
         <table className="w-full border-collapse text-start text-sm">
           <caption className="pb-1 text-start text-muted">Same numbers, three loops</caption>
           <thead><tr><th className="border border-border p-2 text-start">Loop</th><th className="border border-border p-2 text-start">Checks the condition</th><th className="border border-border p-2 text-start">Body runs</th><th className="border border-border p-2 text-start">Prints</th></tr></thead>
@@ -62,7 +77,7 @@ export function LoopVisual({ title, init }: { title: string; init: LoopParams })
             </tr>
           ))}</tbody>
         </table>
-      </div>
+      </div>}
     </div>
   );
 }

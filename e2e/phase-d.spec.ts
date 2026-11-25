@@ -38,6 +38,7 @@ test("week page shows the mind map with a branch per lesson, and a branch opens 
 test("Loop Lab: compare table, do-while runs once on a false condition, endless loop is flagged", async ({ page }) => {
   await page.goto("/week-3/do-while-loop", { waitUntil: "networkidle" });
   const lab = page.getByRole("group", { name: "Loop settings" });
+  await page.getByRole("button", { name: "Advanced controls" }).click(); // beginner mode shows one control; the full lab is one click away
   await expect(lab).toBeVisible();
   const table = page.getByRole("region", { name: "The three loops with the same numbers" });
   const row = (k: string) => table.getByRole("row", { name: new RegExp(`^${k}\\b`) });

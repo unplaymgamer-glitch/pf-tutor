@@ -47,7 +47,7 @@
   "goal": "After this you can read values into an array with a for loop and cin, display all elements, read the size first (up to a maximum), and print the array in reverse.",
   "warmup": "Your teacher announces the marks of 5 students one by one. You write them in 5 boxes on a page: box 0, box 1, box 2, box 3, box 4. Later she says 'read them out again'. You start at the first box and go box by box to the last. An array in C++ works the same way. One loop fills the boxes, another loop reads them out. The loop counter is the box number.",
   "definition": "An array is a row of boxes of the same type. Each box has a number called its index, and the first index is 0. To read a value into box i you write cin >> a[i]. To show it you write cout << a[i]. Because the boxes are numbered 0, 1, 2 and so on, a for loop with a counter i is the natural tool: the counter runs through the indexes and a[i] is the box for the current index.",
-  "howItWorks": "Step through the trace. The loop counter i starts at 0. Each time the loop runs, cin >> a[i] puts the next typed number into box i, then i grows by 1. When i reaches the size of the array the condition i < size becomes false and the loop stops. A second loop does the same walk, but with cout. Two rules to remember: (1) the valid indexes are 0 to size - 1, never size; (2) the array size must be known when you declare it, so when the user decides how many values to enter, you first declare a big array (const int MAX = 100;), then read n (how many values), check that n is not above MAX, and loop only up to n. To print in reverse, start the counter at n - 1 and count down to 0.",
+  "howItWorks": "Step through the trace. The loop counter i starts at 0. Each time the loop runs, cin >> a[i] puts the next typed number into box i, then i grows by 1. When i reaches the size of the array the condition i < size becomes false and the loop stops. A second loop does the same walk, but with cout. Two rules to remember. (1) The valid indexes are 0 to size - 1, never size. (2) The array size must be known when you declare it. So when the user decides how many values to enter, first declare a big array (const int MAX = 100;). Then read n (how many values), check that n is not above MAX, and loop only up to n. To print in reverse, start the counter at n - 1 and count down to 0.",
   "syntax": "const int MAX = 100;      // biggest size we allow\nint a[MAX];               // MAX boxes, indexes 0 .. MAX-1\nint n;                    // how many boxes we really use\ncin >> n;                 // read the size first (n must be <= MAX)\n\nfor (int i = 0; i < n; i++) {   // fill: i = 0, 1, ... n-1\n    cin >> a[i];                // read into box i\n}\n\nfor (int i = 0; i < n; i++) {   // show in order\n    cout << a[i] << \" \";\n}\n\nfor (int i = n - 1; i >= 0; i--) {  // show in reverse\n    cout << a[i] << \" \";\n}",
   "worked": [
     {
@@ -501,7 +501,7 @@
     {
       "wrong": "int a[5];\nfor (int i = 0; i <= 5; i++) {\n    cin >> a[i];\n}",
       "right": "int a[5];\nfor (int i = 0; i < 5; i++) {\n    cin >> a[i];\n}",
-      "error": "No compiler error, but the loop writes into a[5], which does not exist. The behaviour is undefined: it may crash or silently damage other variables. Use < size, not <= size."
+      "error": "No compiler error, but the loop writes into a[5], which does not exist. The behavior is undefined: it may crash or silently damage other variables. Use < size, not <= size."
     },
     {
       "wrong": "int a[5];\ncin >> a;",
@@ -682,7 +682,7 @@
       ],
       "answer": "Not valid: index 4 is outside the array",
       "hint": "How many boxes are there and what is the largest index?",
-      "explanation": "The array has indexes 0 to 3. a[4] is outside it, and using it is undefined behaviour."
+      "explanation": "The array has indexes 0 to 3. a[4] is outside it, and using it is undefined behavior."
     }
   ],
   "sources": [

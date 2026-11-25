@@ -90,7 +90,7 @@
         },
         {
           "term": "Double delete",
-          "meaning": "Deleting the same box twice: a serious error (undefined behaviour)"
+          "meaning": "Deleting the same box twice: a serious error (undefined behavior)"
         }
       ]
     }
@@ -98,7 +98,7 @@
   "goal": "After this you can create a variable on the heap with new, use it through a pointer, give it back with delete, and avoid memory leaks and dangling pointers.",
   "warmup": "Think of a rented hall for a wedding. You book it when you need it (new), you get a key with the address written on it (the pointer), and when the function is over you must return the hall (delete). If you lose the key without returning the hall, nobody can use it and you keep paying: that is a memory leak. If you return the hall but keep walking to the old address, you find strangers there: that is a dangling pointer.",
   "definition": "Dynamic memory allocation means asking for memory WHILE the program is running. You need it when the size is known only at run time (for example the user types how many students), or when data must stay alive after the function that created it has ended. The operator new takes a box from the heap and returns its address, so you keep the answer in a pointer. The operator delete gives the box back. Local variables live on the stack and disappear automatically. Heap boxes live until you delete them.",
-  "howItWorks": "Step 1: new int(5) finds a free int-sized place on the heap, puts 5 in it, and returns its address. Step 2: you store that address in a pointer, for example int *p = new int(5);. The pointer p is a normal variable on the stack. The box it points to is on the heap. Step 3: you use the box with *p, exactly like an ordinary variable. Step 4: when you are done, delete p; gives the box back. After delete, the pointer p still holds the old address, but the box is no longer yours, so p is a dangling pointer. Good habit: write p = nullptr; straight after delete. Rules to remember: every new needs exactly one delete, never use a pointer after delete, never delete the same address twice (double delete), and never overwrite the only pointer to a box with another address, or the old box is lost (leak). Initialisation: new int; gives an unknown value, new int(5); gives 5, new int(); gives 0.",
+  "howItWorks": "Step 1: new int(5) finds a free int-sized place on the heap, puts 5 in it, and returns its address. Step 2: you store that address in a pointer, for example int *p = new int(5);. The pointer p is a normal variable on the stack. The box it points to is on the heap. Step 3: you use the box with *p, exactly like an ordinary variable. Step 4: when you are done, delete p; gives the box back. After delete, the pointer p still holds the old address, but the box is no longer yours, so p is a dangling pointer. Good habit: write p = nullptr; straight after delete. Rules to remember: every new needs exactly one delete, never use a pointer after delete, never delete the same address twice (double delete), and never overwrite the only pointer to a box with another address, or the old box is lost (leak). Initialization: new int; gives an unknown value, new int(5); gives 5, new int(); gives 0.",
   "syntax": "int *p = new int;        // box with unknown (garbage) value\n*p = 42;                 // use it through the pointer\n\nint *q = new int(5);     // box that starts as 5\ndouble *d = new double(3.75);\nint *z = new int();      // box that starts as 0\n\ndelete p;                // give the box back\np = nullptr;             // p now points to nothing\n\n// new returns an ADDRESS, so the left side must be a pointer:\n// int x = new int(5);   // wrong: int cannot hold an address",
   "worked": [
     {
@@ -260,7 +260,7 @@
           },
           {
             "line": 7,
-            "text": "Allocate and initialise in one step with round brackets."
+            "text": "Allocate and initialize in one step with round brackets."
           },
           {
             "line": 8,
@@ -519,7 +519,7 @@
     },
     {
       "way": "new int{5}; (C++11)",
-      "when": "Curly-bracket initialisation, same meaning as round brackets.",
+      "when": "Curly-bracket initialization, same meaning as round brackets.",
       "example": "int *p = new int{5};"
     },
     {
@@ -542,12 +542,12 @@
     {
       "wrong": "int *p = new int(5);\ndelete p;\ncout << *p;   // dangling pointer",
       "right": "int *p = new int(5);\ncout << *p;\ndelete p;\np = nullptr;",
-      "error": "Usually no compiler message. After delete the box is not yours. Reading it is undefined behaviour: it may print garbage or crash."
+      "error": "Usually no compiler message. After delete the box is not yours. Reading it is undefined behavior: it may print garbage or crash."
     },
     {
       "wrong": "int *p = new int(5);\ndelete p;\ndelete p;   // double delete",
       "right": "int *p = new int(5);\ndelete p;\np = nullptr;\ndelete p;   // deleting nullptr is safe and does nothing",
-      "error": "No compiler message, but deleting the same address twice is undefined behaviour and often crashes the program at run time. (This is why we set p = nullptr after delete.)"
+      "error": "No compiler message, but deleting the same address twice is undefined behavior and often crashes the program at run time. (This is why we set p = nullptr after delete.)"
     },
     {
       "wrong": "int p = new int(5);",
@@ -710,7 +710,7 @@
       ],
       "answer": "A pointer that holds the address of memory that was already deleted",
       "hint": "The box is gone but the address remains.",
-      "explanation": "Using it is undefined behaviour."
+      "explanation": "Using it is undefined behavior."
     },
     {
       "id": "q4",
@@ -733,12 +733,12 @@
       "difficulty": "hard",
       "prompt": "What happens when you run delete p; twice on the same address?",
       "options": [
-        "Undefined behaviour, often a crash",
+        "Undefined behavior, often a crash",
         "Nothing, it is always safe",
         "The value becomes 0",
         "The compiler gives an error"
       ],
-      "answer": "Undefined behaviour, often a crash",
+      "answer": "Undefined behavior, often a crash",
       "hint": "The box is already gone after the first delete.",
       "explanation": "Double delete is a serious error. Setting p = nullptr after the first delete makes the second one harmless."
     }

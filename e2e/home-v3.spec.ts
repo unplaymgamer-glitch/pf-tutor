@@ -16,18 +16,36 @@ test("home hero: eyebrow, title, one-line description and two pill buttons; the 
   }
 });
 
-test("Start learning opens the full-screen chat and a question gets an answer", async ({ page }) => {
+test("Start learning opens Lesson 1 for a new visitor and the last lesson for a returning one; the AI tutor and placement quiz have their own links", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/", { waitUntil: "networkidle" });
+  await expect(page.getByRole("link", { name: "Start learning" })).toHaveAttribute("href", "/week-1/pdlc");
+  await expect(page.getByRole("link", { name: "Ask the AI tutor" })).toHaveAttribute("href", "/chat");
+  await expect(page.getByRole("link", { name: /placement quiz/ })).toHaveAttribute("href", "/start");
   await page.getByRole("link", { name: "Start learning" }).click();
+  await expect(page).toHaveURL(/\/week-1\/pdlc$/);
+  await page.goto("/", { waitUntil: "networkidle" });
+  await expect(page.getByRole("link", { name: "Continue learning" })).toHaveAttribute("href", "/week-1/pdlc"); // the lesson just visited
+  await page.getByRole("link", { name: "Ask the AI tutor" }).click();
   await expect(page).toHaveURL(/\/chat$/);
   const chat = page.getByRole("region", { name: "CC111 Tutor chat" });
-  await expect(chat.getByRole("button", { name: /New chat/ })).toBeVisible();
-  await expect(chat.getByRole("tab", { name: "Topics" })).toBeVisible();
-  await expect(chat.getByRole("combobox", { name: "Answer language" })).toBeVisible();
   await chat.getByLabel("Your question").fill("What is a variable?");
   await chat.getByRole("button", { name: "Send" }).click();
   await expect(chat.getByText(/From the lessons \(free\)|AI ·/)).toBeVisible({ timeout: 20000 });
+});
+
+test("Start here: five-lesson crash path with a finish line, and a placement quiz that recommends where to start", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/start", { waitUntil: "networkidle" });
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Start here");
+  await expect(page.locator("ol").first().getByRole("listitem")).toHaveCount(6); // five lessons and the finish line
+  await expect(page.getByText("0 of 5 lessons finished").first()).toBeVisible();
+  // all wrong answers -> begin with the crash path; the right answer is never always the first button
+  for (let q = 0; q < 8; q++) await page.getByRole("button", { name: "I don't know" }).click();
+  await expect(page.getByText("You got 0 of 8.")).toBeVisible();
+  await expect(page.getByRole("link", { name: /Start at: Program Life Cycle/ })).toHaveAttribute("href", "/week-1/pdlc");
+  await page.getByRole("button", { name: "Take the quiz again" }).click();
+  await expect(page.getByText("Question 1 of 8")).toBeVisible();
 });
 
 test("module cards: ten modules, Pre/Post filter, sub-topics open a lesson, the chat button opens that topic's chat", async ({ page }) => {

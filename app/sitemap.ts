@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const state = await getSiteState();
   const now = new Date();
-  const stat: MetadataRoute.Sitemap = ["", "/playground", "/practice", "/mock", "/revision/mid", "/revision/final", "/visual-lab", "/chat", "/privacy", "/how-to-study", "/faq", "/about"].map((p) => ({ url: `${SITE_URL}${p}`, changeFrequency: "weekly" as const, priority: p === "" ? 1 : 0.6 }));
+  const stat: MetadataRoute.Sitemap = ["", "/playground", "/practice", "/mock", "/revision/mid", "/revision/final", "/visual-lab", "/chat", "/start", "/privacy", "/how-to-study", "/faq", "/about"].map((p) => ({ url: `${SITE_URL}${p}`, changeFrequency: "weekly" as const, priority: p === "" ? 1 : 0.6 }));
   const weeks: MetadataRoute.Sitemap = [];
   for (let w = 1; w <= 16; w++) {
     const open = getTopics(w).filter((t) => topicAccess(state, w, t.slug, now).allowed);

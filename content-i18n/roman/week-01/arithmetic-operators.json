@@ -1,0 +1,6 @@
+{
+  "goal": "Is ke baad aap + - * / % sahi tarah use kar sakein ge, integer-division wali ghalti se bach sakein ge, aur x++ aur ++x ka farq samjha sakein ge.",
+  "warmup": "Ek canteen mein 17 samosay 5 students mein baantay jaate hain. Har student ko 3 samosay milte hain (yeh division hai) aur 2 samosay bach jaate hain (yeh remainder hai). Add, subtract, multiply, divide aur remainder, yeh paanch basic calculations hain, aur C++ mein har ek ke liye ek symbol hai.",
+  "definition": "Operator ek symbol hota hai jo calculation karta hai. Jin values par woh kaam karta hai unhein operands kehte hain. 17 + 5 mein symbol + operator hai aur 17 aur 5 operands hain. Binary operators ko do operands chahiye hotay hain (+ - * / %). Unary operators ko sirf ek operand chahiye hota hai (-x, x++, ++x, x--, --x).",
+  "howItWorks": "Play dabayein aur memory boxes ko dekhein. Binary operators nayi value calculate karte hain lekin jin boxes se parhte hain unhein change nahi karte. ++ aur -- khaas hain: yeh box ko khud change kar dete hain, us mein 1 add ya subtract karke. Jab ++ variable ke baad likha ho (x++) to pehle purani value use hoti hai. Jab pehle likha ho (++x) to nayi value use hoti hai."
+}

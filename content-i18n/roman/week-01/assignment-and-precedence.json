@@ -1,0 +1,6 @@
+{
+  "goal": "Is ke baad aap = += -= *= /= %= use kar sakein ge aur kai operators wali kisi bhi expression ki value step by step nikal sakein ge.",
+  "warmup": "Maths ki class mein aap ne seekha tha ke 2 + 3 x 4 ka jawab 14 hota hai, 20 nahi, kyunke multiplication addition se pehle hoti hai. Canteen ka bill bhi aise hi chalta hai: 2 chai Rs. 40 ki ek ek aur 1 sandwich Rs. 150 ka, to 2 * 40 + 150 = 230. Koi pehle 2 + 40 add nahi karta. C++ bhi yehi order ke rules follow karta hai, aur aap brackets laga kar order badal sakte hain.",
+  "definition": "Assignment operator ek variable mein value store karta hai. Simple form = hai. Compound forms (+= -= *= /= %=) variable ko usi ki purani value se change karte hain: x += 5 ka matlab hai x = x + 5. Precedence operators ki priority hoti hai: jis ki priority zyada ho woh pehle hota hai. Associativity batati hai ke jab operators ki priority barabar ho to kis taraf se chalna hai (aam taur par left se right).",
+  "howItWorks": "Trace ko step by step chalayein. Har expression mein C++ pehle brackets dhoondta hai, phir * / %, phir + -, aur har level ke andar left se right chalta hai. Assignment hamesha aakhri operation hota hai: pehle poori right side calculate hoti hai, phir jawab variable mein store hota hai."
+}

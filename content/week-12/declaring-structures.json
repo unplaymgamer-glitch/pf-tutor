@@ -100,7 +100,7 @@
         },
         {
           "term": "Student s2 = {2, \"Sana\", 3.9};",
-          "meaning": "Initialiser list: values in member order"
+          "meaning": "Initializer list: values in member order"
         },
         {
           "term": "s2 = s1;",
@@ -113,7 +113,7 @@
       ]
     }
   ],
-  "goal": "After this you can declare a struct, create variables of it, set and read members with the dot operator, initialise with braces or cin, and copy a whole struct.",
+  "goal": "After this you can declare a struct, create variables of it, set and read members with the dot operator, initialize with braces or cin, and copy a whole struct.",
   "warmup": "A university prints one blank admission form design. The design (the form layout) is not a student. Only when a student fills one in do you have a real record with a real name. A struct declaration is the blank form design. A struct variable is one filled-in form.",
   "definition": "A struct declaration tells C++ the name of a new type and the list of its data members. It does not create any variable and uses no memory. A structure variable is a variable of that type. It has its own copy of every member. You reach a member with the dot operator: variable.member. The declaration ends with a semicolon.",
   "howItWorks": "Step 1: declare the struct, usually ABOVE main(), so that every function can see the new type. Step 2: in main, make variables with the type name, like Student s1;. Step 3: use the dot operator to read or write members: s1.cgpa = 3.7; or cout << s1.name;. A member behaves exactly like an ordinary variable of its own type. You can give a variable its starting values in three ways. First, with braces in member order: Student s1 = {1, \"Ali\", 3.5};. Second, member by member after declaring the variable: s1.id = 1; and so on. Third, by reading from the keyboard straight into members: cin >> s1.id >> s1.name >> s1.cgpa;. A whole struct can be copied with =: s2 = s1; copies every member. After the copy the two variables are independent, as the memory visual shows. What you cannot do is print or read a whole struct in one go (cout << s1 does not work) or compare two structs with ==. Those need member by member work (next lesson). About sizeof: sizeof(s1.id) is the size of the int member. sizeof(s1) is the size of the whole variable. It is at least the sum of the members and may be bigger, because the compiler can add gaps between members. So never count on a particular number.",
@@ -231,7 +231,7 @@
     },
     {
       "level": "intermediate",
-      "problem": "Create s1 with an initialiser list. Copy it into s2, then change the id and name of s2. Print both students and show that s1 did not change.",
+      "problem": "Create s1 with an initializer list. Copy it into s2, then change the id and name of s2. Print both students and show that s1 did not change.",
       "pseudocode": [
         "START",
         "s1 = {1, Ali, 3.5}",
@@ -244,7 +244,7 @@
       "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[s1 = 1, Ali, 3.5]\n  B --> C[s2 = s1]\n  C --> D[Change s2.id and s2.name]\n  D --> E[/Print s1/]\n  E --> F[/Print s2/]\n  F --> G([End])",
       "sample": {
         "id": "init-and-copy",
-        "title": "Initialise with braces and copy a whole struct",
+        "title": "Initialize with braces and copy a whole struct",
         "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    int id;\n    string name;\n    double cgpa;\n};\n\nint main() {\n    Student s1 = {1, \"Ali\", 3.5};\n    Student s2 = s1;\n    s2.id = 2;\n    s2.name = \"Sana\";\n    cout << s1.id << \" \" << s1.name << \" \" << s1.cgpa << endl;\n    cout << s2.id << \" \" << s2.name << \" \" << s2.cgpa << endl;\n    return 0;\n}\n",
         "stdin": "",
         "graphics": false,
@@ -252,7 +252,7 @@
         "explanation": [
           {
             "line": 12,
-            "text": "Initialiser list: values in the order of the members."
+            "text": "Initializer list: values in the order of the members."
           },
           {
             "line": 13,
@@ -453,7 +453,7 @@
       "example": "Student s1;\ns1.id = 1;\ns1.name = \"Ali\";\ns1.cgpa = 3.5;"
     },
     {
-      "way": "Initialiser list",
+      "way": "Initializer list",
       "when": "You know all values at declaration. Order must match the members.",
       "example": "Student s1 = {1, \"Ali\", 3.5};"
     },
@@ -503,7 +503,7 @@
   "examTips": [
     "Always put the semicolon after the closing brace of a struct.",
     "The declaration makes a type and uses no memory; Student s1; reserves the memory.",
-    "Initialiser values must follow the order of the members in the declaration.",
+    "Initializer values must follow the order of the members in the declaration.",
     "You may copy a struct with s2 = s1, but cin >> s1, cout << s1 and s1 == s2 are not allowed.",
     "Never write a fixed size for sizeof(struct) in an exam answer: it can be more than the sum of the members."
   ],
@@ -585,7 +585,7 @@
       "id": "p7",
       "type": "blank",
       "difficulty": "medium",
-      "prompt": "Complete the initialisation so the id is 7, the name is Noor and the cgpa is 3.6:\n\nStudent s = { _____ };",
+      "prompt": "Complete the initialization so the id is 7, the name is Noor and the cgpa is 3.6:\n\nStudent s = { _____ };",
       "answer": "7, \"Noor\", 3.6",
       "hint": "Follow the order id, name, cgpa.",
       "explanation": "The values must be in the same order as the members of Student."
@@ -666,7 +666,7 @@
     "Declaring a structure",
     "Structure variables",
     "Dot operator",
-    "Initialising structures",
+    "Initializing structures",
     "Copying structures"
   ]
 }

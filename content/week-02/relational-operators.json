@@ -275,7 +275,7 @@
     },
     {
       "level": "exam",
-      "problem": "What is the output of the following program? (An exam favourite: = versus ==.)",
+      "problem": "What is the output of the following program? (An exam favorite: = versus ==.)",
       "pseudocode": [
         "START",
         "SET x = 3",

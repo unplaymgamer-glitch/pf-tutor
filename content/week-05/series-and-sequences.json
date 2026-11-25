@@ -583,7 +583,7 @@
     {
       "wrong": "int sum;           // never set to 0\nfor (int i = 1; i <= 5; i++) {\n    sum = sum + i;\n}",
       "right": "int sum = 0;",
-      "error": "Compiles (g++ may warn that sum is used uninitialised). sum starts with a garbage value, so the total is wrong. Always give an accumulator a starting value."
+      "error": "Compiles (g++ may warn that sum is used uninitialized). sum starts with a garbage value, so the total is wrong. Always give an accumulator a starting value."
     },
     {
       "wrong": "a = b;\nb = a + b;       // a was already changed",

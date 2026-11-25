@@ -1,0 +1,6 @@
+{
+  "goal": "Is ke baad aap if-else statement likh sakenge jo condition true hone par ek block aur false hone par doosra block run karta hai.",
+  "warmup": "Exam result: AGAR aap ke marks 50 ya zyada hain, to aap pass hain; WARNA fail. Login: AGAR password sahi hai, to darwaza khul jata hai; WARNA likha aata hai wrong password. Dono surtoon mein kuch na kuch hota hai, aur dono mein se bilkul ek action chuna jata hai. Voting bhi aisi hi hai: AGAR age 18 ya zyada hai to aap vote de sakte hain, warna intezar karna padta hai.",
+  "definition": "If-else statement ek condition ki madad se do raaston mein se ek chunta hai. Agar condition true ho, to if block run hota hai. Agar false ho, to else block run hota hai. Do blocks mein se hamesha bilkul ek run hota hai, na dono aur na koi bhi nahi.",
+  "howItWorks": "Slider hilayein. Condition sirf ek dafa check hoti hai. True ho to program if wale raaste par jata hai; false ho to else wale raaste par. Chuna hua block khatam hone ke baad, program poore if-else ke baad wali line se aage chalta hai."
+}

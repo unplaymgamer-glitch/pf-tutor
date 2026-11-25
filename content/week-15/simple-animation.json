@@ -25,7 +25,7 @@
   "warmup": "A flip-book cartoon in a school notebook: on each page the drawing is a tiny bit different, and when you flick the pages fast your eye sees movement. An animation on the computer is exactly that: draw the picture, wait a moment, erase it, draw it again slightly moved, and repeat.",
   "definition": "Animation means showing many pictures (frames) one after another, each with the shape in a slightly new position. In graphics.h the recipe is: draw, delay, cleardevice, move, repeat. A for loop is perfect for it, because the loop variable (for example x) IS the position and it changes by a small step on every pass. graphics.h is not standard C++. It runs only on a lab PC with Turbo C++ (DOSBox) or Code::Blocks/Dev-C++ plus the WinBGIm library, so the in-page compiler cannot run these programs. The canvas on this page is a simulation that draws what the same calls would draw. On the page, the canvas plays the frames of the loop so you can see the movement.",
   "howItWorks": "Look at the loop for (int x = 50; x <= 550; x += 5). x starts at 50, grows by 5 each time, and stops after 550, so there are (550 - 50) / 5 + 1 = 101 frames. In each pass: cleardevice() wipes the old picture, setcolor and circle(x, 240, 30) draw the new one at the new x, and delay(30) waits 30 milliseconds, so the whole run takes about 101 x 30 ms = 3 seconds. Speed has two knobs: the step size (a bigger step jumps farther each frame, so it moves faster but less smoothly) and the delay (a smaller delay means more frames per second, so it moves faster). Direction comes from the loop: x going up moves right, y going up moves DOWN the screen (remember y grows downwards). To move several parts together, draw each one at x plus a fixed offset, like the car below. Bouncing, in words: move right until a wall is reached, then count back down so the shape moves left, and repeat. On real BGI the picture can flicker because cleardevice blanks the whole screen before every redraw; programs avoid this with double buffering (draw on a hidden page and show it when ready), which is beyond this course.",
-  "syntax": "for (int x = 50; x <= 550; x += 5)   // start, stop, STEP size\n{\n    cleardevice();                    // 1. erase the old picture\n    setcolor(GREEN);                  // 2. colour before drawing\n    circle(x, 240, 30);               // 3. draw at the NEW position\n    delay(30);                        // 4. wait 30 ms (speed)\n}                                     // 5. repeat with the next x",
+  "syntax": "for (int x = 50; x <= 550; x += 5)   // start, stop, STEP size\n{\n    cleardevice();                    // 1. erase the old picture\n    setcolor(GREEN);                  // 2. color before drawing\n    circle(x, 240, 30);               // 3. draw at the NEW position\n    delay(30);                        // 4. wait 30 ms (speed)\n}                                     // 5. repeat with the next x",
   "worked": [
     {
       "level": "basic",
@@ -35,13 +35,13 @@
         "Switch to graphics mode",
         "FOR x from 50 to 550 step 5:",
         "    clear the screen",
-        "    set colour GREEN",
+        "    set color GREEN",
         "    draw circle at (x, 240) radius 30",
         "    wait 30 ms",
         "Wait for a key, then close graphics",
         "END"
       ],
-      "flowchartMermaid": "flowchart TD\n  A([\"Start\"]) --> B[\"Switch to graphics mode\"]\n  B --> C[\"x = 50\"]\n  C --> D{\"x <= 550?\"}\n  D -- Yes --> E[\"Clear screen, colour GREEN\"]\n  E --> F[\"Draw circle at (x, 240)\"]\n  F --> G[\"Wait 30 ms\"]\n  G --> H[\"x = x + 5\"]\n  H --> D\n  D -- No --> I[\"Wait for key, close graphics\"]\n  I --> J([\"End\"])",
+      "flowchartMermaid": "flowchart TD\n  A([\"Start\"]) --> B[\"Switch to graphics mode\"]\n  B --> C[\"x = 50\"]\n  C --> D{\"x <= 550?\"}\n  D -- Yes --> E[\"Clear screen, color GREEN\"]\n  E --> F[\"Draw circle at (x, 240)\"]\n  F --> G[\"Wait 30 ms\"]\n  G --> H[\"x = x + 5\"]\n  H --> D\n  D -- No --> I[\"Wait for key, close graphics\"]\n  I --> J([\"End\"])",
       "sample": {
         "id": "moving-circle",
         "title": "Moving circle (the notes' program)",
@@ -72,11 +72,11 @@
           },
           {
             "line": 10,
-            "text": "Colour before the shape."
+            "text": "Color before the shape."
           },
           {
             "line": 11,
-            "text": "Centre x changes each pass, centre y stays 240, so the circle moves along a horizontal line."
+            "text": "Center x changes each pass, center y stays 240, so the circle moves along a horizontal line."
           },
           {
             "line": 12,
@@ -177,7 +177,7 @@
         "FOR y from 40 to 420 step 10:",
         "    clear the screen",
         "    draw the ground line at y = 450 and the text",
-        "    set colour LIGHTRED and draw the circle at (320, y)",
+        "    set color LIGHTRED and draw the circle at (320, y)",
         "    wait 25 ms",
         "Wait for a key, then close graphics",
         "END"
@@ -221,7 +221,7 @@
           },
           {
             "line": 14,
-            "text": "Colour set before the circle."
+            "text": "Color set before the circle."
           },
           {
             "line": 15,
@@ -336,7 +336,7 @@
         "Erases the old picture before the new one is drawn",
         "Closes the graphics window",
         "Makes the circle bigger",
-        "Changes the colour"
+        "Changes the color"
       ],
       "answer": "Erases the old picture before the new one is drawn",
       "hint": "Without it the circle leaves a trail.",
@@ -439,7 +439,7 @@
       "options": [
         "The speed of the animation",
         "The radius",
-        "The colour",
+        "The color",
         "The y position"
       ],
       "answer": "The speed of the animation",

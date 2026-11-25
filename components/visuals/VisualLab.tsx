@@ -20,12 +20,15 @@ const info = (k: string) => KINDS[k] ?? { label: k, icon: "🎬", group: "lab" a
 
 type Loaded = { visual: Visual; samples: CodeSample[]; lesson: string };
 
+const PAGE = 12;
+
 /** Searchable gallery of every visualization. Each opens full screen with its own controls, a link to the lesson and an "Ask AI" button. */
 export function VisualLab({ items }: { items: VisualItem[] }) {
   const tutor = useTutor();
   const [q, setQ] = useState("");
   const [group, setGroup] = useState<(typeof GROUPS)[number][0]>("all");
   const [week, setWeek] = useState(0);
+  const [limit, setLimit] = useState(PAGE); // the gallery starts with a page of cards and grows on request (327 at once made the page enormous)
   const [open, setOpen] = useState<VisualItem | null>(null);
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [err, setErr] = useState("");
@@ -35,11 +38,12 @@ export function VisualLab({ items }: { items: VisualItem[] }) {
     const s = q.trim().toLowerCase();
     return items.filter((v) => (group === "all" || info(v.kind).group === group) && (!week || v.week === week) && (!s || `${v.title} ${v.lesson} ${info(v.kind).label}`.toLowerCase().includes(s)));
   }, [items, q, group, week]);
+  const visible = useMemo(() => shown.slice(0, limit), [shown, limit]);
   const byWeek = useMemo(() => {
     const m = new Map<number, VisualItem[]>();
-    for (const v of shown) m.set(v.week, [...(m.get(v.week) ?? []), v]);
+    for (const v of visible) m.set(v.week, [...(m.get(v.week) ?? []), v]);
     return [...m.entries()].sort((a, b) => a[0] - b[0]);
-  }, [shown]);
+  }, [visible]);
 
   useEffect(() => {
     if (!open) return;
@@ -58,20 +62,20 @@ export function VisualLab({ items }: { items: VisualItem[] }) {
     <div className="grid gap-5">
       <div className="card grid gap-3">
         <label className="grid gap-1 text-sm font-semibold">Search animations
-          <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="for example: sorting, pointer, recursion, matrix" className="btn text-start font-normal" style={{ cursor: "text" }} />
+          <input type="search" value={q} onChange={(e) => { setQ(e.target.value); setLimit(PAGE); }} placeholder="for example: sorting, pointer, recursion, matrix" className="btn text-start font-normal" style={{ cursor: "text" }} />
         </label>
         <div className="flex flex-wrap items-center gap-2">
           <div role="group" aria-label="Kind" className="flex flex-wrap gap-2">
-            {GROUPS.map(([id, label]) => <button key={id} className={`btn ${group === id ? "btn-primary" : ""}`} aria-pressed={group === id} onClick={() => setGroup(id)}>{label}</button>)}
+            {GROUPS.map(([id, label]) => <button key={id} className={`btn ${group === id ? "btn-primary" : ""}`} aria-pressed={group === id} onClick={() => { setGroup(id); setLimit(PAGE); }}>{label}</button>)}
           </div>
           <label className="ms-auto flex items-center gap-2 text-sm">Week
-            <select className="btn" value={week} onChange={(e) => setWeek(Number(e.target.value))}>
+            <select className="btn" value={week} onChange={(e) => { setWeek(Number(e.target.value)); setLimit(PAGE); }}>
               <option value={0}>All weeks</option>
               {CHAPTERS.map((c) => <option key={c.week} value={c.week}>{c.week}. {c.title}</option>)}
             </select>
           </label>
         </div>
-        <p role="status" className="text-sm text-muted">{shown.length} of {items.length} shown</p>
+        <p role="status" className="text-sm text-muted">{visible.length} of {items.length} shown{shown.length !== items.length ? ` · ${shown.length} match` : ""}</p>
       </div>
 
       {byWeek.length === 0 && <p className="box">Nothing matches. Try a shorter search.</p>}
@@ -94,6 +98,10 @@ export function VisualLab({ items }: { items: VisualItem[] }) {
           </section>
         );
       })}
+
+      {shown.length > visible.length && (
+        <div className="flex justify-center"><button className="btn btn-primary" onClick={() => setLimit(limit + PAGE)}>Load more ({Math.min(PAGE, shown.length - visible.length)} of {shown.length - visible.length} left)</button></div>
+      )}
 
       <dialog ref={dlg} onClose={() => { setOpen(null); setLoaded(null); }} aria-label={open ? `${open.title}` : "Animation"} className="m-0 h-dvh max-h-none w-screen max-w-none overflow-y-auto border-0 bg-bg p-0 text-text backdrop:bg-black/70">
         {open && (

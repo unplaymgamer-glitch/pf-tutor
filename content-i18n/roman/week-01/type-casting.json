@@ -1,0 +1,6 @@
+{
+  "goal": "Is ke baad aap andaza laga sakein ge ke C++ kab khud type badalta hai, aur (double)x ya static_cast<double>(x) use karke decimal jawab hasil kar sakein ge.",
+  "warmup": "Aap ke exam marks 78, 85 aur 90 hain. Total 253 hai. Agar aap 253 ko 3 se copy par divide karein to 84.33 aata hai. Ek basic calculator jo sirf whole numbers jaanta ho, 84 bata dega. Type casting woh tareeqa hai jis se aap C++ ko batate hain ke decimal wala calculator use kare.",
+  "definition": "Type casting ka matlab hai kisi value ko ek data type se doosre data type mein badalna. Implicit conversion khud ba khud hoti hai, misal ke taur par 2 + 3.5 mein int 2, double 2.0 ban jata hai. Explicit casting woh hai jab aap khud tabdeeli maangte hain, (double) x ya static_cast<double>(x) ke zariye. Cast ek badli hui copy banata hai; woh asli variable ko change nahi karta.",
+  "howItWorks": "Trace ko step by step chalayein aur boxes mein types ko dekhein. Rule yaad rakhein: jab int double se milta hai to int promote ho kar double ban jata hai aur jawab double hota hai. Lekin agar int int se milta hai to jawab int hi rehta hai, chahe aap baad mein usay double mein store karein. Is liye cast division se PEHLE karein, baad mein nahi."
+}

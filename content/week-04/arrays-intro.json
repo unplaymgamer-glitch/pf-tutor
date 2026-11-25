@@ -185,7 +185,7 @@
       "flowchartMermaid": "flowchart TD\n  A([Start]) --> B[\"b = 1 2 0 0 0\"]\n  B --> C[\"c = 0 0 0 0 0\"]\n  C --> D[\"d = 4 8 15\"]\n  D --> E[i = 0]\n  E --> F{i < 5?}\n  F -->|Yes| G[/Print b i/]\n  G --> H[i = i + 1]\n  H --> F\n  F -->|No| I[/Print c and d 2/]\n  I --> J([End])",
       "sample": {
         "id": "init-forms",
-        "title": "Partial, zero and automatic-size initialisation",
+        "title": "Partial, zero and automatic-size initialization",
         "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int b[5] = {1, 2};\n    int c[5] = {0};\n    int d[] = {4, 8, 15};\n    cout << \"b: \";\n    for (int i = 0; i < 5; i++) {\n        cout << b[i] << \" \";\n    }\n    cout << endl;\n    cout << \"c: \";\n    for (int i = 0; i < 5; i++) {\n        cout << c[i] << \" \";\n    }\n    cout << endl;\n    cout << \"d[2] = \" << d[2] << endl;\n    return 0;\n}\n",
         "stdin": "",
         "expectedOutput": "b: 1 2 0 0 0 \nc: 0 0 0 0 0 \nd[2] = 15\n",
@@ -376,12 +376,12 @@
       "example": "int a[5];"
     },
     {
-      "way": "Full initialisation",
+      "way": "Full initialization",
       "when": "You know all the starting values",
       "example": "int b[5] = {10, 20, 30, 40, 50};"
     },
     {
-      "way": "Partial initialisation",
+      "way": "Partial initialization",
       "when": "Only the first few are given; the rest become 0",
       "example": "int c[5] = {1, 2};   // 1 2 0 0 0"
     },
@@ -565,12 +565,12 @@
       "difficulty": "medium",
       "prompt": "What happens if you write a[5] = 1; for int a[5]?",
       "options": [
-        "It compiles but writes outside the array (undefined behaviour)",
+        "It compiles but writes outside the array (undefined behavior)",
         "The compiler always reports an error",
         "It extends the array to size 6",
         "It is the same as a[4] = 1"
       ],
-      "answer": "It compiles but writes outside the array (undefined behaviour)",
+      "answer": "It compiles but writes outside the array (undefined behavior)",
       "hint": "C++ does not check bounds.",
       "explanation": "The compiler usually accepts it. At run time it damages memory outside the array."
     },
@@ -593,7 +593,7 @@
   "sources": [
     "Arrays: definition",
     "One-dimensional arrays",
-    "Declaration and initialisation",
+    "Declaration and initialization",
     "Accessing array elements",
     "Array indexing and bounds"
   ]

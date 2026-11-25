@@ -136,10 +136,10 @@
       ]
     }
   ],
-  "goal": "After this you can declare a pointer, make it point to a variable with &, read and change that variable through the pointer with *, and avoid uninitialised and null pointer mistakes.",
+  "goal": "After this you can declare a pointer, make it point to a variable with &, read and change that variable through the pointer with *, and avoid uninitialized and null pointer mistakes.",
   "warmup": "In your phone, a contact does not contain the person. It contains a phone number. When you tap it, you reach the person. A pointer is the same idea: the pointer does not contain the data, it contains the address where the data lives. Following the address to reach the data is called dereferencing. Think of a friend who gives you a slip of paper with his house number. The slip is the pointer, the house is the variable.",
   "definition": "A pointer is a variable that stores the memory address of another variable. You declare it with a * and the type of thing it points to: int *p; means p can hold the address of an int. p = &x; stores the address of x in p, so p points to x. In an expression, *p means the value stored at the address inside p (dereferencing). You can read through it (cout << *p) and write through it (*p = 75;). Writing through the pointer changes the original variable.",
-  "howItWorks": "Follow the arrows in the memory picture. First the ordinary variables get values. Then a pointer is created and given an address with &. An arrow shows what it points to. Be careful with the star because it has TWO meanings. In a declaration, int *p; the * only says that p is a pointer. In an expression, *p means go to that address and use what is there. Every pointer has a type: int * points to an int, double * to a double, char * to a char, and the type must match the variable. An uninitialised pointer contains a random address, so using it can crash the program. So start a pointer with an address or with nullptr (this means no address). Before dereferencing a pointer that might be null, check it: if (p != nullptr). Also remember that int *a, b; makes only a a pointer. Write int *a, *b; for two pointers. Finally, a pointer is itself a variable with its own address, and you can point it somewhere else later: p = &b; moves the arrow but changes no variable.",
+  "howItWorks": "Follow the arrows in the memory picture. First the ordinary variables get values. Then a pointer is created and given an address with &. An arrow shows what it points to. Be careful with the star because it has TWO meanings. In a declaration, int *p; the * only says that p is a pointer. In an expression, *p means go to that address and use what is there. Every pointer has a type: int * points to an int, double * to a double, char * to a char, and the type must match the variable. An uninitialized pointer contains a random address, so using it can crash the program. So start a pointer with an address or with nullptr (this means no address). Before dereferencing a pointer that might be null, check it: if (p != nullptr). Also remember that int *a, b; makes only a a pointer. Write int *a, *b; for two pointers. Finally, a pointer is itself a variable with its own address, and you can point it somewhere else later: p = &b; moves the arrow but changes no variable.",
   "syntax": "int num = 50;\nint *ptr;          // ptr can hold the address of an int\nptr = &num;        // ptr points to num\n\ncout << num;       // 50, the value\ncout << *ptr;      // 50, the value ptr points to (dereference)\n*ptr = 75;         // changes num to 75 through the pointer\n\nint *safe = nullptr;      // points to nothing\nif (safe != nullptr) {    // always check before using\n    cout << *safe;\n}\n\ndouble d = 2.5;\ndouble *pd = &d;   // the pointer type matches the variable type",
   "worked": [
     {
@@ -496,7 +496,7 @@
     "Know the two meanings of *: in a declaration it means pointer type; in an expression it means the value at the address (dereference). & means address-of.",
     "When tracing, keep a table of variables. For each pointer write which variable it points to, like p -> a. A change through *p changes the variable it points to.",
     "Remember: p = &b moves the pointer, *p = 5 changes the value. They are different things.",
-    "Always initialise pointers (with an address or nullptr) and check for nullptr before dereferencing. Examiners like this sentence."
+    "Always initialize pointers (with an address or nullptr) and check for nullptr before dereferencing. Examiners like this sentence."
   ],
   "romanSummary": [
     "Pointer aisa variable hai jo kisi doosre variable ka address store karta hai, jaise phone mein contact number store hota hai, banda nahi.",
@@ -656,7 +656,7 @@
       "id": "q5",
       "type": "mcq",
       "difficulty": "hard",
-      "prompt": "Why can using an uninitialised pointer crash the program?",
+      "prompt": "Why can using an uninitialized pointer crash the program?",
       "options": [
         "It holds a random address that may not belong to the program",
         "It holds 0 which is a valid address",
@@ -665,7 +665,7 @@
       ],
       "answer": "It holds a random address that may not belong to the program",
       "hint": "What address is inside it?",
-      "explanation": "An uninitialised pointer contains garbage. Dereferencing it touches memory the program may not own."
+      "explanation": "An uninitialized pointer contains garbage. Dereferencing it touches memory the program may not own."
     }
   ],
   "sources": [
