@@ -74,7 +74,8 @@ export async function* runTutor(d: Deps, req: TutorRequest): AsyncGenerator<Tuto
   }
   // Tier 0b: a plain definition question the lessons answer directly. Free and instant.
   if (!hasExtras && !req.deep && !((pinned || isOneLiner(question)) && d.provider)) { // a topic chat goes to the AI when one is connected
-    const t0 = tier0Answer(question, hits, req.lang, s.tier0Threshold);
+    // When an AI is connected, only a near-exact lesson match is answered from the notes (instant, free); anything vaguer goes to the AI so the answer fits the question.
+    const t0 = tier0Answer(question, hits, req.lang, d.provider ? Math.max(s.tier0Threshold, 0.95) : s.tier0Threshold);
     if (t0) {
       yield { type: "meta", tier: 0, source: "notes", lessonKey: t0.lessonKey };
       yield { type: "delta", text: t0.text };
