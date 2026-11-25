@@ -11,7 +11,7 @@ export const anthropicConfigured = () => !!process.env.ANTHROPIC_API_KEY || !!fr
 function free(): OpenAICompatProvider | null {
   const k = freeKey();
   if (!k) return null;
-  const model = process.env.FREE_AI_MODEL || "gemini-2.5-flash";
+  const model = process.env.FREE_AI_MODEL || "gemini-3.8-flash";
   return new OpenAICompatProvider(process.env.FREE_AI_BASE_URL || "https://generativelanguage.googleapis.com/v1beta/openai", k, model, process.env.FREE_AI_LABEL || `${model} (free)`);
 }
 

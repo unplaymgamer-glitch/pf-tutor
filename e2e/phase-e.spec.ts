@@ -30,7 +30,7 @@ test("per-topic chat: the lesson button opens it, the Topics tab lists modules, 
   await chat.getByRole("tab", { name: "Topics" }).click();
   await expect(chat.getByRole("button", { name: /Module 3/ })).toBeVisible();
   await chat.getByRole("button", { name: /^Module 1 / }).click();
-  await chat.getByRole("button", { name: "Comments in C++", exact: true }).click();
+  await chat.getByRole("button", { name: "Comments", exact: true }).click();
   await expect(chat.getByRole("heading", { name: /Studying/ })).toBeVisible();
 });
 
