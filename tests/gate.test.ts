@@ -7,16 +7,21 @@ const now = new Date("2026-12-01T10:00:00Z");
 const mk = (patch: Partial<SiteState> = {}): SiteState => ({ ...defaultState(), ...patch });
 
 describe("topicAccess", () => {
-  it("default state: weeks 1-2 open, week 3+ locked", () => {
-    expect(topicAccess(mk(), 1, "hello-world", now).allowed).toBe(true);
-    expect(topicAccess(mk(), 2, null, now).allowed).toBe(true);
-    expect(topicAccess(mk(), 3, "for-loop", now)).toEqual({ allowed: false, reason: "week-locked" });
+  it("default state: every week is open", () => {
+    for (let w = 1; w <= 16; w++) expect(topicAccess(mk(), w, "any-topic", now).allowed, `week ${w}`).toBe(true);
+  });
+  it("an instructor lock still closes a week, and unlocking reopens it", () => {
+    const s = mk(); s.weeks[2] = { ...s.weeks[2], locked: true };
+    expect(topicAccess(s, 3, "for-loop", now)).toEqual({ allowed: false, reason: "week-locked" });
+    s.weeks[2] = { ...s.weeks[2], locked: false };
+    expect(topicAccess(s, 3, "for-loop", now).allowed).toBe(true);
   });
   it("maintenance blocks everything, even open weeks", () => {
     expect(topicAccess(mk({ maintenance: true }), 1, "hello-world", now)).toEqual({ allowed: false, reason: "maintenance" });
   });
-  it("unknown week row fails closed", () => {
-    expect(topicAccess(mk({ weeks: [] }), 1, null, now).allowed).toBe(false);
+  it("unknown week row is open (open by default); maintenance still wins", () => {
+    expect(topicAccess(mk({ weeks: [] }), 1, null, now).allowed).toBe(true);
+    expect(topicAccess(mk({ weeks: [], maintenance: true }), 1, null, now).allowed).toBe(false);
   });
   it("scheduled unlock opens exactly at the time", () => {
     const s = mk(); s.weeks[2] = { week: 3, locked: true, unlock_at: "2026-12-01T10:00:00Z", taught: false };
@@ -24,7 +29,7 @@ describe("topicAccess", () => {
     expect(topicAccess(s, 3, null, now).allowed).toBe(true);
   });
   it("topic flag overrides the week both ways", () => {
-    const s = mk(); s.topics = [{ week: 1, slug: "pdlc", locked: true, unlock_at: null, taught: false }, { week: 3, slug: "for-loop", locked: false, unlock_at: null, taught: false }];
+    const s = mk(); s.weeks[2] = { ...s.weeks[2], locked: true }; s.topics = [{ week: 1, slug: "pdlc", locked: true, unlock_at: null, taught: false }, { week: 3, slug: "for-loop", locked: false, unlock_at: null, taught: false }];
     expect(topicAccess(s, 1, "pdlc", now)).toEqual({ allowed: false, reason: "topic-locked" });
     expect(topicAccess(s, 1, "comments", now).allowed).toBe(true);
     expect(topicAccess(s, 3, "for-loop", now).allowed).toBe(true);

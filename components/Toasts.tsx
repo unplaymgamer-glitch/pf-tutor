@@ -12,7 +12,7 @@ export function Toasts() {
       {toasts.map((t) => (
         <div key={t.id} className="toast pointer-events-auto flex max-w-md items-center gap-3 rounded-xl border border-border bg-surface px-4 py-2 shadow-lg">
           <span>{t.text}</span>
-          <button className="btn !min-h-8 !min-w-8 !px-2 text-sm" aria-label="Dismiss message" onClick={() => dismissToast(t.id)}>✕</button>
+          <button className="btn !min-h-11 !min-w-11 !px-2 text-sm" aria-label="Dismiss message" onClick={() => dismissToast(t.id)}>✕</button>
         </div>
       ))}
     </div>

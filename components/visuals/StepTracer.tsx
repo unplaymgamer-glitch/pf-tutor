@@ -37,7 +37,7 @@ export function StepTracer({ sample }: { sample: CodeSample }) {
         </button>
         <button className="btn" onClick={() => setI((x) => Math.min(n - 1, x + 1))} disabled={i >= n - 1}>Next ▶</button>
         <label className="flex items-center gap-2 text-sm">Speed
-          <select className="btn !min-h-9" value={speed} onChange={(e) => setSpeed(Number(e.target.value))}>
+          <select className="btn !min-h-11" value={speed} onChange={(e) => setSpeed(Number(e.target.value))}>
             <option value={2200}>Slow</option>
             <option value={1200}>Normal</option>
             <option value={600}>Fast</option>

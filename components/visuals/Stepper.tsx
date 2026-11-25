@@ -33,7 +33,7 @@ export function StepperControls({ s, label }: { s: StepperState; label: string }
       <button className="btn btn-primary" onClick={s.toggle}>{s.playing ? "⏸ Pause" : "▶ Play"}</button>
       <button className="btn" onClick={s.next} disabled={s.i >= s.n - 1}>Next ▶</button>
       <label className="flex items-center gap-2 text-sm">Speed
-        <select className="btn !min-h-9" value={s.speed} onChange={(e) => s.setSpeed(Number(e.target.value))}>
+        <select className="btn !min-h-11" value={s.speed} onChange={(e) => s.setSpeed(Number(e.target.value))}>
           <option value={1800}>Slow</option><option value={900}>Normal</option><option value={350}>Fast</option>
         </select>
       </label>

@@ -56,7 +56,7 @@ function SubNav() {
 }
 
 function SettingsPanel({ onClose }: { onClose: () => void }) {
-  const { settings: s, update, tier } = useSettings();
+  const { settings: s, update } = useSettings();
   return (
     <section id="settings-panel" aria-label="Settings" className="border-t border-border bg-surface px-4 py-4">
       <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
@@ -78,13 +78,7 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
           <input type="range" min={0.9} max={1.5} step={0.05} value={s.fontScale}
             onChange={(e) => update({ fontScale: Number(e.target.value) })} />
         </label>
-        <label className="grid gap-1">3D scenes (now using: {tier} quality)
-          <select className="btn" value={s.threeD} onChange={(e) => update({ threeD: e.target.value as typeof s.threeD })}>
-            <option value="auto">Automatic</option>
-            <option value="on">On</option>
-            <option value="off">Off (simple 2D)</option>
-          </select>
-        </label>
+        {/* The "3D scenes" control returns together with real 3D scenes (V2 phase D). It is not shown while it would change nothing. */}
         <Toggle label="Reduce motion" checked={s.reduceMotion} onChange={(v) => update({ reduceMotion: v })} />
         <Toggle label="Low-data mode" checked={s.lowData} onChange={(v) => update({ lowData: v })} />
         <Toggle label="Dyslexia-friendly text" checked={s.dyslexia} onChange={(v) => update({ dyslexia: v })} />

@@ -17,13 +17,13 @@ export type SiteState = {
 
 export const DEFAULT_FEATURES: Features = { leaderboard: true, voice: true, upload: true, runner: true, threeD: true };
 
-/** Fallback used when no database is configured (local dev) or the database is unreachable: weeks 1-2 open. */
+/** Default and fallback state (no database, or database unreachable): EVERYTHING is open. Locking is an optional instructor tool. */
 export function defaultState(): SiteState {
   return {
     maintenance: false,
     examMode: false,
     features: DEFAULT_FEATURES,
-    weeks: Array.from({ length: 16 }, (_, i) => ({ week: i + 1, locked: i + 1 > (Number(process.env.CC111_DEV_OPEN_WEEKS) || 2), unlock_at: null, taught: false })),
+    weeks: Array.from({ length: 16 }, (_, i) => ({ week: i + 1, locked: false, unlock_at: null, taught: false })),
     topics: [],
     announcements: [],
   };
@@ -42,8 +42,8 @@ export type Access = { allowed: boolean; reason: "ok" | "maintenance" | "week-lo
 export function topicAccess(state: SiteState, week: number, slug: string | null, now: Date): Access {
   if (state.maintenance) return { allowed: false, reason: "maintenance" };
   const w = state.weeks.find((x) => x.week === week);
-  // Unknown week row = locked (fail closed).
-  const weekLocked = w ? isLockedAt(w.locked, w.unlock_at, now) : true;
+  // Open by default: only a week the instructor explicitly locked is closed. An unknown week row is open.
+  const weekLocked = w ? isLockedAt(w.locked, w.unlock_at, now) : false;
   if (slug) {
     const t = state.topics.find((x) => x.week === week && x.slug === slug);
     if (t && t.locked !== null) {

@@ -40,7 +40,7 @@ export function AnnouncementBanner() {
         {list.map((a) => (
           <li key={a.id} role="status" className="flex items-center justify-between gap-3 px-4 py-2">
             <span>📢 {a.text}</span>
-            <button className="btn !min-h-9" aria-label="Dismiss announcement" onClick={() => dismiss(a.id)}>✕</button>
+            <button className="btn !min-h-11" aria-label="Dismiss announcement" onClick={() => dismiss(a.id)}>✕</button>
           </li>
         ))}
       </ul>

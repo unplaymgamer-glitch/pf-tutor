@@ -199,7 +199,7 @@ export function Playground({ initialCode, initialStdin }: { initialCode?: string
             {explained.map((e, i) => (
               <div key={i} className={`box ${e.severity === "error" ? "box-error" : "box-mistake"}`}>
                 <strong>{e.severity === "error" ? "✗" : "⚠"} {e.title}</strong>
-                {e.line && <button className="btn ms-2 !min-h-9" onClick={() => editor.current?.goToLine(e.line!)}>Go to line {e.line}</button>}
+                {e.line && <button className="btn ms-2 !min-h-11" onClick={() => editor.current?.goToLine(e.line!)}>Go to line {e.line}</button>}
                 <p>{e.help}</p>
                 {e.fix && <pre tabIndex={0} className="code" dir="ltr">{e.fix}</pre>}
                 <details><summary className="cursor-pointer text-sm text-muted">Original compiler message</summary><code dir="ltr" className="break-all">{e.raw}</code></details>

@@ -9,5 +9,5 @@ export function ChapterStatus({ week }: { week: number }) {
   if (s?.maintenance) return <span className="text-muted">⏸ paused</span>;
   if (w.locked) return <span className="text-muted">🔒 {w.unlockAt ? `opens ${new Date(w.unlockAt).toLocaleString()}` : "locked"}</span>;
   if (w.taught) return <span className="text-success">✅ Taught in class</span>;
-  return <span className="text-primary">📖 open</span>;
+  return null; // everything is open by default: no "open" badge needed
 }

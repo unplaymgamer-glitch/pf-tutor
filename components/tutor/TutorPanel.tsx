@@ -110,9 +110,9 @@ export default function Panel({ onClose, initial }: { onClose: () => void; initi
       <header className="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
         <strong>💬 CC111 Tutor</strong>
         <span className="flex gap-1">
-          <button className="btn !min-h-9 text-sm" aria-expanded={showList} onClick={() => setShowList(!showList)}>History ({sessions.length})</button>
-          <button className="btn !min-h-9 text-sm" onClick={() => { setCur(newSession()); setErrorBox(null); setShowList(false); }}>New</button>
-          <button className="btn !min-h-9 text-sm" aria-label="Close tutor chat" onClick={onClose}>✕</button>
+          <button className="btn !min-h-11 text-sm" aria-expanded={showList} onClick={() => setShowList(!showList)}>History ({sessions.length})</button>
+          <button className="btn !min-h-11 text-sm" onClick={() => { setCur(newSession()); setErrorBox(null); setShowList(false); }}>New</button>
+          <button className="btn !min-h-11 text-sm" aria-label="Close tutor chat" onClick={onClose}>✕</button>
         </span>
       </header>
 
@@ -122,7 +122,7 @@ export default function Panel({ onClose, initial }: { onClose: () => void; initi
           {sessions.map((s) => (
             <div key={s.id} className="box flex items-center justify-between gap-2">
               <button className="min-h-11 flex-1 text-start" onClick={() => { setCur(s); setShowList(false); }}>{s.title}<br /><span className="text-xs text-muted">{new Date(s.updatedAt).toLocaleString()}</span></button>
-              <button className="btn !min-h-9" aria-label={`Delete chat ${s.title}`} onClick={async () => { await deleteSession(s.id); setSessions(await listSessions()); if (cur.id === s.id) setCur(newSession()); }}>🗑</button>
+              <button className="btn !min-h-11" aria-label={`Delete chat ${s.title}`} onClick={async () => { await deleteSession(s.id); setSessions(await listSessions()); if (cur.id === s.id) setCur(newSession()); }}>🗑</button>
             </div>
           ))}
           {sessions.length > 0 && (
@@ -150,7 +150,7 @@ export default function Panel({ onClose, initial }: { onClose: () => void; initi
                   <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
                     <span>{m.meta?.source === "claude" ? `AI · ${m.meta.model}` : m.meta?.source === "instructor" ? "From your instructor" : "From the lessons (free)"}</span>
                     {speechOutputSupported() && features?.voice !== false && (
-                      <button className="btn !min-h-8 text-xs" onClick={() => { if (!speak(m.text, lang)) setNote(lang === "ur" ? "No Urdu voice is installed on this device, so I cannot read Urdu aloud." : "Reading aloud is not available here."); }}>🔊 Read aloud</button>
+                      <button className="btn !min-h-11 text-xs" onClick={() => { if (!speak(m.text, lang)) setNote(lang === "ur" ? "No Urdu voice is installed on this device, so I cannot read Urdu aloud." : "Reading aloud is not available here."); }}>🔊 Read aloud</button>
                     )}
                   </div>
                 )}
@@ -178,7 +178,7 @@ export default function Panel({ onClose, initial }: { onClose: () => void; initi
                 {context?.code && <span className="rounded bg-surface2 px-2 py-1">📝 your code{context.diagnostics ? " + error" : ""}</span>}
                 {file && <span className="rounded bg-surface2 px-2 py-1">📎 {file.name}</span>}
                 {images.map((i) => <span key={i.name} className="rounded bg-surface2 px-2 py-1">🖼 {i.name}</span>)}
-                <button className="btn !min-h-8 text-xs" onClick={() => { setContext(undefined); setFile(null); setImages([]); }}>Remove</button>
+                <button className="btn !min-h-11 text-xs" onClick={() => { setContext(undefined); setFile(null); setImages([]); }}>Remove</button>
               </div>
             )}
             {note && <p role="status" className="text-sm text-muted">{note}</p>}
@@ -189,12 +189,12 @@ export default function Panel({ onClose, initial }: { onClose: () => void; initi
             </div>
             <div className="flex flex-wrap items-center gap-2">
               {features?.upload !== false && (
-                <label className="btn !min-h-9 cursor-pointer text-sm">📎 Attach
+                <label className="btn !min-h-11 cursor-pointer text-sm">📎 Attach
                   <input type="file" className="sr-only" accept=".cpp,.cc,.cxx,.h,.hpp,.txt,image/png,image/jpeg" onChange={(e) => { void pickFile(e.target.files?.[0]); e.target.value = ""; }} />
                 </label>
               )}
-              {features?.voice !== false && speechInputSupported() && <button className={`btn !min-h-9 text-sm ${listening ? "border-error" : ""}`} aria-pressed={listening} onClick={toggleMic}>{listening ? "⏹ Stop" : "🎤 Speak"}</button>}
-              {busy && <button className="btn !min-h-9 text-sm" onClick={() => abort.current?.abort()}>Stop</button>}
+              {features?.voice !== false && speechInputSupported() && <button className={`btn !min-h-11 text-sm ${listening ? "border-error" : ""}`} aria-pressed={listening} onClick={toggleMic}>{listening ? "⏹ Stop" : "🎤 Speak"}</button>}
+              {busy && <button className="btn !min-h-11 text-sm" onClick={() => abort.current?.abort()}>Stop</button>}
               <span className="ms-auto text-xs text-muted">{left !== null ? `${left} AI question(s) left today` : ""}</span>
             </div>
             <p className="text-xs text-muted">The tutor can make mistakes. Check important answers with your lesson or instructor. Chats are saved only on this device.</p>

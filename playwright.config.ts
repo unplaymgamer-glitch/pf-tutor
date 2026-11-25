@@ -16,6 +16,6 @@ export default defineConfig({
     url: "http://localhost:3112",
     reuseExistingServer: true,
     timeout: 120_000,
-    env: { CC111_DEV_OPEN_WEEKS: "16", CC111_STORE: "memory" },
+    env: { CC111_STORE: "memory" },
   },
 });

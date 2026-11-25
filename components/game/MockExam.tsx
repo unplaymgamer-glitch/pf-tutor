@@ -1,4 +1,5 @@
 "use client";
+import { FINAL_LAST_WEEK, MID_LAST_WEEK } from "@/lib/course";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { dayKey } from "@/lib/game/dates";
@@ -52,11 +53,11 @@ function Pick({ questions, history, onStart }: { questions: PoolQuestion[]; hist
   const weeks = [...new Set(gradable.map((q) => q.week))].sort((a, b) => a - b);
   return (
     <div className="grid gap-4">
-      <p className="box box-definition">Mock exams use real lesson questions you can already open ({weeks.length ? `Weeks ${weeks.join(", ")}` : "none yet"}). They grow as your instructor opens more weeks. There is no feedback until you submit, like the real exam.</p>
+      <p className="box box-definition">Mock exams use real lesson questions you can already open ({weeks.length ? `Weeks ${weeks.join(", ")}` : "none yet"}). There is no feedback until you submit, like the real exam.</p>
       <div className="grid gap-3 sm:grid-cols-2">
-        <div className="box grid gap-2"><h2 className="text-lg font-semibold">Mid-term mock</h2><p>Weeks 1–8 · up to 20 questions · {MOCK_MINUTES.mid} minutes</p><p className="text-sm text-muted">{midN} questions available</p>
+        <div className="box grid gap-2"><h2 className="text-lg font-semibold">Mid-term mock</h2><p>Weeks 1–{MID_LAST_WEEK} · up to 20 questions · {MOCK_MINUTES.mid} minutes</p><p className="text-sm text-muted">{midN} questions available</p>
           <button className="btn btn-primary w-fit" disabled={midN === 0} onClick={() => onStart("mid")}>Start Mid-term mock</button></div>
-        <div className="box grid gap-2"><h2 className="text-lg font-semibold">Final mock</h2><p>Whole course · up to 30 questions · {MOCK_MINUTES.final} minutes</p><p className="text-sm text-muted">{gradable.length} questions available</p>
+        <div className="box grid gap-2"><h2 className="text-lg font-semibold">Final mock</h2><p>Weeks 1–{FINAL_LAST_WEEK} (whole course) · up to 30 questions · {MOCK_MINUTES.final} minutes</p><p className="text-sm text-muted">{gradable.length} questions available</p>
           <button className="btn btn-primary w-fit" disabled={gradable.length === 0} onClick={() => onStart("final")}>Start Final mock</button></div>
       </div>
       {history.length > 0 && (

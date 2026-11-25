@@ -11,7 +11,7 @@ Built with Next.js 16 (App Router), React 19, Tailwind 4 and TypeScript. Hosted 
 ## Quick start
 ```powershell
 npm install
-npm run dev                       # http://localhost:3000 (weeks 1-2 open; set CC111_DEV_OPEN_WEEKS=16 to open all)
+npm run dev                       # http://localhost:3000 (all 16 weeks open)
 npm test                          # unit tests (set CC111_GXX=<path to g++> to also compile every lesson sample)
 npm run verify:content            # compile + run every code sample and compare with the stored output
 npm run build && npm start        # production build

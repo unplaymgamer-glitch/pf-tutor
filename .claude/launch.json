@@ -2,6 +2,5 @@
   "version": "0.0.1",
   "configurations": [
     { "name": "cc111-dev", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev", "--", "-p", "3111"], "port": 3111 },
-    { "name": "cc111-dev-open8", "runtimeExecutable": "cmd", "runtimeArgs": ["/c", "set CC111_DEV_OPEN_WEEKS=8&& npm run dev -- -p 3111"], "port": 3111 }
   ]
 }

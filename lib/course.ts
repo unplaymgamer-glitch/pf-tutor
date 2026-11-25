@@ -27,3 +27,7 @@ export const weekFromSlug = (s: string): number | null => {
   return n >= 1 && n <= 16 ? n : null;
 };
 export const chapterByWeek = (w: number) => CHAPTERS.find((c) => c.week === w);
+
+/** The ranges the Mid-term and Final hubs / mock exams claim. Pages, mocks and a test all read these. */
+export const MID_LAST_WEEK = 8;
+export const FINAL_LAST_WEEK = 16;

@@ -36,10 +36,10 @@ Type a password of 12+ characters twice (hidden). It prints `ADMIN_PASSWORD_HASH
 
 ## 4. Check the live site (post-deploy smoke test, 5 minutes)
 Replace `<site>` with your address.
-1. `https://<site>/` loads; Week 1 and Week 2 open, the other weeks show "locked".
+1. `https://<site>/` loads; all 16 weeks are open (nothing is locked unless you lock it in the admin).
 2. `https://<site>/week-1/hello-world` loads; press Next a few times in the animation.
 3. `https://<site>/robots.txt` lists `Disallow: /admin`; `https://<site>/sitemap.xml` lists only open lessons.
-4. `https://<site>/admin` → log in → unlock Week 3 → reload the student site within ~10 seconds: Week 3 now opens. Lock it again to test.
+4. `https://<site>/admin` → log in → lock Week 3 → reload the student site within ~10 seconds: Week 3 shows "Coming soon". Unlock it again.
 5. Post a test announcement; it appears on the student site; delete it.
 6. Open the tutor (💬) and ask "What is a variable?" (answers for free); ask a harder question to test the AI (needs the key).
 7. Open `/playground`, press Run (Basic mode) or download the compiler once (about 60 MB) and run a program.
@@ -65,7 +65,7 @@ Push to `main` on GitHub; Vercel redeploys automatically. New lessons go in `con
 ## 8. Local development
 ```powershell
 npm install
-npm run dev          # http://localhost:3000, in-memory data if no Supabase key is set (weeks 1-2 open; CC111_DEV_OPEN_WEEKS=16 opens all)
+npm run dev          # http://localhost:3000, in-memory data if no Supabase key is set (all 16 weeks open)
 npm test             # unit tests (set CC111_GXX to your g++ path to also compile every lesson sample)
 npm run verify:content
 npm run build

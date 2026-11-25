@@ -1,3 +1,4 @@
+import { FINAL_LAST_WEEK, MID_LAST_WEEK } from "../course";
 // Question pool for daily challenge, spaced review and mock exams. Built on the server from UNLOCKED lessons only.
 export type PoolQuestion = {
   key: string;            // "w2/if-statement#q3" = topic key + question id
@@ -35,7 +36,7 @@ export function pickDaily(pool: PoolQuestion[], day: string): PoolQuestion | nul
 
 /** Mock exam: topic-balanced random sample. Same seed = same exam (so a result can be reviewed). */
 export function buildMock(pool: PoolQuestion[], mode: "mid" | "final", seed: string, count = 20): PoolQuestion[] {
-  const maxWeek = mode === "mid" ? 8 : 16;
+  const maxWeek = mode === "mid" ? MID_LAST_WEEK : FINAL_LAST_WEEK;
   const g = pool.filter((q) => gradable(q) && q.week <= maxWeek).sort((a, b) => a.key.localeCompare(b.key));
   const rnd = seededRandom(hashString(`${mode}-${seed}`));
   const byTopic = new Map<string, PoolQuestion[]>();

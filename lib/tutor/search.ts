@@ -7,14 +7,26 @@ export type Hit = { topic: Topic; score: number; confidence: number };
 
 const STOP = new Set(("a an the is are was were be been being of in on at to for from by with and or but not do does did what whats which who whom whose how why when where " +
   "tell me about explain define meaning mean means simple simply easy please can could would should it its this that these those use used using " +
-  "kya hai hain ka ki ke ko se me mein par aur yeh ye wo woh batao bata samjhao samjha detail likho bataye").split(" "));
+  "difference differences between versus vs syntax example examples steps step work works need needs want we you i my your into inside " +
+  "kya hai hain hota hoti ka ki ke ko se me mein par aur yeh ye wo woh batao bata samjhao samjha detail likho bataye").split(" "));
 
 // Symbols students type instead of words, mapped to the words the lessons use.
 const SYMBOLS: [RegExp, string][] = [
-  [/&&|\|\|/g, " logical operators "], [/\?[^:?]*:/g, " ternary conditional operator "], [/\+\+|--/g, " increment decrement unary "],
+  [/c\+\+/g, " "], [/&&|\|\|/g, " logical operators "], [/\?[^:?]*:/g, " ternary conditional operator "], [/\+\+|--/g, " increment decrement unary "],
   [/[+\-*/%]=/g, " assignment operators "], [/==|!=|<=|>=/g, " relational operators "], [/<</g, " cout output "], [/>>/g, " cin input "],
   [/%/g, " modulus arithmetic operators "], [/\bcin\b/g, " cin input "], [/\bcout\b/g, " cout output "],
 ];
+
+// Words students use -> words the lessons use (matched after stemming).
+const ALIAS: Record<string, string[]> = {
+  "2d": ["two", "dimensional"], "3d": ["three", "dimensional"], struct: ["structure"], structs: ["structure"], recursive: ["recursion"], matrices: ["matrix"],
+  modulus: ["arithmetic"], modulo: ["arithmetic"], remainder: ["arithmetic"], largest: ["maximum"], smallest: ["minimum"], biggest: ["maximum"], lowest: ["minimum"],
+  int: ["data", "type"], double: ["data", "type"], float: ["data", "type"], integer: ["data", "type"], pyramid: ["pattern"], diamond: ["pattern"], triangle: ["pattern"], stars: ["pattern"],
+  ofstream: ["writing", "file"], ifstream: ["reading", "file"], fstream: ["file"], delete: ["new"], heap: ["stack"], vector: ["array"],
+};
+
+const stem = (w: string): string => (w.length < 4 ? w : w.replace(/(ing|ed|es|s|e)$/, ""));
+const words = (text: string): string[] => text.toLowerCase().replace(/[^a-z0-9]+/g, " ").split(" ").filter(Boolean);
 
 export const terms = (q: string): string[] => {
   let s = q.toLowerCase();
@@ -23,35 +35,69 @@ export const terms = (q: string): string[] => {
 };
 
 const haystack = (t: Topic) => `${t.title} ${t.sources.join(" ")} ${t.slug.replace(/-/g, " ")}`.toLowerCase();
+const INTRO = /(^|-)(intro|purpose|why|what)(-|$)/;
+const INTENT = /^\s*(what|why|define|explain|meaning|introduction)\b|\b(kya hai|kya hota|kya hoti|ka matlab)\b/i;
+
+type Lex = { title: Set<string>; slug: Set<string>; sources: Set<string>; head: Set<string>; slugWords: string[] };
 
 export class CourseSearch {
   private ms: MiniSearch<{ id: string; title: string; goal: string; body: string; sources: string }>;
   private byId = new Map<string, Topic>();
+  private lex = new Map<string, Lex>();
+  private idf = new Map<string, number>();
   constructor(topics: Topic[]) {
-    this.ms = new MiniSearch({ fields: ["title", "sources", "goal", "body"], storeFields: ["id"], searchOptions: { prefix: true, fuzzy: 0.15, boost: { title: 4, sources: 3, goal: 1.5 }, combineWith: "OR" } });
+    this.ms = new MiniSearch({ fields: ["title", "sources", "goal", "body"], storeFields: ["id"], searchOptions: { prefix: true, fuzzy: 0.1, boost: { title: 4, sources: 3, goal: 1.5 }, combineWith: "OR" } });
+    const df = new Map<string, number>();
     this.ms.addAll(topics.map((t) => {
       const id = `${t.week}/${t.slug}`;
       this.byId.set(id, t);
+      const title = new Set(words(t.title).map(stem)), slugWords = words(t.slug), slug = new Set(slugWords.map(stem)), sources = new Set(words(t.sources.join(" ")).map(stem));
+      const head = new Set(words(t.title.split(/[:(]/)[0]).map(stem));
+      this.lex.set(id, { title, slug, sources, head, slugWords });
+      for (const w of new Set([...title, ...slug, ...sources])) df.set(w, (df.get(w) ?? 0) + 1);
       return { id, title: t.title, goal: t.goal, sources: t.sources.join(" "), body: [t.definition, t.warmup, t.howItWorks, ...t.examTips, ...t.romanSummary, ...t.mistakes.map((m) => m.wrong)].join(" ") };
     }));
+    for (const [w, n] of df) this.idf.set(w, Math.log(1 + topics.length / n));
   }
 
   /** Ranked lessons. confidence = share of the question's key words found in the lesson title/sources (precision-oriented). */
   search(query: string, limit = 3): Hit[] {
     const ts = terms(query);
     if (!ts.length) return [];
-    const res = this.ms.search(ts.join(" ")).slice(0, Math.max(limit, 15)); // wide pool: the earliest-week tie-break below needs to see lessons that score lower
-    const hits = res.map((r) => {
-      const t = this.byId.get(r.id as string)!;
+    // expanded, stemmed query words
+    const q = new Set<string>();
+    for (const t of ts) { q.add(stem(t)); for (const a of ALIAS[t] ?? []) q.add(stem(a)); }
+    const raw = words(query.toLowerCase().replace(/c\+\+/g, " "));
+    const intent = INTENT.test(query);
+    const ms = new Map(this.ms.search([...q].join(" ")).slice(0, 40).map((r) => [r.id as string, r.score]));
+    const hits: Hit[] = [];
+    for (const [id, t] of this.byId) {
+      const L = this.lex.get(id)!;
+      let lexical = 0, matched = 0;
+      for (const w of q) {
+        const idf = this.idf.get(w) ?? 0;
+        if (!idf) continue;
+        const s = (L.title.has(w) ? 3 : 0) + (L.slug.has(w) ? 2 : 0) + (L.sources.has(w) ? 2 : 0);
+        if (s) { lexical += idf * s; matched++; }
+      }
+      if (L.head.size) lexical += 4 * ([...L.head].filter((w) => q.has(w)).length / L.head.size);
+      // a run of the lesson's slug words appearing in the question ("for loop", "pass by address", "array to function")
+      let run = 0;
+      for (let i = 0; i < L.slugWords.length; i++) for (let j = i + 1; j <= L.slugWords.length; j++) {
+        const phrase = L.slugWords.slice(i, j);
+        if (phrase.length >= 2 && phrase.length > run && raw.join(" ").includes(phrase.join(" "))) run = phrase.length;
+      }
+      lexical += run * 2.5;
+      if (intent && INTRO.test(t.slug)) lexical += 2;
+      const body = ms.get(id) ?? 0;
+      if (lexical === 0 && body === 0) continue;
       const h = haystack(t);
-      const found = ts.filter((w) => h.includes(w)).length;
-      return { topic: t, score: r.score, confidence: found / ts.length };
-    });
-    // A concept is defined where it is first introduced: among equally confident lessons prefer the earliest week
-    // (so "what is a variable" opens Variables in Week 1, not the Week 7 lesson on variable scope).
-    const top = Math.max(...hits.map((h) => h.score), 0);
-    const strong = (h: Hit) => h.score >= top * 0.25;
-    return hits.sort((a, b) => b.confidence - a.confidence || (strong(a) && strong(b) ? a.topic.week - b.topic.week : b.score - a.score)).slice(0, limit);
+      const found = ts.filter((w) => h.includes(w) || (ALIAS[w] ?? []).some((a) => h.includes(a))).length;
+      hits.push({ topic: t, score: lexical + 0.12 * body + (matched ? 0 : 0), confidence: found / ts.length });
+    }
+    // among near-equal scores prefer the lesson where a concept is first introduced (earliest week)
+    hits.sort((a, b) => (Math.abs(a.score - b.score) < 0.03 * Math.max(a.score, b.score) ? a.topic.week - b.topic.week : b.score - a.score));
+    return hits.slice(0, limit);
   }
 }
 

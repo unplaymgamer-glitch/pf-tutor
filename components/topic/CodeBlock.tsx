@@ -15,10 +15,10 @@ export function CodeBlock({ code, highlight, label, tryIt }: { code: string; hig
     <div className="relative">
       <div className="absolute right-2 top-2 z-10 flex gap-2">
         {tryIt && (
-          <button className="btn !min-h-9 text-sm" onClick={openInPlayground} aria-label={`Try it: run ${label ?? "this code"} in the Playground`}>▶ Try it</button>
+          <button className="btn !min-h-11 text-sm" onClick={openInPlayground} aria-label={`Try it: run ${label ?? "this code"} in the Playground`}>▶ Try it</button>
         )}
         <button
-          className="btn !min-h-9 text-sm"
+          className="btn !min-h-11 text-sm"
           onClick={async () => { try { await navigator.clipboard.writeText(code); setCopied(true); setTimeout(() => setCopied(false), 1500); } catch { /* clipboard blocked */ } }}
           aria-label={`${copied ? "Copied" : "Copy"}: ${label ?? "code"}`}
         >{copied ? "Copied" : "Copy"}</button>

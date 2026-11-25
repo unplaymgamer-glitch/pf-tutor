@@ -41,7 +41,7 @@ test("playground loads, runs nothing until asked, and CSP blocks nothing it need
 });
 
 test("locked content is not delivered: a week beyond the open ones returns the locked view without lesson text", async ({ request }) => {
-  // The e2e server opens all 16 weeks, so check the opposite: sitemap lists only what is open and admin is noindex.
+  // Everything is open by default: the sitemap lists lessons from every week and the admin area is noindex.
   const robots = await request.get("/robots.txt");
   expect(await robots.text()).toContain("Disallow: /admin");
   const sm = await request.get("/sitemap.xml");
