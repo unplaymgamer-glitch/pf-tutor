@@ -125,6 +125,7 @@ html[lang="ur"] pre, html[lang="ur"] code, html[lang="ur"] .code { direction: lt
 pre.code { background: var(--code-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px; overflow-x: auto; white-space: pre; font-family: var(--font-code); font-size: 0.9rem; line-height: 1.6; }
 
 .btn { min-height: 44px; min-width: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; }
+.btn-sm { min-height: 32px; min-width: 32px; padding: 0 9px; font-size: .78rem; border-radius: 8px; align-items: center; justify-content: center; gap: 5px; }
 .btn-primary { background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); color: var(--on-primary); border-color: transparent; font-weight: 600; transition: box-shadow .2s ease, transform .2s ease; }
 .btn-primary:hover { box-shadow: 0 8px 26px -8px color-mix(in srgb, var(--grad-a) 70%, transparent); transform: translateY(-1px); }
 

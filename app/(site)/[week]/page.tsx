@@ -32,7 +32,7 @@ export default async function ChapterPage({ params }: PageProps<"/[week]">) {
   return (
     <div className="grid gap-4">
       <p className="flex items-center gap-x-2 text-sm text-muted"><Link className="inline-flex min-h-11 items-center" href="/">Home</Link> / Week {c.week}</p>
-      <h1 className="text-3xl font-semibold">Week {c.week}: {c.title}</h1>
+      <h1 className="flex items-center gap-3 text-3xl font-semibold"><span aria-hidden className="grid h-12 w-12 place-items-center rounded-2xl text-2xl" style={{ background: "color-mix(in srgb, hsl(var(--wk-h) 80% 55%) 20%, transparent)" }}>{WEEK_ICONS[c.week - 1]}</span>Week {c.week}: {c.title}</h1>
       <p className="text-muted">{c.summary}{c.assessment ? ` · ${c.assessment}` : ""}</p>
       {topics.length > 0 && (
         <div className="wk card hidden sm:block" style={{ ["--wk-h" as string]: WEEK_HUES[w - 1] }}>
@@ -42,11 +42,11 @@ export default async function ChapterPage({ params }: PageProps<"/[week]">) {
       {topics.length === 0 ? (
         <p className="box box-definition">Lessons for this week are coming soon.</p>
       ) : (
-        <ol className="grid gap-2">
+        <ol className="wk grid gap-2" style={{ ["--wk-h" as string]: WEEK_HUES[w - 1] }}>
           {topics.map((t, i) => (
             <li key={t.slug}>
               <Link className="box flex min-h-11 items-center justify-between gap-3 no-underline" href={`/week-${w}/${t.slug}`}>
-                <span><span className="text-muted">{i + 1}.</span> {t.title}</span>
+                <span className="flex items-center gap-3"><span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-lg" style={{ background: "color-mix(in srgb, hsl(var(--wk-h) 80% 55%) 20%, transparent)" }}>{WEEK_ICONS[w - 1]}</span><span><span className="text-muted">{i + 1}.</span> {t.title}</span></span>
                 <ProgressBadge k={`w${w}/${t.slug}`} />
               </Link>
             </li>

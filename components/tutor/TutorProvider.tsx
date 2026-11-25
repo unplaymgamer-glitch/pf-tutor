@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { createContext, useCallback, useContext, useState } from "react";
 
 /** `topic` is a human label; `topicKey` ("w3/for-loop") pins the lesson so the tutor answers inside it. */
-export type AskContext = { code?: string; diagnostics?: string; stdin?: string; topic?: string; topicKey?: string; text?: string };
+export type AskContext = { code?: string; diagnostics?: string; stdin?: string; topic?: string; topicKey?: string; text?: string; autoSend?: boolean };
 const Ctx = createContext<{ open: (c?: AskContext) => void }>({ open: () => {} });
 export const useTutor = () => useContext(Ctx);
 
@@ -14,7 +14,7 @@ const Panel = dynamic(() => import("./TutorPanel"), { ssr: false });
 export function TutorProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setOpen] = useState(false);
   const path = usePathname() ?? "";
-  const onAdmin = path === "/admin" || path.startsWith("/admin/") || path === "/chat"; // no floating button on the instructor page or on the full-page chat
+  const onAdmin = path === "/admin" || path.startsWith("/admin/") || path === "/chat" || path === "/"; // no floating button on the instructor page or on the full-page chat
   const [ctx, setCtx] = useState<AskContext | undefined>();
   const open = useCallback((c?: AskContext) => { setCtx(c); setOpen(true); }, []);
   return (

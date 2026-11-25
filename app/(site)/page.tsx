@@ -5,6 +5,7 @@ import { getTopics } from "@/lib/content";
 import { ContinueCard } from "@/components/topic/ContinueCard";
 import { DailyChallenge } from "@/components/game/DailyChallenge";
 import { HeroDemo } from "@/components/home/HeroDemo";
+import { HomeChatBox } from "@/components/home/HomeChatBox";
 import { RoadmapMap } from "@/components/home/RoadmapMap";
 import { StatCounters } from "@/components/home/StatCounters";
 import { SITE_DESCRIPTION } from "@/lib/site";
@@ -28,17 +29,18 @@ export default function Home() {
     <div className="grid gap-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
 
-      <section className="grid items-center gap-6 lg:grid-cols-2" aria-labelledby="hero">
-        <div className="grid gap-4 rise">
-          <p className="flex flex-wrap gap-2"><span className="pill">🆓 Free</span><span className="pill">🔓 No login</span><span className="pill">🗓️ 16 weeks</span></p>
-          <h1 id="hero" className="text-4xl font-bold leading-tight sm:text-5xl">Learn C++ by <span className="gradient-text">seeing it run</span></h1>
+      <section className="grid content-center gap-8 py-8 text-center sm:py-14" aria-labelledby="hero">
+        <h1 id="hero" className="rise text-4xl font-bold leading-tight sm:text-6xl"><span className="gradient-text">Programming Fundamentals</span></h1>
+        <div className="rise" style={{ animationDelay: ".1s" }}><HomeChatBox /></div>
+      </section>
+
+      <section className="grid items-center gap-6 lg:grid-cols-2" aria-labelledby="seeing">
+        <div className="grid gap-4">
+          <h2 id="seeing" className="text-3xl font-bold leading-tight sm:text-4xl">Learn C++ by <span className="gradient-text">seeing it run</span></h2>
           <p className="text-lg text-muted">Pictures and animations first, then simple words, real code and practice. Built for UMT CC111 students.</p>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/week-1" className="btn btn-primary inline-flex items-center px-6 no-underline">Start learning</Link>
-            <Link href="/visual-lab" className="btn inline-flex items-center px-6 no-underline">🎬 Open Visual Lab</Link>
-          </div>
+          <div><Link href="/visual-lab" className="btn inline-flex items-center px-6 no-underline">🎬 Open Visual Lab</Link></div>
         </div>
-        <div className="rise" style={{ animationDelay: ".12s" }}><HeroDemo /></div>
+        <HeroDemo />
       </section>
 
       <ContinueCard />

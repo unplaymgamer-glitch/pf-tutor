@@ -67,6 +67,13 @@ docs/CONTENT_MAP.md, SOURCE_CONFLICTS.md, DECISIONS.md. Awaiting from instructor
 - Deployed: https://pf-tutor.vercel.app (students), /admin (instructor), code at https://github.com/unplaymgamer-glitch/pf-tutor (public, MIT). Database connected (Supabase service key set in Vercel).
 - Website ON/OFF switch in the admin closes the whole student site; admin keeps working.
 
+## Home redesign (user feedback after Phase E): DONE
+- First screen is now only the title "Programming Fundamentals" and a chat-style box ("What do you want to learn today?"), then Start learning and AI Tutor buttons and four idea chips. A question typed there is handed to /chat through this tab's sessionStorage (never the URL) and asked automatically; attachments and files are in /chat.
+- Removed from the first screen: Free / No login / 16 weeks badges, the subtitle, the live Bubble Sort demo and the Continue card. They moved below under "Learn C++ by seeing it run" (demo, Visual Lab button), then Continue, stats, daily challenge, course map. The floating Tutor button is hidden on the home page (the chat box replaces it).
+- Header toolbar buttons (Playground, Search, language, theme, pause, Settings) stay but are compact (32px, small text, bold 2.6-stroke SVG icons); Playground and Search are hidden on phones (bottom bar). "at UMT" removed.
+- Week cards (home course map) now have a large coloured icon tile and a slim progress bar; the week page has the icon in its heading and an icon tile on each lesson row.
+- Tests: e2e/home-v3.spec.ts (3). Screenshots: docs/screenshots/v3/.
+
 ## V2 upgrade, Phase E (AI chat): DONE except the live AI key
 - Full-page chat at /chat (nav "AI Chat", footer, /more, sitemap): same engine, history, voice, attachments and answer language as the floating tutor, with starter questions; the floating button is hidden there.
 - Per-topic tutor: "Study this topic with AI" (lesson) and "Ask AI about this" (Visual Lab) pin the lesson (`context.topic = w3/for-loop`). The server puts that lesson first in the course notes whatever words the student uses, skips the free-notes shortcut when an AI is connected, and falls back to the free lesson answer when it is not. Unknown or closed topics are ignored (checked server-side; /chat?topic= only shows open lessons). The pin stays for the whole chat; "Any topic" clears it; "Full page" carries it to /chat.

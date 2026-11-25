@@ -51,6 +51,13 @@ export default function Panel({ onClose, initial, page = false }: { onClose: () 
     return () => { window.removeEventListener("keydown", esc); abort.current?.abort(); stopListen.current?.(); stopSpeaking(); };
   }, [onClose, page]);
   useEffect(() => { bottom.current?.scrollIntoView({ block: "end" }); }, [cur.messages.length, live?.text]);
+  const auto = useRef(false);
+  useEffect(() => {
+    if (!initial?.autoSend || !initial.text || auto.current) return;
+    auto.current = true; // a question from the home page is sent once, as if the student pressed Send
+    setTimeout(() => void send(false, initial.text), 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function persist(s: Session) {
     setCur(s);

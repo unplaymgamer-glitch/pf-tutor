@@ -20,7 +20,7 @@ test("progress persists after reload and backup code is offered", async ({ page 
 });
 
 test("tutor panel opens, closes with Escape and answers a definition question for free", async ({ page }) => {
-  await page.goto("/", { waitUntil: "networkidle" });
+  await page.goto("/week-1", { waitUntil: "networkidle" }); // the home page has its own chat box, so the floating button lives on the other pages
   await page.getByRole("button", { name: "Open the CC111 tutor chat" }).click();
   const dlg = page.getByRole("dialog", { name: "CC111 Tutor chat" });
   await expect(dlg).toBeVisible();
