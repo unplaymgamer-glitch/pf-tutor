@@ -381,3 +381,16 @@ describe("free provider model list", () => {
     } finally { globalThis.fetch = orig; }
   });
 });
+
+describe("vague questions go to the AI when one is connected", () => {
+  it('"what is a loop" is not answered with a random loop lesson', async () => {
+    const p = new MockProvider();
+    await collect({ provider: p }, req("what is a loop"));
+    expect(p.calls.length).toBe(1);
+    const none = await collect({ provider: null }, req("what is a loop"));
+    expect(none.ev.some((e) => e.type === "delta" || e.type === "error")).toBe(true);
+    const q = new MockProvider();
+    await collect({ provider: q }, req("What is a variable?"));
+    expect(q.calls.length).toBe(0); // a clear definition question is still answered instantly and free
+  });
+});

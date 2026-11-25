@@ -7,7 +7,7 @@ import { MODELS, ModelKey, costMicros, estimateMicros, monthKey } from "./pricin
 import { buildSystem } from "./prompt";
 import type { AIProvider, ChatBlock, ChatMessage } from "./provider";
 import { isOneLiner, routeQuestion } from "./router";
-import { CourseSearch, matchInstructorAnswer, notesFor, tier0Answer } from "./search";
+import { CourseSearch, matchInstructorAnswer, notesFor, terms, tier0Answer } from "./search";
 import type { TutorSettings } from "./settings";
 
 export type TutorEvent =
@@ -46,6 +46,9 @@ const FRIENDLY: Record<string, string> = {
   refused: "I cannot help with that request. Ask me something about C++ and your lessons.",
 };
 
+/** "What is a loop": the course has no single lesson called that (for, while, do-while and nested loops each have one), so the free notes would pick one at random. An AI answers it properly. */
+const isGenericLoop = (q: string) => { const t = terms(q); return t.length > 0 && t.every((w) => /^loops?$/.test(w)); };
+
 const links = (hits: { topic: Topic }[]) => hits.slice(0, 3).map((h) => ({ title: h.topic.title, href: `/week-${h.topic.week}/${h.topic.slug}` }));
 
 export async function* runTutor(d: Deps, req: TutorRequest): AsyncGenerator<TutorEvent> {
@@ -73,7 +76,7 @@ export async function* runTutor(d: Deps, req: TutorRequest): AsyncGenerator<Tuto
     return;
   }
   // Tier 0b: a plain definition question the lessons answer directly. Free and instant.
-  if (!hasExtras && !req.deep && !((pinned || isOneLiner(question)) && d.provider)) { // a topic chat goes to the AI when one is connected
+  if (!hasExtras && !req.deep && !((pinned || isOneLiner(question) || isGenericLoop(question)) && d.provider)) { // a topic chat goes to the AI when one is connected
     // When an AI is connected, only a near-exact lesson match is answered from the notes (instant, free); anything vaguer goes to the AI so the answer fits the question.
     const t0 = tier0Answer(question, hits, req.lang, d.provider ? Math.max(s.tier0Threshold, 0.95) : s.tier0Threshold);
     if (t0) {
