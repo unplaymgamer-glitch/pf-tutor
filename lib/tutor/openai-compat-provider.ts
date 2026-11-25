@@ -21,18 +21,21 @@ export class OpenAICompatProvider implements AIProvider {
     ];
     const gemini = /generativelanguage\.googleapis\.com/.test(this.baseUrl);
     let res: Response | null = null;
-    for (let i = 0; i < this.models.length; i++) {
+    // Up to three passes over the model list with a short pause: a "high demand" 503 from the free tier usually clears within seconds.
+    const order = [...this.models, ...this.models, ...this.models];
+    for (let i = 0; i < order.length; i++) {
+      if (i > 0 && i % this.models.length === 0) await new Promise((ok) => setTimeout(ok, 2500));
       const r = await fetch(`${this.baseUrl.replace(/\/$/, "")}/chat/completions`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.apiKey}` },
-        body: JSON.stringify({ model: this.models[i], messages, stream: true, max_tokens: input.maxTokens, ...(gemini ? { reasoning_effort: "low" } : {}) }),
+        body: JSON.stringify({ model: order[i], messages, stream: true, max_tokens: input.maxTokens, ...(gemini ? { reasoning_effort: "low" } : {}) }),
         signal,
       });
       if (r.ok && r.body) { res = r; break; }
       const body = (await r.text().catch(() => "")).slice(0, 300);
       const retryable = [404, 429, 500, 502, 503, 504].includes(r.status);
-      if (!retryable || i === this.models.length - 1) throw Object.assign(new Error(`${r.status} ${body}`), { status: r.status });
-      console.error(`[tutor] free model ${this.models[i]} unavailable (status=${r.status}), trying the next one`);
+      if (!retryable || i === order.length - 1) throw Object.assign(new Error(`${r.status} ${body}`), { status: r.status });
+      console.error(`[tutor] free model ${order[i]} unavailable (status=${r.status}), trying the next one`);
     }
     if (!res || !res.body) throw Object.assign(new Error("no free model available"), { status: 503 });
     const reader = res.body.getReader();
