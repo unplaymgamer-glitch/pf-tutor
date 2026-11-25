@@ -23,8 +23,11 @@ export class OpenAICompatProvider implements AIProvider {
     let res: Response | null = null;
     // Up to three passes over the model list with a short pause: a "high demand" 503 from the free tier usually clears within seconds.
     const order = [...this.models, ...this.models, ...this.models];
+    const started = Date.now();
     for (let i = 0; i < order.length; i++) {
-      if (i > 0 && i % this.models.length === 0) await new Promise((ok) => setTimeout(ok, 2500));
+      // Stop retrying after ~28 s so the function (60 s limit) still has time to stream the answer.
+      if (i > 0 && Date.now() - started > 28_000) throw Object.assign(new Error("free models busy"), { status: 503 });
+      if (i > 0 && i % this.models.length === 0) await new Promise((ok) => setTimeout(ok, 2000));
       const r = await fetch(`${this.baseUrl.replace(/\/$/, "")}/chat/completions`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.apiKey}` },
