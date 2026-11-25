@@ -63,6 +63,18 @@ docs/CONTENT_MAP.md, SOURCE_CONFLICTS.md, DECISIONS.md. Awaiting from instructor
 - Note: a 5-hour usage limit interrupted the authoring agents once; they were resumed and finished (nothing lost).
 - NOT verified: a human read of the lesson wording; real Turbo C++/WinBGIm output vs the simulator (only the notes' own examples were modelled); Firefox/Safari; Urdu-script text; print layout of the hubs.
 
+## Live status (2026-11-25)
+- Deployed: https://pf-tutor.vercel.app (students), /admin (instructor), code at https://github.com/unplaymgamer-glitch/pf-tutor (public, MIT). Database connected (Supabase service key set in Vercel).
+- Website ON/OFF switch in the admin closes the whole student site; admin keeps working.
+
+## V2 upgrade, Phase A (open everything + audit): DONE
+- All 16 weeks open by default (database rows updated; code default and "unknown week" are open). Locking stays as an optional admin tool; "taught" is informational.
+- Hubs and mocks read their claimed ranges from `MID_LAST_WEEK` / `FINAL_LAST_WEEK`; `tests/coverage-claims.test.ts` fails if a claim and the content disagree (every week has lessons and >= 5 gradable questions; final mock reaches all 16 weeks; every lesson has 3 worked examples, >= 6 practice, >= 3 quiz).
+- Tutor free search rewritten (rare-word weighting, phrase and alias matching, intro-intent boost): 83 student-style queries, **92.8% first result, 100% in top 3** (was 77% / 92%); guarded by `tests/tutor-relevance.test.ts`.
+- Removed the "3D scenes" setting (it changed nothing); tap targets raised to 44 px; `docs/CONTENT_AUDIT_V2.md` generated (79 lessons: none lacks a visual, interactive element or table).
+- Verified live on pf-tutor.vercel.app: weeks 3-16 open, Mid hub 8 weeks, Final hub 16 weeks, sitemap 79 lessons, tutor answers "what does cout do" and "how does bubble sort work" from the lessons for free.
+- NOT done yet (V2 phases B-G): new design system and animated home, richer per-topic visuals/3D, full-page `/chat` + per-topic AI tutor with real Claude answers (needs `ANTHROPIC_API_KEY`), service worker/offline, unguessable admin path option.
+
 ## Phase 9 - Hardening: DONE except deployment (needs your accounts) and the performance target
 - Added: Playwright (layout + console at 3 viewports on 26 pages, axe light/dark, student flows, screenshots), privacy page, footer, sitemap (open lessons only), canonical/OG/Twitter metadata, generated social image, Course/LearningResource structured data, web manifest, site-wide CSP, vercel.json daily keep-alive, DEPLOY / LAUNCH_CHECKLIST / UX_REVIEW / VERIFICATION_REPORT, README, generated CONTENT_COVERAGE.
 - Verified: axe 0 violations (WCAG 2.2 AA + best practice, light and dark, phone and desktop, 26 pages); no horizontal scroll or console errors at 375/768/1440; Lighthouse mobile A11y/BP/SEO 100, LCP 0.9-1.3 s, CLS <= 0.006; npm audit 0; 566 tests; 237 samples; Chrome and Edge flows; Basic and full (wasm) compiler under the final CSP.

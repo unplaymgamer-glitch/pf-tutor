@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "cc111-dev", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev", "--", "-p", "3111"], "port": 3111 },
+    { "name": "cc111-dev", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev", "--", "-p", "3111"], "port": 3111 }
   ]
 }
