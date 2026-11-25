@@ -163,6 +163,21 @@ describe("Tier 0 course search", () => {
 });
 
 describe("tutor pipeline", () => {
+  it("per-topic tutor: the pinned lesson is the first source, and a connected AI answers instead of the free notes", async () => {
+    const p = new MockProvider();
+    const { ev } = await collect({ provider: p }, req("What is a variable?", { context: { topic: "w3/for-loop" } }));
+    expect(p.calls.length).toBe(1);
+    expect(ev[0]).toMatchObject({ type: "meta", tier: 2, source: "claude", lessonKey: "3/for-loop" });
+    expect(JSON.stringify(p.calls[0])).toContain("course_notes");
+  });
+  it("per-topic tutor without an AI falls back to the free lesson answer; an unknown or closed topic is ignored", async () => {
+    const free = await collect({ provider: null }, req("What is a variable?", { context: { topic: "w3/for-loop" } }));
+    expect(free.ev[0]).toMatchObject({ source: "notes" });
+    const p = new MockProvider();
+    const bad = await collect({ provider: p }, req("What is a variable?", { context: { topic: "w3/does-not-exist" } }));
+    expect(p.calls.length).toBe(0);
+    expect(bad.ev[0]).toMatchObject({ source: "notes" });
+  });
   it("answers definition questions with NO AI call and no cost", async () => {
     const p = new MockProvider();
     const { ev, text } = await collect({ provider: p }, req("What is a variable?"));

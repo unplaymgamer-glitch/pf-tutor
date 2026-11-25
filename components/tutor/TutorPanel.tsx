@@ -13,7 +13,13 @@ type Status = { enabled: boolean; ai: boolean; dailyPerDevice: number } | null;
 type Suggest = { title: string; href: string }[];
 
 
-export default function Panel({ onClose, initial }: { onClose: () => void; initial?: AskContext }) {
+// Module-level so the render-purity lint sees event-handler use, not render-time calls.
+const stamp = () => ({ id: crypto.randomUUID(), at: Date.now() });
+const ANY_STARTERS = ["What is a variable?", "How does a for loop work?", "Explain pointers with a picture", "Why does my program print garbage?"];
+const STARTERS = ["Explain this topic with a simple picture", "Give me a 3-question quiz on this", "What mistakes do beginners make here?", "Show a short C++ example I can run"];
+
+/** The tutor chat. `page` makes it the full-page /chat; otherwise it floats over the lesson. */
+export default function Panel({ onClose, initial, page = false }: { onClose: () => void; initial?: AskContext; page?: boolean }) {
   const { settings } = useSettings();
   const site = useSiteState();
   const lang = settings.lang;
@@ -40,10 +46,10 @@ export default function Panel({ onClose, initial }: { onClose: () => void; initi
     void listSessions().then((s) => { setSessions(s); });
     void fetch("/api/tutor", { cache: "no-store" }).then((r) => r.json()).then(setStatus).catch(() => setStatus({ enabled: true, ai: false, dailyPerDevice: 20 }));
     area.current?.focus();
-    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape" && !page) onClose(); };
     window.addEventListener("keydown", esc);
     return () => { window.removeEventListener("keydown", esc); abort.current?.abort(); stopListen.current?.(); stopSpeaking(); };
-  }, [onClose]);
+  }, [onClose, page]);
   useEffect(() => { bottom.current?.scrollIntoView({ block: "end" }); }, [cur.messages.length, live?.text]);
 
   async function persist(s: Session) {
@@ -56,14 +62,14 @@ export default function Panel({ onClose, initial }: { onClose: () => void; initi
     const text = (overrideText ?? input).trim();
     if (!text || busy) return;
     setErrorBox(null); setNote("");
-    const userMsg: StoredMessage = { id: crypto.randomUUID(), role: "user", text, at: Date.now() };
-    const base: Session = { ...cur, title: cur.messages.length ? cur.title : titleFrom(text), messages: [...cur.messages, userMsg], updatedAt: Date.now() };
+    const userMsg: StoredMessage = { ...stamp(), role: "user", text };
+    const base: Session = { ...cur, title: cur.messages.length ? cur.title : titleFrom(text), messages: [...cur.messages, userMsg], updatedAt: userMsg.at };
     await persist(base);
     setInput(""); setBusy(true); setLive({ text: "" });
     const payload: TutorPayload = {
       messages: base.messages.slice(-12).map((m) => ({ role: m.role, content: m.text })),
       lang, deviceId: tutorDeviceId(), deep,
-      context: context && (context.code || context.diagnostics) ? { code: context.code, diagnostics: context.diagnostics, stdin: context.stdin, topic: context.topic } : undefined,
+      context: context && (context.code || context.diagnostics || context.topicKey) ? { code: context.code, diagnostics: context.diagnostics, stdin: context.stdin, topic: context.topicKey } : undefined,
       file: file ?? undefined,
       images: images.length ? images.map(({ mediaType, data }) => ({ mediaType, data })) : undefined,
     };
@@ -77,8 +83,8 @@ export default function Panel({ onClose, initial }: { onClose: () => void; initi
       else if (e.type === "error") { failed = true; setErrorBox({ message: e.message, suggest: e.suggest }); }
     }, ac.signal);
     setLive(null); setBusy(false);
-    setContext(undefined); setFile(null); setImages([]); // attachments belong to the question they were sent with
-    if (acc) await persist({ ...base, messages: [...base.messages, { id: crypto.randomUUID(), role: "assistant", text: acc, meta, at: Date.now() }], updatedAt: Date.now() });
+    setContext((c) => (c?.topicKey ? { topic: c.topic, topicKey: c.topicKey } : undefined)); setFile(null); setImages([]); // attachments belong to one question; the topic stays pinned for the whole chat
+    if (acc) await persist({ ...base, messages: [...base.messages, { ...stamp(), role: "assistant", text: acc, meta }], updatedAt: stamp().at });
     else if (!failed) setErrorBox({ message: "No answer came back. Please try again." });
     if (!/Mock tutor/.test(acc)) try { void fetch("/api/track", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ event: "chat" }), keepalive: true }); } catch { /* ignore */ }
   }
@@ -106,13 +112,16 @@ export default function Panel({ onClose, initial }: { onClose: () => void; initi
   const unavailable = status && !status.enabled;
 
   return (
-    <section role="dialog" aria-label="CC111 Tutor chat" className="fixed inset-x-0 bottom-0 z-50 flex max-h-[88dvh] flex-col rounded-t-2xl border border-border bg-bg shadow-2xl sm:inset-x-auto sm:bottom-4 sm:right-4 sm:w-[28rem] sm:rounded-2xl">
+    <section {...(page ? { "aria-label": "CC111 Tutor chat" } : { role: "dialog", "aria-label": "CC111 Tutor chat" })}
+      className={page ? "mx-auto flex h-[calc(100dvh-11rem)] min-h-[28rem] w-full max-w-4xl flex-col rounded-2xl border border-border bg-bg md:h-[calc(100dvh-9rem)]" : "fixed inset-x-0 bottom-0 z-50 flex max-h-[88dvh] flex-col rounded-t-2xl border border-border bg-bg shadow-2xl sm:inset-x-auto sm:bottom-4 sm:right-4 sm:w-[28rem] sm:rounded-2xl"}>
       <header className="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
-        <strong>💬 CC111 Tutor</strong>
+        <strong>💬 CC111 Tutor{context?.topicKey ? <span className="ms-2 text-sm font-normal text-muted">studying: {context.topic ?? context.topicKey}</span> : null}</strong>
         <span className="flex gap-1">
+          {context?.topicKey && <button className="btn !min-h-11 text-sm" onClick={() => setContext(undefined)}>Any topic</button>}
+          {!page && <Link className="btn !min-h-11 inline-flex items-center text-sm no-underline" href={context?.topicKey ? `/chat?topic=${context.topicKey}` : "/chat"} onClick={onClose}>Full page</Link>}
           <button className="btn !min-h-11 text-sm" aria-expanded={showList} onClick={() => setShowList(!showList)}>History ({sessions.length})</button>
           <button className="btn !min-h-11 text-sm" onClick={() => { setCur(newSession()); setErrorBox(null); setShowList(false); }}>New</button>
-          <button className="btn !min-h-11 text-sm" aria-label="Close tutor chat" onClick={onClose}>✕</button>
+          {!page && <button className="btn !min-h-11 text-sm" aria-label="Close tutor chat" onClick={onClose}>✕</button>}
         </span>
       </header>
 
@@ -141,6 +150,9 @@ export default function Panel({ onClose, initial }: { onClose: () => void; initi
                 <p className="text-muted">Tips: paste your code, press 🎤 to speak, or attach a screenshot of an error. For graded work I give hints first.</p>
                 {status && !status.ai && <p className="text-warning">The AI part is not connected yet. I can still answer from the lessons.</p>}
                 {unavailable && <p className="text-warning">The tutor is switched off right now.</p>}
+                <div className="mt-1 flex flex-wrap gap-2" role="group" aria-label="Starter questions">
+                  {(context?.topicKey ? STARTERS : ANY_STARTERS).map((s) => <button key={s} className="btn !min-h-11 text-sm" disabled={!!unavailable} onClick={() => void send(false, s)}>{s}</button>)}
+                </div>
               </div>
             )}
             {cur.messages.map((m) => (

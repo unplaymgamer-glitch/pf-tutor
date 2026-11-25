@@ -67,6 +67,12 @@ docs/CONTENT_MAP.md, SOURCE_CONFLICTS.md, DECISIONS.md. Awaiting from instructor
 - Deployed: https://pf-tutor.vercel.app (students), /admin (instructor), code at https://github.com/unplaymgamer-glitch/pf-tutor (public, MIT). Database connected (Supabase service key set in Vercel).
 - Website ON/OFF switch in the admin closes the whole student site; admin keeps working.
 
+## V2 upgrade, Phase E (AI chat): DONE except the live AI key
+- Full-page chat at /chat (nav "AI Chat", footer, /more, sitemap): same engine, history, voice, attachments and answer language as the floating tutor, with starter questions; the floating button is hidden there.
+- Per-topic tutor: "Study this topic with AI" (lesson) and "Ask AI about this" (Visual Lab) pin the lesson (`context.topic = w3/for-loop`). The server puts that lesson first in the course notes whatever words the student uses, skips the free-notes shortcut when an AI is connected, and falls back to the free lesson answer when it is not. Unknown or closed topics are ignored (checked server-side; /chat?topic= only shows open lessons). The pin stays for the whole chat; "Any topic" clears it; "Full page" carries it to /chat.
+- Tests: 2 new pipeline tests; Playwright e2e/phase-e.spec.ts (3); axe light/dark at 375 and 1440 on /chat: 0 violations; /chat added to the audit page list.
+- Not done / honest: no ANTHROPIC_API_KEY is set yet, so answers come from the free lesson notes only; real-model answer quality and the tutor pass rate stay unmeasured until the key is added (then run scripts/eval-tutor.mts). Rich answer blocks (diagram/quiz cards) are not built; answers render text, bold, inline code, runnable code blocks and lesson links.
+
 ## V2 upgrade, Phase D (visuals: Visual Lab, mind maps, Loop Lab, 3D): DONE
 - Visual Lab (/visual-lab): searchable gallery of all 327 animations and step-throughs (filter by kind and week); each opens full screen with its own controls, "Open the lesson" and "Ask AI about this"; served by /api/visual which obeys the same lock/OFF rules as lessons.
 - Week mind maps: animated SVG at the top of every week page (week in the middle, lessons as clickable branches in the week's colour, tick when finished).

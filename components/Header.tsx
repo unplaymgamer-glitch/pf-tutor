@@ -57,6 +57,7 @@ function SubNav() {
         <li className={hideOnPhone}><Link className={link} href="/">Home</Link></li>
         <li className={hideOnPhone}><Link className={link} href="/#roadmap">Learn</Link></li>
         <li className={hideOnPhone}><Link className={link} href="/visual-lab">Visual Lab</Link></li>
+        <li className={hideOnPhone}><Link className={link} href="/chat">AI Chat</Link></li>
         <li className={hideOnPhone}><Link className={link} href="/practice">Practice</Link></li>
         <li className={hideOnPhone}><Link className={link} href="/playground">Playground</Link></li>
         <li className={hideOnPhone}><Link className={link} href="/review">Review{due > 0 && <span className="ms-1 rounded-full bg-primary px-2 text-xs text-onprimary" aria-label={`${due} cards due`}>{due}</span>}</Link></li>

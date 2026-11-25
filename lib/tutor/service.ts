@@ -53,7 +53,10 @@ export async function* runTutor(d: Deps, req: TutorRequest): AsyncGenerator<Tuto
   const search = d.search ?? new CourseSearch(d.topics);
   const history = trimHistory(req.messages.map((m) => ({ role: m.role, content: cleanText(m.content) })));
   const question = history[history.length - 1].content.trim();
-  const hits = search.search(question, 3);
+  let hits = search.search(question, 3);
+  // Per-topic tutor: the lesson the student is studying is always the first source, whatever words they use.
+  const pinned = req.context?.topic ? d.topics.find((t) => `w${t.week}/${t.slug}` === req.context!.topic) : undefined;
+  if (pinned) hits = [{ topic: pinned, score: 1, confidence: 1 }, ...hits.filter((h) => h.topic !== pinned)].slice(0, 3);
   const suggest = links(hits);
   const fail = (code: Extract<TutorEvent, { type: "error" }>["code"]): TutorEvent => ({ type: "error", code, message: FRIENDLY[code], suggest });
 
@@ -70,7 +73,7 @@ export async function* runTutor(d: Deps, req: TutorRequest): AsyncGenerator<Tuto
     return;
   }
   // Tier 0b: a plain definition question the lessons answer directly. Free and instant.
-  if (!hasExtras && !req.deep) {
+  if (!hasExtras && !req.deep && !(pinned && d.provider)) { // a topic chat goes to the AI when one is connected
     const t0 = tier0Answer(question, hits, req.lang, s.tier0Threshold);
     if (t0) {
       yield { type: "meta", tier: 0, source: "notes", lessonKey: t0.lessonKey };

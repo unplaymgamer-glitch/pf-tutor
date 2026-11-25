@@ -103,7 +103,7 @@ export function VisualLab({ items }: { items: VisualItem[] }) {
               <span className="pill" style={{ color: "var(--wk)" }}>Week {open.week} · {open.lesson}</span>
               <span className="ms-auto flex flex-wrap gap-2">
                 <Link className="btn btn-primary inline-flex items-center no-underline" href={`/week-${open.week}/${open.slug}`}>Open the lesson</Link>
-                <button className="btn" onClick={() => { close(); tutor.open({ topic: `${open.lesson} (Week ${open.week})`, text: `Explain this animation: ${open.title}` }); }}>💬 Ask AI about this</button>
+                <button className="btn" onClick={() => { close(); tutor.open({ topic: `${open.lesson} (Week ${open.week})`, topicKey: `w${open.week}/${open.slug}`, text: `Explain this animation: ${open.title}` }); }}>💬 Ask AI about this</button>
               </span>
             </div>
             <h2 className="text-2xl font-bold">{open.title}</h2>

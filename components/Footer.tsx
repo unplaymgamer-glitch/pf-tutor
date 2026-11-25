@@ -9,6 +9,7 @@ export function Footer() {
         <span>{SITE_NAME} · built for UMT CC111 students</span>
         <nav aria-label="Footer" className="ms-auto flex flex-wrap">
           <Link className={a} href="/visual-lab">Visual Lab</Link>
+          <Link className={a} href="/chat">AI Chat</Link>
           <Link className={a} href="/revision/mid">Mid-term hub</Link>
           <Link className={a} href="/revision/final">Final hub</Link>
           <Link className={a} href="/playground">Playground</Link>

@@ -131,7 +131,7 @@ export function TopicView({ topic, weekTopics, nextHref, related = [] }: { topic
             <li className="pill">✍ {topic.practice.length + topic.quiz.length} questions</li>
           </ul>
           <div className="relative flex flex-wrap gap-2">
-            <button className="btn btn-primary !px-3 sm:!px-4" onClick={() => tutor.open({ topic: `${topic.title} (Week ${topic.week})` })}>💬 Study <span className="hidden sm:inline">this topic </span>with AI</button>
+            <button className="btn btn-primary !px-3 sm:!px-4" onClick={() => tutor.open({ topic: `${topic.title} (Week ${topic.week})`, topicKey: `w${topic.week}/${topic.slug}` })}>💬 Study <span className="hidden sm:inline">this topic </span>with AI</button>
             <a className="btn inline-flex items-center !px-3 no-underline sm:!px-4" href="#learn">👁 <span className="hidden sm:inline">&nbsp;Jump to the&nbsp;</span>Animation</a>
           </div>
         </header>
