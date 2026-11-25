@@ -67,6 +67,13 @@ docs/CONTENT_MAP.md, SOURCE_CONFLICTS.md, DECISIONS.md. Awaiting from instructor
 - Deployed: https://pf-tutor.vercel.app (students), /admin (instructor), code at https://github.com/unplaymgamer-glitch/pf-tutor (public, MIT). Database connected (Supabase service key set in Vercel).
 - Website ON/OFF switch in the admin closes the whole student site; admin keeps working.
 
+## V2 upgrade, Phase B (design system + animated home + navigation): DONE
+- Design system: new palette (midnight ink, brand gradient cyan to violet), one accent hue per week (16 hues, lightness chosen per theme), faint drifting code-glyph motif (off in reduce-motion/low-data), glass cards with hover lift, gradient primary button, skeleton shimmer, colour-coded boxes (definition blue, roman green, mistake yellow, error red, exam violet, try cyan), 72-character reading width.
+- Home: animated hero with a live Bubble Sort beside the C++ loop (pausable, respects reduce-motion), stat counters computed from the real lesson files (16 chapters, 79 lessons, 315 animations and traces, 237 verified code examples, 990 questions), colourful course map with per-week accent, progress ring, lesson count and Mid-term/Final milestones.
+- Navigation: language switch, dark/light toggle and a global Pause-animations button in the top bar; phone bottom navigation (Home, Learn, Practice, Playground, More); new pages /more, /how-to-study, /faq, /about; footer and sitemap updated.
+- Verified: contrast tests for every new pair including all 16 week accents and both gradient ends (30 + 12 tests); 588 unit tests; Playwright layout and console at 375/768/1440 on 30 pages (no overflow, no errors); axe WCAG 2.2 AA light and dark on 30 pages: 0 violations; live site checked in Chrome (pages 200, progress/tutor/playground flows pass, hero animates). Screenshots: docs/screenshots/v2/.
+- Not done: the hero's second button is "Try the Playground" (the Visual Lab page it should open arrives in phase D); Lighthouse not re-measured for the new home; Firefox/Safari untested.
+
 ## V2 upgrade, Phase A (open everything + audit): DONE
 - All 16 weeks open by default (database rows updated; code default and "unknown week" are open). Locking stays as an optional admin tool; "taught" is informational.
 - Hubs and mocks read their claimed ranges from `MID_LAST_WEEK` / `FINAL_LAST_WEEK`; `tests/coverage-claims.test.ts` fails if a claim and the content disagree (every week has lessons and >= 5 gradable questions; final mock reaches all 16 weeks; every lesson has 3 worked examples, >= 6 practice, >= 3 quiz).
