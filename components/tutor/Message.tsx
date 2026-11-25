@@ -87,20 +87,24 @@ export function parseBlocks(src: string): Block[] {
   return out;
 }
 
+/** Urdu-script text is shown right-to-left in the Urdu font; Roman Urdu and English stay left-to-right in the normal font. */
+export const hasUrduScript = (t: string) => /[؀-ۿ]/.test(t);
+const rtl = (t: string) => (hasUrduScript(t) ? { dir: "rtl" as const, lang: "ur" } : {});
+
 function Blocks({ text }: { text: string }) {
   return (
     <>
       {parseBlocks(text).map((b, i) => {
-        if (b.k === "h") return <p key={i} className={`font-semibold ${b.level <= 2 ? "text-lg" : "text-base"}`}><Inline text={b.text} /></p>;
-        if (b.k === "ul") return <ul key={i} className="ms-5 grid list-disc gap-1">{b.items.map((t, j) => <li key={j}><Inline text={t} /></li>)}</ul>;
-        if (b.k === "ol") return <ol key={i} className="ms-5 grid list-decimal gap-1">{b.items.map((t, j) => <li key={j}><Inline text={t} /></li>)}</ol>;
+        if (b.k === "h") return <p key={i} {...rtl(b.text)} className={`font-semibold ${b.level <= 2 ? "text-lg" : "text-base"} ${hasUrduScript(b.text) ? "urdu-text" : ""}`}><Inline text={b.text} /></p>;
+        if (b.k === "ul") return <ul key={i} className="ms-5 grid list-disc gap-1">{b.items.map((t, j) => <li key={j} {...rtl(t)} className={hasUrduScript(t) ? "urdu-text" : undefined}><Inline text={t} /></li>)}</ul>;
+        if (b.k === "ol") return <ol key={i} className="ms-5 grid list-decimal gap-1">{b.items.map((t, j) => <li key={j} {...rtl(t)} className={hasUrduScript(t) ? "urdu-text" : undefined}><Inline text={t} /></li>)}</ol>;
         if (b.k === "table") return (
           <div key={i} className="overflow-x-auto"><table className="w-full border-collapse text-sm">
             <thead><tr>{b.head.map((h, j) => <th key={j} className="border border-border bg-surface2 px-2 py-1 text-start"><Inline text={h} /></th>)}</tr></thead>
             <tbody>{b.rows.map((r, j) => <tr key={j}>{r.map((c, k) => <td key={k} className="border border-border px-2 py-1"><Inline text={c} /></td>)}</tr>)}</tbody>
           </table></div>
         );
-        return <p key={i} className="whitespace-pre-wrap"><Inline text={b.text} /></p>;
+        return <p key={i} {...rtl(b.text)} className={`whitespace-pre-wrap ${hasUrduScript(b.text) ? "urdu-text" : ""}`}><Inline text={b.text} /></p>;
       })}
     </>
   );

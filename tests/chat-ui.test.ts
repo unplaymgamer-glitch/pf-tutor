@@ -47,3 +47,22 @@ describe("short sub-topic titles", () => {
   });
   it("falls back to the text before the colon for a new lesson", () => expect(shortTitle("w99/new", "Sets: unique values")).toBe("Sets"));
 });
+
+import { detectLangRequest } from "@/lib/tutor/lang";
+describe("a student can ask for a language and only that student gets it", () => {
+  it("detects English, Roman and Urdu-script requests, and nothing else", () => {
+    for (const t of ["please answer in English", "English mein batao loops kya hain", "explain pointers in english", "انگریزی میں سمجھائیں"]) expect(detectLangRequest(t), t).toBe("en");
+    for (const t of ["roman urdu mein samjhao", "Urdu mein batao", "answer in Roman English"]) expect(detectLangRequest(t), t).toBe("roman");
+    for (const t of ["answer in urdu script", "اردو میں بتائیں"]) expect(detectLangRequest(t), t).toBe("ur");
+    for (const t of ["What is a for loop?", "pointer kya hota hai", "my english teacher gave this assignment", "English alphabet program"]) expect(detectLangRequest(t), t).toBeNull();
+  });
+});
+
+import { hasUrduScript } from "@/components/tutor/Message";
+describe("Urdu script is detected per paragraph", () => {
+  it("only Arabic-script text switches to right-to-left", () => {
+    expect(hasUrduScript("لوپ کیا ہے؟")).toBe(true);
+    expect(hasUrduScript("loop kya hota hai")).toBe(false);
+    expect(hasUrduScript("The `for` loop")).toBe(false);
+  });
+});

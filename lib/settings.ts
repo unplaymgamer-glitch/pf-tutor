@@ -13,7 +13,7 @@ export type Settings = {
 
 export const DEFAULT_SETTINGS: Settings = {
   theme: "system",
-  lang: "en",
+  lang: "roman", // most students read Roman Urdu most easily; each student can switch to English or Urdu script and it is remembered in their own browser
   fontScale: 1,
   reduceMotion: false,
   lowData: false,
@@ -31,7 +31,7 @@ export function sanitizeSettings(raw: unknown): Settings {
   const fs = typeof o.fontScale === "number" && isFinite(o.fontScale) ? o.fontScale : 1;
   return {
     theme: pick(o.theme, ["system", "dark", "light"], "system"),
-    lang: pick(o.lang, ["en", "roman", "ur"], "en"),
+    lang: pick(o.lang, ["en", "roman", "ur"], "roman"),
     fontScale: Math.min(1.5, Math.max(0.9, fs)),
     reduceMotion: o.reduceMotion === true,
     lowData: o.lowData === true,

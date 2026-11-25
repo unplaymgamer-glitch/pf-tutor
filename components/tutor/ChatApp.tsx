@@ -5,6 +5,7 @@ import { askTutor, prepareImage, tutorDeviceId, type TutorPayload } from "@/lib/
 import { Session, StoredMessage, deleteAllSessions, deleteSession, exportSessions, groupByAge, listSessions, newSession, saveSession, titleFrom } from "@/lib/tutor/history";
 import type { Handoff } from "@/lib/tutor/handoff";
 import { shortTitle } from "@/lib/short-titles";
+import { detectLangRequest } from "@/lib/tutor/lang";
 import { useSettings } from "../SettingsProvider";
 import { useSiteState } from "../SiteState";
 import { Message } from "./Message";
@@ -124,6 +125,9 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
 
   async function submit(text: string, base0: Session, deep = false) {
     const q = text.trim();
+    // A student who asks for a language gets it, and it is remembered in their own browser.
+    const reqLang = detectLangRequest(q) ?? lang;
+    if (reqLang !== lang) update({ lang: reqLang });
     if (!q || busy) return;
     setErrorBox(null); setNote("");
     const userMsg: StoredMessage = { ...stamp(), role: "user", text: q };
@@ -133,7 +137,7 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
     if (area.current) area.current.style.height = "auto";
     const payload: TutorPayload = {
       messages: base.messages.slice(-12).map((m) => ({ role: m.role, content: m.text })),
-      lang, deviceId: tutorDeviceId(), deep,
+      lang: reqLang, deviceId: tutorDeviceId(), deep,
       context: ctx || base.topicKey ? { code: ctx?.code, diagnostics: ctx?.diagnostics, stdin: ctx?.stdin, topic: base.topicKey } : undefined,
       file: texts.length ? { name: texts.map((t) => t.name).join(", ").slice(0, 200), text: texts.map((t) => `### ${t.name}\n${t.text}`).join("\n\n").slice(0, 120000) } : undefined,
       pdfs: pdfs.length ? pdfs : undefined,
@@ -318,7 +322,7 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
             )}
 
             {cur.messages.map((m) => m.role === "user" ? (
-              <div key={m.id} className="ms-auto max-w-[88%] overflow-y-auto rounded-2xl bg-surface2 px-4 py-3 break-words whitespace-pre-wrap" style={{ maxHeight: "22rem" }}>{m.text}</div>
+              <div key={m.id} dir="auto" className="ms-auto max-w-[88%] overflow-y-auto rounded-2xl bg-surface2 px-4 py-3 break-words whitespace-pre-wrap" style={{ maxHeight: "22rem" }}>{m.text}</div>
             ) : (
               <div key={m.id} className="flex gap-3">
                 <span aria-hidden className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-xs font-bold" style={{ background: "linear-gradient(135deg, var(--grad-a), var(--grad-b))", color: "var(--on-primary)" }}>C++</span>
@@ -371,7 +375,7 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
                   <input ref={fileRef} type="file" multiple className="sr-only" tabIndex={-1} aria-hidden accept=".pdf,.cpp,.cc,.cxx,.c,.h,.hpp,.txt,.md,.csv,.json,image/png,image/jpeg" onChange={(e) => { void pickFiles(e.target.files); e.target.value = ""; }} />
                 </>
               )}
-              <textarea ref={area} className="order-1 max-h-60 min-h-11 basis-full resize-none @xl:order-2 @xl:basis-0 @xl:flex-1 bg-transparent px-2 py-2.5 !outline-none" rows={1} maxLength={40000} value={input} placeholder={topicLabel ? "Ask about this topic…" : "Ask a question, paste text or drop files…"} aria-label="Your question" disabled={unavailable}
+              <textarea ref={area} className="order-1 max-h-60 min-h-11 basis-full resize-none @xl:order-2 @xl:basis-0 @xl:flex-1 bg-transparent px-2 py-2.5 !outline-none" rows={1} maxLength={40000} value={input} placeholder={topicLabel ? "Ask about this topic…" : "Ask a question, paste text or drop files…"} aria-label="Your question" dir="auto" disabled={unavailable}
                 onChange={(e) => { setInput(e.target.value); e.currentTarget.style.height = "auto"; e.currentTarget.style.height = `${Math.min(e.currentTarget.scrollHeight, 240)}px`; }}
                 onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); void send(); } }}
                 onPaste={(e) => { const f = Array.from(e.clipboardData.files).filter((x) => /^image\//.test(x.type)); if (f.length) { e.preventDefault(); void pickFiles(f); } }} />

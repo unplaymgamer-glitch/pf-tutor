@@ -86,16 +86,16 @@ export async function* runTutor(d: Deps, req: TutorRequest): AsyncGenerator<Tuto
   // Tier 2 needs a provider, limits and budget.
   if (!d.provider) { yield fail("no-provider"); return; }
   if (s.dailyPerDevice <= 0) { yield fail("limit-device"); return; }
-  const used = await d.store.incr("tutor-q", req.deviceId);
+  // The three store reads/writes do not depend on each other, so they run together (one round trip instead of three).
+  const [used, ipUsed, rows] = await Promise.all([d.store.incr("tutor-q", req.deviceId), d.store.incr("tutor-q-ip", d.clientKey), d.store.counters(35)]);
   if (used > s.dailyPerDevice) { yield fail("limit-device"); return; }
-  if ((await d.store.incr("tutor-q-ip", d.clientKey)) > Math.max(30, s.dailyPerDevice * 4)) { yield fail("limit-ip"); return; }
+  if (ipUsed > Math.max(30, s.dailyPerDevice * 4)) { yield fail("limit-ip"); return; }
   if (req.deep && (await d.store.incr("tutor-deep", req.deviceId)) > s.maxDeepPerDay) { yield fail("limit-deep"); return; }
 
   const route = routeQuestion({ text: question, hasCode: !!(req.context?.code || req.file), hasImage: !!(req.images?.length || req.pdfs?.length), lang: req.lang, turns: history.filter((m) => m.role === "user").length, deep: !!req.deep });
   const model: ModelKey = route.model;
 
   const month = monthKey(d.now);
-  const rows = await d.store.counters(35);
   const spent = rows.filter((r) => r.kind === "tutor-micros" && r.key === month).reduce((n, r) => n + r.n, 0);
   const inputChars = history.reduce((n, m) => n + m.content.length, 0) + (req.context?.code?.length ?? 0) + (req.file?.text.length ?? 0) + (req.pdfs ?? []).reduce((n, p) => n + p.data.length / 2, 0) + 6000;
   if (spent + estimateMicros(model, inputChars, route.maxTokens) > s.monthlyBudgetUSD * 1_000_000) { yield fail("budget"); return; }

@@ -42,13 +42,12 @@ export async function POST(req: Request) {
   const parsed = TutorRequest.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return Response.json({ error: "Invalid request" }, { status: 400, headers: noStore });
 
-  const state = await getSiteState();
-  if (state.maintenance) return Response.json({ error: "maintenance" }, { status: 503, headers: noStore });
-
+  // Site state, tutor settings and instructor answers are independent: fetch them together (the database is a network hop away).
   const store = getStore();
+  const [state, settings, instructorAnswers] = await Promise.all([getSiteState(), store.getTutorSettings().catch(() => undefined), store.listInstructorAnswers().catch(() => [])]);
+  if (state.maintenance) return Response.json({ error: "maintenance" }, { status: 503, headers: noStore });
   const now = new Date();
   const open = allTopics().filter((t) => topicAccess(state, t.week, t.slug, now).allowed);
-  const [settings, instructorAnswers] = await Promise.all([store.getTutorSettings().catch(() => undefined), store.listInstructorAnswers().catch(() => [])]);
   const r = parsed.data;
   // Uploads disabled by the instructor: drop attachments server-side (not just hide the button).
   if (!state.features.upload) { delete r.file; delete r.images; delete r.pdfs; }

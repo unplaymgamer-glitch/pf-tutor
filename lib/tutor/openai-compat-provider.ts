@@ -21,19 +21,26 @@ export class OpenAICompatProvider implements AIProvider {
     ];
     const gemini = /generativelanguage\.googleapis\.com/.test(this.baseUrl);
     let res: Response | null = null;
+    // Simple questions go to the small, fast model first and skip hidden "thinking"; harder ones start with the stronger model. Either way the others are the fallbacks.
+    const fast = input.effort === "low";
+    const ranked = [...this.models].sort((a, b) => Number(/lite/i.test(b)) - Number(/lite/i.test(a)) || 0);
+    const first = fast ? ranked : this.models;
     // Up to three passes over the model list with a short pause: a "high demand" 503 from the free tier usually clears within seconds.
-    const order = [...this.models, ...this.models, ...this.models];
+    const order = [...first, ...first, ...first];
     const started = Date.now();
     for (let i = 0; i < order.length; i++) {
       // Stop retrying after ~28 s so the function (60 s limit) still has time to stream the answer.
       if (i > 0 && Date.now() - started > 28_000) throw Object.assign(new Error("free models busy"), { status: 503 });
-      if (i > 0 && i % this.models.length === 0) await new Promise((ok) => setTimeout(ok, 2000));
-      const r = await fetch(`${this.baseUrl.replace(/\/$/, "")}/chat/completions`, {
+      if (i > 0 && i % first.length === 0) await new Promise((ok) => setTimeout(ok, 2000));
+      const send = (reasoning: string | null) => fetch(`${this.baseUrl.replace(/\/$/, "")}/chat/completions`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.apiKey}` },
-        body: JSON.stringify({ model: order[i], messages, stream: true, max_tokens: Math.round(input.maxTokens * 1.8), ...(gemini ? { reasoning_effort: "low" } : {}) }),
+        // Low temperature: steadier, more accurate explanations and traces. max_tokens is raised because this API counts hidden thinking inside it.
+        body: JSON.stringify({ model: order[i], messages, stream: true, temperature: 0.3, max_tokens: Math.round(input.maxTokens * 1.8), ...(gemini && reasoning ? { reasoning_effort: reasoning } : {}) }),
         signal,
       });
+      let r = await send(gemini ? (fast ? "minimal" : "low") : null);
+      if (r.status === 400 && gemini) r = await send(null); // a model that does not accept the thinking setting: ask again without it
       if (r.ok && r.body) { res = r; break; }
       const body = (await r.text().catch(() => "")).slice(0, 300);
       const retryable = [404, 429, 500, 502, 503, 504].includes(r.status);
