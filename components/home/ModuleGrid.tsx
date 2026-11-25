@@ -56,7 +56,7 @@ export function ModuleGrid({ modules }: { modules: ModuleCard[]; midAfter?: numb
             <li key={m.id} className="wk module-card card overflow-hidden !p-0" style={{ ["--wk-h" as string]: m.hue, borderTop: "3px solid var(--wk)" }}>
               <div className="relative h-40" style={{ background: "linear-gradient(160deg, var(--wk-soft), transparent 75%)" }}>
                 <ModuleArt art={m.art} />
-                <span className="absolute start-3 top-3 rounded-full bg-bg/80 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide"><Txt>{t(m.phase === "pre" ? "mod.premid" : "mod.postmid")}</Txt> · <Txt>{lab(m)}</Txt></span>
+                <span className="absolute start-3 top-3 rounded-full bg-bg/80 px-2.5 py-1 text-xs font-bold uppercase tracking-wide"><Txt>{t(m.phase === "pre" ? "mod.premid" : "mod.postmid")}</Txt> · <Txt>{lab(m)}</Txt></span>
                 <span className="absolute end-3 top-3"><Ring pct={pct} label={t("mod.pct", { n: pct })} /></span>
               </div>
               <div className="grid gap-2 p-4">
@@ -77,8 +77,8 @@ export function ModuleGrid({ modules }: { modules: ModuleCard[]; midAfter?: numb
                         <Link href={`/week-${l.week}/${l.slug}`} className="min-h-11 min-w-0 flex-1 truncate whitespace-nowrap py-2.5 text-sm font-medium no-underline hover:text-primary" title={l.title}>
                           <Txt>{name(l.key, l.title)}</Txt>{m.weeks.length > 1 && <span className="ms-1.5 text-xs font-normal text-muted">W{l.week}</span>}
                         </Link>
-                        <Link href={`/week-${l.week}/${l.slug}/workspace`} className="inline-flex min-h-8 shrink-0 items-center rounded-full border px-2 text-[11px] font-bold no-underline hover:bg-surface2" style={{ borderColor: "var(--wk)", color: "var(--wk)" }} aria-label={t("mod.labAria", { t: name(l.key, l.title) })}><Txt>{t("mod.lab")}</Txt></Link>
-                        <button className="inline-flex min-h-8 shrink-0 items-center rounded-full px-2 text-[11px] font-bold" style={{ background: "var(--wk)", color: "var(--on-primary)" }} aria-label={t("mod.chatAria", { t: name(l.key, l.title) })} onClick={() => tutor.open({ topic: l.title, topicKey: l.key })}><Txt>{t("mod.chat")}</Txt></button>
+                        <Link href={`/week-${l.week}/${l.slug}/workspace`} className="inline-flex min-h-8 shrink-0 items-center rounded-full border px-2 text-xs font-bold no-underline hover:bg-surface2" style={{ borderColor: "var(--wk)", color: "var(--wk)" }} aria-label={t("mod.labAria", { t: name(l.key, l.title) })}><Txt>{t("mod.lab")}</Txt></Link>
+                        <button className="inline-flex min-h-8 shrink-0 items-center rounded-full px-2 text-xs font-bold" style={{ background: "var(--wk)", color: "var(--on-primary)" }} aria-label={t("mod.chatAria", { t: name(l.key, l.title) })} onClick={() => tutor.open({ topic: l.title, topicKey: l.key })}><Txt>{t("mod.chat")}</Txt></button>
                       </li>
                     ))}
                   </ol>

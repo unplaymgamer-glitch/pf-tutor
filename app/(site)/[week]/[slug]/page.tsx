@@ -7,6 +7,7 @@ import { topicAccess, redactForExamMode } from "@/lib/gate-logic";
 import { getSiteState } from "@/lib/server/store";
 import { TopicView } from "@/components/topic/TopicView";
 import { lessonSeo } from "@/lib/seo";
+import { shortTitle } from "@/lib/short-titles";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 import { Locked } from "@/components/topic/Locked";
 
@@ -67,8 +68,8 @@ export default async function TopicPage({ params }: PageProps<"/[week]/[slug]">)
       <p className="hidden flex-wrap items-center gap-x-2 text-sm text-muted sm:flex"><Link className="inline-flex min-h-11 items-center" href="/">Home</Link> / <Link className="inline-flex min-h-11 items-center" href={`/week-${w}`}>Week {w}{ch ? `: ${ch.title}` : ""}</Link></p>
       <TopicView topic={topic} weekTopics={weekTopics} nextHref={next ? `/week-${next.week}/${next.slug}` : undefined} related={related.map((t) => ({ title: t.title, href: `/week-${t.week}/${t.slug}` }))} />
       <nav aria-label="Previous and next lesson" className="grid gap-2 sm:grid-cols-2">
-        {prev ? <Link className="btn flex items-center" href={`/week-${prev.week}/${prev.slug}`}>◀ {prev.title}</Link> : <span />}
-        {next ? <Link className="btn btn-primary flex items-center justify-end" href={`/week-${next.week}/${next.slug}`}>{next.title} ▶</Link> : null}
+        {prev ? <Link className="btn flex items-center" href={`/week-${prev.week}/${prev.slug}`}>◀ {shortTitle(`w${prev.week}/${prev.slug}`, prev.title)}</Link> : <span />}
+        {next ? <Link className="btn btn-primary flex items-center justify-end" href={`/week-${next.week}/${next.slug}`}>{shortTitle(`w${next.week}/${next.slug}`, next.title)} ▶</Link> : null}
       </nav>
     </div>
   );

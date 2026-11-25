@@ -332,6 +332,13 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
                   <div className="flex flex-wrap items-center gap-1 text-xs text-muted">
                     <span className="me-1"><Txt>{m.meta?.source === "claude" ? tx("c.srcClaude", { m: m.meta.model ?? "" }) : m.meta?.source === "instructor" ? tx("c.srcInstructor") : tx("c.srcLessons")}</Txt></span>
                     <button className="btn btn-sm" onClick={() => void copy(m.text)}><Txt>{tx("c.copy")}</Txt></button>
+                    {m.meta?.lessonKey && m.meta.source === "claude" && /^\d{1,2}\/[a-z0-9-]+$/.test(m.meta.lessonKey) && (
+                      <>
+                        <Link className="btn btn-sm inline-flex items-center no-underline" href={`/week-${m.meta.lessonKey}`}><Txt>{tx("c.openLesson")}</Txt></Link>
+                        <Link className="btn btn-sm inline-flex items-center no-underline" href={`/week-${m.meta.lessonKey}#learn`}><Txt>{tx("c.openAnim")}</Txt></Link>
+                        {m === lastAssistant && !busy && <button className="btn btn-sm" onClick={() => void send(tx("c.quizMeText"))}><Txt>{tx("c.quizMe")}</Txt></button>}
+                      </>
+                    )}
                     {speechOutputSupported() && features?.voice !== false && (
                       <button className="btn btn-sm" onClick={() => { if (!speak(m.text, lang)) setNote(tx(lang === "ur" ? "c.noUrdu" : "c.noRead")); }}><Txt>{tx("c.readAloud")}</Txt></button>
                     )}

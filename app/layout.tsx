@@ -35,7 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: PRE_HYDRATION_SCRIPT }} />
       </head>
-      <body className="min-h-dvh flex flex-col">
+      <body className="min-h-dvh flex flex-col max-lg:pb-16">
         <a className="skip-link" href="#main">Skip to lesson</a>
         <SettingsProvider>
           <SiteStateProvider>

@@ -77,3 +77,17 @@ test("Settings: the 3D control exists now and can switch it off", async ({ page 
   await page.goto("/week-6/three-d-arrays", { waitUntil: "networkidle" });
   await expect(page.locator("figure canvas")).toHaveCount(0);
 });
+
+test("Loop Lab inputs never show NaN, and a capped value tells the student", async ({ page }) => {
+  await page.goto("/week-3/for-loop", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Advanced controls" }).click();
+  const lab = page.getByRole("group", { name: "Loop settings" });
+  const end = lab.getByLabel("End", { exact: true });
+  await end.fill("abc");
+  expect(await end.inputValue()).not.toMatch(/NaN/);
+  await end.fill("100000");
+  await expect(page.getByRole("status").filter({ hasText: /Capped to/ })).toBeVisible();
+  expect(await end.inputValue()).toBe("50");
+  await lab.getByLabel("Step").fill("0");
+  expect(await lab.getByLabel("Step").inputValue()).not.toMatch(/NaN/);
+});

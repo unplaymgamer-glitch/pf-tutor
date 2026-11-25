@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { chapterByWeek, weekFromSlug } from "@/lib/course";
 import { getTopics } from "@/lib/content";
+import { shortTitle } from "@/lib/short-titles";
 import { WEEK_HUES, WEEK_ICONS } from "@/lib/course";
 import { WeekMindMap } from "@/components/home/WeekMindMap";
 import { topicAccess } from "@/lib/gate-logic";
@@ -46,7 +47,7 @@ export default async function ChapterPage({ params }: PageProps<"/[week]">) {
           {topics.map((t, i) => (
             <li key={t.slug}>
               <Link className="box flex min-h-11 items-center justify-between gap-3 no-underline" href={`/week-${w}/${t.slug}`}>
-                <span className="flex items-center gap-3"><span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-lg" style={{ background: "color-mix(in srgb, hsl(var(--wk-h) 80% 55%) 20%, transparent)" }}>{WEEK_ICONS[w - 1]}</span><span><span className="text-muted">{i + 1}.</span> {t.title}</span></span>
+                <span className="flex items-center gap-3"><span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-lg" style={{ background: "color-mix(in srgb, hsl(var(--wk-h) 80% 55%) 20%, transparent)" }}>{WEEK_ICONS[w - 1]}</span><span className="min-w-0"><span className="text-muted">{i + 1}.</span> <strong>{shortTitle(`w${w}/${t.slug}`, t.title)}</strong><span className="block text-sm text-muted">{t.title}</span></span></span>
                 <ProgressBadge k={`w${w}/${t.slug}`} />
               </Link>
             </li>

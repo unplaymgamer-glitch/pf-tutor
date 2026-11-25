@@ -66,3 +66,16 @@ describe("Urdu script is detected per paragraph", () => {
     expect(hasUrduScript("The `for` loop")).toBe(false);
   });
 });
+
+import { plainMath } from "@/components/tutor/Message";
+describe("chat rendering never shows raw rules or maths", () => {
+  it("turns --- into a rule block and keeps list dashes as lists", () => {
+    expect(parseBlocks("Intro\n\n---\n\n- a\n- b").map((b) => b.k)).toEqual(["p", "hr", "ul"]);
+    expect(parseBlocks("***").map((b) => b.k)).toEqual(["hr"]);
+  });
+  it("turns LaTeX into plain text", () => {
+    expect(plainMath("n \\times m")).toBe("n × m");
+    expect(plainMath("O(n \\cdot \\log n)")).toBe("O(n · log n)");
+    expect(plainMath("0")).toBe("0");
+  });
+});

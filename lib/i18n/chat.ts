@@ -197,4 +197,8 @@ export const CHAT: Record<string, Entry> = {
   "lab.count": { en: "Count from 1 up to", roman: "1 se is tak ginein:", ur: "1 سے یہاں تک گنیں:" },
   "lab.advanced": { en: "Advanced controls", roman: "Advanced controls", ur: "ایڈوانسڈ کنٹرولز" },
   "lab.simple": { en: "Back to the simple view", roman: "Simple view par wapas", ur: "سادہ منظر پر واپس" },
+  "c.openAnim": { en: "Open the animation", roman: "Animation kholein", ur: "اینیمیشن کھولیں" },
+  "c.quizMe": { en: "Quiz me on this", roman: "Is par quiz lo", ur: "اس پر کوئز لیں" },
+  "c.quizMeText": { en: "Quiz me on this topic with 3 questions and show the answers at the end.", roman: "Is topic par 3 sawalon ka quiz lo aur jawab aakhir mein dikhao.", ur: "اس موضوع پر تین سوالوں کا کوئز لیں اور جواب آخر میں دکھائیں۔" },
+  "lab.capped": { en: "Capped to {lo}..{hi} so the animation stays fast.", roman: "Animation tez rakhne ke liye {lo}..{hi} tak hi rakha gaya.", ur: "اینیمیشن تیز رکھنے کے لیے {lo}..{hi} تک ہی رکھا گیا۔" },
 };

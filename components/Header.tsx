@@ -28,24 +28,24 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-surface/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-1.5">
-        <Link href="/" className="me-2 inline-flex min-h-11 items-center gap-2 font-bold no-underline">
+        <Link href="/" aria-label="C++ CC111 PF Hub" className="me-2 inline-flex min-h-11 items-center gap-2 font-bold no-underline">
           <span aria-hidden className="grid h-8 w-8 place-items-center rounded-lg text-sm font-bold max-[420px]:hidden" style={{ background: "linear-gradient(135deg, var(--grad-a), var(--grad-b))", color: "var(--on-primary)" }}>C++</span>
-          <span className="gradient-text whitespace-nowrap max-[420px]:text-sm">CC111 PF Hub</span>
+          <span className="gradient-text whitespace-nowrap max-[420px]:text-sm lg:max-xl:hidden">CC111 PF Hub</span>
         </Link>
-        <nav aria-label="Main" className="ms-auto hidden items-center md:flex">
+        <nav aria-label="Main" className="ms-auto hidden items-center lg:flex">
           <Link className={nav} href="/"><T k="nav.home" /></Link>
           <Link className={nav} href="/#modules"><T k="nav.modules" /></Link>
           <Link className={nav} href="/chat"><T k="nav.ask" /></Link>
           <Link className={nav} href="/visual-lab"><T k="nav.visualLab" /></Link>
-          <Link className={`${nav} hidden lg:inline-flex`} href="/practice"><T k="nav.practice" />{due > 0 && <span className="ms-1 rounded-full bg-primary px-1.5 text-xs text-onprimary" aria-label={`${due} cards due`}>{due}</span>}</Link>
-          <Link className={`${nav} hidden lg:inline-flex`} href="/playground"><T k="nav.playground" /></Link>
-          <Link className={`${nav} hidden lg:inline-flex`} href="/more"><T k="nav.more" /></Link>
+          <Link className={`${nav} hidden xl:inline-flex`} href="/practice"><T k="nav.practice" />{due > 0 && <span className="ms-1 rounded-full bg-primary px-1.5 text-xs text-onprimary" aria-label={`${due} cards due`}>{due}</span>}</Link>
+          <Link className={`${nav} hidden xl:inline-flex`} href="/playground"><T k="nav.playground" /></Link>
+          <Link className={nav} href="/more"><T k="nav.more" /></Link>
         </nav>
-        <div className="ms-auto flex shrink-0 items-center gap-1 md:ms-3">
-          <div role="group" aria-label={t("nav.language")} className="hidden rounded-xl border border-border p-0.5 sm:flex">
+        <div className="ms-auto flex shrink-0 items-center gap-1 lg:ms-3">
+          <div role="group" aria-label={t("nav.language")} className="hidden rounded-xl border border-border p-0.5 xl:flex">
             {langs.map(([v, label]) => <button key={v} aria-pressed={s.lang === v} className={`min-h-8 rounded-lg px-2.5 text-xs font-semibold ${s.lang === v ? "bg-primary text-onprimary" : "text-muted hover:text-text"}`} onClick={() => update({ lang: v })}>{label}</button>)}
           </div>
-          <select className="btn btn-sm !px-1.5 sm:hidden" aria-label={t("nav.language")} value={s.lang} onChange={(e) => update({ lang: e.target.value as typeof s.lang })}>
+          <select className="btn btn-sm !px-1.5 xl:hidden" aria-label={t("nav.language")} value={s.lang} onChange={(e) => update({ lang: e.target.value as typeof s.lang })}>
             <option value="en">EN</option>
             <option value="roman">Roman</option>
             <option value="ur">اردو</option>
@@ -55,7 +55,7 @@ export function Header() {
             <span className="ti-to-light"><Ico d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></span>
             <span className="ti-to-dark"><Ico d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" /></span>
           </button>
-          <button className="btn btn-sm inline-flex" aria-pressed={s.reduceMotion} aria-label={t("nav.pause")} onClick={() => update({ reduceMotion: !s.reduceMotion })}>
+          <button className="btn btn-sm inline-flex max-[360px]:hidden" aria-pressed={s.reduceMotion} aria-label={t("nav.pause")} onClick={() => update({ reduceMotion: !s.reduceMotion })}>
             {s.reduceMotion ? <Ico d="M8 5v14l11-7z" fill /> : <Ico d="M7 5v14M17 5v14" />}
           </button>
           <button className="btn btn-sm inline-flex" aria-expanded={open} aria-controls="settings-panel" aria-label={t("nav.settings")} onClick={() => setOpen((o) => !o)}>

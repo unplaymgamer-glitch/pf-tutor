@@ -24,7 +24,17 @@ export function LoopVisual({ title, init }: { title: string; init: LoopParams })
   const s = useStepper(g.steps.length, 750);
   const st = g.steps[s.i];
   const change = (patch: Partial<LoopParams>) => { setP((x) => ({ ...x, ...patch })); s.reset(); };
-  const num = (v: string, lo: number, hi: number, fallback: number) => (v === "" || v === "-" ? fallback : clamp(Number(v), lo, hi));
+  const [capNote, setCapNote] = useState("");
+  // Digits and one leading minus only (never "NaN"); a value outside the safe range is capped and the student is told.
+  const num = (raw: string, lo: number, hi: number, fallback: number) => {
+    const v = raw.replace(/[^\d-]/g, "").replace(/(?!^)-/g, "");
+    if (v === "" || v === "-") return fallback;
+    const n = parseInt(v, 10);
+    if (!Number.isFinite(n)) return fallback;
+    const c = clamp(n, lo, hi);
+    setCapNote(c !== n ? t("lab.capped", { lo, hi }) : "");
+    return c;
+  };
   const compare = useMemo(() => KINDS.map((k) => ({ k, r: loopSteps({ ...p, loop: k }) })), [p]);
   const ph = PHASE[st.phase];
   return (
@@ -56,6 +66,7 @@ export function LoopVisual({ title, init }: { title: string; init: LoopParams })
         )}
         <button className="btn btn-sm w-fit" aria-expanded={adv} onClick={() => { setP(adv ? simple : init); s.reset(); setAdv(!adv); }}><Txt>{t(adv ? "lab.simple" : "lab.advanced")}</Txt></button>
       </div>
+      {capNote && <p role="status" className="text-sm text-muted"><Txt>{capNote}</Txt></p>}
       {g.endless && <p role="alert" className="box box-error">This loop never ends: the condition stays true for ever. The demo stops it after {MAX_ITER} turns. Change the step or the end value.</p>}
       <StepperControls s={s} label="loop" />
       <CodeBlock code={code} highlight={st.line} label={`${p.loop} loop code`} />

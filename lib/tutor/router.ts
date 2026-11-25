@@ -31,7 +31,7 @@ export function routeQuestion(i: RouteInput): Route {
   if (i.deep) return { model: "sonnet", effort: "medium", reason: "student asked for a deeper answer", maxTokens: 1800 };
   // Making a quiz or assignment in the format of the student's own sample needs a stronger model and room to write.
   if (MAKE.test(i.text) && (i.hasCode || i.hasImage || len > 400)) return { model: "sonnet", effort: "medium", reason: "make material in the format of the student's sample", maxTokens: 4000 };
-  if (isOneLiner(i.text) && !i.hasCode && !i.hasImage) return { model: "sonnet", effort: "low", reason: "one-line topic: full exam-ready guide", maxTokens: 2800 };
+  if (isOneLiner(i.text) && !i.hasCode && !i.hasImage) return { model: "sonnet", effort: "low", reason: "one-line topic: full exam-ready guide", maxTokens: 3600 };
   const hard = HARD_WORDS.test(i.text) || (i.lang !== "en" && ROMAN_HARD.test(i.text));
   if (i.hasCode && (hard || len > 600)) return { model: "sonnet", effort: "medium", reason: "code that needs debugging or tracing", maxTokens: 1800 };
   if (i.hasImage) return { model: "sonnet", effort: "low", reason: "image of code or an error", maxTokens: 1500 };

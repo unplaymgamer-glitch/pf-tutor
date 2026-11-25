@@ -24,7 +24,7 @@ export function TutorProvider({ children }: { children: React.ReactNode }) {
     <Ctx.Provider value={{ open }}>
       {children}
       {!hidden && (
-        <aside aria-label="Tutor shortcut"><Link href="/chat" className="btn btn-primary fixed bottom-20 right-4 z-40 inline-flex items-center rounded-full px-5 no-underline shadow-lg md:bottom-4 !min-h-12" aria-label="Open the CC111 tutor chat">💬 Tutor</Link></aside>
+        <aside aria-label="Tutor shortcut"><Link href="/chat" className="btn btn-primary fixed bottom-20 right-4 z-40 inline-flex items-center rounded-full px-5 no-underline shadow-lg lg:bottom-4 !min-h-12" aria-label="Open the CC111 tutor chat">💬 Tutor</Link></aside>
       )}
     </Ctx.Provider>
   );

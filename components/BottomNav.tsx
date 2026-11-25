@@ -16,7 +16,7 @@ const ITEMS = [
 export function BottomNav() {
   const path = usePathname() ?? "/";
   return (
-    <nav aria-label="Primary" className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 backdrop-blur md:hidden" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+    <nav aria-label="Primary" className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 backdrop-blur lg:hidden" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
       <ul className="mx-auto grid max-w-md grid-cols-6">
         {ITEMS.map((it) => {
           const active = it.href === "/" ? path === "/" : it.href.startsWith("/#") ? false : path.startsWith(it.href);

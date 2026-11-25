@@ -25,14 +25,20 @@ export function splitFences(src: string): Part[] {
   return out;
 }
 
+/** "$n \times m$" becomes "n × m": the model sometimes writes LaTeX, and students should never see dollar signs or backslash commands. */
+export function plainMath(m: string): string {
+  return m.replace(/\\times/g, "×").replace(/\\cdot/g, "·").replace(/\\(?:le|leq)\b/g, "≤").replace(/\\(?:ge|geq)\b/g, "≥").replace(/\\neq?\b/g, "≠").replace(/\\(log|sqrt|sum|lfloor|rfloor|lceil|rceil)\b/g, "$1").replace(/\\[,;! ]/g, " ").replace(/[{}]/g, "").trim();
+}
+
 function Inline({ text }: { text: string }) {
   const nodes: React.ReactNode[] = [];
-  const re = /(\*\*[^*]+\*\*|`[^`]+`|\/week-\d{1,2}(?:\/[a-z0-9-]+)?)/g;
+  const re = /(\*\*[^*]+\*\*|`[^`]+`|\$[^$\n]{1,60}\$|\/week-\d{1,2}(?:\/[a-z0-9-]+)?)/g;
   let last = 0, m: RegExpExecArray | null, k = 0;
   while ((m = re.exec(text))) {
     if (m.index > last) nodes.push(text.slice(last, m.index));
     const t = m[0];
     if (t.startsWith("**")) nodes.push(<strong key={k++}>{t.slice(2, -2)}</strong>);
+    else if (t.startsWith("$")) nodes.push(<span key={k++} dir="ltr">{plainMath(t.slice(1, -1))}</span>);
     else if (t.startsWith("`")) nodes.push(<code key={k++} dir="ltr" className="rounded bg-surface2 px-1">{t.slice(1, -1)}</code>);
     else nodes.push(<Link key={k++} href={t}>{t}</Link>);
     last = m.index + t.length;
@@ -46,6 +52,7 @@ export type Block =
   | { k: "ul"; items: string[] }
   | { k: "ol"; items: string[] }
   | { k: "table"; head: string[]; rows: string[][] }
+  | { k: "hr" }
   | { k: "p"; text: string };
 
 const ROW = /^\s*\|.+\|\s*$/;
@@ -64,6 +71,7 @@ export function parseBlocks(src: string): Block[] {
     const l = lines[i];
     let m: RegExpExecArray | null;
     if (!l.trim()) { flush(); continue; }
+    if (/^\s*(-{3,}|\*{3,}|_{3,})\s*$/.test(l)) { flush(); out.push({ k: "hr" }); continue; } // a horizontal rule, never the raw dashes
     if ((m = /^(#{1,4})\s+(.+)$/.exec(l))) { flush(); out.push({ k: "h", level: m[1].length, text: m[2] }); continue; }
     if (ROW.test(l) && RULE.test(lines[i + 1] ?? "")) {
       flush();
@@ -95,6 +103,7 @@ function Blocks({ text }: { text: string }) {
   return (
     <>
       {parseBlocks(text).map((b, i) => {
+        if (b.k === "hr") return <hr key={i} className="border-border" />;
         if (b.k === "h") return <p key={i} {...rtl(b.text)} className={`font-semibold ${b.level <= 2 ? "text-lg" : "text-base"} ${hasUrduScript(b.text) ? "urdu-text" : ""}`}><Inline text={b.text} /></p>;
         if (b.k === "ul") return <ul key={i} className="ms-5 grid list-disc gap-1">{b.items.map((t, j) => <li key={j} {...rtl(t)} className={hasUrduScript(t) ? "urdu-text" : undefined}><Inline text={t} /></li>)}</ul>;
         if (b.k === "ol") return <ol key={i} className="ms-5 grid list-decimal gap-1">{b.items.map((t, j) => <li key={j} {...rtl(t)} className={hasUrduScript(t) ? "urdu-text" : undefined}><Inline text={t} /></li>)}</ol>;

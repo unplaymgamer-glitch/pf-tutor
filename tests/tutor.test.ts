@@ -332,7 +332,7 @@ describe("one-line topic requests", () => {
     const { ev } = await collect({ provider: p }, req("nested loop"));
     expect(p.calls.length).toBe(1);
     expect(ev[0]).toMatchObject({ tier: 2, source: "claude" });
-    expect(routeQuestion({ text: "nested loop", hasCode: false, hasImage: false, lang: "en", turns: 1, deep: false })).toMatchObject({ model: "sonnet", maxTokens: 2800 });
+    expect(routeQuestion({ text: "nested loop", hasCode: false, hasImage: false, lang: "en", turns: 1, deep: false })).toMatchObject({ model: "sonnet", maxTokens: 3600 });
     const free = await collect({ provider: null }, req("nested loop"));
     expect(free.ev.some((e) => e.type === "error" || e.type === "delta")).toBe(true); // without an AI the free notes or a clear message still answer
   });
@@ -392,5 +392,28 @@ describe("vague questions go to the AI when one is connected", () => {
     const q = new MockProvider();
     await collect({ provider: q }, req("What is a variable?"));
     expect(q.calls.length).toBe(0); // a clear definition question is still answered instantly and free
+  });
+});
+
+describe("free provider continues a cut-off answer", () => {
+  it("asks again when the model stopped for length or inside a code block, and joins the pieces", async () => {
+    const { OpenAICompatProvider } = await import("@/lib/tutor/openai-compat-provider");
+    const orig = globalThis.fetch; let calls = 0; const bodies: { messages: { role: string; content: string }[] }[] = [];
+    globalThis.fetch = (async (_u: unknown, init: { body: string }) => {
+      calls++; bodies.push(JSON.parse(init.body));
+      const part = calls === 1
+        ? ['data: {"choices":[{"delta":{"content":"Here:\\n```cpp\\nfor (int i = 0; i < n; i++)"},"finish_reason":"length"}]}', "data: [DONE]", ""]
+        : ['data: {"choices":[{"delta":{"content":" {\\n  sum += i;\\n}\\n```"},"finish_reason":"stop"}]}', "data: [DONE]", ""];
+      return new Response(part.join("\n\n"), { status: 200 });
+    }) as never;
+    try {
+      const p = new OpenAICompatProvider("https://x.test/v1", "k", "m");
+      let text = "";
+      for await (const c of p.stream({ model: "sonnet", system: "s", messages: [{ role: "user", content: "write a loop" }], maxTokens: 100, effort: "medium" })) if (c.type === "delta") text += c.text;
+      expect(calls).toBe(2);
+      expect(text).toContain("sum += i;");
+      expect((text.match(/```/g) ?? []).length % 2).toBe(0);             // the code block is closed
+      expect(bodies[1].messages.at(-2)).toMatchObject({ role: "assistant" }); // the partial answer is sent back so it continues, not restarts
+    } finally { globalThis.fetch = orig; }
   });
 });

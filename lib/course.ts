@@ -32,7 +32,7 @@ export const chapterByWeek = (w: number) => CHAPTERS.find((c) => c.week === w);
 export const MID_LAST_WEEK = 8;
 export const FINAL_LAST_WEEK = 16;
 
-/** One accent hue per week (the colourful map). Lightness is set per theme in globals.css so text on it stays AA. Loops orange, arrays teal, functions violet, pointers pink, recursion lime. */
+/** One accent hue per week (the colorful map). Lightness is set per theme in globals.css so text on it stays AA. Loops orange, arrays teal, functions violet, pointers pink, recursion lime. */
 export const WEEK_HUES = [205, 150, 28, 175, 18, 190, 265, 285, 330, 345, 85, 45, 60, 220, 305, 10] as const;
 export const WEEK_ICONS = ["🧭", "🔀", "🔁", "📦", "🔂", "🧮", "🧩", "🧬", "📍", "🧱", "♻️", "🗂️", "🛠️", "💾", "🎨", "🚀"] as const;
 
