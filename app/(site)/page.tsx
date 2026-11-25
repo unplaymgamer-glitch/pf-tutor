@@ -1,18 +1,22 @@
 import Link from "next/link";
-import { CHAPTERS, WEEK_HUES, WEEK_ICONS } from "@/lib/course";
+import { CHAPTERS, MODULES } from "@/lib/course";
 import { allSamples } from "@/lib/content-schema";
 import { getTopics } from "@/lib/content";
 import { ContinueCard } from "@/components/topic/ContinueCard";
 import { DailyChallenge } from "@/components/game/DailyChallenge";
 import { HeroDemo } from "@/components/home/HeroDemo";
-import { HomeChatBox } from "@/components/home/HomeChatBox";
-import { RoadmapMap } from "@/components/home/RoadmapMap";
+import { ModuleGrid, type ModuleCard } from "@/components/home/ModuleGrid";
 import { StatCounters } from "@/components/home/StatCounters";
 import { SITE_DESCRIPTION } from "@/lib/site";
 
 export default function Home() {
   const chapters = CHAPTERS.map((c) => ({ c, topics: getTopics(c.week) }));
   const all = chapters.flatMap((x) => x.topics);
+  const cards: ModuleCard[] = MODULES.map((m) => ({
+    ...m,
+    label: m.weeks.length === 1 ? `WEEK ${m.weeks[0]}` : `WEEKS ${m.weeks[0]}–${m.weeks[m.weeks.length - 1]}`,
+    lessons: m.weeks.flatMap((w) => getTopics(w).map((t) => ({ key: `w${w}/${t.slug}`, slug: t.slug, title: t.title, week: w }))),
+  }));
   // Every number on the home page is computed from the real lesson files.
   const stats = [
     { label: "Chapters", value: CHAPTERS.length, icon: "📚" },
@@ -26,34 +30,35 @@ export default function Home() {
     provider: { "@type": "CollegeOrUniversity", name: "University of Management and Technology, Lahore" },
   };
   return (
-    <div className="grid gap-8">
+    <div className="grid gap-10">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
 
-      <section className="grid content-center gap-8 py-8 text-center sm:py-14" aria-labelledby="hero">
-        <h1 id="hero" className="rise text-4xl font-bold leading-tight sm:text-6xl"><span className="gradient-text">Programming Fundamentals</span></h1>
-        <div className="rise" style={{ animationDelay: ".1s" }}><HomeChatBox /></div>
-      </section>
-
-      <section className="grid items-center gap-6 lg:grid-cols-2" aria-labelledby="seeing">
-        <div className="grid gap-4">
-          <h2 id="seeing" className="text-3xl font-bold leading-tight sm:text-4xl">Learn C++ by <span className="gradient-text">seeing it run</span></h2>
-          <p className="text-lg text-muted">Pictures and animations first, then simple words, real code and practice. Built for UMT CC111 students.</p>
-          <div><Link href="/visual-lab" className="btn inline-flex items-center px-6 no-underline">🎬 Open Visual Lab</Link></div>
+      <section className="dot-grid -mx-4 grid justify-items-center gap-6 px-4 pb-6 pt-10 text-center sm:pt-16" aria-labelledby="hero">
+        <p className="rise text-sm font-bold uppercase tracking-[.35em] text-primary">UMT · CC111</p>
+        <h1 id="hero" className="rise text-5xl font-extrabold leading-[1.05] tracking-tight sm:text-7xl">Programming <span className="gradient-text">Fundamentals</span></h1>
+        <p className="rise font-mono text-2xl sm:text-4xl" style={{ color: "var(--warning)" }} aria-hidden>cout &lt;&lt; &quot;Hello, UMT!&quot;;<span className="caret" /></p>
+        <div className="rise h-0.5 w-40 rounded-full" style={{ background: "linear-gradient(90deg, transparent, var(--warning), transparent)" }} aria-hidden />
+        <p className="rise max-w-2xl text-lg text-muted sm:text-xl">Every topic first as a <strong className="text-text">picture</strong>, then in simple words. Ask the tutor, watch the animation, check yourself with a quiz. Answers come from your course lessons.</p>
+        <div className="rise flex flex-wrap justify-center gap-3">
+          <Link href="/chat" className="pill-btn pill-btn-solid">Start learning</Link>
+          <Link href="/visual-lab" className="pill-btn pill-btn-line">Open Visual Lab</Link>
         </div>
-        <HeroDemo />
+        <div className="mt-4 w-full max-w-3xl text-start"><HeroDemo /></div>
       </section>
 
       <ContinueCard />
+
+      <section aria-labelledby="road" className="grid gap-4" id="modules">
+        <span id="roadmap" aria-hidden />
+        <div className="grid gap-1">
+          <h2 id="road" className="text-3xl font-bold">Choose a module</h2>
+          <p className="max-w-3xl text-muted">The 16 weeks are split into {MODULES.length} modules: Pre-Midterm (weeks 1–8) and Post-Midterm (weeks 9–16). Open any sub-topic to learn it, or tap 💬 beside it to ask the tutor about just that lesson.</p>
+        </div>
+        <ModuleGrid modules={cards} />
+      </section>
+
       <StatCounters stats={stats} />
       <DailyChallenge />
-
-      <section aria-labelledby="road" className="grid gap-3">
-        <div className="flex flex-wrap items-end justify-between gap-2">
-          <h2 id="road" className="text-2xl font-semibold">Course map</h2>
-          <p className="text-sm text-muted">Each week has its own colour. The ring fills as you finish lessons.</p>
-        </div>
-        <RoadmapMap chapters={chapters.map(({ c, topics }) => ({ week: c.week, title: c.title, summary: c.summary, assessment: c.assessment, slugs: topics.map((t) => t.slug), hue: WEEK_HUES[c.week - 1], icon: WEEK_ICONS[c.week - 1] }))} />
-      </section>
     </div>
   );
 }

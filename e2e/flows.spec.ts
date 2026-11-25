@@ -19,16 +19,16 @@ test("progress persists after reload and backup code is offered", async ({ page 
   expect(errors).toEqual([]);
 });
 
-test("tutor panel opens, closes with Escape and answers a definition question for free", async ({ page }) => {
-  await page.goto("/week-1", { waitUntil: "networkidle" }); // the home page has its own chat box, so the floating button lives on the other pages
-  await page.getByRole("button", { name: "Open the CC111 tutor chat" }).click();
-  const dlg = page.getByRole("dialog", { name: "CC111 Tutor chat" });
-  await expect(dlg).toBeVisible();
-  await dlg.getByRole("textbox", { name: "Your question" }).fill("What is a variable?");
-  await dlg.getByRole("textbox", { name: "Your question" }).press("Enter");
-  await expect(dlg.getByText(/Variables/i).first()).toBeVisible({ timeout: 15000 });
-  await page.keyboard.press("Escape");
-  await expect(dlg).toBeHidden();
+test("the Tutor button opens the full-screen chat, which answers a definition question for free and goes home", async ({ page }) => {
+  await page.goto("/week-1", { waitUntil: "networkidle" }); // the home page has its own Start learning button, so the floating link lives on the other pages
+  await page.getByRole("link", { name: "Open the CC111 tutor chat" }).click();
+  const chat = page.getByRole("region", { name: "CC111 Tutor chat" });
+  await expect(chat).toBeVisible();
+  await chat.getByRole("textbox", { name: "Your question" }).fill("What is a variable?");
+  await chat.getByRole("textbox", { name: "Your question" }).press("Enter");
+  await expect(chat.getByText(/Variables/i).first()).toBeVisible({ timeout: 15000 });
+  await chat.getByRole("link", { name: /Home/ }).first().click();
+  await expect(page).toHaveURL(/\/$/);
 });
 
 test("playground loads, runs nothing until asked, and CSP blocks nothing it needs", async ({ page }) => {

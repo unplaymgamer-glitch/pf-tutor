@@ -35,3 +35,19 @@ export const FINAL_LAST_WEEK = 16;
 /** One accent hue per week (the colourful map). Lightness is set per theme in globals.css so text on it stays AA. Loops orange, arrays teal, functions violet, pointers pink, recursion lime. */
 export const WEEK_HUES = [205, 150, 28, 175, 18, 190, 265, 285, 330, 345, 85, 45, 60, 220, 305, 10] as const;
 export const WEEK_ICONS = ["🧭", "🔀", "🔁", "📦", "🔂", "🧮", "🧩", "🧬", "📍", "🧱", "♻️", "🗂️", "🛠️", "💾", "🎨", "🚀"] as const;
+
+/** The 16 weeks grouped into 10 modules (6 before the Mid-term, 4 after). Each module is a card on the home page; its lessons are its sub-topics. */
+export type CourseModule = { id: number; title: string; blurb: string; weeks: number[]; phase: "pre" | "post"; hue: number; art: "flow" | "branch" | "loop" | "bars" | "grid" | "func" | "pointer" | "stack" | "struct" | "files"; icon: string };
+export const MODULES: CourseModule[] = [
+  { id: 1, title: "Foundations of Programming", blurb: "What a program is, how C++ becomes a running program, your first code, input and output, and operators.", weeks: [1], phase: "pre", hue: 195, art: "flow", icon: "🧭" },
+  { id: 2, title: "Making Decisions", blurb: "if, else, ladders, nested if, switch, logical operators and the ternary operator.", weeks: [2], phase: "pre", hue: 150, art: "branch", icon: "🔀" },
+  { id: 3, title: "Loops", blurb: "for, while, do-while, goto, break and continue, with a Loop Lab you can step through.", weeks: [3], phase: "pre", hue: 28, art: "loop", icon: "🔁" },
+  { id: 4, title: "Arrays: One Dimension", blurb: "Store many values together, search them, find the minimum and maximum, and work with character arrays.", weeks: [4], phase: "pre", hue: 175, art: "bars", icon: "📦" },
+  { id: 5, title: "Patterns, Sorting and Matrices", blurb: "Nested loops, patterns, series, Bubble and Selection Sort, then 2-D and 3-D arrays.", weeks: [5, 6], phase: "pre", hue: 45, art: "grid", icon: "🧮" },
+  { id: 6, title: "Functions", blurb: "Function parts, parameters, pass by value and by reference, static variables, prototypes, default arguments and overloading.", weeks: [7, 8], phase: "pre", hue: 265, art: "func", icon: "🧩" },
+  { id: 7, title: "Pointers and Dynamic Memory", blurb: "Addresses, pointers, pointer arithmetic, arrays and pointers, stack versus heap, new and delete.", weeks: [9, 10], phase: "post", hue: 330, art: "pointer", icon: "📍" },
+  { id: 8, title: "Recursion and Strings", blurb: "Functions that call themselves, the call stack, and string operations.", weeks: [11], phase: "post", hue: 85, art: "stack", icon: "♻️" },
+  { id: 9, title: "Structures", blurb: "Group related data: structures, members, arrays of structures, passing and returning them.", weeks: [12, 13], phase: "post", hue: 18, art: "struct", icon: "🗂️" },
+  { id: 10, title: "Files, Graphics and Project", blurb: "Read and write text files, draw with simple graphics, and plan your final project.", weeks: [14, 15, 16], phase: "post", hue: 220, art: "files", icon: "💾" },
+];
+export const moduleOfWeek = (w: number) => MODULES.find((m) => m.weeks.includes(w));

@@ -4,7 +4,8 @@ import { usePathname } from "next/navigation";
 
 const ITEMS = [
   { href: "/", label: "Home", icon: "🏠" },
-  { href: "/#roadmap", label: "Learn", icon: "🗺️" },
+  { href: "/#modules", label: "Modules", icon: "🗺️" },
+  { href: "/chat", label: "Ask", icon: "💬" },
   { href: "/practice", label: "Practice", icon: "✍️" },
   { href: "/playground", label: "Playground", icon: "▶️" },
   { href: "/more", label: "More", icon: "☰" },
@@ -15,7 +16,7 @@ export function BottomNav() {
   const path = usePathname() ?? "/";
   return (
     <nav aria-label="Primary" className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 backdrop-blur md:hidden" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-      <ul className="mx-auto grid max-w-md grid-cols-5">
+      <ul className="mx-auto grid max-w-md grid-cols-6">
         {ITEMS.map((it) => {
           const active = it.href === "/" ? path === "/" : it.href.startsWith("/#") ? false : path.startsWith(it.href);
           return (

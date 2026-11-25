@@ -25,7 +25,7 @@ export class AnthropicProvider implements AIProvider {
           content:
             typeof m.content === "string"
               ? m.content
-              : m.content.map((b) => (b.type === "text" ? { type: "text" as const, text: b.text } : { type: "image" as const, source: { type: "base64" as const, media_type: b.mediaType, data: b.data } })),
+              : m.content.map((b) => (b.type === "text" ? { type: "text" as const, text: b.text } : b.type === "pdf" ? { type: "document" as const, source: { type: "base64" as const, media_type: "application/pdf" as const, data: b.data } } : { type: "image" as const, source: { type: "base64" as const, media_type: b.mediaType, data: b.data } })),
         })),
       },
       { signal },

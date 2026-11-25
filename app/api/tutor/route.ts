@@ -51,7 +51,7 @@ export async function POST(req: Request) {
   const [settings, instructorAnswers] = await Promise.all([store.getTutorSettings().catch(() => undefined), store.listInstructorAnswers().catch(() => [])]);
   const r = parsed.data;
   // Uploads disabled by the instructor: drop attachments server-side (not just hide the button).
-  if (!state.features.upload) { delete r.file; delete r.images; }
+  if (!state.features.upload) { delete r.file; delete r.images; delete r.pdfs; }
 
   const events = runTutor(
     {

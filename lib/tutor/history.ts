@@ -1,7 +1,7 @@
 "use client";
 // Chat history lives only on the student's device (IndexedDB). No server copy. Falls back to memory when storage is blocked.
 export type StoredMessage = { id: string; role: "user" | "assistant"; text: string; meta?: { tier?: 0 | 2; model?: string; source?: string; lessonKey?: string; error?: string }; at: number };
-export type Session = { id: string; title: string; updatedAt: number; messages: StoredMessage[] };
+export type Session = { id: string; title: string; updatedAt: number; messages: StoredMessage[]; topicKey?: string; topicLabel?: string };
 
 const DB = "cc111-tutor", STORE = "sessions";
 const mem = new Map<string, Session>();
@@ -44,7 +44,15 @@ export async function deleteAllSessions(): Promise<void> {
   const db = await open();
   if (db) await req(db.transaction(STORE, "readwrite").objectStore(STORE).clear()).catch(() => {});
 }
-export const newSession = (): Session => ({ id: crypto.randomUUID(), title: "New chat", updatedAt: Date.now(), messages: [] });
+export const newSession = (topic?: { key: string; label: string }): Session => ({ id: crypto.randomUUID(), title: topic ? topic.label : "New chat", updatedAt: Date.now(), messages: [], topicKey: topic?.key, topicLabel: topic?.label });
+
+/** Sidebar groups: Today, Previous 7 days, Older. `now` is passed in so the function stays pure. */
+export function groupByAge<T extends { updatedAt: number }>(items: T[], now: number): { label: string; items: T[] }[] {
+  const day = 86_400_000, start = new Date(now).setHours(0, 0, 0, 0);
+  const g = [{ label: "Today", items: [] as T[] }, { label: "Previous 7 days", items: [] as T[] }, { label: "Older", items: [] as T[] }];
+  for (const it of items) (it.updatedAt >= start ? g[0] : it.updatedAt >= start - 7 * day ? g[1] : g[2]).items.push(it);
+  return g.filter((x) => x.items.length);
+}
 export const titleFrom = (text: string) => text.replace(/\s+/g, " ").trim().slice(0, 40) || "New chat";
 
 /** Download every chat as a JSON file (the student owns their history). */

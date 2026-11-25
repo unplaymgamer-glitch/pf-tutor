@@ -1,29 +1,29 @@
 "use client";
-import dynamic from "next/dynamic";
-import { usePathname } from "next/navigation";
-import { createContext, useCallback, useContext, useState } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { createContext, useCallback, useContext } from "react";
+import { setHandoff } from "@/lib/tutor/handoff";
 
 /** `topic` is a human label; `topicKey` ("w3/for-loop") pins the lesson so the tutor answers inside it. */
 export type AskContext = { code?: string; diagnostics?: string; stdin?: string; topic?: string; topicKey?: string; text?: string; autoSend?: boolean };
 const Ctx = createContext<{ open: (c?: AskContext) => void }>({ open: () => {} });
 export const useTutor = () => useContext(Ctx);
 
-// The chat panel (history, voice, upload, markdown) is only downloaded when the student first opens the tutor.
-const Panel = dynamic(() => import("./TutorPanel"), { ssr: false });
-
+/** Every "ask the tutor" button opens the full-screen chat. What the student was looking at (lesson, code, error) travels with it. */
 export function TutorProvider({ children }: { children: React.ReactNode }) {
-  const [isOpen, setOpen] = useState(false);
+  const router = useRouter();
   const path = usePathname() ?? "";
-  const onAdmin = path === "/admin" || path.startsWith("/admin/") || path === "/chat" || path === "/"; // no floating button on the instructor page or on the full-page chat
-  const [ctx, setCtx] = useState<AskContext | undefined>();
-  const open = useCallback((c?: AskContext) => { setCtx(c); setOpen(true); }, []);
+  const hidden = path === "/admin" || path.startsWith("/admin/") || path === "/chat" || path === "/"; // no floating button on the instructor page, in the chat itself, or on the home page
+  const open = useCallback((c?: AskContext) => {
+    if (c) setHandoff({ text: c.text, autoSend: !!(c.text && (c.code || c.diagnostics)), topic: c.topic, topicKey: c.topicKey, code: c.code, diagnostics: c.diagnostics, stdin: c.stdin });
+    router.push(c?.topicKey ? `/chat?topic=${c.topicKey}` : "/chat");
+  }, [router]);
   return (
     <Ctx.Provider value={{ open }}>
       {children}
-      {!isOpen && !onAdmin && (
-        <button className="btn btn-primary fixed bottom-20 right-4 z-40 md:bottom-4 !min-h-12 rounded-full px-5 shadow-lg" onClick={() => open()} aria-label="Open the CC111 tutor chat">💬 Tutor</button>
+      {!hidden && (
+        <aside aria-label="Tutor shortcut"><Link href="/chat" className="btn btn-primary fixed bottom-20 right-4 z-40 inline-flex items-center rounded-full px-5 no-underline shadow-lg md:bottom-4 !min-h-12" aria-label="Open the CC111 tutor chat">💬 Tutor</Link></aside>
       )}
-      {isOpen && <Panel onClose={() => setOpen(false)} initial={ctx} />}
     </Ctx.Provider>
   );
 }

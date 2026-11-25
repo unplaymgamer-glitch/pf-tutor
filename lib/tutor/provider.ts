@@ -1,7 +1,7 @@
 import type { ModelKey, Usage } from "./pricing";
 
 // One interface for every AI backend, so providers can be swapped (Claude today; a free provider could slot in as Tier 1).
-export type ChatBlock = { type: "text"; text: string } | { type: "image"; mediaType: "image/jpeg" | "image/png"; data: string };
+export type ChatBlock = { type: "text"; text: string } | { type: "image"; mediaType: "image/jpeg" | "image/png"; data: string } | { type: "pdf"; data: string };
 export type ChatMessage = { role: "user" | "assistant"; content: string | ChatBlock[] };
 export type ChatInput = { model: ModelKey; system: string; messages: ChatMessage[]; maxTokens: number; effort: "low" | "medium" };
 export type ChatChunk = { type: "delta"; text: string } | { type: "usage"; usage: Usage } | { type: "refusal" };

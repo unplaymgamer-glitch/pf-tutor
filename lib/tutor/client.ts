@@ -8,6 +8,7 @@ export type TutorPayload = {
   deep?: boolean;
   context?: { topic?: string; code?: string; diagnostics?: string; stdin?: string };
   file?: { name: string; text: string };
+  pdfs?: { name: string; data: string }[];
   images?: { mediaType: "image/jpeg" | "image/png"; data: string }[];
 };
 

@@ -6,7 +6,7 @@ import { asData, cleanText, looksLikeInjection, trimHistory, TutorRequest } from
 import { MODELS, ModelKey, costMicros, estimateMicros, monthKey } from "./pricing";
 import { buildSystem } from "./prompt";
 import type { AIProvider, ChatBlock, ChatMessage } from "./provider";
-import { routeQuestion } from "./router";
+import { isOneLiner, routeQuestion } from "./router";
 import { CourseSearch, matchInstructorAnswer, notesFor, tier0Answer } from "./search";
 import type { TutorSettings } from "./settings";
 
@@ -62,7 +62,7 @@ export async function* runTutor(d: Deps, req: TutorRequest): AsyncGenerator<Tuto
 
   if (!s.enabled) { yield fail("off"); return; }
 
-  const hasExtras = !!(req.context?.code || req.context?.diagnostics || req.file || req.images?.length);
+  const hasExtras = !!(req.context?.code || req.context?.diagnostics || req.file || req.images?.length || req.pdfs?.length);
 
   // Tier 0a: the instructor's own answer.
   const ia = matchInstructorAnswer(question, d.instructorAnswers);
@@ -73,7 +73,7 @@ export async function* runTutor(d: Deps, req: TutorRequest): AsyncGenerator<Tuto
     return;
   }
   // Tier 0b: a plain definition question the lessons answer directly. Free and instant.
-  if (!hasExtras && !req.deep && !(pinned && d.provider)) { // a topic chat goes to the AI when one is connected
+  if (!hasExtras && !req.deep && !((pinned || isOneLiner(question)) && d.provider)) { // a topic chat goes to the AI when one is connected
     const t0 = tier0Answer(question, hits, req.lang, s.tier0Threshold);
     if (t0) {
       yield { type: "meta", tier: 0, source: "notes", lessonKey: t0.lessonKey };
@@ -91,13 +91,13 @@ export async function* runTutor(d: Deps, req: TutorRequest): AsyncGenerator<Tuto
   if ((await d.store.incr("tutor-q-ip", d.clientKey)) > Math.max(30, s.dailyPerDevice * 4)) { yield fail("limit-ip"); return; }
   if (req.deep && (await d.store.incr("tutor-deep", req.deviceId)) > s.maxDeepPerDay) { yield fail("limit-deep"); return; }
 
-  const route = routeQuestion({ text: question, hasCode: !!(req.context?.code || req.file), hasImage: !!req.images?.length, lang: req.lang, turns: history.filter((m) => m.role === "user").length, deep: !!req.deep });
+  const route = routeQuestion({ text: question, hasCode: !!(req.context?.code || req.file), hasImage: !!(req.images?.length || req.pdfs?.length), lang: req.lang, turns: history.filter((m) => m.role === "user").length, deep: !!req.deep });
   const model: ModelKey = route.model;
 
   const month = monthKey(d.now);
   const rows = await d.store.counters(35);
   const spent = rows.filter((r) => r.kind === "tutor-micros" && r.key === month).reduce((n, r) => n + r.n, 0);
-  const inputChars = history.reduce((n, m) => n + m.content.length, 0) + (req.context?.code?.length ?? 0) + (req.file?.text.length ?? 0) + 6000;
+  const inputChars = history.reduce((n, m) => n + m.content.length, 0) + (req.context?.code?.length ?? 0) + (req.file?.text.length ?? 0) + (req.pdfs ?? []).reduce((n, p) => n + p.data.length / 2, 0) + 6000;
   if (spent + estimateMicros(model, inputChars, route.maxTokens) > s.monthlyBudgetUSD * 1_000_000) { yield fail("budget"); return; }
 
   // Build the messages. The student's own words are the question; everything pasted is wrapped as data.
@@ -106,6 +106,7 @@ export async function* runTutor(d: Deps, req: TutorRequest): AsyncGenerator<Tuto
   const msgs: ChatMessage[] = history.slice(0, -1).map((m) => ({ role: m.role, content: m.content }));
   const blocks: ChatBlock[] = [];
   for (const img of req.images ?? []) blocks.push({ type: "image", mediaType: img.mediaType, data: img.data });
+  for (const pdf of req.pdfs ?? []) blocks.push({ type: "pdf", data: pdf.data });
   let text = `Student question:\n${question}`;
   if (req.context?.code) text += `\n\n${asData("student_code", req.context.code)}`;
   if (req.context?.stdin) text += `\n\nProgram input used: ${cleanText(req.context.stdin).slice(0, 200)}`;

@@ -2,9 +2,10 @@ import { z } from "zod";
 
 // Request validation and prompt-injection hygiene. Everything a student pastes or uploads is DATA, never instructions.
 export const MAX_IMAGE_B64 = 4_000_000; // ~3 MB of image bytes
-export const MAX_BODY_BYTES = 9_000_000;
+export const MAX_BODY_BYTES = 12_000_000;
+export const MAX_PDF_B64 = 5_500_000; // ~4 MB PDF
 
-const Msg = z.object({ role: z.enum(["user", "assistant"]), content: z.string().max(6000) });
+const Msg = z.object({ role: z.enum(["user", "assistant"]), content: z.string().max(40000) });
 export const TutorRequest = z.object({
   messages: z.array(Msg).min(1).max(20),
   lang: z.enum(["en", "roman", "ur"]).default("en"),
@@ -16,7 +17,8 @@ export const TutorRequest = z.object({
     diagnostics: z.string().max(3000).optional(),
     stdin: z.string().max(500).optional(),
   }).optional(),
-  file: z.object({ name: z.string().max(80), text: z.string().max(20000) }).optional(),
+  file: z.object({ name: z.string().max(200), text: z.string().max(120000) }).optional(),
+  pdfs: z.array(z.object({ name: z.string().max(200), data: z.string().max(MAX_PDF_B64).regex(/^[A-Za-z0-9+/=]+$/) })).max(2).optional(),
   images: z.array(z.object({ mediaType: z.enum(["image/jpeg", "image/png"]), data: z.string().max(MAX_IMAGE_B64).regex(/^[A-Za-z0-9+/=]+$/) })).max(2).optional(),
 }).refine((r) => r.messages.length > 0 && r.messages[r.messages.length - 1].role === "user", { message: "last message must be from the user" });
 export type TutorRequest = z.infer<typeof TutorRequest>;
@@ -42,7 +44,7 @@ export function asData(tag: "student_code" | "student_file" | "error_output" | "
 }
 
 /** Keep the recent conversation within a size budget (never splitting the last user message). */
-export function trimHistory<T extends { role: string; content: string }>(msgs: T[], maxMsgs = 10, maxChars = 16000): T[] {
+export function trimHistory<T extends { role: string; content: string }>(msgs: T[], maxMsgs = 10, maxChars = 60000): T[] {
   let out = msgs.slice(-maxMsgs);
   let total = out.reduce((n, m) => n + m.content.length, 0);
   while (out.length > 1 && total > maxChars) { total -= out[0].content.length; out = out.slice(1); }
