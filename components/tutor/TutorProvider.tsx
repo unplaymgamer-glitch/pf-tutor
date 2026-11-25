@@ -15,6 +15,8 @@ export function TutorProvider({ children }: { children: React.ReactNode }) {
   const path = usePathname() ?? "";
   const hidden = path === "/admin" || path.startsWith("/admin/") || path === "/chat" || path === "/"; // no floating button on the instructor page, in the chat itself, or on the home page
   const open = useCallback((c?: AskContext) => {
+    // Inside a lesson workspace the topic tutor is already on screen: hand the question to it instead of leaving the page.
+    if (c && location.pathname.endsWith("/workspace")) { window.dispatchEvent(new CustomEvent("cc111:ask", { detail: c })); return; }
     if (c) setHandoff({ text: c.text, autoSend: !!(c.text && (c.code || c.diagnostics)), topic: c.topic, topicKey: c.topicKey, code: c.code, diagnostics: c.diagnostics, stdin: c.stdin });
     router.push(c?.topicKey ? `/chat?topic=${c.topicKey}` : "/chat");
   }, [router]);

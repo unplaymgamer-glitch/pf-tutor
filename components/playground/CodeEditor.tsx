@@ -54,6 +54,10 @@ export default function CodeEditor({ initial, onChange, handleRef, label }: { in
       }),
     });
     view.current = v;
+    // A long program makes the editor scroll: keyboard users must be able to reach the scrolling area (WCAG 2.1.1).
+    v.scrollDOM.tabIndex = 0;
+    v.scrollDOM.setAttribute("role", "group");
+    v.scrollDOM.setAttribute("aria-label", `${label} (scrollable)`);
     if (handleRef) {
       handleRef.current = {
         getValue: () => v.state.doc.toString(),

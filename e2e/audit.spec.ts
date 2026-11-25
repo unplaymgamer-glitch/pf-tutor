@@ -13,7 +13,7 @@ const LESSONS = [
   "week-7/pass-by-value-reference", "week-8/function-overloading", "week-9/what-is-a-pointer", "week-10/dynamic-memory-allocation", "week-11/recursion",
   "week-12/array-of-structures", "week-13/returning-structures", "week-14/reading-files", "week-15/draw-a-house", "week-16/program-structure",
 ];
-const PAGES = ["/", "/week-3", ...LESSONS.map((l) => "/" + l), "/playground", "/practice", "/review", "/mock", "/progress", "/search", "/revision/mid", "/revision/final", "/visual-lab", "/chat", "/week-6", "/privacy", "/more", "/how-to-study", "/faq", "/about", "/admin"];
+const PAGES = ["/", "/week-3", ...LESSONS.map((l) => "/" + l), "/playground", "/practice", "/review", "/mock", "/progress", "/search", "/revision/mid", "/revision/final", "/visual-lab", "/chat", "/week-3/for-loop/workspace", "/week-6", "/privacy", "/more", "/how-to-study", "/faq", "/about", "/admin"];
 
 async function open(page: Page, url: string, errors: string[]) {
   page.on("console", (m) => { if (m.type() === "error") errors.push(`${url}: ${m.text()}`); });
