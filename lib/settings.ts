@@ -57,12 +57,12 @@ export function saveSettings(s: Settings): void {
   }
 }
 
-/** Apply settings to <html>. Urdu script switches lang=ur and dir=rtl; code stays LTR via CSS. */
+/** Apply settings to <html>. The page layout stays left-to-right in every language (code, menus and numbers read that way); Urdu-script TEXT is set right-to-left by itself (see <T> and .urdu-text). */
 export function applySettings(s: Settings, root: HTMLElement = document.documentElement): void {
   if (s.theme === "system") root.removeAttribute("data-theme");
   else root.setAttribute("data-theme", s.theme);
   root.setAttribute("lang", s.lang === "ur" ? "ur" : "en");
-  root.setAttribute("dir", s.lang === "ur" ? "rtl" : "ltr");
+  root.setAttribute("dir", "ltr");
   root.style.setProperty("--fs-scale", String(s.fontScale));
   root.setAttribute("data-motion", s.reduceMotion || s.lowData ? "reduce" : "full");
   root.setAttribute("data-dyslexia", s.dyslexia ? "on" : "off");

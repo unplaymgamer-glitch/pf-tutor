@@ -106,8 +106,6 @@ body {
   overflow-x: hidden;
 }
 html[data-dyslexia="on"] body { font-family: "Comic Sans MS", "Trebuchet MS", sans-serif; letter-spacing: 0.04em; word-spacing: 0.12em; }
-html[lang="ur"] body { font-family: var(--font-urdu); line-height: 2.2; }
-html[lang="ur"] pre, html[lang="ur"] code, html[lang="ur"] .code { direction: ltr; text-align: left; font-family: var(--font-code); }
 
 :focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
 .skip-link { position: absolute; inset-inline-start: 8px; top: 8px; transform: translateY(-200%); z-index: 100; background: var(--primary); color: var(--on-primary); padding: 8px 14px; border-radius: 8px; }
@@ -232,3 +230,8 @@ html[data-motion="reduce"] .code-motif { display: none; }
 /* Urdu script inside a chat answer: Nastaliq font, roomy lines, right-aligned; code stays left-to-right */
 .urdu-text { font-family: var(--font-urdu); line-height: 2.3; text-align: right; font-size: 1.05em; }
 .urdu-text code, .urdu-text pre { direction: ltr; unicode-bidi: embed; font-family: var(--font-code); }
+
+/* Urdu in the interface: compact Naskh for labels, buttons and menus; Nastaliq for reading text. Only the Urdu text itself is right-to-left, never the page. */
+.urdu-ui { font-family: "Noto Naskh Arabic", var(--font-urdu), serif; line-height: 1.6; letter-spacing: 0; word-spacing: 0; }
+.urdu-ui-block { font-family: var(--font-urdu), "Noto Naskh Arabic", serif; line-height: 2.1; letter-spacing: 0; text-align: right; }
+[lang="ur"]:not(html) code, [lang="ur"]:not(html) pre { direction: ltr; unicode-bidi: embed; font-family: var(--font-code); }

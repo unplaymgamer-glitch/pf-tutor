@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { T } from "../I18n";
 
 function CountUp({ to }: { to: number }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -30,7 +31,7 @@ export function StatCounters({ stats }: { stats: { label: string; value: number;
         <li key={s.label} className="card text-center">
           <div aria-hidden className="text-xl">{s.icon}</div>
           <div className="gradient-text text-3xl font-bold"><CountUp to={s.value} /></div>
-          <div className="text-sm text-muted">{s.label}</div>
+          <div className="text-sm text-muted"><T k={s.label} /></div>
         </li>
       ))}
     </ul>

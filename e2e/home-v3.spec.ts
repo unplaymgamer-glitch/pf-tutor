@@ -43,7 +43,7 @@ test("module cards: ten modules, Pre/Post filter, sub-topics open a lesson, the 
   const loops = cards.filter({ hasText: "Loops" }).first();
   await loops.getByRole("button", { name: /sub-topics/ }).click();
   await expect(loops.getByRole("list").getByRole("link").first()).toBeVisible();
-  await loops.getByRole("button", { name: /^Ask the tutor about/ }).first().click();
+  await loops.getByRole("button", { name: /^Chat: ask the tutor about/ }).first().click();
   await expect(page).toHaveURL(/\/chat\?topic=w3\//);
   await expect(page.getByRole("heading", { name: /Studying/ })).toBeVisible();
   await page.goBack();

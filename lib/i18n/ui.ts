@@ -1,0 +1,128 @@
+import type { Entry } from "./core";
+
+// Interface text in three languages: English, Roman Urdu (Urdu in English letters) and Urdu script.
+// Rules: technical words (loop, array, pointer, C++, XP) stay in English letters in Roman Urdu and are transliterated in Urdu script;
+// "{n}"-style placeholders are filled in by tr(); every entry must have all three languages (tests/i18n.test.ts checks this).
+export const UI: Record<string, Entry> = {
+  // header and navigation
+  "nav.home": { en: "Home", roman: "Home", ur: "ہوم" },
+  "nav.modules": { en: "Modules", roman: "Modules", ur: "ماڈیولز" },
+  "nav.ask": { en: "Ask", roman: "Poochein", ur: "پوچھیں" },
+  "nav.visualLab": { en: "Visual Lab", roman: "Visual Lab", ur: "ویژول لیب" },
+  "nav.practice": { en: "Practice", roman: "Mashq", ur: "مشق" },
+  "nav.playground": { en: "Playground", roman: "Playground", ur: "پلے گراؤنڈ" },
+  "nav.more": { en: "More", roman: "Mazeed", ur: "مزید" },
+  "nav.search": { en: "Search lessons", roman: "Lessons dhoondein", ur: "اسباق تلاش کریں" },
+  "nav.theme": { en: "Switch between dark and light theme", roman: "Dark aur light theme badlein", ur: "ڈارک اور لائٹ تھیم بدلیں" },
+  "nav.pause": { en: "Pause animations", roman: "Animations rokein", ur: "اینیمیشنز روکیں" },
+  "nav.settings": { en: "Settings", roman: "Settings", ur: "سیٹنگز" },
+  "nav.playgroundAria": { en: "Playground: run C++", roman: "Playground: C++ chalayein", ur: "پلے گراؤنڈ: سی پلس پلس چلائیں" },
+  "nav.language": { en: "Language", roman: "Zaban", ur: "زبان" },
+  "nav.skip": { en: "Skip to lesson", roman: "Seedha lesson par jayein", ur: "سیدھا سبق پر جائیں" },
+  "nav.progress": { en: "My progress", roman: "Meri progress", ur: "میری پیش رفت" },
+  "nav.ofStudents": { en: "built for UMT CC111 students", roman: "UMT CC111 ke students ke liye", ur: "یو ایم ٹی سی سی ۱۱۱ کے طلبہ کے لیے" },
+
+  // settings panel
+  "set.language": { en: "Language", roman: "Zaban", ur: "زبان" },
+  "set.theme": { en: "Theme", roman: "Theme", ur: "تھیم" },
+  "set.system": { en: "System", roman: "System", ur: "سسٹم" },
+  "set.dark": { en: "Dark", roman: "Dark", ur: "ڈارک" },
+  "set.light": { en: "Light", roman: "Light", ur: "لائٹ" },
+  "set.textSize": { en: "Text size ({n}%)", roman: "Text ka size ({n}%)", ur: "تحریر کا سائز ({n}٪)" },
+  "set.threeD": { en: "3D scenes (now using: {mode} view)", roman: "3D scenes (abhi: {mode} view)", ur: "تھری ڈی مناظر (ابھی: {mode})" },
+  "set.threeDAuto": { en: "Automatic (3D on laptops, 2D on phones)", roman: "Automatic (laptop par 3D, phone par 2D)", ur: "خودکار (لیپ ٹاپ پر تھری ڈی، فون پر ٹو ڈی)" },
+  "set.threeDOn": { en: "Always 3D when possible", roman: "Jahan mumkin ho hamesha 3D", ur: "جہاں ممکن ہو ہمیشہ تھری ڈی" },
+  "set.threeDOff": { en: "Off (simple 2D)", roman: "Band (simple 2D)", ur: "بند (سادہ ٹو ڈی)" },
+  "set.reduceMotion": { en: "Reduce motion (pause animations)", roman: "Motion kam karein (animations rokein)", ur: "حرکت کم کریں (اینیمیشنز روکیں)" },
+  "set.lowData": { en: "Low-data mode", roman: "Low-data mode", ur: "کم ڈیٹا موڈ" },
+  "set.dyslexia": { en: "Dyslexia-friendly text", roman: "Dyslexia-friendly text", ur: "ڈسلیکسیا کے لیے آسان تحریر" },
+  "set.close": { en: "Close", roman: "Band karein", ur: "بند کریں" },
+
+  // footer
+  "foot.midHub": { en: "Mid-term hub", roman: "Mid-term hub", ur: "مڈ ٹرم حب" },
+  "foot.finalHub": { en: "Final hub", roman: "Final hub", ur: "فائنل حب" },
+  "foot.howToStudy": { en: "How to study", roman: "Kaise parhein", ur: "کیسے پڑھیں" },
+  "foot.faq": { en: "FAQ", roman: "Aam sawal", ur: "عام سوالات" },
+  "foot.about": { en: "About", roman: "Hamare baare mein", ur: "ہمارے بارے میں" },
+  "foot.privacy": { en: "Privacy", roman: "Privacy", ur: "رازداری" },
+
+  // home hero
+  "home.tag": { en: "UMT · CC111", roman: "UMT · CC111", ur: "UMT · CC111" },
+  "home.title1": { en: "Programming", roman: "Programming", ur: "پروگرامنگ" },
+  "home.title2": { en: "Fundamentals", roman: "Fundamentals", ur: "فنڈامنٹلز" },
+  "home.desc": {
+    en: "Every topic first as a picture, then in simple words. Ask the tutor, watch the animation, check yourself with a quiz. Answers come from your course lessons.",
+    roman: "Har topic pehle picture mein, phir aasaan alfaaz mein. Tutor se poochein, animation dekhein, quiz se khud ko check karein. Jawab aapke course ke lessons se aate hain.",
+    ur: "ہر موضوع پہلے تصویر میں، پھر آسان الفاظ میں۔ ٹیوٹر سے پوچھیں، اینیمیشن دیکھیں، کوئز سے خود کو جانچیں۔ جوابات آپ کے کورس کے اسباق سے آتے ہیں۔",
+  },
+  "home.start": { en: "Start learning", roman: "Seekhna shuru karein", ur: "سیکھنا شروع کریں" },
+  "home.openLab": { en: "Open Visual Lab", roman: "Visual Lab kholein", ur: "ویژول لیب کھولیں" },
+  "demo.live": { en: "Live: Bubble Sort", roman: "Live: Bubble Sort", ur: "لائیو: ببل سارٹ" },
+  "demo.pause": { en: "Pause", roman: "Rokein", ur: "روکیں" },
+  "demo.play": { en: "Play", roman: "Chalayein", ur: "چلائیں" },
+
+  // continue card
+  "cont.new": { en: "New here? Start with Week 1. Each lesson explains one idea in simple words, then shows it with an animation and code.", roman: "Naye hain? Week 1 se shuru karein. Har lesson ek idea aasaan alfaaz mein samjhata hai, phir animation aur code se dikhata hai.", ur: "نئے ہیں؟ ہفتہ ۱ سے شروع کریں۔ ہر سبق ایک خیال آسان الفاظ میں سمجھاتا ہے، پھر اینیمیشن اور کوڈ سے دکھاتا ہے۔" },
+  "cont.where": { en: "Continue where you left off:", roman: "Jahan chhora tha wahin se jari rakhein:", ur: "جہاں چھوڑا تھا وہیں سے جاری رکھیں:" },
+  "cont.button": { en: "Continue", roman: "Jari rakhein", ur: "جاری رکھیں" },
+  "cont.xp": { en: "XP: {n}", roman: "XP: {n}", ur: "XP: {n}" },
+
+  // modules
+  "mod.heading": { en: "Choose a module", roman: "Module chunein", ur: "ماڈیول منتخب کریں" },
+  "mod.intro": {
+    en: "The 16 weeks are split into {n} modules: Pre-Midterm (weeks 1–8) and Post-Midterm (weeks 9–16). Open any sub-topic to learn it, press Lab to practise it in its workspace, or Chat to ask the tutor about just that lesson.",
+    roman: "16 haftay {n} modules mein baante gaye hain: Pre-Midterm (haftay 1–8) aur Post-Midterm (haftay 9–16). Koi bhi sub-topic kholein aur seekhein, Lab dabayein to uski workspace mein mashq karein, ya Chat dabayein to sirf usi lesson ke baare mein tutor se poochein.",
+    ur: "سولہ ہفتے {n} ماڈیولز میں بانٹے گئے ہیں: پری مڈ ٹرم (ہفتے ۱–۸) اور پوسٹ مڈ ٹرم (ہفتے ۹–۱۶)۔ کوئی بھی ذیلی موضوع کھول کر سیکھیں، لیب دبائیں تو اس کی ورک اسپیس میں مشق کریں، یا چیٹ دبائیں تو صرف اسی سبق کے بارے میں ٹیوٹر سے پوچھیں۔",
+  },
+  "mod.all": { en: "All modules", roman: "Tamam modules", ur: "تمام ماڈیولز" },
+  "mod.pre": { en: "Pre-Midterm", roman: "Pre-Midterm", ur: "پری مڈ ٹرم" },
+  "mod.post": { en: "Post-Midterm", roman: "Post-Midterm", ur: "پوسٹ مڈ ٹرم" },
+  "mod.weeksAll": { en: "Weeks 1–16", roman: "Haftay 1–16", ur: "ہفتے ۱–۱۶" },
+  "mod.weeksPre": { en: "Weeks 1–8 · Modules 1–{n}", roman: "Haftay 1–8 · Modules 1–{n}", ur: "ہفتے ۱–۸ · ماڈیولز ۱–{n}" },
+  "mod.weeksPost": { en: "Weeks 9–16 · Modules {a}–{b}", roman: "Haftay 9–16 · Modules {a}–{b}", ur: "ہفتے ۹–۱۶ · ماڈیولز {a}–{b}" },
+  "mod.premid": { en: "Pre-mid", roman: "Pre-mid", ur: "پری مڈ" },
+  "mod.postmid": { en: "Post-mid", roman: "Post-mid", ur: "پوسٹ مڈ" },
+  "mod.week": { en: "WEEK {n}", roman: "HAFTA {n}", ur: "ہفتہ {n}" },
+  "mod.weeks": { en: "WEEKS {a}–{b}", roman: "HAFTAY {a}–{b}", ur: "ہفتے {a}–{b}" },
+  "mod.module": { en: "Module {n}", roman: "Module {n}", ur: "ماڈیول {n}" },
+  "mod.subtopics": { en: "{n} sub-topics", roman: "{n} sub-topics", ur: "{n} ذیلی موضوعات" },
+  "mod.lab": { en: "Lab", roman: "Lab", ur: "لیب" },
+  "mod.chat": { en: "Chat", roman: "Chat", ur: "چیٹ" },
+  "mod.labAria": { en: "Lab: open the lab for {t}", roman: "Lab: {t} ki lab kholein", ur: "لیب: {t} کی لیب کھولیں" },
+  "mod.chatAria": { en: "Chat: ask the tutor about {t}", roman: "Chat: {t} ke baare mein tutor se poochein", ur: "چیٹ: {t} کے بارے میں ٹیوٹر سے پوچھیں" },
+  "mod.pct": { en: "{n}% finished", roman: "{n}% mukammal", ur: "{n}٪ مکمل" },
+  "mod.midTitle": { en: "🏁 Mid-term milestone", roman: "🏁 Mid-term ka sang-e-meel", ur: "🏁 مڈ ٹرم کا سنگ میل" },
+  "mod.midText": { en: "Weeks 1–8 on a few pages, plus a timed mock.", roman: "Haftay 1–8 chand pages par, saath mein waqt wala mock.", ur: "ہفتے ۱–۸ چند صفحات پر، ساتھ وقت والا ماک۔" },
+  "mod.finalTitle": { en: "🏆 Final exam milestone", roman: "🏆 Final exam ka sang-e-meel", ur: "🏆 فائنل امتحان کا سنگ میل" },
+  "mod.finalText": { en: "The whole course in one revision hub and a 60-minute mock.", roman: "Poora course ek revision hub mein aur 60 minute ka mock.", ur: "پورا کورس ایک ریویژن حب میں اور ۶۰ منٹ کا ماک۔" },
+  "mod.mockExam": { en: "Mock exam", roman: "Mock exam", ur: "ماک امتحان" },
+
+  // module titles and blurbs
+  "m1.title": { en: "Foundations of Programming", roman: "Programming ki Buniyad", ur: "پروگرامنگ کی بنیاد" },
+  "m1.blurb": { en: "What a program is, how C++ becomes a running program, your first code, input and output, and operators.", roman: "Program kya hota hai, C++ chalne wala program kaise banta hai, aapka pehla code, input aur output, aur operators.", ur: "پروگرام کیا ہوتا ہے، سی پلس پلس چلنے والا پروگرام کیسے بنتا ہے، آپ کا پہلا کوڈ، ان پٹ اور آؤٹ پٹ، اور آپریٹرز۔" },
+  "m2.title": { en: "Making Decisions", roman: "Faislay Karna", ur: "فیصلے کرنا" },
+  "m2.blurb": { en: "if, else, ladders, nested if, switch, logical operators and the ternary operator.", roman: "if, else, ladders, nested if, switch, logical operators aur ternary operator.", ur: "if، else، لیڈرز، نیسٹڈ if، سوئچ، لاجیکل آپریٹرز اور ٹرنری آپریٹر۔" },
+  "m3.title": { en: "Loops", roman: "Loops", ur: "لوپس" },
+  "m3.blurb": { en: "for, while, do-while, goto, break and continue, with a Loop Lab you can step through.", roman: "for, while, do-while, goto, break aur continue, saath mein Loop Lab jisme aap step by step chala sakte hain.", ur: "for، while، do-while، goto، break اور continue، ساتھ لوپ لیب جس میں آپ قدم بہ قدم چلا سکتے ہیں۔" },
+  "m4.title": { en: "Arrays: One Dimension", roman: "Arrays: Ek Dimension", ur: "ارے: ایک بُعد" },
+  "m4.blurb": { en: "Store many values together, search them, find the minimum and maximum, and work with character arrays.", roman: "Bahut si values ek saath rakhein, unmein dhoondein, minimum aur maximum nikalein, aur character arrays par kaam karein.", ur: "بہت سی ویلیوز ایک ساتھ رکھیں، ان میں تلاش کریں، کم از کم اور زیادہ سے زیادہ نکالیں، اور کریکٹر ارے پر کام کریں۔" },
+  "m5.title": { en: "Patterns, Sorting and Matrices", roman: "Patterns, Sorting aur Matrices", ur: "پیٹرنز، سارٹنگ اور میٹرکس" },
+  "m5.blurb": { en: "Nested loops, patterns, series, Bubble and Selection Sort, then 2-D and 3-D arrays.", roman: "Nested loops, patterns, series, Bubble aur Selection Sort, phir 2-D aur 3-D arrays.", ur: "نیسٹڈ لوپس، پیٹرنز، سیریز، ببل اور سلیکشن سارٹ، پھر ٹو ڈی اور تھری ڈی ارے۔" },
+  "m6.title": { en: "Functions", roman: "Functions", ur: "فنکشنز" },
+  "m6.blurb": { en: "Function parts, parameters, pass by value and by reference, static variables, prototypes, default arguments and overloading.", roman: "Function ke hisse, parameters, pass by value aur by reference, static variables, prototypes, default arguments aur overloading.", ur: "فنکشن کے حصے، پیرامیٹرز، پاس بائی ویلیو اور بائی ریفرنس، اسٹیٹک ویری ایبلز، پروٹوٹائپس، ڈیفالٹ آرگومنٹس اور اوورلوڈنگ۔" },
+  "m7.title": { en: "Pointers and Dynamic Memory", roman: "Pointers aur Dynamic Memory", ur: "پوائنٹرز اور ڈائنامک میموری" },
+  "m7.blurb": { en: "Addresses, pointers, pointer arithmetic, arrays and pointers, stack versus heap, new and delete.", roman: "Addresses, pointers, pointer arithmetic, arrays aur pointers, stack versus heap, new aur delete.", ur: "ایڈریس، پوائنٹرز، پوائنٹر ارتھمیٹک، ارے اور پوائنٹرز، اسٹیک بمقابلہ ہیپ، new اور delete۔" },
+  "m8.title": { en: "Recursion and Strings", roman: "Recursion aur Strings", ur: "ریکرشن اور اسٹرنگز" },
+  "m8.blurb": { en: "Functions that call themselves, the call stack, and string operations.", roman: "Wo functions jo khud ko call karte hain, call stack, aur string operations.", ur: "وہ فنکشنز جو خود کو کال کرتے ہیں، کال اسٹیک، اور اسٹرنگ آپریشنز۔" },
+  "m9.title": { en: "Structures", roman: "Structures", ur: "اسٹرکچرز" },
+  "m9.blurb": { en: "Group related data: structures, members, arrays of structures, passing and returning them.", roman: "Mutaliq data ko jama karein: structures, members, structures ke arrays, unhein pass aur return karna.", ur: "متعلقہ ڈیٹا کو اکٹھا کریں: اسٹرکچرز، ممبرز، اسٹرکچرز کے ارے، انہیں پاس اور ریٹرن کرنا۔" },
+  "m10.title": { en: "Files, Graphics and Project", roman: "Files, Graphics aur Project", ur: "فائلیں، گرافکس اور پروجیکٹ" },
+  "m10.blurb": { en: "Read and write text files, draw with simple graphics, and plan your final project.", roman: "Text files parhein aur likhein, simple graphics se draw karein, aur apna final project plan karein.", ur: "ٹیکسٹ فائلیں پڑھیں اور لکھیں، سادہ گرافکس سے ڈرا کریں، اور اپنا فائنل پروجیکٹ پلان کریں۔" },
+
+  // home statistics
+  "stat.chapters": { en: "Chapters", roman: "Chapters", ur: "ابواب" },
+  "stat.lessons": { en: "Lessons", roman: "Lessons", ur: "اسباق" },
+  "stat.anims": { en: "Animations and traces", roman: "Animations aur traces", ur: "اینیمیشنز اور ٹریسز" },
+  "stat.code": { en: "Verified code examples", roman: "Verified code examples", ur: "تصدیق شدہ کوڈ مثالیں" },
+  "stat.questions": { en: "Practice and quiz questions", roman: "Practice aur quiz ke sawal", ur: "مشق اور کوئز کے سوالات" },
+};

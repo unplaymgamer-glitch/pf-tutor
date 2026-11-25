@@ -6,6 +6,7 @@ import { CHAPTERS, WEEK_HUES, WEEK_ICONS } from "@/lib/course";
 import { lessonMeta, mistakesAtAGlance } from "@/lib/lesson-meta";
 import { useProgress } from "../useProgress";
 import { useTutor } from "../tutor/TutorProvider";
+import { Txt, useT } from "../I18n";
 import { CodeBlock } from "./CodeBlock";
 import { Flowchart } from "./Flowchart";
 import { PredictCard } from "./PredictCard";
@@ -20,17 +21,17 @@ import { trackView } from "../track";
 
 type View = "visualize" | "code" | "algorithm" | "all";
 const VIEWS: { id: View; label: string }[] = [
-  { id: "visualize", label: "👁 Visualize" },
-  { id: "code", label: "💻 Code" },
-  { id: "algorithm", label: "🧠 Algorithm" },
-  { id: "all", label: "All three" },
+  { id: "visualize", label: "l.vViz" },
+  { id: "code", label: "l.vCode" },
+  { id: "algorithm", label: "l.vAlgo" },
+  { id: "all", label: "l.vAll" },
 ];
 
 function Section({ id, title, children, tone }: { id: string; title: string; children: React.ReactNode; tone?: string }) {
   return (
     <section id={id} className="scroll-mt-48">
       <details open className={`box ${tone ?? ""}`}>
-        <summary className="cursor-pointer min-h-11 flex items-center"><h2 className="text-lg font-semibold">{title}</h2></summary>
+        <summary className="cursor-pointer min-h-11 flex items-center"><h2 className="text-lg font-semibold"><Txt>{title}</Txt></h2></summary>
         <div className="mt-2 grid gap-3">{children}</div>
       </details>
     </section>
@@ -43,6 +44,7 @@ export function TopicView({ topic, weekTopics, nextHref, related = [] }: { topic
   const key = `w${topic.week}/${topic.slug}`;
   const { progress, update, dispatch } = useProgress();
   const tutor = useTutor();
+  const { t } = useT();
   // Remembered choice (device only). Server render uses the topic default; the saved choice applies after hydration.
   const view: View = progress.view ?? topic.defaultView;
   useEffect(() => { dispatch({ type: "visit", key, week: topic.week, slug: topic.slug, title: topic.title }); }, [key, topic.week, topic.slug, topic.title, dispatch]);
@@ -58,9 +60,9 @@ export function TopicView({ topic, weekTopics, nextHref, related = [] }: { topic
   const answered = (qs: Topic["practice"]) => qs.filter((q) => progress.topics[key]?.answered?.[q.id]).length;
 
   const sections: [string, string][] = [
-    ["top", "Overview"], ["learn", "See it"], ["warmup", "Warm-up"], ...(predict ? [["predict", "Predict"] as [string, string]] : []), ["definition", "Definition"], ["syntax", "Syntax"], ["examples", "Examples"],
-    ...(topic.variations.length ? [["variations", "Table"] as [string, string]] : []), ...(topic.mistakes.length ? [["mistakes", "Mistakes"] as [string, string]] : []),
-    ...(topic.examTips.length ? [["exam", "Exam tips"] as [string, string]] : []), ["roman", "Roman Urdu"], ["practice", "Practice"], ["quiz", "Quiz"],
+    ["top", t("l.overview")], ["learn", t("l.seeIt")], ["warmup", t("l.warmup")], ...(predict ? [["predict", t("l.predict")] as [string, string]] : []), ["definition", t("l.definition")], ["syntax", t("l.syntax")], ["examples", t("l.examples")],
+    ...(topic.variations.length ? [["variations", t("l.table")] as [string, string]] : []), ...(topic.mistakes.length ? [["mistakes", t("l.mistakes")] as [string, string]] : []),
+    ...(topic.examTips.length ? [["exam", t("l.examTips")] as [string, string]] : []), ["roman", t("l.roman")], ["practice", t("l.practice")], ["quiz", t("l.quiz")],
   ];
   const active = useActiveSection(sections.map(([id]) => id));
 
@@ -103,7 +105,7 @@ export function TopicView({ topic, weekTopics, nextHref, related = [] }: { topic
 
   const glance = mistakesAtAGlance(topic);
   const relatedBox = related.length > 0 && (
-    <div className="grid gap-1"><h2 className="text-sm font-semibold text-muted">Related topics</h2>
+    <div className="grid gap-1"><h2 className="text-sm font-semibold text-muted"><Txt>{t("l.related")}</Txt></h2>
       <ul className="grid gap-1">{related.map((r) => <li key={r.href}><Link className="inline-flex min-h-11 items-center text-sm" href={r.href}>{r.title}</Link></li>)}</ul></div>
   );
 
@@ -121,28 +123,28 @@ export function TopicView({ topic, weekTopics, nextHref, related = [] }: { topic
           </div>
           <h1 className="relative text-2xl font-bold leading-tight sm:text-4xl">{topic.title}</h1>
           <div className="relative grid gap-1">
-            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--wk)" }}>🎯 What you will be able to do</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--wk)" }}><Txt>{t("l.goalHead")}</Txt></h2>
             <p className="text-base sm:text-lg">{topic.goal}</p>
           </div>
-          <ul className="relative hidden flex-wrap gap-2 text-sm sm:flex" aria-label="Lesson facts">
-            <li className="pill">⏱ about {meta.minutes} min</li>
+          <ul className="relative hidden flex-wrap gap-2 text-sm sm:flex" aria-label={t("l.facts")}>
+            <li className="pill"><Txt>{t("l.minutes", { n: meta.minutes })}</Txt></li>
             <li className="pill">🎚 {meta.level}</li>
-            <li className="pill">🧪 {topic.worked.length} worked examples</li>
-            <li className="pill">✍ {topic.practice.length + topic.quiz.length} questions</li>
+            <li className="pill"><Txt>{t("l.workedN", { n: topic.worked.length })}</Txt></li>
+            <li className="pill"><Txt>{t("l.questionsN", { n: topic.practice.length + topic.quiz.length })}</Txt></li>
           </ul>
           <div className="relative flex flex-wrap gap-2">
-            <button className="btn btn-primary !px-3 sm:!px-4" onClick={() => tutor.open({ topic: `${topic.title} (Week ${topic.week})`, topicKey: `w${topic.week}/${topic.slug}` })}>💬 Study <span className="hidden sm:inline">this topic </span>with AI</button>
-            <Link className="btn inline-flex items-center !px-3 no-underline sm:!px-4" href={`/week-${topic.week}/${topic.slug}/workspace`}>🧪 <span className="hidden sm:inline">&nbsp;Open&nbsp;</span>Workspace</Link>
-            <a className="btn inline-flex items-center !px-3 no-underline sm:!px-4" href="#learn">👁 <span className="hidden sm:inline">&nbsp;Jump to the&nbsp;</span>Animation</a>
+            <button className="btn btn-primary !px-3 sm:!px-4" onClick={() => tutor.open({ topic: `${topic.title} (Week ${topic.week})`, topicKey: `w${topic.week}/${topic.slug}` })}><span className="sm:hidden"><Txt>{t("l.studyShort")}</Txt></span><span className="hidden sm:inline"><Txt>{t("l.study")}</Txt></span></button>
+            <Link className="btn inline-flex items-center !px-3 no-underline sm:!px-4" href={`/week-${topic.week}/${topic.slug}/workspace`}><span className="sm:hidden"><Txt>{t("l.workspaceShort")}</Txt></span><span className="hidden sm:inline"><Txt>{t("l.workspace")}</Txt></span></Link>
+            <a className="btn inline-flex items-center !px-3 no-underline sm:!px-4" href="#learn"><span className="sm:hidden"><Txt>{t("l.animationShort")}</Txt></span><span className="hidden sm:inline"><Txt>{t("l.animation")}</Txt></span></a>
           </div>
         </header>
 
         {/* 1. The animation comes first: a picture must be on the first screen */}
         <section id="learn" className="scroll-mt-48 grid gap-3">
-          <h2 className="text-xl font-semibold max-sm:sr-only">👁 See it, then read it</h2>
-          <div role="tablist" aria-label="Choose how to learn this topic" className="flex flex-wrap gap-2">
+          <h2 className="text-xl font-semibold max-sm:sr-only"><Txt>{t("l.seeThenRead")}</Txt></h2>
+          <div role="tablist" aria-label={t("l.chooseView")} className="flex flex-wrap gap-2">
             {VIEWS.map((v) => (
-              <button key={v.id} role="tab" aria-selected={view === v.id} className={`btn ${v.id === "all" ? "hidden lg:inline-flex lg:items-center" : ""} ${view === v.id ? "btn-primary" : ""}`} onClick={() => pick(v.id)}>{v.label}</button>
+              <button key={v.id} role="tab" aria-selected={view === v.id} className={`btn ${v.id === "all" ? "hidden lg:inline-flex lg:items-center" : ""} ${view === v.id ? "btn-primary" : ""}`} onClick={() => pick(v.id)}><Txt>{t(v.label)}</Txt></button>
             ))}
           </div>
           {view === "all" ? (
@@ -173,25 +175,25 @@ export function TopicView({ topic, weekTopics, nextHref, related = [] }: { topic
         </section>
 
         {/* 3. Predict the output */}
-        {predict && <Section id="predict" title="🔮 Predict the output" tone="box-try"><PredictCard sample={predict} /></Section>}
+        {predict && <Section id="predict" title={t("l.sPredict")} tone="box-try"><PredictCard sample={predict} /></Section>}
 
         {/* 4. Definition in a few short lines, then the syntax card */}
-        <Section id="definition" title="📘 Definition" tone="box-definition"><ShowMore text={topic.definition} /></Section>
-        <Section id="syntax" title="🧩 Syntax"><CodeBlock code={topic.syntax} label="syntax" /></Section>
+        <Section id="definition" title={t("l.sDefinition")} tone="box-definition"><ShowMore text={topic.definition} /></Section>
+        <Section id="syntax" title={t("l.sSyntax")}><CodeBlock code={topic.syntax} label="syntax" /></Section>
 
-        <Section id="examples" title="🧪 Worked examples">
+        <Section id="examples" title={t("l.sExamples")}>
           {topic.worked.map((w) => (
             <div key={w.sample.id} className="grid gap-2">
-              <h3 className="font-semibold"><span className="rounded bg-surface2 px-2 py-0.5 text-sm">{w.level === "basic" ? "Basic" : w.level === "intermediate" ? "Intermediate" : "Exam-style"}</span> {w.problem}</h3>
-              <p className="text-sm text-muted">Steps: {w.pseudocode.join(" → ")}</p>
+              <h3 className="font-semibold"><span className="rounded bg-surface2 px-2 py-0.5 text-sm"><Txt>{t(w.level === "basic" ? "l.basic" : w.level === "intermediate" ? "l.intermediate" : "l.examStyle")}</Txt></span> {w.problem}</h3>
+              <p className="text-sm text-muted"><Txt>{t("l.steps", { s: w.pseudocode.join(" → ") })}</Txt></p>
               <CodeBlock code={w.sample.code} label={w.sample.title} tryIt={w.sample.graphics ? undefined : { stdin: w.sample.stdin }} />
-              <pre tabIndex={0} role="group" className="code" dir="ltr" aria-label="Verified output">{w.sample.expectedOutput || " "}</pre>
+              <pre tabIndex={0} role="group" className="code" dir="ltr" aria-label={t("l.outputLabel")}>{w.sample.expectedOutput || " "}</pre>
             </div>
           ))}
         </Section>
 
         {topic.variations.length > 0 && (
-          <Section id="variations" title="📊 Variations">
+          <Section id="variations" title={t("l.sVariations")}>
             <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Table: ways and when to use them">
               <table className="w-full border-collapse text-start">
                 <thead><tr><th className="border border-border p-2 text-start">Form</th><th className="border border-border p-2 text-start">When to use</th><th className="border border-border p-2 text-start">Example</th></tr></thead>
@@ -202,7 +204,7 @@ export function TopicView({ topic, weekTopics, nextHref, related = [] }: { topic
         )}
 
         {topic.mistakes.length > 0 && (
-          <Section id="mistakes" title="⚠ Common mistakes" tone="box-mistake">
+          <Section id="mistakes" title={t("l.sMistakes")} tone="box-mistake">
             {topic.mistakes.map((m, i) => (
               <div key={i} className="grid gap-1">
                 <p><strong className="text-error">✗ Wrong:</strong> <code dir="ltr">{m.wrong}</code></p>
@@ -214,20 +216,20 @@ export function TopicView({ topic, weekTopics, nextHref, related = [] }: { topic
         )}
 
         {topic.examTips.length > 0 && (
-          <Section id="exam" title="📝 Exam tips" tone="box-exam"><ul className="list-disc ps-6">{topic.examTips.map((t, i) => <li key={i}>{t}</li>)}</ul></Section>
+          <Section id="exam" title={t("l.sExam")} tone="box-exam"><ul className="list-disc ps-6">{topic.examTips.map((t, i) => <li key={i}>{t}</li>)}</ul></Section>
         )}
 
-        <Section id="roman" title="🟢 Roman Urdu summary" tone="box-roman"><ul className="list-disc ps-6">{topic.romanSummary.map((t, i) => <li key={i} lang="ur-Latn">{t}</li>)}</ul></Section>
+        <Section id="roman" title={t("l.sRoman")} tone="box-roman"><ul className="list-disc ps-6">{topic.romanSummary.map((t, i) => <li key={i} lang="ur-Latn">{t}</li>)}</ul></Section>
 
         {/* Practice and quiz are open: they are the point of the lesson */}
-        <Section id="practice" title="✍ Practice">
+        <Section id="practice" title={t("l.sPractice")}>
           <div className="flex flex-wrap items-center gap-3 text-sm" aria-label="Practice progress">
             <div className="h-2 min-w-32 flex-1 overflow-hidden rounded-full" style={{ background: "var(--surface-2)" }} aria-hidden><div className="h-full rounded-full" style={{ width: `${topic.practice.length ? (answered(topic.practice) / topic.practice.length) * 100 : 0}%`, background: "linear-gradient(90deg, var(--grad-a), var(--grad-b))", transition: "width .3s" }} /></div>
-            <span>{answered(topic.practice)} of {topic.practice.length} answered · +XP for every answer</span>
+            <span><Txt>{t("l.answered", { a: answered(topic.practice), b: topic.practice.length })}</Txt></span>
           </div>
           <PracticeList questions={topic.practice} k={key} />
         </Section>
-        <Section id="quiz" title="⭐ Mini-quiz">
+        <Section id="quiz" title={t("l.sQuiz")}>
           <MiniQuiz questions={topic.quiz} k={key} weekTopics={weekTopics} nextHref={nextHref} />
         </Section>
 
@@ -238,17 +240,17 @@ export function TopicView({ topic, weekTopics, nextHref, related = [] }: { topic
       <aside className="hidden lg:block">
         <div className="sticky top-[7.5rem] grid max-h-[calc(100dvh-9rem)] gap-4 overflow-y-auto pe-1">
           <nav aria-label="Lesson contents" className="card grid gap-1 p-3">
-            <h2 className="mb-1 text-sm font-semibold text-muted">On this page</h2>
+            <h2 className="mb-1 text-sm font-semibold text-muted"><Txt>{t("l.onThisPage")}</Txt></h2>
             {sections.map(([id, label]) => (
               <a key={id} href={`#${id}`} aria-current={active === id ? "location" : undefined} className="inline-flex min-h-9 items-center rounded-md px-2 text-sm no-underline hover:text-primary" style={active === id ? { background: "var(--wk-soft)", color: "var(--wk)", fontWeight: 700 } : undefined}>{label}</a>
             ))}
           </nav>
           {topic.sources.length > 0 && (
-            <div className="card grid gap-2 p-3"><h2 className="text-sm font-semibold text-muted">This lesson covers</h2>
+            <div className="card grid gap-2 p-3"><h2 className="text-sm font-semibold text-muted"><Txt>{t("l.covers")}</Txt></h2>
               <ul className="flex flex-wrap gap-1.5">{topic.sources.slice(0, 6).map((s) => <li key={s} className="pill text-xs">{s}</li>)}</ul></div>
           )}
           {glance.length > 0 && (
-            <div className="card grid gap-2 p-3"><h2 className="text-sm font-semibold text-muted">Mistakes at a glance</h2>
+            <div className="card grid gap-2 p-3"><h2 className="text-sm font-semibold text-muted"><Txt>{t("l.glance")}</Txt></h2>
               <ul className="grid gap-2 text-sm">{glance.map((g, i) => <li key={i}><span className="text-error">✗</span> <code dir="ltr">{g.wrong}</code><br /><span className="text-success">✓</span> <code dir="ltr">{g.right}</code></li>)}</ul></div>
           )}
           {relatedBox && <div className="card p-3">{relatedBox}</div>}

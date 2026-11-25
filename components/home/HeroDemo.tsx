@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { SORT_CODE, sortSteps } from "@/lib/visuals/sort";
 import { useSettings } from "../SettingsProvider";
+import { T } from "../I18n";
 
 const VALUES = [64, 25, 12, 90, 22, 47, 8];
 
@@ -28,8 +29,8 @@ export function HeroDemo() {
   return (
     <div className="card grid gap-3 p-4" aria-label="Live demo: Bubble Sort">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="pill">🫧 Live: Bubble Sort</span>
-        <button className="btn" aria-pressed={!isPaused} onClick={() => setPaused(!isPaused)}>{isPaused ? "▶ Play" : "⏸ Pause"}</button>
+        <span className="pill">🫧 <T k="demo.live" /></span>
+        <button className="btn" aria-pressed={!isPaused} onClick={() => setPaused(!isPaused)}>{isPaused ? <>▶ <T k="demo.play" /></> : <>⏸ <T k="demo.pause" /></>}</button>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <div role="img" aria-label={`Bars being sorted: ${s.arr.join(", ")}. ${s.note}`} className="flex h-44 items-end gap-1.5 rounded-xl border border-border bg-code p-3" style={{ background: "var(--code-bg)" }}>

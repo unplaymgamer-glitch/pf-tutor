@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { askTutor, prepareImage, tutorDeviceId, type TutorPayload } from "@/lib/tutor/client";
 import { Session, StoredMessage, deleteAllSessions, deleteSession, exportSessions, groupByAge, listSessions, newSession, saveSession, titleFrom } from "@/lib/tutor/history";
 import type { Handoff } from "@/lib/tutor/handoff";
-import { shortTitle } from "@/lib/short-titles";
+import { Txt, useT } from "../I18n";
 import { detectLangRequest } from "@/lib/tutor/lang";
 import { useSettings } from "../SettingsProvider";
 import { useSiteState } from "../SiteState";
@@ -20,8 +20,8 @@ type Lang = "en" | "roman" | "ur";
 const stamp = () => ({ id: crypto.randomUUID(), at: Date.now() });
 const nowMs = () => Date.now();
 
-const STARTERS = ["Explain arrays with a picture", "Debug my code", "Quiz me on loops", "Make a quiz like mine", "Make an assignment like mine", "Trace this output step by step"];
-const TOPIC_STARTERS = ["Explain this topic with a simple picture", "Give me a 3-question quiz on this", "What mistakes do beginners make here?", "Show a short C++ example I can run"];
+const STARTERS = ["c.s1", "c.s2", "c.s3", "c.s4", "c.s5", "c.s6"];
+const TOPIC_STARTERS = ["c.t1", "c.t2", "c.t3", "c.t4"];
 const TEXT_FILE = /\.(cpp|cc|cxx|c|h|hpp|txt|md|csv|json)$/i;
 const LANGS: { v: Lang; label: string }[] = [{ v: "en", label: "English" }, { v: "roman", label: "Roman Urdu" }, { v: "ur", label: "اردو" }];
 
@@ -48,6 +48,7 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
   const { settings, update } = useSettings();
   const site = useSiteState();
   const lang = settings.lang as Lang;
+  const { t: tx, name } = useT();
   const lockTopic = embedded ? modules.flatMap((m) => m.lessons).find((l) => l.key === initial?.topicKey) : undefined;
   const [sessions, setSessions] = useState<Session[]>([]);
   const [cur, setCur] = useState<Session>(() => {
@@ -155,7 +156,7 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
     setLive(null); setBusy(false);
     setCtx(undefined); setTexts([]); setPdfs([]); setImages([]); // attachments belong to the question they were sent with
     if (acc) await persist({ ...base, messages: [...base.messages, { ...stamp(), role: "assistant", text: acc, meta }], updatedAt: stamp().at });
-    else if (!failed) setErrorBox({ message: "No answer came back. Please try again." });
+    else if (!failed) setErrorBox({ message: tx("c.noAnswer") });
     if (!/Mock tutor/.test(acc)) try { void fetch("/api/track", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ event: "chat" }), keepalive: true }); } catch { /* ignore */ }
   }
   const send = (t = input, deep = false) => submit(t, cur, deep);
@@ -165,21 +166,21 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
     setNote("");
     for (const f of Array.from(list)) {
       if (/^image\//.test(f.type)) {
-        if (images.length >= 2) { setNote("You can attach up to 2 images."); continue; }
+        if (images.length >= 2) { setNote(tx("c.maxImages")); continue; }
         const img = await prepareImage(f);
-        if (!img) { setNote("Could not use that image. Use a PNG or JPEG under 8 MB."); continue; }
+        if (!img) { setNote(tx("c.badImage")); continue; }
         setImages((p) => [...p, { ...img, name: f.name || "screenshot.jpg" }]);
       } else if (f.type === "application/pdf" || /\.pdf$/i.test(f.name)) {
-        if (pdfs.length >= 2) { setNote("You can attach up to 2 PDFs."); continue; }
-        if (f.size > 4_000_000) { setNote("That PDF is over 4 MB. Split it or paste the text."); continue; }
+        if (pdfs.length >= 2) { setNote(tx("c.maxPdfs")); continue; }
+        if (f.size > 4_000_000) { setNote(tx("c.bigPdf")); continue; }
         setPdfs((p) => [...p, { name: f.name, data: "" }]);
         const data = await toBase64(await f.arrayBuffer());
         setPdfs((p) => p.map((x) => (x.name === f.name && !x.data ? { ...x, data } : x)));
       } else if (TEXT_FILE.test(f.name)) {
-        if (f.size > 120_000) { setNote(`${f.name} is over 120 KB. Paste the part you need.`); continue; }
+        if (f.size > 120_000) { setNote(tx("c.bigFile", { f: f.name })); continue; }
         const text = await f.text();
         setTexts((p) => [...p, { name: f.name, text }]);
-      } else setNote("Supported: PDF, .cpp .c .h .txt .md .csv .json files, and PNG or JPEG screenshots. For Word files, paste the text.");
+      } else setNote(tx("c.fileTypes"));
     }
   }
 
@@ -196,7 +197,7 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
     setErrorBox(null); setDrawer(false); area.current?.focus();
   }
   async function copy(t: string) {
-    try { await navigator.clipboard.writeText(t); setNote("Copied."); } catch { setNote("Could not copy. Select the text and copy it."); }
+    try { await navigator.clipboard.writeText(t); setNote(tx("c.copied")); } catch { setNote(tx("c.copyFail")); }
   }
 
   const features = site?.features;
@@ -210,22 +211,22 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
   const side = "flex w-72 shrink-0 flex-col border-e border-border bg-surface";
 
   return (
-    <section aria-label={embedded ? "Topic tutor chat" : "CC111 Tutor chat"} className={embedded ? "relative flex h-full min-h-0 bg-bg" : "fixed inset-0 z-[100] flex bg-bg"} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }} onDrop={(e) => { e.preventDefault(); setDragging(false); void pickFiles(e.dataTransfer.files); }}>
-      {drawer && <button aria-label="Close the sidebar" className="fixed inset-0 z-10 bg-black/50 md:hidden" onClick={() => setDrawer(false)} />}
-      <aside aria-label="Chats and topics" className={embedded ? "hidden" : `${side} ${drawer ? "fixed inset-y-0 start-0 z-20" : "hidden md:flex"}`}>
+    <section aria-label={embedded ? tx("c.topicRegion") : tx("c.region")} className={embedded ? "relative flex h-full min-h-0 bg-bg" : "fixed inset-0 z-[100] flex bg-bg"} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }} onDrop={(e) => { e.preventDefault(); setDragging(false); void pickFiles(e.dataTransfer.files); }}>
+      {drawer && <button aria-label={tx("c.closeSidebar")} className="fixed inset-0 z-10 bg-black/50 md:hidden" onClick={() => setDrawer(false)} />}
+      <aside aria-label={tx("c.sidebarLabel")} className={embedded ? "hidden" : `${side} ${drawer ? "fixed inset-y-0 start-0 z-20" : "hidden md:flex"}`}>
         <div className="grid gap-3 p-3">
-          <button className="btn btn-primary !min-h-11 w-full text-base" onClick={newChat}>＋ New chat</button>
-          <div role="tablist" aria-label="Sidebar" className="grid grid-cols-2 gap-1 rounded-xl bg-surface2 p-1">
+          <button className="btn btn-primary !min-h-11 w-full text-base" onClick={newChat}>＋ <Txt>{tx("c.newChat")}</Txt></button>
+          <div role="tablist" aria-label={tx("c.sidebarLabel")} className="grid grid-cols-2 gap-1 rounded-xl bg-surface2 p-1">
             {(["chats", "topics"] as const).map((t) => (
-              <button key={t} role="tab" aria-selected={tab === t} className={`min-h-10 rounded-lg text-sm font-semibold ${tab === t ? "bg-bg text-primary" : "text-muted"}`} onClick={() => setTab(t)}>{t === "chats" ? "Chats" : "Topics"}</button>
+              <button key={t} role="tab" aria-selected={tab === t} className={`min-h-10 rounded-lg text-sm font-semibold ${tab === t ? "bg-bg text-primary" : "text-muted"}`} onClick={() => setTab(t)}><Txt>{tx(t === "chats" ? "c.chats" : "c.topics")}</Txt></button>
             ))}
           </div>
-          <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} aria-label={tab === "chats" ? "Search chats" : "Search topics"} placeholder={tab === "chats" ? "Search chats…" : "Search topics…"} className="btn w-full text-start text-sm" />
+          <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} aria-label={tx(tab === "chats" ? "c.searchChats" : "c.searchTopics")} placeholder={tx(tab === "chats" ? "c.searchChats" : "c.searchTopics")} className="btn w-full text-start text-sm" />
         </div>
 
         <div className="scroll-quiet min-h-0 flex-1 overflow-y-auto px-2 pb-2">
           {tab === "chats" ? (
-            groups.length === 0 ? <p className="p-3 text-sm text-muted">{sessions.length ? "No chats match your search." : "No saved chats yet. Chats stay on this device."}</p> : groups.map((g) => (
+            groups.length === 0 ? <p className="p-3 text-sm text-muted"><Txt block>{tx(sessions.length ? "c.noMatch" : "c.noChats")}</Txt></p> : groups.map((g) => (
               <div key={g.label} className="mb-3">
                 <h2 className="px-2 py-1 text-xs font-semibold uppercase tracking-wide text-muted">{g.label}</h2>
                 <ul className="grid gap-0.5">
@@ -233,9 +234,9 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
                     <li key={s.id} className={`group flex items-center rounded-lg ${s.id === cur.id ? "bg-surface2" : "hover:bg-surface2"}`}>
                       <button className="min-h-11 min-w-0 flex-1 px-2 text-start text-sm" aria-current={s.id === cur.id} onClick={() => { setCur(s); setErrorBox(null); setDrawer(false); }}>
                         <span className="block truncate">{s.title}</span>
-                        {s.topicLabel && <span className="block truncate text-xs text-muted">📘 Topic chat</span>}
+                        {s.topicLabel && <span className="block truncate text-xs text-muted"><Txt>{tx("c.topicChat")}</Txt></span>}
                       </button>
-                      <button className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-muted hover:text-error focus:opacity-100 md:opacity-0 md:group-hover:opacity-100" aria-label={`Delete chat ${s.title}`} onClick={async () => { await deleteSession(s.id); setSessions(await listSessions()); if (cur.id === s.id) newChat(); }}>🗑</button>
+                      <button className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-muted hover:text-error focus:opacity-100 md:opacity-0 md:group-hover:opacity-100" aria-label={tx("c.deleteChat", { t: s.title })} onClick={async () => { await deleteSession(s.id); setSessions(await listSessions()); if (cur.id === s.id) newChat(); }}>🗑</button>
                     </li>
                   ))}
                 </ul>
@@ -251,13 +252,13 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
                   <li key={m.id} className="wk" style={{ ["--wk-h" as string]: m.hue }}>
                     <button className="flex min-h-11 w-full items-center gap-2 rounded-lg px-2 text-start text-sm font-semibold hover:bg-surface2" aria-expanded={isOpen} onClick={() => setOpenMod(isOpen && !q ? null : m.id)}>
                       <span aria-hidden className="grid h-7 w-7 shrink-0 place-items-center rounded-lg" style={{ background: "var(--wk-soft)" }}>{m.icon}</span>
-                      <span className="min-w-0 flex-1"><span className="block text-xs font-normal" style={{ color: "var(--wk)" }}>Module {m.id}</span><span className="block truncate">{m.title}</span></span>
+                      <span className="min-w-0 flex-1"><span className="block text-xs font-normal" style={{ color: "var(--wk)" }}><Txt>{m.id > 0 ? tx("c.module", { n: m.id }) : ""}</Txt></span><span className="block truncate"><Txt>{m.id > 0 ? tx(`m${m.id}.title`) : m.title}</Txt></span></span>
                       <span aria-hidden className="text-muted">{isOpen ? "▴" : "▾"}</span>
                     </button>
                     {isOpen && (
                       <ul className="mb-2 ms-4 grid gap-0.5 border-s border-border ps-2">
                         {lessons.map((l) => (
-                          <li key={l.key}><button title={l.title} className={`min-h-10 w-full truncate rounded-lg px-2 text-start text-sm hover:bg-surface2 ${cur.topicKey === l.key ? "bg-surface2 font-semibold" : ""}`} onClick={() => openTopic(l)}>{shortTitle(l.key, l.title)}</button></li>
+                          <li key={l.key}><button title={l.title} className={`min-h-10 w-full truncate rounded-lg px-2 text-start text-sm hover:bg-surface2 ${cur.topicKey === l.key ? "bg-surface2 font-semibold" : ""}`} onClick={() => openTopic(l)}><Txt>{name(l.key, l.title)}</Txt></button></li>
                         ))}
                       </ul>
                     )}
@@ -269,13 +270,13 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
         </div>
 
         <div className="grid gap-2 border-t border-border p-3">
-          <nav aria-label="Site" className="grid grid-cols-2 gap-1 text-center text-xs font-semibold">
-            {[["/", "Home"], ["/visual-lab", "Visual Lab"], ["/practice", "Practice"], ["/playground", "Playground"]].map(([h, t]) => <Link key={h} href={h} className="btn !min-h-10 !px-1 text-xs no-underline">{t}</Link>)}
+          <nav aria-label={tx("c.siteNav")} className="grid grid-cols-2 gap-1 text-center text-xs font-semibold">
+            {[["/", "nav.home"], ["/visual-lab", "nav.visualLab"], ["/practice", "nav.practice"], ["/playground", "nav.playground"]].map(([h, k]) => <Link key={h} href={h} className="btn !min-h-10 !px-1 text-xs no-underline"><Txt>{tx(k)}</Txt></Link>)}
           </nav>
           {sessions.length > 0 && (
             <div className="flex gap-2">
-              <button className="btn !min-h-9 flex-1 text-xs" onClick={() => exportSessions(sessions)}>Export chats</button>
-              <button className="btn !min-h-9 flex-1 text-xs" onClick={async () => { if (confirm("Delete ALL saved chats on this device?")) { await deleteAllSessions(); setSessions([]); newChat(); } }}>Delete all</button>
+              <button className="btn !min-h-9 flex-1 text-xs" onClick={() => exportSessions(sessions)}><Txt>{tx("c.export")}</Txt></button>
+              <button className="btn !min-h-9 flex-1 text-xs" onClick={async () => { if (confirm(tx("c.deleteAllAsk"))) { await deleteAllSessions(); setSessions([]); newChat(); } }}><Txt>{tx("c.deleteAll")}</Txt></button>
             </div>
           )}
         </div>
@@ -283,20 +284,20 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
 
       <div className="relative flex min-w-0 flex-1 flex-col">
         <header className="flex items-center gap-2 border-b border-border px-3 py-2">
-          {!embedded && <button className="btn !min-h-10 !min-w-10 !px-0 md:hidden" aria-label="Open the sidebar" aria-expanded={drawer} onClick={() => setDrawer(true)}>☰</button>}
+          {!embedded && <button className="btn !min-h-10 !min-w-10 !px-0 md:hidden" aria-label={tx("c.openSidebar")} aria-expanded={drawer} onClick={() => setDrawer(true)}>☰</button>}
           {embedded ? (
             <>
-              <h2 className="min-w-0 flex-1 truncate text-base font-semibold">💬 Topic tutor</h2>
-              <select className="btn btn-sm max-w-[9rem]" aria-label="Chats about this topic" value={cur.id} onChange={(e) => { const s = sessions.find((x) => x.id === e.target.value); if (s) { setCur(s); setErrorBox(null); } }}>
-                {!sessions.some((s) => s.id === cur.id) && <option value={cur.id}>New chat</option>}
+              <h2 className="min-w-0 flex-1 truncate text-base font-semibold">💬 <Txt>{tx("w.topicTutor")}</Txt></h2>
+              <select className="btn btn-sm max-w-[9rem]" aria-label={tx("w.topicChats")} value={cur.id} onChange={(e) => { const s = sessions.find((x) => x.id === e.target.value); if (s) { setCur(s); setErrorBox(null); } }}>
+                {!sessions.some((s) => s.id === cur.id) && <option value={cur.id}>{tx("c.newChat")}</option>}
                 {sessions.filter((s) => s.topicKey === lockTopic?.key).map((s) => <option key={s.id} value={s.id}>{s.title.length > 22 ? `${s.title.slice(0, 22)}…` : s.title}</option>)}
               </select>
-              <button className="btn btn-sm" onClick={newChat}>＋ New</button>
+              <button className="btn btn-sm" onClick={newChat}><Txt>{tx("w.new")}</Txt></button>
             </>
           ) : (
             <>
-              <h1 className="min-w-0 flex-1 truncate text-base font-semibold">{cur.messages.length ? cur.title : topicLabel ?? "New chat"}</h1>
-              <Link href="/" className="btn !min-h-10 inline-flex items-center text-sm no-underline">← Home</Link>
+              <h1 className="min-w-0 flex-1 truncate text-base font-semibold"><Txt>{cur.messages.length ? cur.title : topicLabel ?? tx("c.newChat")}</Txt></h1>
+              <Link href="/" className="btn !min-h-10 inline-flex items-center text-sm no-underline"><Txt>{tx("c.home")}</Txt></Link>
             </>
           )}
         </header>
@@ -305,19 +306,19 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
           <div className="mx-auto grid max-w-3xl gap-6 px-4 py-6">
             {cur.messages.length === 0 && !live && (
               <div className="grid gap-4 py-4">
-                <h2 className={embedded ? "text-xl font-bold" : "text-3xl font-bold sm:text-4xl"}>{topicLabel ? <>Studying <span className="gradient-text">{embedded ? lockTopic?.title ?? topicLabel : topicLabel}</span></> : <>Hello! <span aria-hidden>👋</span></>}</h2>
+                <h2 className={embedded ? "text-xl font-bold" : "text-3xl font-bold sm:text-4xl"}>{topicLabel ? <><Txt>{tx("c.studying")}</Txt> <span className="gradient-text">{embedded ? lockTopic?.title ?? topicLabel : topicLabel}</span></> : <><Txt>{tx("c.hello")}</Txt> <span aria-hidden>👋</span></>}</h2>
                 {topicLabel ? (
-                  <p className={embedded ? "text-sm text-muted" : "text-lg text-muted"}>Ask anything about this topic. I answer from this lesson first and use your language setting below. Your questions and my answers are saved in the Chats list, tagged as a topic chat.{" "}
-                    {lessonHref && <Link href={lessonHref}>Open the lesson</Link>}</p>
+                  <p className={embedded ? "text-sm text-muted" : "text-lg text-muted"}><Txt block>{tx("c.topicIntro")}</Txt>{" "}
+                    {lessonHref && <Link href={lessonHref}><Txt>{tx("c.openLesson")}</Txt></Link>}</p>
                 ) : (
-                  <p className="text-base text-muted sm:text-lg">I&apos;m your CC111 Tutor. Ask anything about C++ and Programming Fundamentals. Type, paste long text, upload files (PDF, code, screenshots) or press the mic to speak in English, Roman Urdu or Urdu. I answer from your course lessons and link to them. Chats are saved in the sidebar on this device only.</p>
+                  <p className="text-base text-muted sm:text-lg"><Txt block>{tx("c.intro")}</Txt></p>
                 )}
-                {status && !status.ai && <p className="box box-exam text-sm">The AI part is not connected yet. I can still answer definition questions from the lessons.</p>}
-                {unavailable && <p className="box box-exam text-sm">The tutor is switched off right now.</p>}
-                <div className="flex flex-wrap gap-2" role="group" aria-label="Starter questions">
-                  {(topicLabel ? TOPIC_STARTERS : STARTERS).map((s) => <button key={s} className="btn !min-h-11 !rounded-full text-sm" disabled={unavailable} onClick={() => void send(s)}>{s}</button>)}
+                {status && !status.ai && <p className="box box-exam text-sm"><Txt block>{tx("c.noAi")}</Txt></p>}
+                {unavailable && <p className="box box-exam text-sm"><Txt block>{tx("c.off")}</Txt></p>}
+                <div className="flex flex-wrap gap-2" role="group" aria-label={tx("c.starters")}>
+                  {(topicLabel ? TOPIC_STARTERS : STARTERS).map((k) => <button key={k} className="btn !min-h-11 !rounded-full text-sm" disabled={unavailable} onClick={() => void send(tx(k))}><Txt>{tx(k)}</Txt></button>)}
                 </div>
-                <p className="text-sm text-muted">Tip: upload your own quiz or assignment (PDF, photo or pasted text) and ask “make a new one in the same format”. I copy the layout, marks and question types.</p>
+                <p className="text-sm text-muted"><Txt block>{tx("c.tip")}</Txt></p>
               </div>
             )}
 
@@ -329,13 +330,13 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
                 <div className="grid min-w-0 flex-1 gap-2">
                   <Message text={m.text} />
                   <div className="flex flex-wrap items-center gap-1 text-xs text-muted">
-                    <span className="me-1">{m.meta?.source === "claude" ? `AI · ${m.meta.model}` : m.meta?.source === "instructor" ? "From your instructor" : "From the lessons (free)"}</span>
-                    <button className="btn btn-sm" onClick={() => void copy(m.text)}>Copy</button>
+                    <span className="me-1"><Txt>{m.meta?.source === "claude" ? tx("c.srcClaude", { m: m.meta.model ?? "" }) : m.meta?.source === "instructor" ? tx("c.srcInstructor") : tx("c.srcLessons")}</Txt></span>
+                    <button className="btn btn-sm" onClick={() => void copy(m.text)}><Txt>{tx("c.copy")}</Txt></button>
                     {speechOutputSupported() && features?.voice !== false && (
-                      <button className="btn btn-sm" onClick={() => { if (!speak(m.text, lang)) setNote(lang === "ur" ? "No Urdu voice is installed on this device, so I cannot read Urdu aloud." : "Reading aloud is not available here."); }}>🔊 Read aloud</button>
+                      <button className="btn btn-sm" onClick={() => { if (!speak(m.text, lang)) setNote(tx(lang === "ur" ? "c.noUrdu" : "c.noRead")); }}><Txt>{tx("c.readAloud")}</Txt></button>
                     )}
-                    {m === lastAssistant && !busy && m.meta?.source === "claude" && <button className="btn btn-sm" onClick={() => { const u = [...cur.messages].reverse().find((x) => x.role === "user"); if (u) void send(u.text, true); }}>🧠 Answer more deeply</button>}
-                    {m === lastAssistant && !busy && m.meta?.source === "notes" && <button className="btn btn-sm" onClick={() => { const u = [...cur.messages].reverse().find((x) => x.role === "user"); if (u) void send(u.text, true); }}>🧠 Explain it with AI</button>}
+                    {m === lastAssistant && !busy && m.meta?.source === "claude" && <button className="btn btn-sm" onClick={() => { const u = [...cur.messages].reverse().find((x) => x.role === "user"); if (u) void send(u.text, true); }}><Txt>{tx("c.deeper")}</Txt></button>}
+                    {m === lastAssistant && !busy && m.meta?.source === "notes" && <button className="btn btn-sm" onClick={() => { const u = [...cur.messages].reverse().find((x) => x.role === "user"); if (u) void send(u.text, true); }}><Txt>{tx("c.explainAi")}</Txt></button>}
                   </div>
                 </div>
               </div>
@@ -343,13 +344,13 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
             {live && (
               <div className="flex gap-3">
                 <span aria-hidden className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-xs font-bold" style={{ background: "linear-gradient(135deg, var(--grad-a), var(--grad-b))", color: "var(--on-primary)" }}>C++</span>
-                <div className="min-w-0 flex-1">{live.text ? <Message text={live.text} streaming /> : <span className="text-muted">Thinking…</span>}</div>
+                <div className="min-w-0 flex-1">{live.text ? <Message text={live.text} streaming /> : <span className="text-muted"><Txt>{tx("c.thinking")}</Txt></span>}</div>
               </div>
             )}
             {errorBox && (
               <div className="box box-exam" role="alert">
                 <p>{errorBox.message}</p>
-                {errorBox.suggest && errorBox.suggest.length > 0 && <p className="mt-1 text-sm">Try: {errorBox.suggest.map((s) => <Link key={s.href} className="me-3" href={s.href}>{s.title}</Link>)}</p>}
+                {errorBox.suggest && errorBox.suggest.length > 0 && <p className="mt-1 text-sm"><Txt>{tx("c.try")}</Txt> {errorBox.suggest.map((s) => <Link key={s.href} className="me-3" href={s.href}>{s.title}</Link>)}</p>}
               </div>
             )}
             <div ref={bottom} />
@@ -360,37 +361,37 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
           <div className="mx-auto grid max-w-3xl gap-2">
             {attachedCount > 0 && (
               <div className="flex flex-wrap items-center gap-2 text-sm">
-                {ctx?.code && <span className="rounded-full bg-surface2 px-3 py-1">📝 your code{ctx.diagnostics ? " + error" : ""}</span>}
+                {ctx?.code && <span className="rounded-full bg-surface2 px-3 py-1"><Txt>{tx(ctx.diagnostics ? "c.yourCodeErr" : "c.yourCode")}</Txt></span>}
                 {texts.map((t) => <span key={t.name} className="rounded-full bg-surface2 px-3 py-1">📎 {t.name}</span>)}
-                {pdfs.map((p) => <span key={p.name} className="rounded-full bg-surface2 px-3 py-1">📄 {p.name}{p.data ? "" : " (reading…)"}</span>)}
+                {pdfs.map((p) => <span key={p.name} className="rounded-full bg-surface2 px-3 py-1">📄 {p.name}{p.data ? "" : ` ${tx("c.reading")}`}</span>)}
                 {images.map((i) => <span key={i.name} className="rounded-full bg-surface2 px-3 py-1">🖼 {i.name}</span>)}
-                <button className="btn btn-sm" onClick={() => { setCtx(undefined); setTexts([]); setPdfs([]); setImages([]); }}>Remove all</button>
+                <button className="btn btn-sm" onClick={() => { setCtx(undefined); setTexts([]); setPdfs([]); setImages([]); }}><Txt>{tx("c.removeAll")}</Txt></button>
               </div>
             )}
             {note && <p role="status" className="text-sm text-muted">{note}</p>}
             <div className="flex flex-wrap items-end gap-1.5 rounded-3xl border border-border bg-surface p-1.5 focus-within:border-primary @xl:flex-nowrap">
               {features?.upload !== false && (
                 <>
-                  <button className="btn order-2 !min-h-11 !min-w-11 !rounded-full !px-0 text-xl @xl:order-1" aria-label="Attach files" onClick={() => fileRef.current?.click()}>＋</button>
+                  <button className="btn order-2 !min-h-11 !min-w-11 !rounded-full !px-0 text-xl @xl:order-1" aria-label={tx("c.attach")} onClick={() => fileRef.current?.click()}>＋</button>
                   <input ref={fileRef} type="file" multiple className="sr-only" tabIndex={-1} aria-hidden accept=".pdf,.cpp,.cc,.cxx,.c,.h,.hpp,.txt,.md,.csv,.json,image/png,image/jpeg" onChange={(e) => { void pickFiles(e.target.files); e.target.value = ""; }} />
                 </>
               )}
-              <textarea ref={area} className="order-1 max-h-60 min-h-11 basis-full resize-none @xl:order-2 @xl:basis-0 @xl:flex-1 bg-transparent px-2 py-2.5 !outline-none" rows={1} maxLength={40000} value={input} placeholder={topicLabel ? "Ask about this topic…" : "Ask a question, paste text or drop files…"} aria-label="Your question" dir="auto" disabled={unavailable}
+              <textarea ref={area} className="order-1 max-h-60 min-h-11 basis-full resize-none @xl:order-2 @xl:basis-0 @xl:flex-1 bg-transparent px-2 py-2.5 !outline-none" rows={1} maxLength={40000} value={input} placeholder={tx(topicLabel ? "c.placeholderTopic" : "c.placeholder")} aria-label={tx("c.yourQuestion")} dir="auto" disabled={unavailable}
                 onChange={(e) => { setInput(e.target.value); e.currentTarget.style.height = "auto"; e.currentTarget.style.height = `${Math.min(e.currentTarget.scrollHeight, 240)}px`; }}
                 onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); void send(); } }}
                 onPaste={(e) => { const f = Array.from(e.clipboardData.files).filter((x) => /^image\//.test(x.type)); if (f.length) { e.preventDefault(); void pickFiles(f); } }} />
-              <select className="btn order-3 ms-auto !min-h-11 !px-2 text-sm @xl:ms-0" aria-label="Answer language" value={lang} onChange={(e) => update({ lang: e.target.value as Lang })}>
+              <select className="btn order-3 ms-auto !min-h-11 !px-2 text-sm @xl:ms-0" aria-label={tx("c.answerLang")} value={lang} onChange={(e) => update({ lang: e.target.value as Lang })}>
                 {LANGS.map((l) => <option key={l.v} value={l.v}>{l.label}</option>)}
               </select>
-              {features?.voice !== false && speechInputSupported() && <button className={`btn order-3 !min-h-11 !min-w-11 !rounded-full !px-0 ${listening ? "border-error text-error" : "text-muted hover:text-text"}`} aria-label={listening ? "Stop voice input" : "Voice input"} aria-pressed={listening} onClick={toggleMic}>{listening ? <span className="h-3.5 w-3.5 rounded-sm bg-current" aria-hidden /> : <MicIcon />}</button>}
+              {features?.voice !== false && speechInputSupported() && <button className={`btn order-3 !min-h-11 !min-w-11 !rounded-full !px-0 ${listening ? "border-error text-error" : "text-muted hover:text-text"}`} aria-label={tx(listening ? "c.voiceStop" : "c.voice")} aria-pressed={listening} onClick={toggleMic}>{listening ? <span className="h-3.5 w-3.5 rounded-sm bg-current" aria-hidden /> : <MicIcon />}</button>}
               {busy
-                ? <button className="btn order-3 !min-h-11 !min-w-11 !rounded-full !px-0" aria-label="Stop" onClick={() => abort.current?.abort()}>⏹</button>
-                : <button className="btn btn-primary order-3 !min-h-11 !min-w-11 !rounded-full !px-0 text-lg" aria-label="Send" disabled={!input.trim() || unavailable} onClick={() => void send()}>↑</button>}
+                ? <button className="btn order-3 !min-h-11 !min-w-11 !rounded-full !px-0" aria-label={tx("c.stop")} onClick={() => abort.current?.abort()}>⏹</button>
+                : <button className="btn btn-primary order-3 !min-h-11 !min-w-11 !rounded-full !px-0 text-lg" aria-label={tx("c.send")} disabled={!input.trim() || unavailable} onClick={() => void send()}>↑</button>}
             </div>
-            <p className="text-center text-xs text-muted">{left !== null ? `${left} AI question(s) left today · ` : ""}The tutor can make mistakes. Check important answers with your lesson or instructor.</p>
+            <p className="text-center text-xs text-muted"><Txt>{`${left !== null ? `${tx("c.left", { n: left })} · ` : ""}${tx("c.disclaimer")}`}</Txt></p>
           </div>
         </div>
-        {dragging && <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center border-2 border-dashed border-primary bg-bg/80 text-xl font-semibold">Drop files here</div>}
+        {dragging && <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center border-2 border-dashed border-primary bg-bg/80 text-xl font-semibold"><Txt>{tx("c.drop")}</Txt></div>}
       </div>
     </section>
   );

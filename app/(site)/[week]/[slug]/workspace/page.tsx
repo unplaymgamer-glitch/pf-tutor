@@ -34,5 +34,5 @@ export default async function WorkspacePage({ params }: { params: Promise<{ week
   const i = flat.findIndex((t) => t.week === w && t.slug === slug);
   const href = (t?: (typeof flat)[number]) => (t ? `/week-${t.week}/${t.slug}/workspace` : undefined);
   const mod = moduleOfWeek(w);
-  return <Workspace topic={topic} hue={mod?.hue ?? 200} label={`Module ${mod?.id ?? ""} · Week ${w}`} lessonHref={`/week-${w}/${slug}`} prevHref={href(flat[i - 1])} nextHref={href(flat[i + 1])} />;
+  return <Workspace topic={topic} hue={mod?.hue ?? 200} moduleId={mod?.id} lessonHref={`/week-${w}/${slug}`} prevHref={href(flat[i - 1])} nextHref={href(flat[i + 1])} />;
 }
