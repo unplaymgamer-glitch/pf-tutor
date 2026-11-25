@@ -31,7 +31,7 @@ export class OpenAICompatProvider implements AIProvider {
       const r = await fetch(`${this.baseUrl.replace(/\/$/, "")}/chat/completions`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.apiKey}` },
-        body: JSON.stringify({ model: order[i], messages, stream: true, max_tokens: input.maxTokens, ...(gemini ? { reasoning_effort: "low" } : {}) }),
+        body: JSON.stringify({ model: order[i], messages, stream: true, max_tokens: Math.round(input.maxTokens * 1.8), ...(gemini ? { reasoning_effort: "low" } : {}) }),
         signal,
       });
       if (r.ok && r.body) { res = r; break; }
@@ -57,6 +57,8 @@ export class OpenAICompatProvider implements AIProvider {
         if (data === "[DONE]") continue;
         try {
           const j = JSON.parse(data) as { choices?: { delta?: { content?: string }; finish_reason?: string }[] };
+          const fin = j.choices?.[0]?.finish_reason;
+          if (fin && fin !== "stop") console.error(`[tutor] free model finished early: ${fin}`);
           const text = j.choices?.[0]?.delta?.content;
           if (text) yield { type: "delta", text };
         } catch { /* ignore a malformed keep-alive line */ }
