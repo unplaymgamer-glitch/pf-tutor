@@ -24,6 +24,17 @@ const TOPIC_STARTERS = ["Explain this topic with a simple picture", "Give me a 3
 const TEXT_FILE = /\.(cpp|cc|cxx|c|h|hpp|txt|md|csv|json)$/i;
 const LANGS: { v: Lang; label: string }[] = [{ v: "en", label: "English" }, { v: "roman", label: "Roman Urdu" }, { v: "ur", label: "اردو" }];
 
+/** The same clean outlined microphone Claude uses: a capsule, a cradle and a stem. */
+function MicIcon() {
+  return (
+    <svg aria-hidden width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="9" y="3" width="6" height="11" rx="3" />
+      <path d="M5 11a7 7 0 0 0 14 0" />
+      <path d="M12 18v3" />
+    </svg>
+  );
+}
+
 async function toBase64(buf: ArrayBuffer): Promise<string> {
   const bytes = new Uint8Array(buf);
   let s = "";
@@ -367,7 +378,7 @@ export default function ChatApp({ initial, modules, embedded = false }: { initia
               <select className="btn order-3 ms-auto !min-h-11 !px-2 text-sm @xl:ms-0" aria-label="Answer language" value={lang} onChange={(e) => update({ lang: e.target.value as Lang })}>
                 {LANGS.map((l) => <option key={l.v} value={l.v}>{l.label}</option>)}
               </select>
-              {features?.voice !== false && speechInputSupported() && <button className={`btn order-3 !min-h-11 !min-w-11 !rounded-full !px-0 ${listening ? "border-error" : ""}`} aria-label={listening ? "Stop voice input" : "Voice input"} aria-pressed={listening} onClick={toggleMic}>{listening ? "⏹" : "🎤"}</button>}
+              {features?.voice !== false && speechInputSupported() && <button className={`btn order-3 !min-h-11 !min-w-11 !rounded-full !px-0 ${listening ? "border-error text-error" : "text-muted hover:text-text"}`} aria-label={listening ? "Stop voice input" : "Voice input"} aria-pressed={listening} onClick={toggleMic}>{listening ? <span className="h-3.5 w-3.5 rounded-sm bg-current" aria-hidden /> : <MicIcon />}</button>}
               {busy
                 ? <button className="btn order-3 !min-h-11 !min-w-11 !rounded-full !px-0" aria-label="Stop" onClick={() => abort.current?.abort()}>⏹</button>
                 : <button className="btn btn-primary order-3 !min-h-11 !min-w-11 !rounded-full !px-0 text-lg" aria-label="Send" disabled={!input.trim() || unavailable} onClick={() => void send()}>↑</button>}

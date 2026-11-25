@@ -8,6 +8,8 @@ export type ChatChunk = { type: "delta"; text: string } | { type: "usage"; usage
 
 export interface AIProvider {
   readonly name: string;
+  /** The name shown to the student for the model that will answer (optional). */
+  label?(model: string): string;
   stream(input: ChatInput, signal?: AbortSignal): AsyncGenerator<ChatChunk>;
 }
 

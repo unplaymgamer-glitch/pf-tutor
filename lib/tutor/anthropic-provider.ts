@@ -5,6 +5,7 @@ import type { AIProvider, ChatChunk, ChatInput } from "./provider";
 /** Claude provider. The key is read from the server environment only and never reaches the browser. */
 export class AnthropicProvider implements AIProvider {
   readonly name = "anthropic";
+  label(model: string) { return MODELS[model as keyof typeof MODELS]?.label ?? model; }
   private client: Anthropic;
   constructor(apiKey: string) {
     // maxRetries: the SDK already retries 429/5xx with backoff; keep it small so a student never waits long.

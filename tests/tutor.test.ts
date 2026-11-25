@@ -286,8 +286,11 @@ describe("tutor pipeline", () => {
     expect(err((await collect({ provider: null }, req("why does my loop never end"))).ev)?.code).toBe("no-provider");
     const boom = { name: "boom", async *stream() { throw new Error("network"); } } as never;
     const r = await collect({ provider: boom }, req("why does my loop never end"));
-    expect(err(r.ev)?.code).toBe("provider");
-    expect(JSON.stringify(r.ev)).not.toContain("network");
+    expect(err(r.ev)).toBeUndefined();                       // the student gets the lesson's own words instead of an error
+    expect(r.text).toMatch(/AI is busy or unavailable/);
+    expect(JSON.stringify(r.ev)).not.toContain("network");  // the raw provider error never reaches the student
+    const nothing = await collect({ provider: boom, search: new CourseSearch([]), topics: [] }, req("zzzz qqqq"));
+    expect(err(nothing.ev)?.code).toBe("provider");           // with nothing relevant to show, the friendly retry message remains
   });
   it("a refusal from the model becomes a friendly message", async () => {
     const refusing = { name: "r", async *stream() { yield { type: "refusal" as const }; yield { type: "usage" as const, usage: { input_tokens: 10, output_tokens: 1 } }; } } as never;
@@ -332,5 +335,28 @@ describe("one-line topic requests", () => {
     expect(routeQuestion({ text: "nested loop", hasCode: false, hasImage: false, lang: "en", turns: 1, deep: false })).toMatchObject({ model: "sonnet", maxTokens: 2800 });
     const free = await collect({ provider: null }, req("nested loop"));
     expect(free.ev.some((e) => e.type === "error" || e.type === "delta")).toBe(true); // without an AI the free notes or a clear message still answer
+  });
+});
+
+describe("free fallback provider and honest errors", () => {
+  it("falls back to the free provider when the primary fails before answering, and remembers a credit failure", async () => {
+    const { FallbackProvider } = await import("@/lib/tutor/openai-compat-provider");
+    let calls = 0; let t = 0;
+    const primary = { name: "p", label: () => "Claude", async *stream() { calls++; throw Object.assign(new Error("400 credit balance is too low"), { status: 400 }); } } as never;
+    const free = new MockProvider("free answer"); (free as unknown as { label: () => string }).label = () => "Gemini (free)";
+    const fb = new FallbackProvider(primary, free as never, 60_000, () => t);
+    const out = async () => { let s = ""; for await (const c of fb.stream({ model: "haiku", system: "", messages: [{ role: "user", content: "hi" }], maxTokens: 10, effort: "low" })) if (c.type === "delta") s += c.text; return s; };
+    expect(await out()).toBe("free answer");
+    expect(fb.label("haiku")).toBe("Gemini (free)");      // later questions skip the failing account
+    expect(await out()).toBe("free answer"); expect(calls).toBe(1);
+    t = 61_000; expect(fb.label("haiku")).toBe("Claude"); // and try it again after a while
+  });
+  it("when the AI is out of credit the student still gets the lesson's own words, free, with an honest reason", async () => {
+    const failing = { name: "x", async *stream() { throw Object.assign(new Error("400 Your credit balance is too low"), { status: 400 }); } } as never;
+    const { ev, text } = await collect({ provider: failing }, req("Programming ki types kya hain aur kaun si language use karte hain"));
+    expect(err(ev)).toBeUndefined();
+    expect(text).toMatch(/no credit left/);
+    expect(text).toMatch(/Full lesson: \/week-/);
+    expect(ev.at(-1)).toMatchObject({ type: "done", costMicros: 0 });
   });
 });

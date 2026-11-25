@@ -41,7 +41,7 @@ const FRIENDLY: Record<string, string> = {
   "limit-device": "You have used today's tutor questions. Come back tomorrow, or search the lessons and try the Review deck.",
   "limit-ip": "Many students are using the tutor from this network right now. Please try again a bit later.",
   "limit-deep": "You have used today's deep explanations. Ask a normal question, or try again tomorrow.",
-  budget: "The tutor is resting for now (monthly limit reached). The course search still works.",
+  budget: "The AI tutor is not available right now (its credit or monthly limit is used up). The lesson search still works.",
   provider: "The tutor could not answer just now. Please try again in a moment.",
   refused: "I cannot help with that request. Ask me something about C++ and your lessons.",
 };
@@ -117,7 +117,7 @@ export async function* runTutor(d: Deps, req: TutorRequest): AsyncGenerator<Tuto
   blocks.push({ type: "text", text });
   msgs.push({ role: "user", content: blocks.length === 1 ? text : blocks });
 
-  yield { type: "meta", tier: 2, source: "claude", model: MODELS[model].label, reason: route.reason, lessonKey: hits[0] ? `${hits[0].topic.week}/${hits[0].topic.slug}` : undefined };
+  yield { type: "meta", tier: 2, source: "claude", model: d.provider.label?.(model) ?? MODELS[model].label, reason: route.reason, lessonKey: hits[0] ? `${hits[0].topic.week}/${hits[0].topic.slug}` : undefined };
 
   let usage: { input_tokens: number; output_tokens: number; cache_read_input_tokens?: number | null; cache_creation_input_tokens?: number | null } | null = null;
   let answered = false;
@@ -132,7 +132,19 @@ export async function* runTutor(d: Deps, req: TutorRequest): AsyncGenerator<Tuto
     const err = e as { status?: number; message?: string };
     console.error(`[tutor] provider error status=${err.status ?? "?"} model=${MODELS[model].id} message=${String(err.message ?? e).slice(0, 300)}`);
     // The AI account itself is out of credit: say so plainly (the instructor tops it up in the Anthropic console) instead of a vague retry message.
-    if (!answered) { yield fail(/credit balance/i.test(String(err.message)) ? "budget" : "provider"); return; }
+    if (!answered) {
+      // Never leave the student with nothing: show what the lessons themselves say about the question (free), and say honestly why the AI did not answer.
+      const picks = hits.filter((h) => h.confidence > 0 || h.score > 5 || h === hits[0]).slice(0, 2);
+      if (picks.length) {
+        const why = /credit balance/i.test(String(err.message)) ? "the AI account has no credit left" : "the AI is busy or unavailable";
+        const body = picks.map((h) => `## ${h.topic.title}\n${h.topic.goal}\n\n${h.topic.definition}\n\n**How it works.** ${h.topic.howItWorks.slice(0, 600)}\n\nFull lesson: /week-${h.topic.week}/${h.topic.slug}`).join("\n\n");
+        yield { type: "meta", tier: 0, source: "notes", lessonKey: `${picks[0].topic.week}/${picks[0].topic.slug}` };
+        yield { type: "delta", text: `The AI tutor cannot answer right now (${why}), so here is what your lessons say about this. It is free and always available.\n\n${body}` };
+        yield { type: "done", costMicros: 0, leftToday: Math.max(0, s.dailyPerDevice - used) };
+        return;
+      }
+      yield fail(/credit balance/i.test(String(err.message)) ? "budget" : "provider"); return;
+    }
     yield { type: "delta", text: "\n\n(The answer was cut short. Ask again if you need the rest.)" };
   }
 
