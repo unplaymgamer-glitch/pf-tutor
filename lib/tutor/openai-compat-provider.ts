@@ -3,7 +3,9 @@ import type { AIProvider, ChatChunk, ChatInput } from "./provider";
 /** Any OpenAI-compatible chat endpoint with streaming. Used for a FREE tier (Google Gemini, Groq, OpenRouter free models) when the Claude account has no credit. */
 export class OpenAICompatProvider implements AIProvider {
   readonly name = "free";
-  constructor(private baseUrl: string, private apiKey: string, private modelId: string, private modelLabel = modelId) {}
+  private models: string[];
+  /** `modelId` may list several models separated by commas: they are tried in order when one is unknown, rate limited or overloaded. */
+  constructor(private baseUrl: string, private apiKey: string, modelId: string, private modelLabel = modelId.split(",")[0].trim()) { this.models = modelId.split(",").map((m) => m.trim()).filter(Boolean); }
   label() { return this.modelLabel; }
 
   async *stream(input: ChatInput, signal?: AbortSignal): AsyncGenerator<ChatChunk> {
@@ -18,16 +20,21 @@ export class OpenAICompatProvider implements AIProvider {
       })),
     ];
     const gemini = /generativelanguage\.googleapis\.com/.test(this.baseUrl);
-    const res = await fetch(`${this.baseUrl.replace(/\/$/, "")}/chat/completions`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.apiKey}` },
-      body: JSON.stringify({ model: this.modelId, messages, stream: true, max_tokens: input.maxTokens, ...(gemini ? { reasoning_effort: "low" } : {}) }),
-      signal,
-    });
-    if (!res.ok || !res.body) {
-      const body = (await res.text().catch(() => "")).slice(0, 300);
-      throw Object.assign(new Error(`${res.status} ${body}`), { status: res.status });
+    let res: Response | null = null;
+    for (let i = 0; i < this.models.length; i++) {
+      const r = await fetch(`${this.baseUrl.replace(/\/$/, "")}/chat/completions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.apiKey}` },
+        body: JSON.stringify({ model: this.models[i], messages, stream: true, max_tokens: input.maxTokens, ...(gemini ? { reasoning_effort: "low" } : {}) }),
+        signal,
+      });
+      if (r.ok && r.body) { res = r; break; }
+      const body = (await r.text().catch(() => "")).slice(0, 300);
+      const retryable = [404, 429, 500, 502, 503, 504].includes(r.status);
+      if (!retryable || i === this.models.length - 1) throw Object.assign(new Error(`${r.status} ${body}`), { status: r.status });
+      console.error(`[tutor] free model ${this.models[i]} unavailable (status=${r.status}), trying the next one`);
     }
+    if (!res || !res.body) throw Object.assign(new Error("no free model available"), { status: 503 });
     const reader = res.body.getReader();
     const dec = new TextDecoder();
     let buf = "";

@@ -360,3 +360,24 @@ describe("free fallback provider and honest errors", () => {
     expect(ev.at(-1)).toMatchObject({ type: "done", costMicros: 0 });
   });
 });
+
+describe("free provider model list", () => {
+  it("tries the next model when one is unknown or overloaded, then streams the answer", async () => {
+    const { OpenAICompatProvider } = await import("@/lib/tutor/openai-compat-provider");
+    const seen: string[] = [];
+    const orig = globalThis.fetch;
+    globalThis.fetch = (async (_u: unknown, init: { body: string }) => {
+      const m = JSON.parse(init.body).model as string; seen.push(m);
+      if (m === "a") return new Response("{}", { status: 404 });
+      if (m === "b") return new Response("{}", { status: 503 });
+      const sse = ['data: {"choices":[{"delta":{"content":"Hel"}}]}', 'data: {"choices":[{"delta":{"content":"lo"}}]}', "data: [DONE]", ""].join("\n\n");
+      return new Response(sse, { status: 200 });
+    }) as never;
+    try {
+      const p = new OpenAICompatProvider("https://x.test/v1", "k", "a, b, c");
+      let text = ""; let usage = 0;
+      for await (const c of p.stream({ model: "haiku", system: "s", messages: [{ role: "user", content: "hi" }], maxTokens: 5, effort: "low" })) { if (c.type === "delta") text += c.text; if (c.type === "usage") usage = c.usage.input_tokens + c.usage.output_tokens; }
+      expect(seen).toEqual(["a", "b", "c"]); expect(text).toBe("Hello"); expect(usage).toBe(0);
+    } finally { globalThis.fetch = orig; }
+  });
+});
